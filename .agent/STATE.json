@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "task_id": "keemu-mvp1",
+  "status": "IDLE",
+  "session_id": null,
+  "pause_reason": null,
+  "quota": {
+    "kind": null,
+    "detected_at": null,
+    "resets_at": null,
+    "resets_in_seconds": null,
+    "plan_type": null,
+    "raw_excerpt": null
+  },
+  "runtime": {
+    "continuations": 0,
+    "consecutive_failures": 0,
+    "same_error_count": 0,
+    "last_error_fingerprint": null,
+    "last_exit_code": null,
+    "last_run_started_at": null,
+    "last_run_finished_at": null,
+    "last_log": null,
+    "last_checkpoint_at": null
+  },
+  "routing": {
+    "mode": "auto",
+    "last_evaluated_at": null,
+    "recommended": {
+      "tier": null,
+      "model": null,
+      "reasoning": null
+    },
+    "applied": {
+      "tier": null,
+      "model": null,
+      "reasoning": null
+    },
+    "signals": {},
+    "reason": null,
+    "force_min_tier": null,
+    "capabilities": {
+      "gpt-6-astra": false
+    },
+    "astra_disabled_reason": "fixed_current_model_by_user",
+    "last_router_error": null,
+    "worker_lock": {},
+    "learning": {
+      "active_policy_version": "v1",
+      "last_event_id": null
+    }
+  },
+  "quota_admission": {}
+}

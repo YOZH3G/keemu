@@ -1,0 +1,24 @@
+# Secrets / credentials
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+auth.json
+credentials.json
+id_rsa*
+id_ed25519*
+
+# Runtime-only supervisor data
+.agent/supervisor.lock
+.agent/runs/
+
+# Common local noise
+__pycache__/
+*.pyc
+.DS_Store
+
+# Reproducible Graphify local index/cache. Durable truth remains Git + .agent/.
+graphify-out/
