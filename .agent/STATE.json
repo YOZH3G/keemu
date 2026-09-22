@@ -1,37 +1,38 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "WAITING_QUOTA",
-  "session_id": "20260922_074011_a7dea0",
-  "pause_reason": "openai_usage_limit",
+  "status": "RESUMING",
+  "session_id": null,
+  "pause_reason": null,
   "quota": {
     "kind": "unknown",
     "detected_at": "2026-09-22T08:13:38+00:00",
     "resets_at": null,
     "resets_in_seconds": null,
+    "wake_at": null,
     "plan_type": null,
     "raw_excerpt": "API call failed after 3 retries: HTTP 429: The usage limit has been reached session_id: 20260922_074011_a7dea0"
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-22T07:40:09+00:00",
+    "last_evaluated_at": "2026-09-22T18:55:10+00:00",
     "recommended": {
-      "tier": "C5",
-      "model": "gpt-5.6-sol",
-      "reasoning": "xhigh"
+      "tier": "C7",
+      "model": "gpt-6-astra",
+      "reasoning": "max"
     },
     "applied": {
-      "tier": "C5",
-      "model": "gpt-5.6-sol",
-      "reasoning": "xhigh"
+      "tier": "C0",
+      "model": "gpt-5.6-luna",
+      "reasoning": "low"
     },
     "signals": {
-      "score": 13,
-      "task_chars": 7541,
-      "changed_files": 0,
-      "repo_files_sampled": 13,
+      "score": 17,
+      "task_chars": 9936,
+      "changed_files": 13,
+      "repo_files_sampled": 670,
       "graphify_present": true,
-      "graphify_bytes": 55993,
+      "graphify_bytes": 202423,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -43,48 +44,593 @@
       "read_only_scope": true,
       "reasons": [
         "long task/context",
+        "multiple changed files",
+        "large working-tree blast radius",
+        "large repository",
         "production/remote-system risk",
         "security/auth/network privilege risk",
         "destructive/irreversible operation risk",
         "architecture/system-design scope"
       ]
     },
-    "reason": "long task/context; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
+    "reason": "long task/context; multiple changed files; large working-tree blast radius; large repository; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
     "force_min_tier": null,
     "capabilities": {
-      "gpt-6-astra": false
+      "gpt-6-astra": null
     },
-    "astra_disabled_reason": "fixed_current_model_by_user",
+    "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {
-      "expected_model": "gpt-5.6-sol",
-      "expected_reasoning": "xhigh",
-      "model_attested": true,
-      "attestation_status": "ATTESTED",
-      "session_deleted": false
+    "worker_lock": {},
+    "subtask_plan": {
+      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+      "plan_digest": "676bdf7a9bd4e97aaf567593b6d6245239a270f0299ba773cfe768dfbee91e88",
+      "active_index": 1,
+      "items": [
+        {
+          "id": "preflight",
+          "objective": "Read-only revalidate the current repository, environment, Docker/binfmt/kernel capability gates, locked artifacts, and durable checkpoint before implementation",
+          "acceptance_refs": [
+            "P0",
+            "resume-safety"
+          ],
+          "recommended": {
+            "tier": "C0",
+            "model": "gpt-5.6-luna",
+            "reasoning": "low"
+          },
+          "status": "complete",
+          "digest": "4b7008dd6f709a3a6820306c4c77aa1f0d96377beb9bbda0c1e5cf97703a1a88",
+          "outcome": {
+            "event_id": "evt_e5d5606c22e49f442a9225e2",
+            "route_event_id": "evt_637d46a063189e6bd6f8ad92",
+            "completed_at": "2026-09-22T18:55:48+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
+        },
+        {
+          "id": "p0-01",
+          "objective": "Stabilize the current profile, doctor, common report model, schema parity, aggregation, exit-code, and CLI test slice with an honest no-Docker BLOCKED report",
+          "acceptance_refs": [
+            "P0",
+            "A21"
+          ],
+          "recommended": {
+            "tier": "C3",
+            "model": "gpt-5.6-terra",
+            "reasoning": "high"
+          },
+          "status": "active",
+          "digest": "0d3dc4c150a46397465f5061613a30c40bc665ddc750e2e3702e638270f7ffbe"
+        },
+        {
+          "id": "p0-02",
+          "objective": "Expand A21 report primitives for immutable run, artifact, scenario, profile, runtime, capability, coverage, operation-log, and partial-failure metadata",
+          "acceptance_refs": [
+            "P0",
+            "A21"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "766c664a5142726000c5196c67b4b29c21e159e609aed6b52efdf9f590b96e4a"
+        },
+        {
+          "id": "p0-03",
+          "objective": "Build reproducible hello, web-demo, and NFQUEUE fixture sources and recipes with real provenance, architecture metadata, dependencies, and SHA-256 locks",
+          "acceptance_refs": [
+            "P0",
+            "A01",
+            "A19"
+          ],
+          "recommended": {
+            "tier": "C3",
+            "model": "gpt-5.6-terra",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "e0c2763b02655aac948d9c750a74eeb5b09804b5bce1243d6cef7ec5d721bcc3"
+        },
+        {
+          "id": "p0-04",
+          "objective": "Create and lock the mixed AArch64 OCI image with native init, target rootfs, explicit ownership labels, resource limits, and architecture audit",
+          "acceptance_refs": [
+            "P0",
+            "A01",
+            "A18",
+            "A20"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "987d14a3d08ba107e70429a08548368acf5d32c4de6599e0fb8b7e8f660067b2"
+        },
+        {
+          "id": "p0-05",
+          "objective": "Prove Docker/binfmt target shell, child ELF, shebang, daemon survival, signal forwarding, process reaping, and clean container shutdown",
+          "acceptance_refs": [
+            "P0",
+            "A01",
+            "A18"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "51e74c1799323d1b478d2427b70fb5672544d987baef9fe069e953049a93f7d6"
+        },
+        {
+          "id": "p0-06",
+          "objective": "Prove web-demo localhost-only publishing and persistent state across down/up with reproducible evidence and cleanup",
+          "acceptance_refs": [
+            "P0",
+            "A07",
+            "A08",
+            "A09"
+          ],
+          "recommended": {
+            "tier": "C3",
+            "model": "gpt-5.6-terra",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "4151ea7b713aedcce81081a64bd05b57f222e4d7c9284968148454605c98fe11"
+        },
+        {
+          "id": "p0-07",
+          "objective": "Run native-control and target AArch64 NFQUEUE ACCEPT/DROP experiments in project-owned isolation and record evidence or a bounded blocker",
+          "acceptance_refs": [
+            "P0",
+            "A13",
+            "A14",
+            "A17"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "e24ef775ebaf19688dc70dd369333aa02d1581c4ef511cfd0fe5b4447c469ab4"
+        },
+        {
+          "id": "p0-08",
+          "objective": "Close the P0 evidence package with real digests, ADRs, limitations, progress, and traceability without overstating blocked capabilities",
+          "acceptance_refs": [
+            "P0",
+            "A19",
+            "A21"
+          ],
+          "recommended": {
+            "tier": "C2",
+            "model": "gpt-5.6-terra",
+            "reasoning": "medium"
+          },
+          "status": "pending",
+          "digest": "dc0af64c771272daa46ea1ae33989dd2364170726fe7c9b8a1ecf03070b8e45b"
+        },
+        {
+          "id": "m1a-09",
+          "objective": "Implement strict versioned input schemas for scenarios, locks, persistent environments, publishing, checks, persistence, cleanup, and safe paths",
+          "acceptance_refs": [
+            "MVP1A",
+            "A18",
+            "A21"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "6f870d97129bcc1eea302b3d393f768a3c292b4ec68660d0727594c16e00a912"
+        },
+        {
+          "id": "m1a-10",
+          "objective": "Implement safe bounded IPK inspection including format detection, extraction defenses, metadata, architecture, ELF, interpreter, dependency, shebang, and permission checks",
+          "acceptance_refs": [
+            "MVP1A",
+            "A01",
+            "A02"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "380d42c784338ba1eb6b3c4270a500436e1c11bcdded44ed3d12ab5ce189ef0c"
+        },
+        {
+          "id": "m1a-11",
+          "objective": "Implement locked init plus rootfs and image cache with hash verification, atomic publication, installed-package inventory, network smoke, and OCI digest recording",
+          "acceptance_refs": [
+            "MVP1A",
+            "A01",
+            "A19"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "56da39b4463fb2429e62aa1bd8fe46c4699a5ac1a159bd0a6acb067a757d68d9"
+        },
+        {
+          "id": "m1a-12",
+          "objective": "Implement the Docker runtime boundary with argv-only execution, labels, limits, immutable bases, writable layers, bounded logs, ownership-verified cleanup, and reconciliation",
+          "acceptance_refs": [
+            "MVP1A",
+            "A18",
+            "A20"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "e4c948ab3314f11a5b5c04d1160d5869be0330260ea81f140ac0775efa569988"
+        },
+        {
+          "id": "m1a-13",
+          "objective": "Implement lifecycle pipeline and truthful failure semantics from validation and inspection through install, checks, remove, residual comparison, report, and guaranteed cleanup",
+          "acceptance_refs": [
+            "MVP1A",
+            "A02",
+            "A03",
+            "A04",
+            "A05",
+            "A06",
+            "A18",
+            "A21"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "a6c169505bdff4fc8ba3ac4bce8730d33187344f44aa90b219ffa4e6ce296d38"
+        },
+        {
+          "id": "m1a-14",
+          "objective": "Implement atomic persistent registry and safe CLI lifecycle operations with concurrency control and replacement rejection",
+          "acceptance_refs": [
+            "MVP1A",
+            "A03",
+            "A04",
+            "A05",
+            "A06",
+            "A18"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "ce65c3f1a04ffa8903073dd67ff2297c58e147ea40dd8229950526708a05c02b"
+        },
+        {
+          "id": "m1a-15",
+          "objective": "Complete AArch64 hello, HTTP, trusted-local-CA HTTPS, UDP, explicit-vantage, restart, persistence, and offline locked-repeat fixtures",
+          "acceptance_refs": [
+            "MVP1A",
+            "A02",
+            "A03",
+            "A04",
+            "A05",
+            "A06",
+            "A07",
+            "A08",
+            "A09",
+            "A19"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "4a2d942caff4440e8e8d5942859e1f98479e9d95bd4bf204d22a5206717cbed3"
+        },
+        {
+          "id": "m1a-16",
+          "objective": "Verify interruption recovery, collisions, timeout, stale registry, cleanup retries, isolation, capabilities, sockets, limits, and foreign-resource preservation",
+          "acceptance_refs": [
+            "MVP1A",
+            "A18",
+            "A20"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "3badfa34124a1c3c59d61f505b4d42cf6952b8618380b57a6dbeecb794cfb530"
+        },
+        {
+          "id": "m1a-17",
+          "objective": "Run and freeze the MVP 1A acceptance bundle on a suitable clean Docker/binfmt runner with exact PASS, FAIL, SKIP, and BLOCKED results",
+          "acceptance_refs": [
+            "MVP1A",
+            "A01-A09",
+            "A18-A21"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "033bca6849d2fa234e58601bfa21370876eaa409ae69ed9c1c7f32874f4af36f"
+        },
+        {
+          "id": "m1b-18",
+          "objective": "Add locked MIPSEL and MIPS targets and verify architecture, endianness, ABI, ISA, FPU, shell, nested execution, opkg, and applicable fixtures",
+          "acceptance_refs": [
+            "MVP1B",
+            "A01",
+            "A10"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "74696a8ad0a20af861cb85a394cb7cd97be447f8563225a02f4d2d714f5d7393"
+        },
+        {
+          "id": "m1b-19",
+          "objective": "Implement matrix validation and sequential execution with honest architecture-mismatch, unsupported-target, and aggregate status semantics",
+          "acceptance_refs": [
+            "MVP1B",
+            "A10"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "0e1d4ad2be7a791b0455fa2b56bc6450cc4283da1a259e6eeb7f67f3ced4df6c"
+        },
+        {
+          "id": "m1b-20",
+          "objective": "Implement the strict stateful NDM shim with exact process contracts, redacted logs, unknown-call failure, and environment-gap propagation",
+          "acceptance_refs": [
+            "MVP1B",
+            "A11"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "2a54b055aa0099ddf6dd2627bcc99df8c2f2c00c5af5815d7ff2d95514719d88"
+        },
+        {
+          "id": "m1b-21",
+          "objective": "Implement only evidenced synthetic event contracts with deterministic handler order, environment, timeouts, and repeat restoration",
+          "acceptance_refs": [
+            "MVP1B",
+            "A12"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "213fe7ce26ffef7b540bc15b4b048ee6c94f333fe125b40a794b7f4890f79d18"
+        },
+        {
+          "id": "m1b-22",
+          "objective": "Run full three-target acceptance and per-target capability probes with immutable evidence and honest BLOCKED results",
+          "acceptance_refs": [
+            "MVP1B",
+            "A01-A06",
+            "A10",
+            "A11"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "e5c80416ffd6253533fe3782508c4a0752304b9a1e5bd60adc4f09d9ecc96519"
+        },
+        {
+          "id": "m1c-23",
+          "objective": "Implement isolated client-router-server topology with collision-free subnets, br0 and wan0, routes, forwarding, ownership, no management bypass, and safe cleanup",
+          "acceptance_refs": [
+            "MVP1C",
+            "A13",
+            "A18",
+            "A20"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "5811746b91b21c27116730abf8a5d0bd3f56bb254e19e67e50258d2e8de74ec2"
+        },
+        {
+          "id": "m1c-24",
+          "objective": "Build network-demo around the proven target NFQUEUE consumer with API, web UI, state, counters, persistence, health-flow exclusion, and lifecycle hooks",
+          "acceptance_refs": [
+            "MVP1C",
+            "A14",
+            "A15",
+            "A16",
+            "A17"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "07a0cc9c851cb944353f95e765f5f0620c95f6ced05b7bab9a0e9a8f2a7bd1c8"
+        },
+        {
+          "id": "m1c-25",
+          "objective": "Verify network-demo web and API behavior plus service and environment persistence using distinct result records",
+          "acceptance_refs": [
+            "MVP1C",
+            "A15",
+            "A16"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "f63f9f3b7094750f574b78d38b1a8436c030db15fabae2ad540f8d4b9197a920"
+        },
+        {
+          "id": "m1c-26",
+          "objective": "Verify target packet processing end to end with routed flow, consumer and kernel counters, ACCEPT, DROP, restored ACCEPT, and bounded packet evidence",
+          "acceptance_refs": [
+            "MVP1C",
+            "A14",
+            "A17"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "57bdc5c378cdd11e807e9532f6900ecdf422f6e678a7799eac128b4ad014a2f6"
+        },
+        {
+          "id": "m1c-27",
+          "objective": "Run controlled interruption and isolation regressions for network resources while proving foreign containers, networks, and rules remain untouched",
+          "acceptance_refs": [
+            "MVP1C",
+            "A18",
+            "A20"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "6aa60d813fa323452e06c4ec72539c08c1ea9a433a2efe3ddf9decf5fee1efc2"
+        },
+        {
+          "id": "final-28",
+          "objective": "Generate and validate the final A01-A21 acceptance ledger against existing immutable reports, tests, targets, statuses, and contradictions",
+          "acceptance_refs": [
+            "Completion",
+            "A01-A21"
+          ],
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-5.6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "c872c49fe96fd6da781daeff343fd413ebccbfe3af61ef30314c8b820ed0ea72"
+        },
+        {
+          "id": "final-29",
+          "objective": "Run release verification once across portable, three-target, applicable network, schema, static, offline-repeat, and clean-host checks",
+          "acceptance_refs": [
+            "Completion",
+            "A01-A21"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "9d92ed9685d391695bf252479ca5558079131e36ecc9efe136d5d669914aa114"
+        },
+        {
+          "id": "final-30",
+          "objective": "Close documentation and durable state so README, architecture, decisions, limitations, progress, traceability, checkpoints, and cleanup match verified behavior",
+          "acceptance_refs": [
+            "Completion",
+            "A21"
+          ],
+          "recommended": {
+            "tier": "C2",
+            "model": "gpt-5.6-terra",
+            "reasoning": "medium"
+          },
+          "status": "pending",
+          "digest": "5b87b239b6dd9ec82548207b351dc7ee058b73c5c19a6c92671a609db79663ba"
+        },
+        {
+          "id": "final-31",
+          "objective": "Perform an independent evidence audit and produce either an auditable MVP completion statement or an exact remaining-BLOCKED list",
+          "acceptance_refs": [
+            "Completion",
+            "A01-A21"
+          ],
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          "status": "pending",
+          "digest": "2180b54cbd10ac7094adae5ef1ad46c2c704a1ff463f17d8b125f905d2f866f3"
+        }
+      ]
     },
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_218e44ea5deaaa44c8850380",
+      "last_event_id": "evt_e5d5606c22e49f442a9225e2",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
         "candidate_hash": null,
         "samples_used": 0
       }
-    }
+    },
+    "legacy_sessions": [
+      {
+        "session_id": "20260922_074011_a7dea0",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "reasoning": "xhigh",
+        "status": "retained_not_active",
+        "reason": "approved_migration_to_frozen_subtask_plan"
+      }
+    ]
   },
   "runtime": {
     "continuations": 0,
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 1,
-    "last_run_started_at": "2026-09-22T07:40:09+00:00",
-    "last_run_finished_at": "2026-09-22T08:13:38+00:00",
-    "last_log": ".agent/runs/20260922T074009Z.log",
-    "last_checkpoint_at": "2026-09-22T08:13:38+00:00"
+    "last_exit_code": 0,
+    "last_run_started_at": "2026-09-22T18:55:10+00:00",
+    "last_run_finished_at": "2026-09-22T18:55:47+00:00",
+    "last_log": ".agent/runs/20260922T185510Z.log",
+    "last_checkpoint_at": "2026-09-22T18:55:48+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-22T07:37:55+00:00",
