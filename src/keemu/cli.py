@@ -1,17 +1,81 @@
 from __future__ import annotations
 
 import json
+import re
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
 import click
+from pydantic import ValidationError
+from yaml import YAMLError
 
+from keemu.doctor import collect_doctor
 from keemu.entware import ArtifactIntegrityError, verify_artifact_cache
+from keemu.profiles import ProfileError, load_profile
 
 
 @click.group()
 def cli() -> None:
     """Verify Entware applications in locked target environments."""
+
+
+@cli.command()
+@click.option("profile_id", "--profile", required=True)
+@click.option(
+    "profiles_dir",
+    "--profiles-dir",
+    type=click.Path(exists=True, file_okay=False, path_type=Path),
+    default=Path("profiles/generic"),
+    show_default=True,
+)
+@click.option(
+    "docker_socket",
+    "--docker-socket",
+    type=click.Path(path_type=Path),
+    default=Path("/var/run/docker.sock"),
+    show_default=True,
+)
+@click.option(
+    "binfmt_root",
+    "--binfmt-root",
+    type=click.Path(path_type=Path),
+    default=Path("/proc/sys/fs/binfmt_misc"),
+    show_default=True,
+)
+@click.option("search_path", "--search-path", default=None, hidden=True)
+@click.pass_context
+def doctor(
+    context: click.Context,
+    profile_id: str,
+    profiles_dir: Path,
+    docker_socket: Path,
+    binfmt_root: Path,
+    search_path: str | None,
+) -> None:
+    """Run read-only host checks for a generic target profile."""
+    if not re.fullmatch(r"[a-z][a-z0-9-]{1,62}[a-z0-9]", profile_id):
+        raise click.ClickException(f"invalid profile ID: {profile_id}")
+    profile_path = profiles_dir / f"{profile_id}.yaml"
+    try:
+        profile = load_profile(profile_path)
+        report = collect_doctor(
+            profile,
+            search_path=search_path,
+            docker_socket=docker_socket,
+            binfmt_root=binfmt_root,
+        )
+    except (OSError, ProfileError, ValidationError, YAMLError) as error:
+        raise click.ClickException(str(error)) from error
+    counts = {
+        status.lower(): sum(check.status == status for check in report.checks)
+        for status in ("PASS", "WARN", "FAIL", "SKIP", "BLOCKED", "ERROR")
+    }
+    payload = asdict(report)
+    payload["coverage"] = counts
+    click.echo(json.dumps(payload, sort_keys=True))
+    exit_codes = {"FAIL": 1, "ERROR": 3, "BLOCKED": 4}
+    context.exit(exit_codes.get(report.overall, 0))
 
 
 @cli.group()

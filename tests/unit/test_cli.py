@@ -43,3 +43,34 @@ def test_p0_verify_lock_reports_verified_artifacts(tmp_path: Path) -> None:
         "status": "verified",
         "target": "aarch64-3.10",
     }
+
+
+def test_doctor_returns_blocked_exit_code_and_json(tmp_path: Path) -> None:
+    empty_path = tmp_path / "bin"
+    empty_path.mkdir()
+    binfmt = tmp_path / "binfmt_misc"
+    binfmt.mkdir()
+    profiles = Path(__file__).resolve().parents[2] / "profiles" / "generic"
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "doctor",
+            "--profile",
+            "generic-aarch64",
+            "--profiles-dir",
+            str(profiles),
+            "--docker-socket",
+            str(tmp_path / "docker.sock"),
+            "--binfmt-root",
+            str(binfmt),
+            "--search-path",
+            str(empty_path),
+        ],
+    )
+
+    assert result.exit_code == 4, result.output
+    payload = json.loads(result.output)
+    assert payload["overall"] == "BLOCKED"
+    assert payload["profile_id"] == "generic-aarch64"
+    assert payload["coverage"]["blocked"] >= 4

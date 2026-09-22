@@ -1,43 +1,72 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "IDLE",
-  "session_id": null,
-  "pause_reason": null,
+  "status": "WAITING_QUOTA",
+  "session_id": "20260922_074011_a7dea0",
+  "pause_reason": "openai_usage_limit",
   "quota": {
-    "kind": null,
-    "detected_at": null,
+    "kind": "unknown",
+    "detected_at": "2026-09-22T08:13:38+00:00",
     "resets_at": null,
     "resets_in_seconds": null,
     "plan_type": null,
-    "raw_excerpt": null
+    "raw_excerpt": "API call failed after 3 retries: HTTP 429: The usage limit has been reached session_id: 20260922_074011_a7dea0"
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": null,
+    "last_evaluated_at": "2026-09-22T07:40:09+00:00",
     "recommended": {
-      "tier": null,
-      "model": null,
-      "reasoning": null
+      "tier": "C5",
+      "model": "gpt-5.6-sol",
+      "reasoning": "xhigh"
     },
     "applied": {
-      "tier": null,
-      "model": null,
-      "reasoning": null
+      "tier": "C5",
+      "model": "gpt-5.6-sol",
+      "reasoning": "xhigh"
     },
-    "signals": {},
-    "reason": null,
+    "signals": {
+      "score": 13,
+      "task_chars": 7541,
+      "changed_files": 0,
+      "repo_files_sampled": 13,
+      "graphify_present": true,
+      "graphify_bytes": 55993,
+      "previous_failures": 0,
+      "same_error_count": 0,
+      "production_risk": true,
+      "security_risk": true,
+      "destructive_risk": true,
+      "architecture_scope": true,
+      "debugging_scope": false,
+      "cross_component_scope": false,
+      "read_only_scope": true,
+      "reasons": [
+        "long task/context",
+        "production/remote-system risk",
+        "security/auth/network privilege risk",
+        "destructive/irreversible operation risk",
+        "architecture/system-design scope"
+      ]
+    },
+    "reason": "long task/context; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
     "force_min_tier": null,
     "capabilities": {
       "gpt-6-astra": false
     },
     "astra_disabled_reason": "fixed_current_model_by_user",
     "last_router_error": null,
-    "worker_lock": {},
+    "worker_lock": {
+      "expected_model": "gpt-5.6-sol",
+      "expected_reasoning": "xhigh",
+      "model_attested": true,
+      "attestation_status": "ATTESTED",
+      "session_deleted": false
+    },
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": null,
+      "last_event_id": "evt_218e44ea5deaaa44c8850380",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -51,11 +80,11 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": null,
-    "last_run_started_at": null,
-    "last_run_finished_at": null,
-    "last_log": null,
-    "last_checkpoint_at": null
+    "last_exit_code": 1,
+    "last_run_started_at": "2026-09-22T07:40:09+00:00",
+    "last_run_finished_at": "2026-09-22T08:13:38+00:00",
+    "last_log": ".agent/runs/20260922T074009Z.log",
+    "last_checkpoint_at": "2026-09-22T08:13:38+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-22T07:37:55+00:00",
