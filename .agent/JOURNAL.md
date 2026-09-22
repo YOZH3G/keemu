@@ -18,3 +18,4 @@
 - 2026-09-22T19:51:22Z — Second independent review found a report-publication TOCTOU. Replaced overwrite-capable rename with fail-closed Linux `renameat2(..., RENAME_NOREPLACE)` and added existing-directory, dangling-symlink, race, and unavailable-primitive regressions. Portable verification passed: 25 passed, 1 skipped; Ruff clean.
 - 2026-09-22T19:56:58Z — Final independent staged-diff review passed with no security concerns or blocking logic errors; reviewer also exercised schema parity, real doctor BLOCKED/exit 4, destination-entry preservation, and concurrent publication.
 - 2026-09-22T19:57:44Z — Committed the independently reviewed p0-02 implementation and durable state as `e4d2ad2`.
+- 2026-09-22T19:58:35+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
