@@ -31,6 +31,7 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 - Real `keemu doctor --profile generic-aarch64` remains truthfully BLOCKED/exit 4 and now includes profile hash/revision, host kernel, Entware target, Python runtime version, and six explicit capability results.
 - Portable suite: 25 passed, 1 diagnostic test skipped by default. `uv run ruff check .` passes.
 - Final independent staged-diff review found no remaining security concern or blocking logic error after two TDD fix cycles.
+- The coherent p0-02 implementation and durable state are committed as `e4d2ad2` (`[verified] feat: expand A21 report metadata primitives`).
 
 ## Acceptance truth
 
