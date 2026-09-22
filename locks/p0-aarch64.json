@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "kind": "entware-rootfs-lock",
+  "target": "aarch64-3.10",
+  "captured_at": "2026-09-22T07:54:33Z",
+  "root_packages": [
+    "entware-opt",
+    "busybox",
+    "ca-bundle"
+  ],
+  "source": {
+    "index_url": "https://bin.entware.net/aarch64-k3.10/Packages.gz",
+    "index_sha256": "0881742f1aaccd1c493428be70a3ed93186d5a3bfe6cabd30b94717e1683071e",
+    "base_url": "https://bin.entware.net/aarch64-k3.10",
+    "index_content_encoding": "gzip",
+    "index_compressed_sha256": "3e8ce5633dcfacaae96b625b0f568c606c85b88d28c2fef8fc99671a7c8320ee"
+  },
+  "packages": [
+    {
+      "name": "entware-opt",
+      "version": "227000-3",
+      "architecture": "all",
+      "filename": "entware-opt_227000-3_all.ipk",
+      "sha256": "5a58514d284fd760080bef6076bdd115856a19a2379d9ce35e00c5b6931fd3b5",
+      "url": "https://bin.entware.net/aarch64-k3.10/entware-opt_227000-3_all.ipk"
+    },
+    {
+      "name": "busybox",
+      "version": "1.37.0-6",
+      "architecture": "aarch64-3.10",
+      "filename": "busybox_1.37.0-6_aarch64-3.10.ipk",
+      "sha256": "881b06cecc1c8c6b4a0658d551c2230034ea0a21354fab89ddbce744f3d51e24",
+      "url": "https://bin.entware.net/aarch64-k3.10/busybox_1.37.0-6_aarch64-3.10.ipk"
+    },
+    {
+      "name": "ca-bundle",
+      "version": "20250419-2",
+      "architecture": "all",
+      "filename": "ca-bundle_20250419-2_all.ipk",
+      "sha256": "e4206917b1aa53a1a365fb21909da79d6b2d0b6b15fa50f79a4221fcb6d6192d",
+      "url": "https://bin.entware.net/aarch64-k3.10/ca-bundle_20250419-2_all.ipk"
+    },
+    {
+      "name": "libc",
+      "version": "2.27-12",
+      "architecture": "aarch64-3.10",
+      "filename": "libc_2.27-12_aarch64-3.10.ipk",
+      "sha256": "4d7825a9ddf7a382a985a44ec85c4ab458f8ebe12c3e3b5fb25da814f71167bb",
+      "url": "https://bin.entware.net/aarch64-k3.10/libc_2.27-12_aarch64-3.10.ipk"
+    },
+    {
+      "name": "libssp",
+      "version": "8.4.0-12",
+      "architecture": "aarch64-3.10",
+      "filename": "libssp_8.4.0-12_aarch64-3.10.ipk",
+      "sha256": "8d85e466962569005ec604a64b2ffa739454a9db017a9a5e8dbe23b3c4bf2c25",
+      "url": "https://bin.entware.net/aarch64-k3.10/libssp_8.4.0-12_aarch64-3.10.ipk"
+    },
+    {
+      "name": "librt",
+      "version": "2.27-12",
+      "architecture": "aarch64-3.10",
+      "filename": "librt_2.27-12_aarch64-3.10.ipk",
+      "sha256": "86d4adc05b939793f4fb7d54ecc6c34b867a1fe9c449983393f708f245b72b43",
+      "url": "https://bin.entware.net/aarch64-k3.10/librt_2.27-12_aarch64-3.10.ipk"
+    },
+    {
+      "name": "libpthread",
+      "version": "2.27-12",
+      "architecture": "aarch64-3.10",
+      "filename": "libpthread_2.27-12_aarch64-3.10.ipk",
+      "sha256": "a2af364e6e139069f8b37dd9e7f2accaf529efd35738c6d381d2e43e78b876d4",
+      "url": "https://bin.entware.net/aarch64-k3.10/libpthread_2.27-12_aarch64-3.10.ipk"
+    },
+    {
+      "name": "libgcc",
+      "version": "8.4.0-12",
+      "architecture": "aarch64-3.10",
+      "filename": "libgcc_8.4.0-12_aarch64-3.10.ipk",
+      "sha256": "123882cd0063342b8cd058ea97541601d793ef1f847920e1da6be4c3a0b8da8b",
+      "url": "https://bin.entware.net/aarch64-k3.10/libgcc_8.4.0-12_aarch64-3.10.ipk"
+    },
+    {
+      "name": "libstdcpp",
+      "version": "8.4.0-12",
+      "architecture": "aarch64-3.10",
+      "filename": "libstdcpp_8.4.0-12_aarch64-3.10.ipk",
+      "sha256": "7b945502a7e7eef3e172b0343a533f4cce71db1579a372a4cee6e4c209b1bdc1",
+      "url": "https://bin.entware.net/aarch64-k3.10/libstdcpp_8.4.0-12_aarch64-3.10.ipk"
+    },
+    {
+      "name": "entware-release",
+      "version": "2025.05-1",
+      "architecture": "all",
+      "filename": "entware-release_2025.05-1_all.ipk",
+      "sha256": "fe26b5b90f7293319240e2e79cef353d815a6d3f21a26c91c326ca32bf43d420",
+      "url": "https://bin.entware.net/aarch64-k3.10/entware-release_2025.05-1_all.ipk"
+    },
+    {
+      "name": "zoneinfo-asia",
+      "version": "2025c-1",
+      "architecture": "aarch64-3.10",
+      "filename": "zoneinfo-asia_2025c-1_aarch64-3.10.ipk",
+      "sha256": "f55841a75671c7c8d93880f5d6de3936b02e945f83b7fce096c164a7e8db4ae1",
+      "url": "https://bin.entware.net/aarch64-k3.10/zoneinfo-asia_2025c-1_aarch64-3.10.ipk"
+    },
+    {
+      "name": "zoneinfo-europe",
+      "version": "2025c-1",
+      "architecture": "aarch64-3.10",
+      "filename": "zoneinfo-europe_2025c-1_aarch64-3.10.ipk",
+      "sha256": "1640940aa4b063bcc015014e15471e3e4d8db14f49349cf05ad41951dd9b9d00",
+      "url": "https://bin.entware.net/aarch64-k3.10/zoneinfo-europe_2025c-1_aarch64-3.10.ipk"
+    },
+    {
+      "name": "findutils",
+      "version": "4.10.0-1",
+      "architecture": "aarch64-3.10",
+      "filename": "findutils_4.10.0-1_aarch64-3.10.ipk",
+      "sha256": "6f1ad0782d550a855da202e44c147fa20c822787325a4e714774d088ad99f347",
+      "url": "https://bin.entware.net/aarch64-k3.10/findutils_4.10.0-1_aarch64-3.10.ipk"
+    },
+    {
+      "name": "terminfo",
+      "version": "6.4-3",
+      "architecture": "aarch64-3.10",
+      "filename": "terminfo_6.4-3_aarch64-3.10.ipk",
+      "sha256": "ec0fa04fcaa9485968eb3321e7820ff3f80874798fdb19d79718606dd759405a",
+      "url": "https://bin.entware.net/aarch64-k3.10/terminfo_6.4-3_aarch64-3.10.ipk"
+    },
+    {
+      "name": "locales",
+      "version": "2.27-9",
+      "architecture": "aarch64-3.10",
+      "filename": "locales_2.27-9_aarch64-3.10.ipk",
+      "sha256": "ee71c45537ad26b3a2abdd09fe252fc50b31de49e2aa93f55e741dfc3e5a4413",
+      "url": "https://bin.entware.net/aarch64-k3.10/locales_2.27-9_aarch64-3.10.ipk"
+    },
+    {
+      "name": "opkg",
+      "version": "2025.11.05~80503d94-1",
+      "architecture": "aarch64-3.10",
+      "filename": "opkg_2025.11.05~80503d94-1_aarch64-3.10.ipk",
+      "sha256": "872821cc70fdd3b550b4458c056ad1a5c61edbfb9981b73b68c4b6644085cd73",
+      "url": "https://bin.entware.net/aarch64-k3.10/opkg_2025.11.05~80503d94-1_aarch64-3.10.ipk"
+    },
+    {
+      "name": "entware-upgrade",
+      "version": "1.0-1",
+      "architecture": "all",
+      "filename": "entware-upgrade_1.0-1_all.ipk",
+      "sha256": "ed0db9ab7e0abc6141e4322a8b60a70f7693366005474b25b6b4b2c4175eac50",
+      "url": "https://bin.entware.net/aarch64-k3.10/entware-upgrade_1.0-1_all.ipk"
+    },
+    {
+      "name": "zoneinfo-core",
+      "version": "2025c-1",
+      "architecture": "aarch64-3.10",
+      "filename": "zoneinfo-core_2025c-1_aarch64-3.10.ipk",
+      "sha256": "30708ce57de9354022d30aebfe5ede68387a26c5cc46869513d65b15bc27d004",
+      "url": "https://bin.entware.net/aarch64-k3.10/zoneinfo-core_2025c-1_aarch64-3.10.ipk"
+    },
+    {
+      "name": "grep",
+      "version": "3.12-1",
+      "architecture": "aarch64-3.10",
+      "filename": "grep_3.12-1_aarch64-3.10.ipk",
+      "sha256": "9571ab23c52da17977522274e447d0d5eeca8ea9ded329cab6e9a46cef24f3a3",
+      "url": "https://bin.entware.net/aarch64-k3.10/grep_3.12-1_aarch64-3.10.ipk"
+    },
+    {
+      "name": "libpcre2",
+      "version": "10.47-1",
+      "architecture": "aarch64-3.10",
+      "filename": "libpcre2_10.47-1_aarch64-3.10.ipk",
+      "sha256": "177e0ac6a084c81a2731e99b0c386989752482a52068f16f3024eb67db3f6e92",
+      "url": "https://bin.entware.net/aarch64-k3.10/libpcre2_10.47-1_aarch64-3.10.ipk"
+    }
+  ],
+  "bootstrap_artifacts": [
+    {
+      "filename": "generic.sh",
+      "url": "https://bin.entware.net/aarch64-k3.10/installer/generic.sh",
+      "sha256": "89e502214264c51721b818d9e0192883d1d34a6f7fbb7bf7b107357453b25768",
+      "size": 2774
+    },
+    {
+      "filename": "opkg",
+      "url": "https://bin.entware.net/aarch64-k3.10/installer/opkg",
+      "sha256": "1c59274bd25080b869f376788795f5319d0d22e91f325f74ce98a7d596f68015",
+      "size": 856112,
+      "version": "d038e5b6d155784575f62a66a8bb7e874173e92e (2022-02-24)"
+    },
+    {
+      "filename": "opkg.conf",
+      "url": "https://bin.entware.net/aarch64-k3.10/installer/opkg.conf",
+      "sha256": "07e6807fd6b505d24cdb8c0efa8fe7af064a778259d2e93bb5728396a8cdc485",
+      "size": 175
+    }
+  ],
+  "diagnostic_tooling": [
+    {
+      "filename": "qemu-user_1%3a10.0.13+ds-0+deb13u1_amd64.deb",
+      "url": "http://deb.debian.org/debian/pool/main/q/qemu/qemu-user_10.0.13+ds-0+deb13u1_amd64.deb",
+      "sha256": "ca6ede739327a20ae5a3498230c8a3a9a072c586e131bc6bcc1201eb1725e336",
+      "size": 71089852,
+      "version": "1:10.0.13+ds-0+deb13u1"
+    },
+    {
+      "filename": "proot_5.1.0-1.3+b1_amd64.deb",
+      "url": "http://deb.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3+b1_amd64.deb",
+      "sha256": "7ca9260edf1ca6666f9b33e1da551638055934d673117acd135ff5367f420744",
+      "size": 75876,
+      "version": "5.1.0-1.3+b1"
+    },
+    {
+      "filename": "libtalloc2_2%3a2.4.3+samba4.22.11+dfsg-0+deb13u1_amd64.deb",
+      "url": "http://deb.debian.org/debian/pool/main/s/samba/libtalloc2_2.4.3+samba4.22.11+dfsg-0+deb13u1_amd64.deb",
+      "sha256": "b4cc8aa74c8b7c05a64efb6577acc955f522a8e39d8f37fe60b1b3fe6634ce96",
+      "size": 63644,
+      "version": "2:2.4.3+samba4.22.11+dfsg-0+deb13u1"
+    }
+  ],
+  "evidence_scope": "Direct QEMU/proot diagnostic only; Docker container, localhost publish, persistence, binfmt, and NFQUEUE remain unverified."
+}

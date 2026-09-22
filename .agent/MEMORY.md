@@ -6,3 +6,6 @@
 - A successful generic target test does not prove compatibility with a physical Keenetic model.
 - The current Hermes container has no usable Docker daemon socket; Docker integration evidence requires a separate approved runner or host if this remains true.
 - No Git remote was configured when the durable stack was activated.
+- The first P0 lock is `locks/p0-aarch64.json`: 20 Entware `aarch64-3.10` packages plus hashed bootstrap and diagnostic tooling.
+- Direct QEMU 10.0.13 with PRoot 5.1.0 can execute the locked AArch64 shell, real opkg, nested target ELF and target-shebang smoke test; this is diagnostic evidence only and does not satisfy A01 or P0.
+- Generated runtime artifacts live under `.runtime/`; generated reports live under `reports/`; both are excluded from Git.

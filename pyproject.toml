@@ -1,0 +1,44 @@
+[build-system]
+requires = ["uv_build>=0.8,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "keemu"
+version = "0.1.0"
+description = "Reproducible Entware application verification harness"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "click>=8.1,<9",
+  "pydantic>=2.11,<3",
+  "PyYAML>=6,<7",
+  "rich>=14,<15",
+]
+
+[project.scripts]
+keemu = "keemu.cli:cli"
+
+[dependency-groups]
+dev = [
+  "pytest>=8,<9",
+  "ruff>=0.13,<0.15",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+pythonpath = ["src"]
+testpaths = ["tests"]
+markers = [
+  "p0_diagnostic: requires fetched locked P0 artifacts but no Docker daemon",
+  "docker: requires a usable Docker daemon",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]

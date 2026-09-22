@@ -15,3 +15,7 @@ Git auto-pull and auto-push are disabled. Local commits remain the durable bound
 ## D-004 — Preserve the Hostinger baseline
 
 The deployment reuses the installed Hermes binary, OAuth state, RTK, Graphify, Caveman and router runtime. It does not reinstall or reconfigure those components.
+
+## D-005 — Direct QEMU/PRoot is diagnostic only
+
+When Docker is unavailable, project-local QEMU and unprivileged PRoot may verify locked target artifacts, target shell/opkg, nested target ELF and shebang behavior. This path is not a replacement for the accepted Docker runtime and cannot satisfy container, binfmt, publishing, persistence, isolation or networking acceptance requirements.
