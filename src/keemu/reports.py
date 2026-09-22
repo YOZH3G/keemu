@@ -1,12 +1,45 @@
 from __future__ import annotations
 
+import ctypes
+import errno
 import json
+import os
+import shutil
 import tempfile
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-from keemu.models import CheckResult, Coverage, RunReport, Status
+from keemu.models import (
+    ArtifactMetadata,
+    CapabilityResult,
+    CheckResult,
+    Coverage,
+    OperationLogEntry,
+    PartialFailureMetadata,
+    ProfileMetadata,
+    RunReport,
+    RuntimeMetadata,
+    ScenarioMetadata,
+    Status,
+    SubstitutionMetadata,
+    aggregate_status,
+    coverage_for,
+)
+
+_AT_FDCWD = -100
+_RENAME_NOREPLACE = 1
+_LIBC = ctypes.CDLL(None, use_errno=True)
+_RENAMEAT2 = getattr(_LIBC, "renameat2", None)
+if _RENAMEAT2 is not None:
+    _RENAMEAT2.argtypes = (
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_uint,
+    )
+    _RENAMEAT2.restype = ctypes.c_int
 
 __all__ = [
     "CheckResult",
@@ -23,6 +56,7 @@ __all__ = [
 class ReportPaths:
     json: Path
     markdown: Path
+    operation_log: Path
 
 
 def exit_code_for_status(status: Status) -> int:
@@ -30,57 +64,40 @@ def exit_code_for_status(status: Status) -> int:
     return {"FAIL": 1, "ERROR": 3, "BLOCKED": 4}.get(status, 0)
 
 
-def _coverage(checks: Sequence[CheckResult]) -> Coverage:
-    required_checks = [check for check in checks if check.required]
-    return Coverage(
-        required=len(required_checks),
-        passed=sum(check.status == "PASS" for check in required_checks),
-        failed=sum(check.status == "FAIL" for check in required_checks),
-        blocked=sum(
-            check.status in {"BLOCKED", "SKIP"} for check in required_checks
-        ),
-        skipped=sum(check.status == "SKIP" for check in required_checks),
-        warned=sum(check.status == "WARN" for check in required_checks),
-        errors=sum(check.status == "ERROR" for check in required_checks),
-    )
-
-
-def _overall(checks: Sequence[CheckResult]) -> Status:
-    required = [check for check in checks if check.required]
-    if not required:
-        return "BLOCKED"
-    effective = [
-        "BLOCKED" if check.status == "SKIP" else check.status
-        for check in required
-    ]
-    for status in ("ERROR", "FAIL", "BLOCKED", "WARN"):
-        if status in effective:
-            return status  # type: ignore[return-value]
-    if not any(status == "PASS" for status in effective):
-        return "BLOCKED"
-    return "PASS"
-
-
 def build_report(
     *,
     run_id: str,
     created_at: str,
     operation: str,
-    profile_id: str,
+    profile: ProfileMetadata,
+    runtime: RuntimeMetadata,
     checks: Sequence[CheckResult],
+    artifact: ArtifactMetadata | None = None,
+    scenario: ScenarioMetadata | None = None,
+    capabilities: Sequence[CapabilityResult] = (),
+    substitutions: Sequence[SubstitutionMetadata] = (),
+    operation_log: Sequence[OperationLogEntry] = (),
+    partial_failure: PartialFailureMetadata | None = None,
     limitations: Sequence[str] = (),
 ) -> RunReport:
     materialized = list(checks)
     return RunReport(
-        schema_version=1,
+        schema_version=2,
         run_id=run_id,
         created_at=created_at,
         operation=operation,
-        profile_id=profile_id,
-        overall=_overall(materialized),
-        coverage=_coverage(materialized),
-        checks=materialized,
-        limitations=list(limitations),
+        artifact=artifact,
+        scenario=scenario,
+        profile=profile,
+        runtime=runtime,
+        capabilities=tuple(capabilities),
+        substitutions=tuple(substitutions),
+        overall=aggregate_status(materialized, partial_failure),
+        coverage=coverage_for(materialized),
+        operation_log=tuple(operation_log),
+        partial_failure=partial_failure,
+        checks=tuple(materialized),
+        limitations=tuple(limitations),
     )
 
 
@@ -94,7 +111,7 @@ def render_markdown(report: RunReport) -> str:
         "",
         f"Run: `{report.run_id}`",
         f"Created: `{report.created_at}`",
-        f"Profile: `{report.profile_id}`",
+        f"Profile: `{report.profile.id}` revision {report.profile.revision}",
         f"Overall: **{report.overall}**",
         "",
         "## Coverage",
@@ -120,6 +137,22 @@ def render_markdown(report: RunReport) -> str:
             f"| {_markdown_cell(check.id)} | {check.status} | {check.mode} | "
             f"{requirement} | {evidence} |"
         )
+    if report.partial_failure is not None:
+        failure = report.partial_failure
+        lines.extend(
+            (
+                "",
+                "## Partial failure",
+                "",
+                f"- Status: **{failure.status}**",
+                f"- Operation sequence: `{failure.operation_sequence}`",
+                f"- Operation: `{failure.operation}`",
+                f"- Cause: `{failure.cause_class}`",
+                f"- Message: {_markdown_cell(failure.message)}",
+                f"- Cleanup attempted: `{str(failure.cleanup_attempted).lower()}`",
+                f"- Cleanup status: `{failure.cleanup_status or 'not-run'}`",
+            )
+        )
     if report.limitations:
         lines.extend(("", "## Limitations", ""))
         lines.extend(f"- {limitation}" for limitation in report.limitations)
@@ -136,12 +169,53 @@ def _atomic_write_text(path: Path, content: str) -> None:
     temporary.replace(path)
 
 
+def _publish_directory_noreplace(temporary: Path, directory: Path) -> None:
+    if _RENAMEAT2 is None:
+        raise OSError(
+            errno.ENOSYS,
+            "atomic no-replace directory publication is unavailable",
+            directory,
+        )
+
+    ctypes.set_errno(0)
+    result = _RENAMEAT2(
+        _AT_FDCWD,
+        os.fsencode(temporary),
+        _AT_FDCWD,
+        os.fsencode(directory),
+        _RENAME_NOREPLACE,
+    )
+    if result == 0:
+        return
+
+    error = ctypes.get_errno() or errno.EIO
+    if error in {errno.EEXIST, errno.ENOTEMPTY}:
+        raise FileExistsError(error, os.strerror(error), directory)
+    raise OSError(error, os.strerror(error), directory)
+
+
 def write_report_bundle(report: RunReport, directory: Path) -> ReportPaths:
-    json_path = directory / "report.json"
-    markdown_path = directory / "report.md"
+    directory.parent.mkdir(parents=True, exist_ok=True)
+    temporary = Path(
+        tempfile.mkdtemp(prefix=f".{directory.name}.", dir=directory.parent)
+    )
     payload = json.dumps(
         report.model_dump(mode="json"), indent=2, sort_keys=True
     ) + "\n"
-    _atomic_write_text(json_path, payload)
-    _atomic_write_text(markdown_path, render_markdown(report))
-    return ReportPaths(json=json_path, markdown=markdown_path)
+    operation_log = "".join(
+        json.dumps(entry.model_dump(mode="json"), sort_keys=True) + "\n"
+        for entry in report.operation_log
+    )
+    try:
+        _atomic_write_text(temporary / "report.json", payload)
+        _atomic_write_text(temporary / "report.md", render_markdown(report))
+        _atomic_write_text(temporary / "operation-log.jsonl", operation_log)
+        _publish_directory_noreplace(temporary, directory)
+    except BaseException:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise
+    return ReportPaths(
+        json=directory / "report.json",
+        markdown=directory / "report.md",
+        operation_log=directory / "operation-log.jsonl",
+    )

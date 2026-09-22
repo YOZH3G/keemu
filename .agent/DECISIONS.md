@@ -19,3 +19,7 @@ The deployment reuses the installed Hermes binary, OAuth state, RTK, Graphify, C
 ## D-005 — Direct QEMU/PRoot is diagnostic only
 
 When Docker is unavailable, project-local QEMU and unprivileged PRoot may verify locked target artifacts, target shell/opkg, nested target ELF and shebang behavior. This path is not a replacement for the accepted Docker runtime and cannot satisfy container, binfmt, publishing, persistence, isolation or networking acceptance requirements.
+
+## D-006 — Reports are frozen objects and write-once bundles
+
+The current common report schema is version 2 and uses frozen nested metadata and immutable sequences. Aggregate status and coverage are derived and revalidated from checks and partial-failure state. Each partial failure references an exact operation-log sequence, and the referenced record must match its operation name and failure status. A report bundle is assembled in a sibling temporary directory and published with Linux `renameat2(..., RENAME_NOREPLACE)`. Publication atomically succeeds only when the destination entry is absent; any existing directory, file, or symlink is preserved and reported as `FileExistsError`. If the no-replace primitive is unavailable, publication fails closed and removes the temporary bundle rather than falling back to overwrite-capable rename. This keeps JSON, Markdown, and operation-log evidence aligned and preserves failed runs.

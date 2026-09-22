@@ -2,7 +2,7 @@
 
 ## Status
 
-This document describes the implemented P0 diagnostic slice. The Docker runtime and later MVP components remain design requirements from `KEEMU_MVP1_updated.md`, not completed implementation.
+This document describes the implemented P0 diagnostic and report-foundation slices. The Docker runtime and later MVP components remain design requirements from `KEEMU_MVP1_updated.md`, not completed implementation.
 
 ## Implemented components
 
@@ -10,6 +10,9 @@ This document describes the implemented P0 diagnostic slice. The Docker runtime 
 - `src/keemu/p0.py` constructs an AArch64 diagnostic rootfs with the real target `opkg` under direct QEMU user-mode and runs nested target execution through unprivileged PRoot.
 - `src/keemu/cli.py` exposes `keemu p0 verify-lock` for offline verification of the committed package lock.
 - `locks/p0-aarch64.json` records the exact Entware package closure and diagnostic tool artifacts used by the first experiment.
+- `src/keemu/models.py` defines current `RunReport` schema version 2 with strict, frozen metadata for checked artifacts, scenarios, profiles, runtime provenance, capabilities, substitutions, checks, coverage, operation records, and partial failures. Each partial failure references an exact operation-log sequence; validation requires the referenced record's operation name and failure status to match.
+- `src/keemu/reports.py` derives aggregate status and coverage, rejects inconsistent report payloads, renders Markdown from the JSON source object, and atomically publishes immutable run bundles with a JSONL operation log using Linux `renameat2(..., RENAME_NOREPLACE)`.
+- `src/keemu/doctor.py` emits the common report model with a canonical profile hash, profile revision, host kernel, Entware target, Python version, and explicit capability results. Uncollected OCI, QEMU, Git, feed-lock, and network-fidelity values remain `null` rather than being invented.
 
 ## P0 diagnostic data flow
 
@@ -32,3 +35,4 @@ The required network topology remains client/router/server in project-owned name
 - Commands are argv arrays. Shell execution is limited to an explicit trusted diagnostic script inside the target environment.
 - The PRoot path is diagnostic only and is not a container isolation boundary.
 - Reports and runtime state are generated outside Git; lock files, recipes, schemas, and tests belong in Git.
+- Published report directories are write-once evidence: atomic no-replace publication preserves any existing destination entry and fails closed when the required Linux primitive is unavailable.

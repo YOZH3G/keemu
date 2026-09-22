@@ -11,7 +11,9 @@ Verified in the current Debian container:
 - the AArch64 Entware package index and 20-package bootstrap closure were downloaded and SHA-256 verified;
 - the real AArch64 Entware `opkg` and BusyBox shell execute through QEMU user-mode;
 - an unprivileged PRoot diagnostic executes shell → child AArch64 ELF → shell script with a target shebang;
-- the committed lock records exact Entware artifacts and the diagnostic QEMU/PRoot inputs.
+- the committed lock records exact Entware artifacts and the diagnostic QEMU/PRoot inputs;
+- current `RunReport` schema version 2 uses immutable metadata models for artifacts, scenarios, profiles, runtimes, capabilities, substitutions, checks, operation logs, coverage, and partial failures; each partial failure references one operation-log sequence whose operation name and failure status must match;
+- report bundles use Linux `renameat2(..., RENAME_NOREPLACE)` to atomically publish `report.json`, `report.md`, and `operation-log.jsonl`; existing destination entries are preserved, and publication fails closed if the no-replace primitive is unavailable.
 
 Not yet verified:
 

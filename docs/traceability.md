@@ -24,4 +24,4 @@ Status values in this file describe verified evidence only. `PARTIAL` is not PAS
 | A18 | NOT RUN | — | — | runtime recovery/ownership cleanup not implemented |
 | A19 | PARTIAL | `keemu p0 verify-lock` | 20 package hashes verified offline after download | complete locked fixture repeat not implemented |
 | A20 | BLOCKED | — | Docker daemon unavailable | container isolation inspection absent |
-| A21 | PARTIAL | P0 diagnostic report generation | JSON and Markdown diagnostic report | acceptance report schema and failed-run coverage absent |
+| A21 | PARTIAL | `tests/unit/test_reports.py`; `tests/unit/test_doctor.py`; `tests/unit/test_cli.py` | current `RunReport` schema version 2; strict frozen metadata; exact partial-failure operation-sequence/name/status validation; schema parity; derived status/coverage validation; atomic JSON/Markdown/operation-log bundle; failed-run preservation test; real doctor BLOCKED report | full lifecycle/acceptance runs and complete runtime provenance absent |

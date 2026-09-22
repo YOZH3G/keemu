@@ -73,8 +73,9 @@ def test_doctor_returns_blocked_exit_code_and_json(tmp_path: Path) -> None:
     assert result.exit_code == 4, result.output
     payload = json.loads(result.output)
     report = RunReport.model_validate(payload)
+    assert payload["schema_version"] == 2
     assert payload["overall"] == "BLOCKED"
-    assert payload["profile_id"] == "generic-aarch64"
+    assert payload["profile"]["id"] == "generic-aarch64"
     assert report.coverage.blocked >= 4
     docker_daemon = next(
         check for check in report.checks if check.id == "docker-daemon"

@@ -2,7 +2,7 @@
 
 ## Current status
 
-P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and direct-QEMU/PRoot diagnostic vertical slice are implemented and verified. The p0-01 profile, common report, schema parity, doctor, aggregation, exit-code, and CLI slice is implemented and verified. The P0 gate is not complete because mandatory Docker, localhost web publishing, persistence, binfmt, and NFQUEUE/native-control experiments have not run.
+P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and direct-QEMU/PRoot diagnostic vertical slice are implemented and verified. The p0-01 profile/doctor slice and p0-02 immutable report-metadata and failed-run bundle primitives are implemented and verified. The P0 gate is not complete because mandatory Docker, localhost web publishing, persistence, binfmt, and NFQUEUE/native-control experiments have not run.
 
 ## Verified
 
@@ -24,18 +24,25 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 - Report-status exit codes are centralized: FAIL=1, ERROR=3, BLOCKED=4, PASS/WARN=0. Invalid doctor profile input exits 2.
 - Portable suite: 16 passed, 1 diagnostic test skipped by default. `uv run ruff check .` passes.
 - The coherent p0-01 implementation and durable state were committed as `573a2df` (`feat: add P0 doctor and report primitives`).
+- Strict frozen A21 metadata models cover artifacts, scenarios, profile revision/hash, runtime provenance, capability results, substitutions, coverage, operation records, checks, and partial failures.
+- Current `RunReport` schema version 2 validation rejects inconsistent aggregate status or coverage, non-contiguous operation sequences, and partial failures whose referenced operation sequence is missing or disagrees on operation name or failure status.
+- Report bundles atomically publish `report.json`, `report.md`, and `operation-log.jsonl` with Linux `renameat2(..., RENAME_NOREPLACE)`; existing directories/files/symlinks survive races, unavailable no-replace support fails closed, and failed-run tests verify all three artifacts survive with cleanup metadata.
+- The committed `schemas/run-report.schema.json` matches the expanded schema-version-2 model.
+- Real `keemu doctor --profile generic-aarch64` remains truthfully BLOCKED/exit 4 and now includes profile hash/revision, host kernel, Entware target, Python runtime version, and six explicit capability results.
+- Portable suite: 25 passed, 1 diagnostic test skipped by default. `uv run ruff check .` passes.
+- Final independent staged-diff review found no remaining security concern or blocking logic error after two TDD fix cycles.
 
 ## Acceptance truth
 
 - A01: PARTIAL diagnostic evidence on AArch64 only; not PASS.
 - A19: PARTIAL supporting evidence only; not PASS.
-- A21: PARTIAL supporting evidence now includes schema-valid doctor JSON, Markdown generated from the same common model, parity tests, aggregation, and blocked/error exit-code tests; immutable run metadata and failed-run artifact coverage remain for p0-02.
+- A21: PARTIAL supporting evidence now includes schema-valid doctor JSON, Markdown generated from the same common model, immutable metadata, parity and consistency validation, atomic write-once bundles, JSONL operation records, and failed-run artifact coverage. Full lifecycle reports and complete runtime provenance remain later work.
 - All other A02–A18 and A20 requirements are NOT RUN or BLOCKED as mapped in `docs/traceability.md`.
 - No TASK.md gate is complete.
 
 ## Next operation
 
-Continue only with p0-02 report metadata primitives. On an approved Docker-capable Linux host, resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
+Stop at the verified p0-02 boundary. The durable supervisor may route p0-03 next. On an approved Docker-capable Linux host, resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
 
 ## Blockers
 

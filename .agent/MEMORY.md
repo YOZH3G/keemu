@@ -10,4 +10,5 @@
 - Direct QEMU 10.0.13 with PRoot 5.1.0 can execute the locked AArch64 shell, real opkg, nested target ELF and target-shebang smoke test; this is diagnostic evidence only and does not satisfy A01 or P0.
 - Generated runtime artifacts live under `.runtime/`; generated reports live under `reports/`; both are excluded from Git.
 - `profiles/generic/generic-aarch64.yaml` is the strict current generic profile; `schemas/generic-profile.schema.json` is generated from `GenericProfile` and parity-tested.
-- `keemu doctor` emits common schema-version-1 `RunReport` JSON and returns BLOCKED/exit 4 when the required Docker socket is unavailable; Docker, binfmt, and QEMU checks remain real-mode host evidence.
+- `keemu doctor` emits current schema-version-2 `RunReport` JSON and returns BLOCKED/exit 4 when the required Docker socket is unavailable; Docker, binfmt, and QEMU checks remain real-mode host evidence.
+- Run reports use frozen nested metadata and derived status/coverage validation. Partial failures reference an exact operation-log sequence whose operation name and failure status must match. `write_report_bundle` atomically creates a new immutable run directory containing `report.json`, `report.md`, and `operation-log.jsonl`; existing directories are never overwritten.

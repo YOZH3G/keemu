@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import platform
 import shutil
@@ -8,7 +10,16 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
-from keemu.models import CheckResult, RunReport, Status
+from keemu import __version__
+from keemu.models import (
+    CapabilityResult,
+    CheckResult,
+    ProfileMetadata,
+    RunReport,
+    RuntimeMetadata,
+    RuntimeVersion,
+    Status,
+)
 from keemu.profiles import GenericProfile
 from keemu.reports import build_report
 
@@ -26,9 +37,9 @@ def _check(
         required=required,
         mode="real",
         cause_class="environment",
-        evidence=[evidence],
+        evidence=(evidence,),
         duration_seconds=0.0,
-        limitations=[evidence] if status in {"WARN", "BLOCKED"} else [],
+        limitations=(evidence,) if status in {"WARN", "BLOCKED"} else (),
     )
 
 
@@ -43,6 +54,7 @@ def collect_doctor(
 ) -> RunReport:
     """Collect read-only host capability evidence for one generic profile."""
     checks: list[CheckResult] = []
+    binfmt_configuration: list[str] = []
     system = platform.system()
     machine = platform.machine()
     host_ok = system == "Linux" and machine in {"x86_64", "amd64"}
@@ -139,6 +151,7 @@ def collect_doctor(
         )
     else:
         content = registration.read_text(encoding="utf-8", errors="replace")
+        binfmt_configuration = content.splitlines()
         status: Status = (
             "PASS" if content.splitlines()[:1] == ["enabled"] else "BLOCKED"
         )
@@ -158,11 +171,45 @@ def collect_doctor(
         for check in checks
         for limitation in check.limitations
     ]
+    profile_payload = json.dumps(
+        profile.model_dump(mode="json"), sort_keys=True, separators=(",", ":")
+    ).encode()
     return build_report(
         run_id=f"doctor-{uuid4().hex}",
         created_at=datetime.now(UTC).replace(microsecond=0).isoformat(),
         operation="doctor",
-        profile_id=profile.id,
+        profile=ProfileMetadata(
+            id=profile.id,
+            revision=profile.revision,
+            kind=profile.kind,
+            sha256=hashlib.sha256(profile_payload).hexdigest(),
+        ),
+        runtime=RuntimeMetadata(
+            keemu_version=__version__,
+            git_commit=None,
+            git_dirty=None,
+            oci_digest=None,
+            qemu_version=None,
+            binfmt_configuration=tuple(binfmt_configuration),
+            host_kernel=platform.release(),
+            entware_target=profile.entware_target,
+            feed_lock_sha256=None,
+            versions=(
+                RuntimeVersion(name="python", version=platform.python_version()),
+            ),
+            network_fidelity=None,
+            native_tools=(),
+        ),
+        capabilities=tuple(
+            CapabilityResult(
+                id=check.id,
+                status=check.status,
+                mode=check.mode,
+                evidence=check.evidence,
+                limitations=check.limitations,
+            )
+            for check in checks
+        ),
         checks=checks,
         limitations=limitations,
     )
