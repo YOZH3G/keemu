@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "NEEDS_HUMAN",
+  "status": "IDLE",
   "session_id": null,
-  "pause_reason": "git_sync_failed: Command '['git', 'fetch', '--prune', 'origin']' returned non-zero exit status 128.",
+  "pause_reason": null,
   "quota": {
     "kind": null,
     "detected_at": null,
