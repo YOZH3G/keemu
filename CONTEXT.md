@@ -25,7 +25,7 @@
 
 - Supervised work follows the reviewed per-subtask table in `docs/model-routing-plan.md`; bounds are C0–C7 and routing mode is `auto`.
 - Each subtask receives an explicit disposable-worker lock for provider, model and reasoning. Switching is permitted only after an exact completion marker, runtime attestation, durable outcome, and verified session deletion.
-- C6/C7 (`gpt-6-astra`) are unlocked for frontier escalation at a new audited subtask boundary; if unavailable, the configured fallback is C5 (`gpt-5.6-sol`, `xhigh`).
+- C6/C7 (`gpt-6-astra`) are unlocked for frontier escalation at a new audited subtask boundary; if unavailable, the configured fallback is C5 (`gpt-6-sol`, `xhigh`).
 - Quota pauses retain the same subtask, session, provider, model and reasoning; they are not escalation signals.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
 - Git auto-pull and auto-push are disabled because no remote exists.

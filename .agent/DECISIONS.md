@@ -8,6 +8,10 @@ The durable supervisor uses `/opt/data/workspace/keemu` directly. `/opt/data/her
 
 Supervised work is fixed to tier C5: `gpt-5.6-sol` with reasoning `xhigh`. Router mode is `auto` only to provide explicit per-run overrides and model-lock attestation; both minimum and maximum tiers are C5 and Astra is disabled. Dynamic model switching is not enabled.
 
+## D-007 — ChatGPT 6 Luna/Sol policy refresh
+
+At the verified p0-02 boundary, future Luna/Sol routes move from `gpt-5.6-luna`/`gpt-5.6-sol` to `gpt-6-luna`/`gpt-6-sol`. Existing attested route and outcome records retain the literal models that actually ran. The active p0-03 lock remains `gpt-5.6-terra` / `high`; all subsequent frozen plan entries and live policy/config use the updated IDs. Runtime attestation remains mandatory before a new model is treated as active.
+
 ## D-003 — Local Git until a private remote exists
 
 Git auto-pull and auto-push are disabled. Local commits remain the durable boundary; adding a private remote and deploy key requires a separate explicit operation.

@@ -8,7 +8,7 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 
 - Active branch is `agent/keemu`; the authoritative specification remains unchanged.
 - Durable supervisor/router validation passes all 52 tests when run from `/opt/data/hermes-durable-vps-hostinger-router-v1`.
-- The worker command explicitly selected `gpt-5.6-sol` with reasoning `xhigh`; supervisor attestation remains pending until terminal worker completion.
+- p0-02 completed with supervisor attestation for `gpt-5.6-sol` / `high`; its disposable worker session was deleted. The active p0-03 boundary is paused before launch for a model-policy refresh.
 - Graphify index contains 90 nodes and 86 edges; its query confirmed that the repository initially contained specifications/control files but no product implementation.
 - Docker CLI 26.1.5 is present, but `/var/run/docker.sock` is absent and the daemon is unreachable.
 - Public artifact access works; no host firewall, binfmt, kernel module, service, public port, OAuth state, credential, or deploy key was changed.
@@ -43,7 +43,7 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 
 ## Next operation
 
-Stop at the verified p0-02 boundary. The durable supervisor may route p0-03 next. On an approved Docker-capable Linux host, resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
+Stop at the verified p0-02 boundary. p0-03 is the active `gpt-5.6-terra` / `high` subtask; the policy refresh applies `gpt-6-luna`/`gpt-6-sol` to future matching routes. On an approved Docker-capable Linux host, resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
 
 ## Blockers
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
+  "status": "RUNNING",
   "session_id": null,
   "pause_reason": null,
   "quota": {
@@ -15,24 +15,24 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-22T19:03:37+00:00",
+    "last_evaluated_at": "2026-09-22T20:02:33+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C4",
-      "model": "gpt-5.6-sol",
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
       "reasoning": "high"
     },
     "signals": {
-      "score": 14,
-      "task_chars": 10995,
-      "changed_files": 0,
-      "repo_files_sampled": 672,
+      "score": 15,
+      "task_chars": 12675,
+      "changed_files": 7,
+      "repo_files_sampled": 674,
       "graphify_present": true,
-      "graphify_bytes": 213993,
+      "graphify_bytes": 268967,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -44,6 +44,7 @@
       "read_only_scope": true,
       "reasons": [
         "long task/context",
+        "multiple changed files",
         "large repository",
         "production/remote-system risk",
         "security/auth/network privilege risk",
@@ -51,17 +52,33 @@
         "architecture/system-design scope"
       ]
     },
-    "reason": "long task/context; large repository; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
+    "reason": "long task/context; multiple changed files; large repository; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
     "force_min_tier": null,
     "capabilities": {
       "gpt-6-astra": null
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {},
+    "worker_lock": {
+      "provider": "openai-codex",
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "expected_model": "gpt-5.6-terra",
+      "expected_reasoning": "high",
+      "policy_version": "v1",
+      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+      "subtask_id": "p0-03",
+      "subtask_digest": "e0c2763b02655aac948d9c750a74eeb5b09804b5bce1243d6cef7ec5d721bcc3",
+      "route_event_id": "evt_b0385af30f9be2ae81627488",
+      "session_id": null,
+      "model_attested": null,
+      "attestation_status": "PENDING",
+      "session_deleted": null
+    },
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-      "plan_digest": "676bdf7a9bd4e97aaf567593b6d6245239a270f0299ba773cfe768dfbee91e88",
+      "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
       "active_index": 3,
       "items": [
         {
@@ -157,11 +174,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "987d14a3d08ba107e70429a08548368acf5d32c4de6599e0fb8b7e8f660067b2"
+          "digest": "0a230d0509a372b80472b1b6fcbb644c961c12021fbdad8a783f416f40e5f820"
         },
         {
           "id": "p0-05",
@@ -173,11 +190,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "51e74c1799323d1b478d2427b70fb5672544d987baef9fe069e953049a93f7d6"
+          "digest": "1890d41c5806b78cf625475985344c64ed68aa56d02abd2f670d29a5427877b6"
         },
         {
           "id": "p0-06",
@@ -207,11 +224,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "e24ef775ebaf19688dc70dd369333aa02d1581c4ef511cfd0fe5b4447c469ab4"
+          "digest": "bf9e9992a19b1ec887ec956725b5bb7fdc3d4c6fe8837846fa3ec02febe1f602"
         },
         {
           "id": "p0-08",
@@ -239,11 +256,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "6f870d97129bcc1eea302b3d393f768a3c292b4ec68660d0727594c16e00a912"
+          "digest": "4a71078bec0263ee28a10daa50b5e2e21f88552a4c77a8c32e3cb5e78ae4c2f8"
         },
         {
           "id": "m1a-10",
@@ -255,11 +272,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "380d42c784338ba1eb6b3c4270a500436e1c11bcdded44ed3d12ab5ce189ef0c"
+          "digest": "28b497dc6976bd3dd0afd07c29324299dc83279f901c89b61c369809a141e0da"
         },
         {
           "id": "m1a-11",
@@ -271,11 +288,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "56da39b4463fb2429e62aa1bd8fe46c4699a5ac1a159bd0a6acb067a757d68d9"
+          "digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0"
         },
         {
           "id": "m1a-12",
@@ -287,11 +304,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "e4c948ab3314f11a5b5c04d1160d5869be0330260ea81f140ac0775efa569988"
+          "digest": "9ec8e041eb9fe1510108a43d6aba9d7aaa1fedde4af987743c27cdc79f749a88"
         },
         {
           "id": "m1a-13",
@@ -308,11 +325,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "a6c169505bdff4fc8ba3ac4bce8730d33187344f44aa90b219ffa4e6ce296d38"
+          "digest": "f3dcdacfe2ee110239f55bf581d96ba7f0fcee848769df9cde446994c4a54328"
         },
         {
           "id": "m1a-14",
@@ -327,11 +344,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "ce65c3f1a04ffa8903073dd67ff2297c58e147ea40dd8229950526708a05c02b"
+          "digest": "68804780094f08eb44af55b2edb9eb85614c6311aeaf34ed9b64fabc7494b8f5"
         },
         {
           "id": "m1a-15",
@@ -350,11 +367,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "4a2d942caff4440e8e8d5942859e1f98479e9d95bd4bf204d22a5206717cbed3"
+          "digest": "5cd934da733940395bae1a80fd51483a6f261c9bda2d1cc42d7926a040d8970a"
         },
         {
           "id": "m1a-16",
@@ -366,11 +383,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "3badfa34124a1c3c59d61f505b4d42cf6952b8618380b57a6dbeecb794cfb530"
+          "digest": "4c526623834c0e853b030686fd18fcbce8ee0bb5c82c6ae76f64582da04bfa1d"
         },
         {
           "id": "m1a-17",
@@ -382,11 +399,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "033bca6849d2fa234e58601bfa21370876eaa409ae69ed9c1c7f32874f4af36f"
+          "digest": "912e38d2c86706657d67ab27fe36716b1143d564707c6a2233614f5da756b119"
         },
         {
           "id": "m1b-18",
@@ -398,11 +415,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "74696a8ad0a20af861cb85a394cb7cd97be447f8563225a02f4d2d714f5d7393"
+          "digest": "a5171588037f35232ea1ce381f2b14824853def990af3e1fcbf53d6acf463c7f"
         },
         {
           "id": "m1b-19",
@@ -413,11 +430,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "0e1d4ad2be7a791b0455fa2b56bc6450cc4283da1a259e6eeb7f67f3ced4df6c"
+          "digest": "4f008b5c5c24deb9ce7dd878b7fd5fb216bc5750fadd0173b94620acc44b5c87"
         },
         {
           "id": "m1b-20",
@@ -428,11 +445,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "2a54b055aa0099ddf6dd2627bcc99df8c2f2c00c5af5815d7ff2d95514719d88"
+          "digest": "02d851993cb4e7c9a031b4ce1ce4d7947054365c95e81f442ea094ab57a3fc44"
         },
         {
           "id": "m1b-21",
@@ -443,11 +460,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "213fe7ce26ffef7b540bc15b4b048ee6c94f333fe125b40a794b7f4890f79d18"
+          "digest": "ab049249a9113b11a0d4b3b4fb03580b3d4693c122fb4d61e87bd2f75d46a6c1"
         },
         {
           "id": "m1b-22",
@@ -460,11 +477,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "e5c80416ffd6253533fe3782508c4a0752304b9a1e5bd60adc4f09d9ecc96519"
+          "digest": "938e4e9c4f723aa5f7b6e90c2f0eb785fffc77d2e0f321398aa72337abfd2de4"
         },
         {
           "id": "m1c-23",
@@ -477,11 +494,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "5811746b91b21c27116730abf8a5d0bd3f56bb254e19e67e50258d2e8de74ec2"
+          "digest": "b8aa169cb764317c2f444506d0106e9bd6bffca35096d399ebc88554f2bd7144"
         },
         {
           "id": "m1c-24",
@@ -495,11 +512,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "07a0cc9c851cb944353f95e765f5f0620c95f6ced05b7bab9a0e9a8f2a7bd1c8"
+          "digest": "a3356716e42121bfdf565ac45a7bfaf108ed4d23203d2ce5f06c1a88a3232c48"
         },
         {
           "id": "m1c-25",
@@ -511,11 +528,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "f63f9f3b7094750f574b78d38b1a8436c030db15fabae2ad540f8d4b9197a920"
+          "digest": "370964c362aeb765aa162207eec50bbb7a93586ab75e609bc2271d03c8290111"
         },
         {
           "id": "m1c-26",
@@ -527,11 +544,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "57bdc5c378cdd11e807e9532f6900ecdf422f6e678a7799eac128b4ad014a2f6"
+          "digest": "be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94"
         },
         {
           "id": "m1c-27",
@@ -543,11 +560,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "6aa60d813fa323452e06c4ec72539c08c1ea9a433a2efe3ddf9decf5fee1efc2"
+          "digest": "f3dd647dbf09070820245c2836359da34dc99db9f2c9d01befdc98a09a6db5ab"
         },
         {
           "id": "final-28",
@@ -558,11 +575,11 @@
           ],
           "recommended": {
             "tier": "C4",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "c872c49fe96fd6da781daeff343fd413ebccbfe3af61ef30314c8b820ed0ea72"
+          "digest": "4b07abc045c2786287d81708319e52eb406e8896660788cbba2a45d302e67b50"
         },
         {
           "id": "final-29",
@@ -573,11 +590,11 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "9d92ed9685d391695bf252479ca5558079131e36ecc9efe136d5d669914aa114"
+          "digest": "297e8098a2b66c1ea68e1f8bc48b8c61bb83af8c1a5d3f5ba4aa3fef9219ce47"
         },
         {
           "id": "final-30",
@@ -603,18 +620,18 @@
           ],
           "recommended": {
             "tier": "C5",
-            "model": "gpt-5.6-sol",
+            "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
           "status": "pending",
-          "digest": "2180b54cbd10ac7094adae5ef1ad46c2c704a1ff463f17d8b125f905d2f866f3"
+          "digest": "6678a8033b908ea2fdf328f849c6effe277f9df935178692d8c502699b9e3d7d"
         }
       ]
     },
     "learning": {
-      "active_policy_version": "v1",
+      "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_1ac12779815b2cc8a6131f7b",
+      "last_event_id": "evt_ecb1c277bb11f260569de866",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -631,7 +648,138 @@
         "status": "retained_not_active",
         "reason": "approved_migration_to_frozen_subtask_plan"
       }
-    ]
+    ],
+    "model_policy_refresh": {
+      "at": "2026-09-22T20:01:33+00:00",
+      "from": {
+        "luna": "gpt-5.6-luna",
+        "sol": "gpt-5.6-sol"
+      },
+      "to": {
+        "luna": "gpt-6-luna",
+        "sol": "gpt-6-sol"
+      },
+      "applies_from_subtask": "p0-04",
+      "preserved_active_lock": {
+        "provider": "openai-codex",
+        "tier": "C3",
+        "model": "gpt-5.6-terra",
+        "reasoning": "high",
+        "expected_model": "gpt-5.6-terra",
+        "expected_reasoning": "high",
+        "policy_version": "v1",
+        "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+        "subtask_id": "p0-03",
+        "subtask_digest": "e0c2763b02655aac948d9c750a74eeb5b09804b5bce1243d6cef7ec5d721bcc3",
+        "route_event_id": "evt_b0385af30f9be2ae81627488",
+        "session_id": null,
+        "model_attested": null,
+        "attestation_status": "PENDING",
+        "session_deleted": null
+      },
+      "updated_pending_subtasks": [
+        {
+          "id": "p0-04",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "p0-05",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "p0-07",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-09",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-10",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-11",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-12",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-13",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-14",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-15",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-16",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1a-17",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1b-18",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1b-19",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1b-20",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1b-21",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1b-22",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1c-23",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1c-24",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1c-25",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1c-26",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "m1c-27",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "final-28",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "final-29",
+          "model": "gpt-6-sol"
+        },
+        {
+          "id": "final-31",
+          "model": "gpt-6-sol"
+        }
+      ]
+    }
   },
   "runtime": {
     "continuations": 0,
@@ -639,7 +787,7 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-22T19:03:37+00:00",
+    "last_run_started_at": "2026-09-22T20:02:33+00:00",
     "last_run_finished_at": "2026-09-22T19:58:33+00:00",
     "last_log": ".agent/runs/20260922T190337Z.log",
     "last_checkpoint_at": "2026-09-22T19:58:35+00:00"
