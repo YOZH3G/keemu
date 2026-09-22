@@ -12,3 +12,4 @@
 - 2026-09-22T08:13:38+00:00 — Supervisor paused on provider quota (unknown); reset=unknown.
 - 2026-09-22T18:55:48+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
 - 2026-09-22T19:01:38Z — p0-01 implemented strict generic-profile loading, common RunReport aggregation, generated-schema parity tests, read-only doctor, centralized report-status exit codes, and CLI input handling. Full portable verification passed: 16 passed, 1 skipped; Ruff clean. Real doctor result is BLOCKED/exit 4 because `/var/run/docker.sock` is unavailable.
+- 2026-09-22T19:03:35+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
