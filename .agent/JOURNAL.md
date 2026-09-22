@@ -22,3 +22,4 @@
 - 2026-09-22T19:58:35+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
 - 2026-09-22T20:01:33Z — Refreshed future Luna/Sol policy assignments to `gpt-6-luna`/`gpt-6-sol`; retained attested historic worker IDs and the active p0-03 `gpt-5.6-terra` lock. Validated JSON and all 69 supervisor/router tests.
 - 2026-09-22T20:02:45Z — Recycled the paused supervisor to load the refreshed policy and resumed one supervised p0-03 worker. Terminated the older orphaned p0-03 worker created before the pause; no source files were changed by it.
+- 2026-09-22T20:04:45+00:00 — Disposable worker result rejected: runtime model/reasoning attestation failed.
