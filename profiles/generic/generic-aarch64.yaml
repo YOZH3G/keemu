@@ -1,0 +1,22 @@
+schema_version: 1
+id: generic-aarch64
+revision: 1
+kind: generic
+entware_target: aarch64-3.10
+cpu:
+  arch: aarch64
+  endian: little
+  elf_class: 64
+  qemu: qemu-aarch64
+kernel:
+  execution: host
+  reported_release: null
+filesystem:
+  entware_root: /opt
+ndm:
+  mode: strict
+  fixtures: []
+network:
+  logical_to_linux:
+    ISP: wan0
+    Bridge0: br0

@@ -2,7 +2,7 @@
 
 ## Current status
 
-P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and direct-QEMU/PRoot diagnostic vertical slice are implemented and verified. The P0 gate is not complete because mandatory Docker, localhost web publishing, persistence, binfmt, and NFQUEUE/native-control experiments have not run.
+P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and direct-QEMU/PRoot diagnostic vertical slice are implemented and verified. The p0-01 profile, common report, schema parity, doctor, aggregation, exit-code, and CLI slice is implemented and verified. The P0 gate is not complete because mandatory Docker, localhost web publishing, persistence, binfmt, and NFQUEUE/native-control experiments have not run.
 
 ## Verified
 
@@ -18,19 +18,23 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 - Direct QEMU/PRoot diagnostic verified target shell, real target `opkg`, nested target ELF execution, target shebang execution, and reported `aarch64`.
 - Diagnostic evidence exists at `reports/20260922T080151Z-p0diag-61f167a83d33/` and is correctly excluded from Git.
 - `uv run ruff check .` passes.
-- Portable suite: 5 passed, 1 diagnostic test skipped by default.
-- Explicit P0 diagnostic integration: 1 passed.
+- Generic AArch64 profile YAML is strict, rejects duplicate keys and target/CPU mismatches, and its committed JSON schema equals `GenericProfile.model_json_schema()`.
+- `keemu doctor` builds the common strict `RunReport`; report aggregation implements required-SKIP → BLOCKED and priority ERROR → FAIL → BLOCKED → WARN → PASS. Markdown and JSON use the same report object.
+- `keemu doctor --profile generic-aarch64` produced a schema-valid real-mode `BLOCKED` report and exit 4 because `/var/run/docker.sock` is unavailable; no capability was claimed as PASS without evidence.
+- Report-status exit codes are centralized: FAIL=1, ERROR=3, BLOCKED=4, PASS/WARN=0. Invalid doctor profile input exits 2.
+- Portable suite: 16 passed, 1 diagnostic test skipped by default. `uv run ruff check .` passes.
 
 ## Acceptance truth
 
 - A01: PARTIAL diagnostic evidence on AArch64 only; not PASS.
-- A19 and A21: PARTIAL supporting evidence only; not PASS.
+- A19: PARTIAL supporting evidence only; not PASS.
+- A21: PARTIAL supporting evidence now includes schema-valid doctor JSON, Markdown generated from the same common model, parity tests, aggregation, and blocked/error exit-code tests; immutable run metadata and failed-run artifact coverage remain for p0-02.
 - All other A02–A18 and A20 requirements are NOT RUN or BLOCKED as mapped in `docs/traceability.md`.
 - No TASK.md gate is complete.
 
 ## Next operation
 
-Commit the coherent P0 diagnostic slice after diff/secret review. Then implement the read-only `doctor` command and portable schema/report primitives while keeping P0 incomplete. On an approved Docker-capable Linux host, resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
+Continue only with p0-02 report metadata primitives. On an approved Docker-capable Linux host, resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
 
 ## Blockers
 

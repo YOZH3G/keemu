@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
+  "status": "RUNNING",
   "session_id": null,
   "pause_reason": null,
   "quota": {
@@ -15,22 +15,22 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-22T18:55:10+00:00",
+    "last_evaluated_at": "2026-09-22T18:55:50+00:00",
     "recommended": {
       "tier": "C7",
       "model": "gpt-6-astra",
       "reasoning": "max"
     },
     "applied": {
-      "tier": "C0",
-      "model": "gpt-5.6-luna",
-      "reasoning": "low"
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high"
     },
     "signals": {
       "score": 17,
       "task_chars": 9936,
-      "changed_files": 13,
-      "repo_files_sampled": 670,
+      "changed_files": 10,
+      "repo_files_sampled": 671,
       "graphify_present": true,
       "graphify_bytes": 202423,
       "previous_failures": 0,
@@ -60,7 +60,23 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {},
+    "worker_lock": {
+      "provider": "openai-codex",
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "expected_model": "gpt-5.6-terra",
+      "expected_reasoning": "high",
+      "policy_version": "v1",
+      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+      "subtask_id": "p0-01",
+      "subtask_digest": "0d3dc4c150a46397465f5061613a30c40bc665ddc750e2e3702e638270f7ffbe",
+      "route_event_id": "evt_3005634e9c8aeafce9f66f4a",
+      "session_id": null,
+      "model_attested": null,
+      "attestation_status": "PENDING",
+      "session_deleted": null
+    },
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "676bdf7a9bd4e97aaf567593b6d6245239a270f0299ba773cfe768dfbee91e88",
@@ -602,7 +618,7 @@
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_e5d5606c22e49f442a9225e2",
+      "last_event_id": "evt_3005634e9c8aeafce9f66f4a",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -627,7 +643,7 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-22T18:55:10+00:00",
+    "last_run_started_at": "2026-09-22T18:55:50+00:00",
     "last_run_finished_at": "2026-09-22T18:55:47+00:00",
     "last_log": ".agent/runs/20260922T185510Z.log",
     "last_checkpoint_at": "2026-09-22T18:55:48+00:00"

@@ -1,0 +1,190 @@
+{
+  "$defs": {
+    "CPUProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "arch": {
+          "enum": [
+            "aarch64",
+            "mipsel",
+            "mips"
+          ],
+          "title": "Arch",
+          "type": "string"
+        },
+        "elf_class": {
+          "enum": [
+            32,
+            64
+          ],
+          "title": "Elf Class",
+          "type": "integer"
+        },
+        "endian": {
+          "enum": [
+            "little",
+            "big"
+          ],
+          "title": "Endian",
+          "type": "string"
+        },
+        "qemu": {
+          "pattern": "^qemu-[a-z0-9_]+$",
+          "title": "Qemu",
+          "type": "string"
+        }
+      },
+      "required": [
+        "arch",
+        "endian",
+        "elf_class",
+        "qemu"
+      ],
+      "title": "CPUProfile",
+      "type": "object"
+    },
+    "FilesystemProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "entware_root": {
+          "const": "/opt",
+          "title": "Entware Root",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entware_root"
+      ],
+      "title": "FilesystemProfile",
+      "type": "object"
+    },
+    "KernelProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "execution": {
+          "const": "host",
+          "title": "Execution",
+          "type": "string"
+        },
+        "reported_release": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reported Release"
+        }
+      },
+      "required": [
+        "execution",
+        "reported_release"
+      ],
+      "title": "KernelProfile",
+      "type": "object"
+    },
+    "NDMProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "fixtures": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fixtures",
+          "type": "array"
+        },
+        "mode": {
+          "const": "strict",
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mode",
+        "fixtures"
+      ],
+      "title": "NDMProfile",
+      "type": "object"
+    },
+    "NetworkProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "logical_to_linux": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Logical To Linux",
+          "type": "object"
+        }
+      },
+      "required": [
+        "logical_to_linux"
+      ],
+      "title": "NetworkProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cpu": {
+      "$ref": "#/$defs/CPUProfile"
+    },
+    "entware_target": {
+      "enum": [
+        "aarch64-3.10",
+        "mipsel-3.4",
+        "mips-3.4"
+      ],
+      "title": "Entware Target",
+      "type": "string"
+    },
+    "filesystem": {
+      "$ref": "#/$defs/FilesystemProfile"
+    },
+    "id": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}[a-z0-9]$",
+      "title": "Id",
+      "type": "string"
+    },
+    "kernel": {
+      "$ref": "#/$defs/KernelProfile"
+    },
+    "kind": {
+      "const": "generic",
+      "title": "Kind",
+      "type": "string"
+    },
+    "ndm": {
+      "$ref": "#/$defs/NDMProfile"
+    },
+    "network": {
+      "$ref": "#/$defs/NetworkProfile"
+    },
+    "revision": {
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "revision",
+    "kind",
+    "entware_target",
+    "cpu",
+    "kernel",
+    "filesystem",
+    "ndm",
+    "network"
+  ],
+  "title": "GenericProfile",
+  "type": "object"
+}

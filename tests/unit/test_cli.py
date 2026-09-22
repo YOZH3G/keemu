@@ -7,6 +7,7 @@ from pathlib import Path
 from click.testing import CliRunner
 
 from keemu.cli import cli
+from keemu.models import RunReport
 
 
 def test_p0_verify_lock_reports_verified_artifacts(tmp_path: Path) -> None:
@@ -71,6 +72,20 @@ def test_doctor_returns_blocked_exit_code_and_json(tmp_path: Path) -> None:
 
     assert result.exit_code == 4, result.output
     payload = json.loads(result.output)
+    report = RunReport.model_validate(payload)
     assert payload["overall"] == "BLOCKED"
     assert payload["profile_id"] == "generic-aarch64"
-    assert payload["coverage"]["blocked"] >= 4
+    assert report.coverage.blocked >= 4
+    docker_daemon = next(
+        check for check in report.checks if check.id == "docker-daemon"
+    )
+    assert docker_daemon.status == "BLOCKED"
+    assert docker_daemon.mode == "real"
+    assert str(tmp_path / "docker.sock") in docker_daemon.evidence[0]
+
+
+def test_doctor_rejects_invalid_profile_id_with_input_exit_code() -> None:
+    result = CliRunner().invoke(cli, ["doctor", "--profile", "invalid!"])
+
+    assert result.exit_code == 2
+    assert "invalid profile ID" in result.output

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +12,11 @@ from yaml import YAMLError
 from keemu.doctor import collect_doctor
 from keemu.entware import ArtifactIntegrityError, verify_artifact_cache
 from keemu.profiles import ProfileError, load_profile
+from keemu.reports import exit_code_for_status
+
+
+class InputError(click.ClickException):
+    exit_code = 2
 
 
 @click.group()
@@ -55,7 +59,7 @@ def doctor(
 ) -> None:
     """Run read-only host checks for a generic target profile."""
     if not re.fullmatch(r"[a-z][a-z0-9-]{1,62}[a-z0-9]", profile_id):
-        raise click.ClickException(f"invalid profile ID: {profile_id}")
+        raise InputError(f"invalid profile ID: {profile_id}")
     profile_path = profiles_dir / f"{profile_id}.yaml"
     try:
         profile = load_profile(profile_path)
@@ -66,16 +70,9 @@ def doctor(
             binfmt_root=binfmt_root,
         )
     except (OSError, ProfileError, ValidationError, YAMLError) as error:
-        raise click.ClickException(str(error)) from error
-    counts = {
-        status.lower(): sum(check.status == status for check in report.checks)
-        for status in ("PASS", "WARN", "FAIL", "SKIP", "BLOCKED", "ERROR")
-    }
-    payload = asdict(report)
-    payload["coverage"] = counts
-    click.echo(json.dumps(payload, sort_keys=True))
-    exit_codes = {"FAIL": 1, "ERROR": 3, "BLOCKED": 4}
-    context.exit(exit_codes.get(report.overall, 0))
+        raise InputError(str(error)) from error
+    click.echo(json.dumps(report.model_dump(mode="json"), sort_keys=True))
+    context.exit(exit_code_for_status(report.overall))
 
 
 @cli.group()
