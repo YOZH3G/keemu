@@ -23,6 +23,7 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 - `keemu doctor --profile generic-aarch64` produced a schema-valid real-mode `BLOCKED` report and exit 4 because `/var/run/docker.sock` is unavailable; no capability was claimed as PASS without evidence.
 - Report-status exit codes are centralized: FAIL=1, ERROR=3, BLOCKED=4, PASS/WARN=0. Invalid doctor profile input exits 2.
 - Portable suite: 16 passed, 1 diagnostic test skipped by default. `uv run ruff check .` passes.
+- The coherent p0-01 implementation and durable state were committed as `573a2df` (`feat: add P0 doctor and report primitives`).
 
 ## Acceptance truth
 
