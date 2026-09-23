@@ -12,6 +12,7 @@ from yaml import YAMLError
 from keemu.doctor import collect_doctor
 from keemu.entware import ArtifactIntegrityError, verify_artifact_cache
 from keemu.fixture_lock import FixtureLockError, verify_fixture_lock
+from keemu.init_cache import InitError, init_locked
 from keemu.ipk_inspect import IPKError, inspect_ipk
 from keemu.profiles import ProfileError, load_profile
 from keemu.reports import exit_code_for_status
@@ -115,6 +116,39 @@ def inspect(
         raise InputError(str(error)) from error
     click.echo(json.dumps(result.to_dict(), sort_keys=True))
     context.exit(exit_code_for_status(result.status))
+
+
+@cli.command("init")
+@click.option("profile_id", "--profile", required=True)
+@click.option(
+    "repo",
+    "--repo",
+    type=click.Path(exists=True, file_okay=False, path_type=Path),
+    default=Path("."),
+)
+@click.option(
+    "--locked",
+    is_flag=True,
+    required=True,
+    help="Require exactly the pinned offline artifact set.",
+)
+@click.option(
+    "--offline",
+    is_flag=True,
+    help="Verify an existing cache without any build or network probe.",
+)
+def init(profile_id: str, repo: Path, locked: bool, offline: bool) -> None:
+    """Prepare the immutable AArch64 base cache from the P0 pinned closure."""
+    if profile_id != "generic-aarch64":
+        raise InputError("only the verified generic-aarch64 bootstrap is available")
+    try:
+        profile = load_profile(repo / "profiles/generic/generic-aarch64.yaml")
+        if profile.id != profile_id:
+            raise InitError("profile identity mismatch")
+        result = init_locked(repo, offline=offline)
+    except (OSError, ValueError, ValidationError, YAMLError, TimeoutError) as error:
+        raise InputError(str(error)) from error
+    click.echo(json.dumps(result, sort_keys=True))
 
 
 @cli.group()

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "keemu-mvp1",
   "status": "RESUMING",
-  "session_id": null,
+  "session_id": "20260923_200330_125e2a",
   "pause_reason": null,
   "quota": {
     "kind": "usage_limit_reached",
@@ -15,24 +15,24 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-23T19:55:46+00:00",
+    "last_evaluated_at": "2026-09-23T20:03:27+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C5",
+      "tier": "C4",
       "model": "gpt-6-sol",
-      "reasoning": "xhigh"
+      "reasoning": "high"
     },
     "signals": {
       "score": 14,
       "task_chars": 24002,
-      "changed_files": 2,
+      "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 638596,
+      "graphify_bytes": 653344,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -58,7 +58,23 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {},
+    "worker_lock": {
+      "provider": "openai-codex",
+      "tier": "C4",
+      "model": "gpt-6-sol",
+      "reasoning": "high",
+      "expected_model": "gpt-6-sol",
+      "expected_reasoning": "high",
+      "policy_version": "v2",
+      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+      "subtask_id": "m1a-11",
+      "subtask_digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
+      "route_event_id": "evt_1d79c4694df1e32b254e3b2d",
+      "session_id": "20260923_200330_125e2a",
+      "model_attested": null,
+      "attestation_status": "PENDING",
+      "session_deleted": null
+    },
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
@@ -670,7 +686,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_b6739b61b6debc1dd8ad15a1",
+      "last_event_id": "evt_3c6ff408651ad537280308c3",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -825,22 +841,22 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 0,
-    "last_run_started_at": "2026-09-23T19:55:46+00:00",
-    "last_run_finished_at": "2026-09-23T20:03:22+00:00",
-    "last_log": ".agent/runs/20260923T195546Z.log",
-    "last_checkpoint_at": "2026-09-23T20:03:24+00:00"
+    "last_exit_code": 1,
+    "last_run_started_at": "2026-09-23T20:03:27+00:00",
+    "last_run_finished_at": "2026-09-23T20:15:13+00:00",
+    "last_log": ".agent/runs/20260923T200327Z.log",
+    "last_checkpoint_at": "2026-09-23T20:15:13+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-23T19:54:58+00:00",
+    "checked_at": "2026-09-23T20:03:26+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1a-10:28b497dc6976bd3dd0afd07c29324299dc83279f901c89b61c369809a141e0da",
+    "admission_key": "subtask:m1a-11:f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-    "task_intent": "Implement safe bounded IPK inspection including format detection, extraction defenses, metadata, architecture, ELF, interpreter, dependency, shebang, and permission checks",
-    "subtask_id": "m1a-10",
-    "subtask_digest": "28b497dc6976bd3dd0afd07c29324299dc83279f901c89b61c369809a141e0da",
+    "task_intent": "Implement locked init plus rootfs and image cache with hash verification, atomic publication, installed-package inventory, network smoke, and OCI digest recording",
+    "subtask_id": "m1a-11",
+    "subtask_digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
     "action": "admit",
-    "remaining_percent": 99.0,
+    "remaining_percent": 79.0,
     "reset_at": "2026-09-24T00:54:22+00:00",
     "source": "hermes_oauth_usage_api",
     "message": "5-hour OAuth quota admits new task"
