@@ -15,21 +15,21 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-23T03:22:19+00:00",
+    "last_evaluated_at": "2026-09-23T05:47:54+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C3",
-      "model": "gpt-5.6-terra",
+      "tier": "C4",
+      "model": "gpt-6-sol",
       "reasoning": "high"
     },
     "signals": {
-      "score": 14,
-      "task_chars": 13804,
-      "changed_files": 0,
+      "score": 15,
+      "task_chars": 13846,
+      "changed_files": 5,
       "repo_files_sampled": 2000,
       "graphify_present": true,
       "graphify_bytes": 313520,
@@ -44,6 +44,7 @@
       "read_only_scope": true,
       "reasons": [
         "long task/context",
+        "multiple changed files",
         "large repository",
         "production/remote-system risk",
         "security/auth/network privilege risk",
@@ -51,7 +52,7 @@
         "architecture/system-design scope"
       ]
     },
-    "reason": "long task/context; large repository; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
+    "reason": "long task/context; multiple changed files; large repository; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
     "force_min_tier": null,
     "capabilities": {
       "gpt-6-astra": null
@@ -62,7 +63,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 4,
+      "active_index": 5,
       "items": [
         {
           "id": "preflight",
@@ -167,8 +168,15 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "0a230d0509a372b80472b1b6fcbb644c961c12021fbdad8a783f416f40e5f820"
+          "status": "complete",
+          "digest": "0a230d0509a372b80472b1b6fcbb644c961c12021fbdad8a783f416f40e5f820",
+          "outcome": {
+            "event_id": "evt_fb5dda33f7bdee68e05b3e89",
+            "route_event_id": "evt_6dc763410ffc83486ca5540f",
+            "completed_at": "2026-09-23T05:58:00+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "p0-05",
@@ -183,7 +191,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "1890d41c5806b78cf625475985344c64ed68aa56d02abd2f670d29a5427877b6"
         },
         {
@@ -621,7 +629,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_0f2c7b6ef01212f963e53eb8",
+      "last_event_id": "evt_fb5dda33f7bdee68e05b3e89",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -777,10 +785,10 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-23T03:22:19+00:00",
-    "last_run_finished_at": "2026-09-23T03:23:03+00:00",
-    "last_log": ".agent/runs/20260923T032219Z.log",
-    "last_checkpoint_at": "2026-09-23T03:23:04+00:00"
+    "last_run_started_at": "2026-09-23T05:47:54+00:00",
+    "last_run_finished_at": "2026-09-23T05:57:58+00:00",
+    "last_log": ".agent/runs/20260923T054754Z.log",
+    "last_checkpoint_at": "2026-09-23T05:58:00+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-22T07:37:55+00:00",
