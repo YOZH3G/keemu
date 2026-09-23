@@ -4,8 +4,8 @@ Status values in this file describe verified evidence only. `PARTIAL` is not PAS
 
 | ID | Current status | Test or scenario | Latest evidence | Gap |
 |---|---|---|---|---|
-| A01 | PARTIAL | `tests/integration/p0_runtime_probe.py`; `verify_image_lock`; derived-image audit | Real AArch64 Docker/binfmt target shell, opkg, child ELF and direct shebang in `reports/20260923T080109Z-p005-e6653acf4ef7/probe.json` (SHA-256 `86a81d2c33de6c68663871f4e2ff49e1c1c0920055408e123169744a9d52209b`) | MIPS/MIPSEL and full cross-target acceptance absent |
-| A02 | NOT RUN | — | — | hello fixture and opkg lifecycle not implemented |
+| A01 | PARTIAL | `tests/integration/p0_runtime_probe.py`; `verify_image_lock`; `tests/unit/test_ipk_inspect.py`; derived-image audit | Real AArch64 Docker/binfmt target shell, opkg, child ELF and direct shebang in `reports/20260923T080109Z-p005-e6653acf4ef7/probe.json` (SHA-256 `86a81d2c33de6c68663871f4e2ff49e1c1c0920055408e123169744a9d52209b`); static inspector parses ELF machine/class/endian/ABI, PT_INTERP and DT_NEEDED | MIPS/MIPSEL and full cross-target acceptance absent; static inspection does not execute ELF |
+| A02 | NOT RUN | `tests/unit/test_ipk_inspect.py` (pre-install static checks only) | IPK ar/tar structure, control metadata and 20 cached AArch64 packages inspected without extraction | hello fixture opkg install, files/state and exactly-once postinst lifecycle not implemented |
 | A03 | NOT RUN | — | — | service lifecycle not implemented |
 | A04 | NOT RUN | — | — | negative ELF fixtures not implemented |
 | A05 | NOT RUN | — | — | shebang/permission/symlink negative fixtures not implemented |

@@ -34,6 +34,15 @@ uv run pytest -q
 uv run ruff check .
 ```
 
+Static IPK inspection (no installation or package execution):
+
+```text
+uv run keemu inspect path/to/package.ipk --profile generic-aarch64
+uv run keemu inspect path/to/package.ipk --profile generic-aarch64 --rootfs path/to/dependency-complete-rootfs
+```
+
+The command emits JSON with `mode=static`, SHA-256, metadata, archive entries, ELF details, findings, status and limitations. A rootfs must include the package's resolved dependencies; unresolved or postinst-created paths remain BLOCKED until a later installation check. Static PASS is not A01 or A02 acceptance. Input must be reopened and rehashed before installing; `inspect` is not an install authorization.
+
 The P0 diagnostic integration test additionally needs the locked artifacts in `.runtime/p0`:
 
 ```text

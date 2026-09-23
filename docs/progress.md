@@ -2,7 +2,7 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtask m1a-09 adds versioned input schemas and safe-path parsing; no lifecycle or MVP 1A acceptance is claimed.
+P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 and m1a-10 add versioned input schemas and bounded static IPK inspection; no lifecycle or MVP 1A acceptance is claimed.
 
 ## P0 verified results
 
@@ -14,7 +14,7 @@ P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subta
 
 ## MVP 1A schema slice
 
-Schema-version-1 scenario, production lock and persistent-environment models and generated JSON schemas are implemented. Tests cover duplicate keys, unknown fields/versions, pinned-installer contracts, explicit localhost publish and vantage, CA-backed HTTPS, safe project-relative inputs, symlinks, source/scenario hashes, environment ownership metadata and parser bounds. This is input validation only: no persistent registry mutation, Docker runtime, lifecycle, archive inspection, runtime digest/label proof, or A18/A21 full acceptance is claimed.
+Schema-version-1 scenario, production lock and persistent-environment models and generated JSON schemas are implemented. Tests cover duplicate keys, unknown fields/versions, pinned-installer contracts, explicit localhost publish and vantage, CA-backed HTTPS, safe project-relative inputs, symlinks, source/scenario hashes, environment ownership metadata and parser bounds. Static `inspect` validates bounded IPK archive structure, metadata, target architecture/ELF, interpreters, dependencies, shebangs and permissions without extraction or host `ldd`. The selected locked AArch64 feed's 20 IPKs were inspected read-only. This does not install a package, execute a target app, mutate the registry, or prove the full A01/A02 gates; uncertain dependency/loader paths remain BLOCKED until complete target-state proof.
 
 ## Evidence package
 
