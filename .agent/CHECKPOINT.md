@@ -35,10 +35,12 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 - `locks/p0-fixtures-aarch64.json` records a real 12-artifact Debian trixie AArch64 cross-toolchain, project-owned hello/web-demo/NFQUEUE-consumer source and recipe hashes, AArch64 ELF metadata, runtime dependencies, kernel requirements, and reproducibly rebuilt output hashes.
 - Rebuilding the three fixture sources with the extracted locked toolchain reproduced their recorded SHA-256 values: hello `334fd4454f3cdbcc4556704dec766e66426e9a75876c1f1f27e6d5fd3156955c`, web-demo `aa45036ae479cc1901492d64d534d72789d48e1e419897ee51ae91d413ffd10b`, and NFQUEUE consumer `0d5a85fabecd3754633fa513712a1cc7b2be2871fd31a9d08c58ae68a15b3886`; `readelf` confirmed ELF64/little-endian/AArch64 for all three.
 - `keemu p0 verify-fixture-lock --lock locks/p0-fixtures-aarch64.json --root . --verify-external` verified all sources, recipes, and staged toolchain artifacts. Portable suite: 28 passed, 1 skipped; `uv run ruff check .` passes.
+- P0-04 rebuilt the verified 20-package AArch64 rootfs and compiled a static amd64 native PID 1. Docker Engine 29.7.2 built `keemu/p0-aarch64:mixed-v1` as `linux/amd64`; `docker image inspect` confirms `sha256:bfc44a226f962eb35251bb51c33caada4a9e0d44b2bb63567a5fff18b35b1f04`, entrypoint `/__keemu/init`, and explicit owner/target/source/rootfs labels. A saved-layer audit independently found 28 AArch64 ELFs and exactly one amd64 ELF, with target BusyBox `/bin/sh` and target opkg; `verify_image_lock` passed against `locks/p0-mixed-image-aarch64.json`.
+- The static container-create template has explicit ownership/run labels, memory/CPU/PID limits, dropped capabilities, no-new-privileges, read-only root and bounded tmpfs; it was not executed. No container, binfmt change, port, or network was created. Portable suite: 30 passed, 2 skipped; explicitly enabled image integration audit: 1 passed; Ruff and `git diff --check` pass.
 
 ## Acceptance truth
 
-- A01: PARTIAL diagnostic evidence on AArch64 only; not PASS.
+- A01: PARTIAL diagnostic and mixed OCI image evidence on AArch64; no target Docker/binfmt execution. A18/A20 have image labels and a static create template only, no runtime PASS.
 - A19: PARTIAL supporting evidence only; not PASS.
 - A21: PARTIAL supporting evidence now includes schema-valid doctor JSON, Markdown generated from the same common model, immutable metadata, parity and consistency validation, atomic write-once bundles, JSONL operation records, and failed-run artifact coverage. Full lifecycle reports and complete runtime provenance remain later work.
 - All other A02–A18 and A20 requirements are NOT RUN or BLOCKED as mapped in `docs/traceability.md`.
@@ -46,8 +48,8 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 
 ## Next operation
 
-The p0-03 technical deliverable is committed as `f64bb9a` (`feat: lock P0 fixture sources`), but supervisor outcome completion remains blocked by its earlier runtime model-attestation failure (`.agent/STATE.json`). Do not advance to p0-04 until the durable supervisor records a valid p0-03 attestation and session lifecycle. On an approved Docker-capable Linux host, then resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
+P0-04 image build, inspect, independent saved-layer audit, lock and tests are verified. Commit this coherent p0-04 slice without advancing the state machine; return only the exact p0-04 completion marker to the supervisor. Do not run containers, register binfmt, publish ports, or begin p0-05.
 
 ## Blockers
 
-Mandatory Docker-backed P0 evidence cannot be produced in the current Hermes container because no Docker daemon socket is available. Host binfmt changes require explicit human approval and were not attempted. Independent portable implementation work remains possible.
+Docker daemon access is available (`/var/run/docker.sock`, Engine 29.7.2). Host binfmt changes remain unattempted and require explicit human approval. Native init runtime behavior, target container execution, applied resource limits/isolation, recovery, port publishing, persistence, and NFQUEUE remain unverified and out of p0-04 scope.

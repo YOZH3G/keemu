@@ -31,3 +31,7 @@ The current common report schema is version 2 and uses frozen nested metadata an
 ## D-008 — P0 fixtures use a locked host cross-toolchain
 
 P0 fixture compilation uses a project-staged Debian trixie `aarch64-linux-gnu-gcc` toolchain whose exact DEB inputs and SHA-256 values are recorded in `locks/p0-fixtures-aarch64.json`. This creates reproducible AArch64 ELF sources without pretending that the host compiler or PRoot diagnostic is the required Docker/binfmt runtime. The raw NFQUEUE fixture uses locked Linux UAPI headers rather than an unpinned library SDK; kernel capability and packet-flow correctness remain later, separately bounded experiments.
+
+## D-009 — Mixed-image architecture and deferred container limits
+
+P0-04 uses a scratch `linux/amd64` image with a project-owned, statically linked amd64 PID 1 in `/__keemu` and locked AArch64 Entware application files elsewhere. The native binary is outside application PATH; labels separate the native platform from the target. Docker image ID and saved archive config digest are recorded distinctly because the Engine export produced different values. Resource limits and per-run ownership are represented in an argv-only Docker create template, not falsely attributed to immutable OCI image properties. Image build/inspect and saved-layer ELF audit are verified; runtime execution, applied limits, recovery and isolation await later subtasks. See `docs/decisions/0002-p0-mixed-image.md`.

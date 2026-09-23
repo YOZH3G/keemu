@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "kind": "p0-mixed-image-lock",
+  "image_id": "sha256:bfc44a226f962eb35251bb51c33caada4a9e0d44b2bb63567a5fff18b35b1f04",
+  "image_reference": "keemu/p0-aarch64:mixed-v1",
+  "platform": "linux/amd64",
+  "labels": {
+    "org.keemu.owner": "keemu",
+    "org.keemu.phase": "p0-04",
+    "org.keemu.target": "aarch64-3.10",
+    "org.keemu.native": "linux/amd64",
+    "org.keemu.runtime": "mixed-native-init-target-rootfs",
+    "org.keemu.rootfs-sha256": "f6c4fd770b9219c57c3084138ce57e77d443b347ae6f37059998ea6dd270fe97",
+    "org.keemu.package-lock-sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+    "org.keemu.init-source-sha256": "f6da598316b466d653954a2c54981b7cb2456894e444c751e2767b7d87509e4c"
+  },
+  "entrypoint": [
+    "/__keemu/init"
+  ],
+  "tree_sha256": "f6c4fd770b9219c57c3084138ce57e77d443b347ae6f37059998ea6dd270fe97",
+  "package_count": 20,
+  "native_compiler": "14.2.0",
+  "docker_server": "29.7.2",
+  "scope": "image build/inspect only; no container run, binfmt, port or namespace proof",
+  "architecture_audit": {
+    "aarch64": 28,
+    "amd64": 1
+  },
+  "saved_layer_sha256": "6daf160a117aa4265ccf4bb2d787360efc49b6b20dc229d8e4ccb46afb1ab3e6",
+  "saved_config_sha256": "02f8e0f6614d4ec1685896c570df7f8b46e3c4a3f2188c8099fc756dbe05569f",
+  "container_create_template": [
+    "docker",
+    "create",
+    "--name",
+    "keemu-example",
+    "--platform",
+    "linux/amd64",
+    "--label",
+    "org.keemu.owner=keemu",
+    "--label",
+    "org.keemu.phase=p0-04",
+    "--label",
+    "org.keemu.target=aarch64-3.10",
+    "--label",
+    "org.keemu.native=linux/amd64",
+    "--label",
+    "org.keemu.runtime=mixed-native-init-target-rootfs",
+    "--label",
+    "org.keemu.run-id=example",
+    "--memory=256m",
+    "--memory-swap=256m",
+    "--cpus=1",
+    "--pids-limit=128",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--network=none",
+    "--read-only",
+    "--tmpfs=/tmp:rw,nosuid,nodev,size=16m",
+    "--tmpfs=/run:rw,nosuid,nodev,size=4m",
+    "--tmpfs=/opt/var:rw,nosuid,nodev,size=32m",
+    "sha256:bfc44a226f962eb35251bb51c33caada4a9e0d44b2bb63567a5fff18b35b1f04"
+  ],
+  "provenance": {
+    "entware_lock": "locks/p0-aarch64.json",
+    "native_init_source": "fixtures/recipes/aarch64/keemu-init.c",
+    "builder": "src/keemu/p0_image.py",
+    "method": "docker build --platform linux/amd64 --network none; FROM scratch; verified docker image inspect and saved layer; saved config differs from daemon image ID under engine export"
+  }
+}

@@ -4,13 +4,14 @@
 - `KEEMU_MVP1_updated.md` revision 2.2 is the authoritative specification.
 - Development proceeds by vertical gates P0 → 1A → 1B → 1C and uses acceptance IDs A01–A21.
 - A successful generic target test does not prove compatibility with a physical Keenetic model.
-- The current Hermes container has no usable Docker daemon socket; Docker integration evidence requires a separate approved runner or host if this remains true.
+- The current Hermes container has usable access to the host Docker daemon through `/var/run/docker.sock`; on 2026-09-23 it verified Docker Engine 29.7.2. This is privileged host access, and binfmt/privileged container actions still require separate explicit approval.
 - No Git remote was configured when the durable stack was activated.
 - The first P0 lock is `locks/p0-aarch64.json`: 20 Entware `aarch64-3.10` packages plus hashed bootstrap and diagnostic tooling.
 - Direct QEMU 10.0.13 with PRoot 5.1.0 can execute the locked AArch64 shell, real opkg, nested target ELF and target-shebang smoke test; this is diagnostic evidence only and does not satisfy A01 or P0.
 - Generated runtime artifacts live under `.runtime/`; generated reports live under `reports/`; both are excluded from Git.
 - `profiles/generic/generic-aarch64.yaml` is the strict current generic profile; `schemas/generic-profile.schema.json` is generated from `GenericProfile` and parity-tested.
-- `keemu doctor` emits current schema-version-2 `RunReport` JSON and returns BLOCKED/exit 4 when the required Docker socket is unavailable; Docker, binfmt, and QEMU checks remain real-mode host evidence.
+- `keemu doctor` emits current schema-version-2 `RunReport` JSON; its earlier BLOCKED/exit-4 evidence reflected a then-absent Docker socket and must not be mistaken for the present Docker capability. Docker, binfmt, and QEMU checks are real-mode host probes.
 - Run reports use frozen nested metadata and derived status/coverage validation. Partial failures reference an exact operation-log sequence whose operation name and failure status must match. `write_report_bundle` atomically creates a new immutable run directory containing `report.json`, `report.md`, and `operation-log.jsonl`; existing directories are never overwritten.
-- Future Luna/Sol assignments use `gpt-6-luna`/`gpt-6-sol`; historical attested events retain actual pre-refresh model IDs. Active p0-03 remains locked to `gpt-5.6-terra` / `high`; updated model IDs require runtime attestation at their new-worker boundary.
+- Future Luna/Sol assignments use `gpt-6-luna`/`gpt-6-sol`; historical attested events retain actual pre-refresh model IDs. The p0-03 `gpt-5.6-terra`/`high` outcome was attested; active p0-04 is locked to `gpt-6-sol`/`high`, with runtime attestation required by the supervisor at its boundary.
 - `locks/p0-fixtures-aarch64.json` locks the project-owned AArch64 hello, web-demo and raw NFQUEUE-consumer fixture sources/recipes plus a 12-DEB Debian cross-toolchain; `keemu p0 verify-fixture-lock --verify-external` validates their hashes without network access.
+- `locks/p0-mixed-image-aarch64.json` records a real Docker-built `linux/amd64` image ID, native static amd64 init, AArch64 Entware rootfs, saved layer/config hashes and whole-image architecture audit (28 target, one native ELF). `verify_image_lock` checks the live image and saved archive. Container limits are only an unexecuted create template; no p0-04 container/runtime acceptance is claimed.

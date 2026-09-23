@@ -2,7 +2,7 @@
 
 ## Status
 
-This document describes the implemented P0 diagnostic and report-foundation slices. The Docker runtime and later MVP components remain design requirements from `KEEMU_MVP1_updated.md`, not completed implementation.
+This document describes the implemented P0 diagnostic, report-foundation, and mixed-image build/inspect slices. Docker container execution and later MVP components remain unverified.
 
 ## Implemented components
 
@@ -14,6 +14,7 @@ This document describes the implemented P0 diagnostic and report-foundation slic
 - `src/keemu/models.py` defines current `RunReport` schema version 2 with strict, frozen metadata for checked artifacts, scenarios, profiles, runtime provenance, capabilities, substitutions, checks, coverage, operation records, and partial failures. Each partial failure references an exact operation-log sequence; validation requires the referenced record's operation name and failure status to match.
 - `src/keemu/reports.py` derives aggregate status and coverage, rejects inconsistent report payloads, renders Markdown from the JSON source object, and atomically publishes immutable run bundles with a JSONL operation log using Linux `renameat2(..., RENAME_NOREPLACE)`.
 - `src/keemu/doctor.py` emits the common report model with a canonical profile hash, profile revision, host kernel, Entware target, Python version, and explicit capability results. Uncollected OCI, QEMU, Git, feed-lock, and network-fidelity values remain `null` rather than being invented.
+- `src/keemu/p0_image.py` rebuilds the locked AArch64 rootfs, compiles a static amd64 PID 1 from `fixtures/recipes/aarch64/keemu-init.c`, audits every rootfs ELF, and builds a scratch `linux/amd64` image with the target architecture in ownership/provenance labels. The content-addressed image ID, saved-layer hash, architecture inventory, and an unexecuted, bounded container-create template are recorded in `locks/p0-mixed-image-aarch64.json`.
 
 ## P0 diagnostic data flow
 
@@ -26,7 +27,7 @@ This document describes the implemented P0 diagnostic and report-foundation slic
 
 ## Required production architecture not yet implemented
 
-The accepted runtime remains Docker Engine on Linux x86_64. Each target environment will use an amd64 native init plus a target Entware rootfs, explicit labels, resource limits, no Docker-socket mount, and no privileged target container. Persistent environments will be tracked by an atomic registry and reconciled against Docker labels.
+The accepted runtime remains Docker Engine on Linux x86_64. The first image is built and inspected, but PID 1 behavior, target execution through binfmt, container limits, and isolation are not yet runtime-verified. The future container-create argv specifies ownership labels, memory/CPU/PID limits, dropped capabilities, read-only rootfs, no-new-privileges, and no host network or Docker-socket mount. Persistent environments will be tracked by an atomic registry and reconciled against Docker labels in later subtasks.
 
 The required network topology remains client/router/server in project-owned namespaces or internal Docker networks. No network implementation choice is accepted until a Docker-capable host can execute the P0 publish, persistence, routing, and NFQUEUE experiments.
 

@@ -17,7 +17,7 @@ Verified in the current Debian container:
 
 Not yet verified:
 
-- Docker image/container execution, binfmt integration, localhost port publishing, persistent container down/up, or NFQUEUE;
+- Docker container execution, binfmt integration, localhost port publishing, persistent container down/up, or NFQUEUE (the mixed image itself was built and inspected);
 - any MIPS/MIPSEL runtime;
 - MVP 1A, 1B, or 1C acceptance gates.
 
@@ -39,7 +39,13 @@ The P0 diagnostic integration test additionally needs the locked artifacts in `.
 KEEMU_RUN_P0_DIAGNOSTIC=1 uv run pytest -q tests/integration/test_p0_diagnostic.py
 ```
 
-Generated reports, downloaded IPK files, root filesystems, and runtime state are excluded from Git. Exact committed artifact metadata lives in `locks/p0-aarch64.json`.
+The p0-04 image audit requires the already-built project image and the saved archive:
+
+```text
+KEEMU_RUN_P0_IMAGE_AUDIT=1 uv run pytest -q tests/integration/test_p0_image.py
+```
+
+Generated reports, downloaded IPK files, root filesystems, saved images, and runtime state are excluded from Git. Exact committed artifact metadata lives in `locks/p0-aarch64.json`, `locks/p0-fixtures-aarch64.json`, and `locks/p0-mixed-image-aarch64.json`. The last lock records the image ID, labels, architecture audit, and an unexecuted resource-limited create template; it does not assert container behavior.
 
 ## Safety
 

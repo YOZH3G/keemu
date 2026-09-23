@@ -2,13 +2,13 @@
 
 ## Current verified boundary
 
-The implemented result is an AArch64 direct-QEMU/PRoot diagnostic. It verifies real target binaries and locked Entware package content, but it is not the Docker runtime required by MVP 1.
+An AArch64 direct-QEMU/PRoot diagnostic and a Docker-built mixed image are verified. The image was only built, inspected and audited offline; it has not been run as a container.
 
 ## Known limitations
 
-- Docker daemon access is unavailable in the current execution environment.
+- Docker Engine 29.7.2 is reachable in the current execution environment; its access is privileged host access. Only the authorized project image build/inspect was performed.
 - No target binfmt registration is present, and no host binfmt setting was modified.
-- Docker image metadata, native PID 1, child reaping, signal forwarding, resource limits, labels, mounts, localhost publishing, down/up persistence, and cleanup are untested.
+- Image metadata, native static init ELF, target ELF inventory, and image ownership labels are verified by inspect and saved-layer audit. Native PID 1 behavior, child reaping, signal forwarding, container-applied resource limits and labels, mounts, localhost publishing, down/up persistence, and cleanup remain untested. OCI images cannot enforce per-container CPU/memory/PID limits; the recorded create template is not runtime evidence.
 - Project-owned AArch64 hello, web-demo, and NFQUEUE-consumer sources compile from a locked cross-toolchain, but no fixture IPK, service lifecycle, web publish, HTTPS/UDP endpoint, or persistence experiment has run.
 - NFQUEUE source uses the locked Linux UAPI headers, but NFQUEUE kernel support, iptables backend, ipset, conntrack, forwarding, raw sockets, routing topology, packet counters, and native control are untested.
 - MIPS and MIPSEL artifacts and execution are untested.
