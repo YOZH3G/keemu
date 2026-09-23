@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "kind": "p0-web-demo-runtime-image-lock",
+  "image_reference": "keemu/p0-aarch64:web-p006",
+  "image_id": "sha256:fa618afa80cab7d081e8012ed8209cf16d95507263c412ba119d131510e888bc",
+  "base_image_id": "sha256:66efaedcbd42ac56db30122762ebf73bcfb41a17dd6404bf22f7af067047b6f6",
+  "base_lock": "locks/p0-mixed-image-aarch64-p005.json",
+  "source_path": "fixtures/sources/web-demo/web_demo_p006.c",
+  "source_sha256": "9c885bb3d6ca4e2e297e3625c3f83c50edd88eaf33623af9cbca78b07e78ec31",
+  "recipe_path": "fixtures/recipes/aarch64/web-demo-p006.mk",
+  "recipe_sha256": "e5ce4ac93c5acb3ca96e890f2d9c0abf301f338e045585deca601ab6da303e31",
+  "binary_path": "web-demo-p006",
+  "binary_sha256": "0856c7af577b6fb1675ca6266686853863aee23e1cbe15a207c64ed0089cbf36",
+  "initial_state_path": "/opt/etc/web-demo/state.txt",
+  "initial_state_sha256": "da68f54607d5f5644954096ce1597c006c5bb9f2497e07441bf064b81003ef8a",
+  "platform": "linux/amd64",
+  "entrypoint": [
+    "/__keemu/init"
+  ],
+  "labels": {
+    "org.keemu.base-image-id": "sha256:66efaedcbd42ac56db30122762ebf73bcfb41a17dd6404bf22f7af067047b6f6",
+    "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+    "org.keemu.init-source-sha256": "735956769173dd462e8bd8e7c7b9292cc7f9285a90454f113ab2ed45e7dc4ed5",
+    "org.keemu.native": "linux/amd64",
+    "org.keemu.owner": "keemu",
+    "org.keemu.package-lock-sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+    "org.keemu.phase": "p0-06",
+    "org.keemu.rootfs-sha256": "f6c4fd770b9219c57c3084138ce57e77d443b347ae6f37059998ea6dd270fe97",
+    "org.keemu.runtime": "mixed-native-init-target-rootfs",
+    "org.keemu.target": "aarch64-3.10",
+    "org.keemu.web-binary-sha256": "0856c7af577b6fb1675ca6266686853863aee23e1cbe15a207c64ed0089cbf36",
+    "org.keemu.web-recipe-sha256": "e5ce4ac93c5acb3ca96e890f2d9c0abf301f338e045585deca601ab6da303e31",
+    "org.keemu.web-source-sha256": "9c885bb3d6ca4e2e297e3625c3f83c50edd88eaf33623af9cbca78b07e78ec31",
+    "org.keemu.web-state-sha256": "da68f54607d5f5644954096ce1597c006c5bb9f2497e07441bf064b81003ef8a"
+  },
+  "saved_image": ".runtime/p0/web-demo-p006-image.tar",
+  "saved_archive_sha256": "4db006f0567ea4696481d18c6f9d8c8791690487a4518150f3a432e63d4c8710",
+  "saved_config_sha256": "ee91c85d856d4b09f17e45573bb56f85cdabc89bb507921e2b4ed4ef40d005a7",
+  "saved_layer_sha256": [
+    "6daf160a117aa4265ccf4bb2d787360efc49b6b20dc229d8e4ccb46afb1ab3e6",
+    "a4b71d75333c145cb3938c5bd3fe456d063373b812322ba7eca9440a51819623",
+    "bc3995abf042acaec1f000725bd05a112c141cd113a4e1a0fdd3a1c88e23c922"
+  ],
+  "build_inputs": {
+    "runtime_image": {
+      "image_id": "sha256:66efaedcbd42ac56db30122762ebf73bcfb41a17dd6404bf22f7af067047b6f6",
+      "base_image_id": "sha256:bfc44a226f962eb35251bb51c33caada4a9e0d44b2bb63567a5fff18b35b1f04",
+      "binary_sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+      "layers": 2
+    },
+    "toolchain": ".runtime/p0/cross-toolchain/root"
+  },
+  "scope": "p0-06 web-demo HTTP/UDP and persisted-state experiment only"
+}

@@ -2,7 +2,7 @@
 
 ## Current status
 
-P0 technical-risk work is in progress. The p0-01 through p0-04 slices and bounded p0-05 AArch64 Docker/binfmt lifecycle proof are implemented and verified. The P0 gate is not complete: localhost web publishing, persistence and NFQUEUE/native-control experiments belong to later frozen subtasks. Full cross-target A01 and recovery A18 remain PARTIAL.
+P0 technical-risk work is in progress. The p0-01 through p0-05 slices are implemented and verified. P0-06 created and exercised a locked AArch64 web-demo runtime image, but cannot complete on this worker because its network namespace is not the Docker daemon host namespace: an explicit Docker `127.0.0.1` publish cannot be reached from this worker's own loopback. The P0 gate is not complete; host-vantage publish/persistence proof and later NFQUEUE/native-control experiments remain required. Full cross-target A01 and recovery A18 remain PARTIAL.
 
 ## Verified
 
@@ -46,18 +46,21 @@ P0 technical-risk work is in progress. The p0-01 through p0-04 slices and bounde
 - Independent report assertions and `verify()` PASS; portable pytest 30 passed, 2 skipped, Ruff clean and `git diff --check` clean. Neither A01 nor A18 as a whole is PASS; P0 web/persistence/NFQUEUE still unrun.
 - The final local p0-05 probe JSON SHA-256 is `86a81d2c33de6c68663871f4e2ff49e1c1c0920055408e123169744a9d52209b`; the retained failing original-image keeper differential JSON SHA-256 is `169c6b5ab6ecd6ed6db45d7b7e15d875818158b81ce8cc8b57c9632c876dbc61`. Both are under ignored `reports/`, not committed.
 - Supervisor runtime now supports `pause_after_subtask_ids`; KEEMU config pauses after `p0-05`. Compile, JSON validation, and all 71 supervisor/router tests pass. This closes the prior auto-advance gap: an attested p0-05 completion will activate but not launch p0-06.
+- P0-06 added a separately locked AArch64 `web-demo-p006` fixture and `keemu/p0-aarch64:web-p006` derived image. The target binary is static because the real Entware libc rejected the initial dynamically linked build (`GLIBC_2.34` unavailable); the locked static binary is `0856c7af577b6fb1675ca6266686853863aee23e1cbe15a207c64ed0089cbf36`. `locks/p0-web-demo-aarch64-p006.json` binds the source, recipe, binary, derived image, saved archive and immutable p0-05 base.
+- P0-06 report `reports/20260923T084433Z-p006-42dcbfcc3c5d/probe.json` independently verified the derived image, created a bounded nonprivileged bridge-network container with no bind mounts, and inspected the exact Docker host publishes `127.0.0.1:18080→8080/tcp` and `127.0.0.1:18081→8081/udp`; `docker port` reported the same bindings. The target AArch64 service answered target-loopback HTTP `keemu-web-demo\nstate=initial`.
+- That probe then correctly failed host-publish readiness from this Hermes worker: `127.0.0.1:18080` returned `ConnectionRefusedError(111)`. The worker is a different network namespace from the Docker daemon host, so this neither proves nor disproves reachability from the host loopback. The owner/run-id-checked container was stopped, removed and independently absent. No P0-06 container remains.
 
 ## Acceptance truth
 
 - A01: PARTIAL overall; real Docker/binfmt target shell, opkg, child ELF and shebang PASS on AArch64 only. MIPS/MIPSEL absent. A18: PARTIAL overall; bounded native init signal-forwarding/reaping and clean owner-only shutdown PASS, but interruption recovery remains later work. A20: limited applied container inspect only; no full isolation PASS.
 - A19: PARTIAL supporting evidence only; not PASS.
 - A21: PARTIAL supporting evidence now includes schema-valid doctor JSON, Markdown generated from the same common model, immutable metadata, parity and consistency validation, atomic write-once bundles, JSONL operation records, and failed-run artifact coverage. Full lifecycle reports and complete runtime provenance remain later work.
-- Other acceptance requirements remain NOT RUN or BLOCKED as mapped in `docs/traceability.md`; no full acceptance ID is PASS.
+- A07, A08 and A09 are not complete. A07 has target-loopback HTTP plus exact localhost Docker-binding evidence, but no Docker-host-vantage reachability result. A08 has the explicit UDP binding only; no Docker-host-vantage UDP echo result. A09 did not run because the host-publish gate stopped the probe before any state mutation/down/up sequence. No full acceptance ID is PASS.
 - No TASK.md gate is complete.
 
 ## Next operation
 
-User explicitly authorized continuation into p0-06 and required live quota verification before every future subtask. Supervisor runtime now supports `quota_admission_scope=every_subtask`; KEEMU config enables it and removes the completed p0-05 pause boundary. Runtime compile and all 74 supervisor/router tests pass. Before p0-06 launch, clear the old task-level admission record, perform and persist a fresh p0-06 OAuth usage observation, then verify the locked `gpt-5.6-terra` / `high` worker invocation.
+Stop at the incomplete p0-06 boundary. Human input is required for a Docker-host-vantage test without violating the repository prohibition on `--network=host`: either run the recorded HTTP/UDP checks directly on the Docker daemon host, or explicitly authorize one tightly bounded project-owned host-network diagnostic client. Only after host-vantage HTTP and UDP results are real may the same labeled persistent container be exercised through service restart and down/up state checks.
 
 Kanban handoff state: board `default` (`KEEMU`) has 6 done and 26 blocked tasks. The p0-05 card `t_e93c7aeb` is done with the attested evidence result; successor p0-06 card `t_967aabbb` remains blocked.
 
