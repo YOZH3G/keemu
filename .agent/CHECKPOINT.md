@@ -46,7 +46,7 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 
 ## Next operation
 
-The p0-03 technical deliverable is ready for commit, but supervisor outcome completion remains blocked by its earlier runtime model-attestation failure (`.agent/STATE.json`). Do not advance to p0-04 until the durable supervisor records a valid p0-03 attestation and session lifecycle. On an approved Docker-capable Linux host, then resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
+The p0-03 technical deliverable is committed as `f64bb9a` (`feat: lock P0 fixture sources`), but supervisor outcome completion remains blocked by its earlier runtime model-attestation failure (`.agent/STATE.json`). Do not advance to p0-04 until the durable supervisor records a valid p0-03 attestation and session lifecycle. On an approved Docker-capable Linux host, then resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
 
 ## Blockers
 
