@@ -4,7 +4,7 @@ Status values in this file describe verified evidence only. `PARTIAL` is not PAS
 
 | ID | Current status | Test or scenario | Latest evidence | Gap |
 |---|---|---|---|---|
-| A01 | PARTIAL | `tests/integration/test_p0_diagnostic.py` | `reports/20260922T080151Z-p0diag-61f167a83d33/report.json` | AArch64 diagnostic only; Docker/binfmt and MIPS/MIPSEL absent |
+| A01 | PARTIAL | `tests/integration/test_p0_diagnostic.py`; locked fixture build | AArch64 diagnostic plus three verified AArch64 ELF64/little-endian fixture outputs | Docker/binfmt and MIPS/MIPSEL absent |
 | A02 | NOT RUN | — | — | hello fixture and opkg lifecycle not implemented |
 | A03 | NOT RUN | — | — | service lifecycle not implemented |
 | A04 | NOT RUN | — | — | negative ELF fixtures not implemented |
@@ -22,6 +22,6 @@ Status values in this file describe verified evidence only. `PARTIAL` is not PAS
 | A16 | BLOCKED | — | Docker daemon unavailable | network-demo persistence absent |
 | A17 | BLOCKED | — | Docker daemon unavailable | packet-processing evidence absent |
 | A18 | NOT RUN | — | — | runtime recovery/ownership cleanup not implemented |
-| A19 | PARTIAL | `keemu p0 verify-lock` | 20 package hashes verified offline after download | complete locked fixture repeat not implemented |
+| A19 | PARTIAL | `keemu p0 verify-lock`; `keemu p0 verify-fixture-lock --verify-external` | Entware closure plus 12 staged cross-toolchain and all fixture source/recipe hashes verified | complete locked fixture repeat and runtime execution remain unimplemented |
 | A20 | BLOCKED | — | Docker daemon unavailable | container isolation inspection absent |
 | A21 | PARTIAL | `tests/unit/test_reports.py`; `tests/unit/test_doctor.py`; `tests/unit/test_cli.py` | current `RunReport` schema version 2; strict frozen metadata; exact partial-failure operation-sequence/name/status validation; schema parity; derived status/coverage validation; atomic JSON/Markdown/operation-log bundle; failed-run preservation test; real doctor BLOCKED report | full lifecycle/acceptance runs and complete runtime provenance absent |

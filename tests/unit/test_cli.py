@@ -46,6 +46,28 @@ def test_p0_verify_lock_reports_verified_artifacts(tmp_path: Path) -> None:
     }
 
 
+def test_p0_verify_fixture_lock_reports_locked_sources() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    result = CliRunner().invoke(
+        cli,
+        [
+            "p0",
+            "verify-fixture-lock",
+            "--lock",
+            str(repo / "locks" / "p0-fixtures-aarch64.json"),
+            "--root",
+            str(repo),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.output) == {
+        "fixture_count": 3,
+        "fixtures": ["hello", "web-demo", "nfqueue-consumer"],
+        "status": "verified",
+    }
+
+
 def test_doctor_returns_blocked_exit_code_and_json(tmp_path: Path) -> None:
     empty_path = tmp_path / "bin"
     empty_path.mkdir()

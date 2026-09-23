@@ -19,13 +19,14 @@ The first locked AArch64 artifact and execution slice is implemented:
 - Portable tests: 25 passed, 1 Docker-independent diagnostic integration test skipped by default.
 - P0 diagnostic integration: 1 passed when explicitly enabled.
 - Ruff: clean.
+- Project-owned hello, web-demo, and NFQUEUE-consumer sources compiled into AArch64 ELF64/little-endian binaries with a 12-artifact Debian cross-toolchain lock; source, recipe, toolchain, dependency, and output hashes are in `locks/p0-fixtures-aarch64.json`.
 
 Evidence report:
 
 - `reports/20260922T080151Z-p0diag-61f167a83d33/report.json`
 - `reports/20260922T080151Z-p0diag-61f167a83d33/report.md`
 
-Reports are runtime artifacts and are intentionally excluded from Git. The committed reproducibility anchor is `locks/p0-aarch64.json`.
+Reports are runtime artifacts and are intentionally excluded from Git. Committed reproducibility anchors are `locks/p0-aarch64.json` and `locks/p0-fixtures-aarch64.json`.
 
 ## Acceptance status
 

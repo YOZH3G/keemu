@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "kind": "keemu-fixture-lock",
+  "captured_at": "2026-09-22T20:26:00Z",
+  "target": "aarch64-3.10",
+  "architecture": {
+    "elf_machine": "AArch64",
+    "elf_class": 64,
+    "endian": "little"
+  },
+  "toolchain": {
+    "kind": "debian-cross-gcc",
+    "distribution": "Debian trixie",
+    "compiler": "aarch64-linux-gnu-gcc 14.2.0",
+    "artifacts": [
+      {"path": ".runtime/p0/cross-toolchain/debs/binutils-aarch64-linux-gnu_2.44-3_amd64.deb", "package": "binutils-aarch64-linux-gnu", "version": "2.44-3", "architecture": "amd64", "url": "http://deb.debian.org/debian/pool/main/b/binutils/binutils-aarch64-linux-gnu_2.44-3_amd64.deb", "sha256": "6e5a9be38121213dda42189a525db01aad4dc52194b577d7d73d659a5843ce6c"},
+      {"path": ".runtime/p0/cross-toolchain/debs/binutils-common_2.44-3_amd64.deb", "package": "binutils-common", "version": "2.44-3", "architecture": "amd64", "url": "http://deb.debian.org/debian/pool/main/b/binutils/binutils-common_2.44-3_amd64.deb", "sha256": "002da5d23f8757dee97a2c0a40e0e1d4d85a43da094488ee2ee7068d4d3691f9"},
+      {"path": ".runtime/p0/cross-toolchain/debs/cpp-14-aarch64-linux-gnu_14.2.0-19cross1_amd64.deb", "package": "cpp-14-aarch64-linux-gnu", "version": "14.2.0-19cross1", "architecture": "amd64", "url": "http://deb.debian.org/debian/pool/main/g/gcc-14-cross/cpp-14-aarch64-linux-gnu_14.2.0-19cross1_amd64.deb", "sha256": "6610dda7938376fefcbc3b49c81cd23c82e86411a488e4c9a69c082f2acd714e"},
+      {"path": ".runtime/p0/cross-toolchain/debs/cpp-aarch64-linux-gnu_4%3a14.2.0-1_amd64.deb", "package": "cpp-aarch64-linux-gnu", "version": "4:14.2.0-1", "architecture": "amd64", "url": "http://deb.debian.org/debian/pool/main/g/gcc-defaults/cpp-aarch64-linux-gnu_14.2.0-1_amd64.deb", "sha256": "4480016c11678c1a391f8b3d77d8c87915af5e5aaa96c21dcf69a9c516979e63"},
+      {"path": ".runtime/p0/cross-toolchain/debs/gcc-14-aarch64-linux-gnu-base_14.2.0-19cross1_amd64.deb", "package": "gcc-14-aarch64-linux-gnu-base", "version": "14.2.0-19cross1", "architecture": "amd64", "url": "http://deb.debian.org/debian/pool/main/g/gcc-14-cross/gcc-14-aarch64-linux-gnu-base_14.2.0-19cross1_amd64.deb", "sha256": "4a40a7a5429a03f58bdb1f49df9b7aeecb86770f5585d88dcf6a27b5979a6d5d"},
+      {"path": ".runtime/p0/cross-toolchain/debs/gcc-14-aarch64-linux-gnu_14.2.0-19cross1_amd64.deb", "package": "gcc-14-aarch64-linux-gnu", "version": "14.2.0-19cross1", "architecture": "amd64", "url": "http://deb.debian.org/debian/pool/main/g/gcc-14-cross/gcc-14-aarch64-linux-gnu_14.2.0-19cross1_amd64.deb", "sha256": "489acd3a7479d7e55c01e7f3af10176b70a99ec8c2230ba63cacdbcf2e6e0692"},
+      {"path": ".runtime/p0/cross-toolchain/debs/gcc-aarch64-linux-gnu_4%3a14.2.0-1_amd64.deb", "package": "gcc-aarch64-linux-gnu", "version": "4:14.2.0-1", "architecture": "amd64", "url": "http://deb.debian.org/debian/pool/main/g/gcc-defaults/gcc-aarch64-linux-gnu_14.2.0-1_amd64.deb", "sha256": "ff536dd2b6a7f2879cf83ebadd7cc4af3e7234a87226a2ba97bbf0a857e930da"},
+      {"path": ".runtime/p0/cross-toolchain/debs/libc6-arm64-cross_2.41-11cross1_all.deb", "package": "libc6-arm64-cross", "version": "2.41-11cross1", "architecture": "all", "url": "http://deb.debian.org/debian/pool/main/c/cross-toolchain-base/libc6-arm64-cross_2.41-11cross1_all.deb", "sha256": "82cd3a0c6754d36cb5a7acbd9fa64c38080a681608c41165736dc88438acfc71"},
+      {"path": ".runtime/p0/cross-toolchain/debs/libc6-dev-arm64-cross_2.41-11cross1_all.deb", "package": "libc6-dev-arm64-cross", "version": "2.41-11cross1", "architecture": "all", "url": "http://deb.debian.org/debian/pool/main/c/cross-toolchain-base/libc6-dev-arm64-cross_2.41-11cross1_all.deb", "sha256": "61e0b87dec4929abc9fb345ef324139498bf23ddbf0b10ca3a743b59c8ddf8bb"},
+      {"path": ".runtime/p0/cross-toolchain/debs/libgcc-14-dev-arm64-cross_14.2.0-19cross1_all.deb", "package": "libgcc-14-dev-arm64-cross", "version": "14.2.0-19cross1", "architecture": "all", "url": "http://deb.debian.org/debian/pool/main/g/gcc-14-cross/libgcc-14-dev-arm64-cross_14.2.0-19cross1_all.deb", "sha256": "44d31567993f2f138638e3088cc75240d13c7d8a2ebe69032aafd37bc35c7a6f"},
+      {"path": ".runtime/p0/cross-toolchain/debs/libgcc-s1-arm64-cross_14.2.0-19cross1_all.deb", "package": "libgcc-s1-arm64-cross", "version": "14.2.0-19cross1", "architecture": "all", "url": "http://deb.debian.org/debian/pool/main/g/gcc-14-cross/libgcc-s1-arm64-cross_14.2.0-19cross1_all.deb", "sha256": "272751f04dc1669c6368005ccea3496b28626c720c64c98980f705350f4c6b6b"},
+      {"path": ".runtime/p0/cross-toolchain/debs/linux-libc-dev-arm64-cross_6.12.38-1cross1_all.deb", "package": "linux-libc-dev-arm64-cross", "version": "6.12.38-1cross1", "architecture": "all", "url": "http://deb.debian.org/debian/pool/main/c/cross-toolchain-base/linux-libc-dev-arm64-cross_6.12.38-1cross1_all.deb", "sha256": "fd77c13fedf057038732ef1c4fc06edd753d08092fd5f92c4629551f1f69870f"}
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "hello",
+      "provenance": {"kind": "project-owned", "source": "fixtures/sources/hello/hello.c"},
+      "sources": [{"path": "fixtures/sources/hello/hello.c", "sha256": "352e8a9df529faaa2e96c0898e7a7fb56de2d5ced9a52a90a270330fa1b20ff7"}],
+      "recipe": "fixtures/recipes/aarch64/hello.mk",
+      "recipe_sha256": "a2bf582680f981f5eda7f882ab686268e5ea888c2e262bfb5f7d0bf98ba35299",
+      "recipe_inputs": [{"path": "fixtures/recipes/aarch64/common.mk", "sha256": "99c312206fb93a916b603b51e9c06d258d43e896610db5373efebee35120c5bf"}],
+      "runtime_dependencies": ["libc"],
+      "kernel_requirements": [],
+      "verified_output": {"path": ".runtime/p0/fixtures/aarch64/hello", "sha256": "334fd4454f3cdbcc4556704dec766e66426e9a75876c1f1f27e6d5fd3156955c"}
+    },
+    {
+      "id": "web-demo",
+      "provenance": {"kind": "project-owned", "source": "fixtures/sources/web-demo/web_demo.c"},
+      "sources": [{"path": "fixtures/sources/web-demo/web_demo.c", "sha256": "95cf98d61c6f4709be17ed915ecce23a91ebd7b89ea0df634bad54ce1033c98f"}],
+      "recipe": "fixtures/recipes/aarch64/web-demo.mk",
+      "recipe_sha256": "21026f2d0487ab3ea9f23ce06e321e00ca42413e5765b7c464e46ae7c593171a",
+      "recipe_inputs": [{"path": "fixtures/recipes/aarch64/common.mk", "sha256": "99c312206fb93a916b603b51e9c06d258d43e896610db5373efebee35120c5bf"}],
+      "runtime_dependencies": ["libc"],
+      "kernel_requirements": [],
+      "verified_output": {"path": ".runtime/p0/fixtures/aarch64/web-demo", "sha256": "aa45036ae479cc1901492d64d534d72789d48e1e419897ee51ae91d413ffd10b"}
+    },
+    {
+      "id": "nfqueue-consumer",
+      "provenance": {"kind": "project-owned", "source": "fixtures/sources/nfqueue/nfqueue_consumer.c", "api": "Linux NFNETLINK/NFQUEUE UAPI headers from linux-libc-dev-arm64-cross"},
+      "sources": [{"path": "fixtures/sources/nfqueue/nfqueue_consumer.c", "sha256": "01c077324c48fe467ae69410e01f32348c8a394f210ab9717ba0b1698a2e1078"}],
+      "recipe": "fixtures/recipes/aarch64/nfqueue-consumer.mk",
+      "recipe_sha256": "e2e3c7ad4a55396f24aab1115c520ee9c29dea7ad7af244e799468489bb71c49",
+      "recipe_inputs": [{"path": "fixtures/recipes/aarch64/common.mk", "sha256": "99c312206fb93a916b603b51e9c06d258d43e896610db5373efebee35120c5bf"}],
+      "runtime_dependencies": ["libc"],
+      "kernel_requirements": ["NFQUEUE"],
+      "verified_output": {"path": ".runtime/p0/fixtures/aarch64/nfqueue-consumer", "sha256": "0d5a85fabecd3754633fa513712a1cc7b2be2871fd31a9d08c58ae68a15b3886"}
+    }
+  ],
+  "evidence_scope": "Sources and recipes compiled into AArch64 ELF64 little-endian binaries. No Docker publish, persistence, queue rule, or packet-processing experiment has run."
+}

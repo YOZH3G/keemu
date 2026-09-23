@@ -11,6 +11,7 @@ from yaml import YAMLError
 
 from keemu.doctor import collect_doctor
 from keemu.entware import ArtifactIntegrityError, verify_artifact_cache
+from keemu.fixture_lock import FixtureLockError, verify_fixture_lock
 from keemu.profiles import ProfileError, load_profile
 from keemu.reports import exit_code_for_status
 
@@ -106,6 +107,40 @@ def verify_lock(lock_path: Path, cache: Path) -> None:
                 "artifact_count": len(verified),
                 "status": "verified",
                 "target": lock.get("target"),
+            },
+            sort_keys=True,
+        )
+    )
+
+
+@p0.command("verify-fixture-lock")
+@click.option(
+    "lock_path",
+    "--lock",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    required=True,
+)
+@click.option(
+    "root",
+    "--root",
+    type=click.Path(exists=True, file_okay=False, path_type=Path),
+    required=True,
+)
+@click.option("verify_external", "--verify-external", is_flag=True)
+def verify_fixture(lock_path: Path, root: Path, verify_external: bool) -> None:
+    """Verify fixture sources and recipes; optionally staged toolchain inputs."""
+    try:
+        verified = verify_fixture_lock(
+            lock_path, root, verify_external=verify_external
+        )
+    except FixtureLockError as error:
+        raise click.ClickException(str(error)) from error
+    click.echo(
+        json.dumps(
+            {
+                "fixture_count": len(verified),
+                "fixtures": verified,
+                "status": "verified",
             },
             sort_keys=True,
         )

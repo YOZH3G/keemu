@@ -9,8 +9,8 @@ The implemented result is an AArch64 direct-QEMU/PRoot diagnostic. It verifies r
 - Docker daemon access is unavailable in the current execution environment.
 - No target binfmt registration is present, and no host binfmt setting was modified.
 - Docker image metadata, native PID 1, child reaping, signal forwarding, resource limits, labels, mounts, localhost publishing, down/up persistence, and cleanup are untested.
-- Web-demo and network-demo are not implemented.
-- NFQUEUE, iptables backend, ipset, conntrack, forwarding, raw sockets, routing topology, packet counters, and native control are untested.
+- Project-owned AArch64 hello, web-demo, and NFQUEUE-consumer sources compile from a locked cross-toolchain, but no fixture IPK, service lifecycle, web publish, HTTPS/UDP endpoint, or persistence experiment has run.
+- NFQUEUE source uses the locked Linux UAPI headers, but NFQUEUE kernel support, iptables backend, ipset, conntrack, forwarding, raw sockets, routing topology, packet counters, and native control are untested.
 - MIPS and MIPSEL artifacts and execution are untested.
 - IPK archive safety analysis, lifecycle scripts, scenario execution, matrices, NDM fixtures, event contracts, persistent registry, filesystem diff, and full acceptance runs are not implemented. Common `RunReport` schema version 2 metadata and failed-run bundle primitives exist, but most runtime producers do not yet populate them.
 - PRoot is not treated as a security or container isolation boundary.

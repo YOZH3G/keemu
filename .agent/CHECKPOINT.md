@@ -2,7 +2,7 @@
 
 ## Current status
 
-P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and direct-QEMU/PRoot diagnostic vertical slice are implemented and verified. The p0-01 profile/doctor slice and p0-02 immutable report-metadata and failed-run bundle primitives are implemented and verified. The P0 gate is not complete because mandatory Docker, localhost web publishing, persistence, binfmt, and NFQUEUE/native-control experiments have not run.
+P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and direct-QEMU/PRoot diagnostic vertical slice are implemented and verified. The p0-01 profile/doctor slice, p0-02 immutable report-metadata and failed-run bundle primitives, and p0-03 reproducible fixture-source slice are implemented and verified. The P0 gate is not complete because mandatory Docker, localhost web publishing, persistence, binfmt, and NFQUEUE/native-control experiments have not run.
 
 ## Verified
 
@@ -32,6 +32,9 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 - Portable suite: 25 passed, 1 diagnostic test skipped by default. `uv run ruff check .` passes.
 - Final independent staged-diff review found no remaining security concern or blocking logic error after two TDD fix cycles.
 - The coherent p0-02 implementation and durable state are committed as `e4d2ad2` (`[verified] feat: expand A21 report metadata primitives`).
+- `locks/p0-fixtures-aarch64.json` records a real 12-artifact Debian trixie AArch64 cross-toolchain, project-owned hello/web-demo/NFQUEUE-consumer source and recipe hashes, AArch64 ELF metadata, runtime dependencies, kernel requirements, and reproducibly rebuilt output hashes.
+- Rebuilding the three fixture sources with the extracted locked toolchain reproduced their recorded SHA-256 values: hello `334fd4454f3cdbcc4556704dec766e66426e9a75876c1f1f27e6d5fd3156955c`, web-demo `aa45036ae479cc1901492d64d534d72789d48e1e419897ee51ae91d413ffd10b`, and NFQUEUE consumer `0d5a85fabecd3754633fa513712a1cc7b2be2871fd31a9d08c58ae68a15b3886`; `readelf` confirmed ELF64/little-endian/AArch64 for all three.
+- `keemu p0 verify-fixture-lock --lock locks/p0-fixtures-aarch64.json --root . --verify-external` verified all sources, recipes, and staged toolchain artifacts. Portable suite: 28 passed, 1 skipped; `uv run ruff check .` passes.
 
 ## Acceptance truth
 
@@ -43,7 +46,7 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 
 ## Next operation
 
-Stop at the verified p0-02 boundary. p0-03 is the active `gpt-5.6-terra` / `high` subtask; the policy refresh applies `gpt-6-luna`/`gpt-6-sol` to future matching routes. On an approved Docker-capable Linux host, resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
+The p0-03 technical deliverable is ready for commit, but supervisor outcome completion remains blocked by its earlier runtime model-attestation failure (`.agent/STATE.json`). Do not advance to p0-04 until the durable supervisor records a valid p0-03 attestation and session lifecycle. On an approved Docker-capable Linux host, then resume P0 with the locked mixed-image runtime, localhost web-demo publish, down/up persistence, and NFQUEUE/native-control experiments in that order.
 
 ## Blockers
 
