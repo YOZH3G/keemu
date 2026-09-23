@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "keemu-mvp1",
   "status": "RESUMING",
-  "session_id": null,
+  "session_id": "20260923_081725_8f7f18",
   "pause_reason": null,
   "quota": {
     "kind": "usage_limit_reached",
@@ -15,24 +15,24 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-23T07:47:25+00:00",
+    "last_evaluated_at": "2026-09-23T08:17:22+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C4",
-      "model": "gpt-6-sol",
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
       "reasoning": "high"
     },
     "signals": {
       "score": 14,
-      "task_chars": 17484,
-      "changed_files": 0,
+      "task_chars": 20497,
+      "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 340932,
+      "graphify_bytes": 369469,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -58,7 +58,23 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {},
+    "worker_lock": {
+      "provider": "openai-codex",
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "expected_model": "gpt-5.6-terra",
+      "expected_reasoning": "high",
+      "policy_version": "v2",
+      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+      "subtask_id": "p0-06",
+      "subtask_digest": "4151ea7b713aedcce81081a64bd05b57f222e4d7c9284968148454605c98fe11",
+      "route_event_id": "evt_825b168bcfcc0c5ef19f8ee2",
+      "session_id": "20260923_081725_8f7f18",
+      "model_attested": null,
+      "attestation_status": "PENDING",
+      "session_deleted": null
+    },
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
@@ -635,7 +651,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_1871e65f362ef468cd29e105",
+      "last_event_id": "evt_825b168bcfcc0c5ef19f8ee2",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -791,10 +807,23 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-23T07:47:25+00:00",
+    "last_run_started_at": "2026-09-23T08:17:22+00:00",
     "last_run_finished_at": "2026-09-23T08:07:13+00:00",
     "last_log": ".agent/runs/20260923T074725Z.log",
     "last_checkpoint_at": "2026-09-23T08:07:15+00:00"
   },
-  "quota_admission": {}
+  "quota_admission": {
+    "checked_at": "2026-09-23T08:17:20+00:00",
+    "scope": "subtask",
+    "admission_key": "subtask:p0-06:4151ea7b713aedcce81081a64bd05b57f222e4d7c9284968148454605c98fe11",
+    "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+    "task_intent": "Prove web-demo localhost-only publishing and persistent state across down/up with reproducible evidence and cleanup",
+    "subtask_id": "p0-06",
+    "subtask_digest": "4151ea7b713aedcce81081a64bd05b57f222e4d7c9284968148454605c98fe11",
+    "action": "admit",
+    "remaining_percent": 49.0,
+    "reset_at": "2026-09-23T12:45:45+00:00",
+    "source": "hermes_oauth_usage_api",
+    "message": "5-hour OAuth quota admits new task"
+  }
 }
