@@ -50,9 +50,9 @@ P0 technical-risk work is in progress. A locked AArch64 Entware artifact set and
 
 ## Next operation
 
-P0-05 is active and not complete. Although user authorization was explicitly limited to p0-04 Docker build/inspect, the supervisor auto-advanced and ran a bounded nonprivileged p0-05 diagnostic before stopping for human input. Preserve that observed evidence, but treat it as out-of-scope for authorization and do not perform any further p0-05 action without a new explicit user approval. If approved, obtain permission for a bounded host AArch64 binfmt registration on the Docker host (or use an approved separate runner with pre-existing working binfmt), then revalidate the exact registration/interpreter and rerun target shell, child ELF, shebang, native-init signal-forwarding/reaping, and clean shutdown tests against the locked image. Preserve exact evidence and clean only verified KEEMU-owned resources. Do not begin p0-06 or later work.
+P0-05 is active and not complete. The user explicitly approved a bounded host AArch64 binfmt registration. Preflight confirmed no AArch64 registration: the pinned `tonistiigi/binfmt:qemu-v10.2.3-68` image reported only native amd64/386 support and emulator `python3.12`. Use only image digest `sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0` to install only `qemu-aarch64`; do not install all architectures or change firewall, modules, ports, services, or foreign resources. Rollback is bounded removal of only `qemu-aarch64`. After independent registration verification, resume p0-05 only and rerun target shell, child ELF, shebang, native-init signal-forwarding/reaping, and clean shutdown tests against the locked image. Do not begin p0-06 or later work.
 
-Kanban handoff state: board `default` (`KEEMU`) has 5 done and 27 blocked tasks. The p0-05 card is `t_e93c7aeb`; keep it blocked until the user explicitly approves the host-binfmt remediation or chooses an approved runner.
+Kanban handoff state: board `default` (`KEEMU`) has 5 done and 27 blocked tasks. The p0-05 card is `t_e93c7aeb`; keep it blocked during bounded host remediation and supervised p0-05 verification so Kanban cannot dispatch a duplicate worker.
 
 ## Blockers
 
