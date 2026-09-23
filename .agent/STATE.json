@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "keemu-mvp1",
   "status": "RESUMING",
-  "session_id": "20260923_200330_125e2a",
+  "session_id": null,
   "pause_reason": null,
   "quota": {
     "kind": "usage_limit_reached",
@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-23T20:15:54+00:00",
+    "last_evaluated_at": "2026-09-23T20:19:33+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -58,27 +58,11 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {
-      "provider": "openai-codex",
-      "tier": "C4",
-      "model": "gpt-6-sol",
-      "reasoning": "high",
-      "expected_model": "gpt-6-sol",
-      "expected_reasoning": "high",
-      "policy_version": "v2",
-      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-      "subtask_id": "m1a-11",
-      "subtask_digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
-      "route_event_id": "evt_1d79c4694df1e32b254e3b2d",
-      "session_id": "20260923_200330_125e2a",
-      "model_attested": null,
-      "attestation_status": "PENDING",
-      "session_deleted": null
-    },
+    "worker_lock": {},
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 11,
+      "active_index": 12,
       "items": [
         {
           "id": "preflight",
@@ -346,8 +330,15 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0"
+          "status": "complete",
+          "digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
+          "outcome": {
+            "event_id": "evt_d1b2b5ddc2dc5fedd2c0070c",
+            "route_event_id": "evt_1d79c4694df1e32b254e3b2d",
+            "completed_at": "2026-09-23T20:32:07+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1a-12",
@@ -362,7 +353,7 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "9ec8e041eb9fe1510108a43d6aba9d7aaa1fedde4af987743c27cdc79f749a88"
         },
         {
@@ -686,7 +677,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_41271864c071be5a5aa23762",
+      "last_event_id": "evt_d1b2b5ddc2dc5fedd2c0070c",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -841,11 +832,11 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 1,
-    "last_run_started_at": "2026-09-23T20:15:54+00:00",
-    "last_run_finished_at": "2026-09-23T20:15:52+00:00",
-    "last_log": ".agent/runs/20260923T201535Z.log",
-    "last_checkpoint_at": "2026-09-23T20:15:52+00:00"
+    "last_exit_code": 0,
+    "last_run_started_at": "2026-09-23T20:19:33+00:00",
+    "last_run_finished_at": "2026-09-23T20:32:05+00:00",
+    "last_log": ".agent/runs/20260923T201933Z.log",
+    "last_checkpoint_at": "2026-09-23T20:32:07+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-23T20:18:31+00:00",
