@@ -15,24 +15,24 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-23T20:19:33+00:00",
+    "last_evaluated_at": "2026-09-23T20:32:10+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C4",
+      "tier": "C5",
       "model": "gpt-6-sol",
-      "reasoning": "high"
+      "reasoning": "xhigh"
     },
     "signals": {
       "score": 14,
       "task_chars": 24002,
-      "changed_files": 3,
+      "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 697699,
+      "graphify_bytes": 707257,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -62,7 +62,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 12,
+      "active_index": 13,
       "items": [
         {
           "id": "preflight",
@@ -353,8 +353,15 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "active",
-          "digest": "9ec8e041eb9fe1510108a43d6aba9d7aaa1fedde4af987743c27cdc79f749a88"
+          "status": "complete",
+          "digest": "9ec8e041eb9fe1510108a43d6aba9d7aaa1fedde4af987743c27cdc79f749a88",
+          "outcome": {
+            "event_id": "evt_b720e8ecdf620bb65bd2f955",
+            "route_event_id": "evt_6217edeae13bf6bf05091897",
+            "completed_at": "2026-09-23T20:44:07+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1a-13",
@@ -374,7 +381,7 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "f3dcdacfe2ee110239f55bf581d96ba7f0fcee848769df9cde446994c4a54328"
         },
         {
@@ -677,7 +684,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_d1b2b5ddc2dc5fedd2c0070c",
+      "last_event_id": "evt_b720e8ecdf620bb65bd2f955",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -833,21 +840,21 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-23T20:19:33+00:00",
-    "last_run_finished_at": "2026-09-23T20:32:05+00:00",
-    "last_log": ".agent/runs/20260923T201933Z.log",
-    "last_checkpoint_at": "2026-09-23T20:32:07+00:00"
+    "last_run_started_at": "2026-09-23T20:32:10+00:00",
+    "last_run_finished_at": "2026-09-23T20:44:05+00:00",
+    "last_log": ".agent/runs/20260923T203210Z.log",
+    "last_checkpoint_at": "2026-09-23T20:44:07+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-23T20:18:31+00:00",
+    "checked_at": "2026-09-23T20:32:08+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1a-11:f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
+    "admission_key": "subtask:m1a-12:9ec8e041eb9fe1510108a43d6aba9d7aaa1fedde4af987743c27cdc79f749a88",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-    "task_intent": "Implement locked init plus rootfs and image cache with hash verification, atomic publication, installed-package inventory, network smoke, and OCI digest recording",
-    "subtask_id": "m1a-11",
-    "subtask_digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
+    "task_intent": "Implement the Docker runtime boundary with argv-only execution, labels, limits, immutable bases, writable layers, bounded logs, ownership-verified cleanup, and reconciliation",
+    "subtask_id": "m1a-12",
+    "subtask_digest": "9ec8e041eb9fe1510108a43d6aba9d7aaa1fedde4af987743c27cdc79f749a88",
     "action": "admit",
-    "remaining_percent": 100.0,
+    "remaining_percent": 75.0,
     "reset_at": "2026-09-24T01:18:09+00:00",
     "source": "hermes_oauth_usage_api",
     "message": "5-hour OAuth quota admits new task"
