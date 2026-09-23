@@ -2,7 +2,7 @@
 
 ## Current status
 
-P0 technical-risk work is in progress. P0-01 through p0-06 are verified; p0-07 completed a bounded isolated NFQUEUE diagnosis, not an ACCEPT/DROP proof. Native NFNETLINK socket creation works while static AArch64 socket creation returns `EPROTONOSUPPORT`; the original dynamic target fixture also cannot load against Entware libc. Host NFQUEUE modules are not active and no host-module mutation was approved. A13/A14/A17 and MVP 1C remain BLOCKED; P0 as a whole is not complete. Full cross-target A01 and recovery A18 remain PARTIAL.
+P0 technical-risk work is complete. P0-01 through p0-06 are verified; p0-07 completed a bounded isolated NFQUEUE diagnosis, not an ACCEPT/DROP proof; p0-08 independently reconciled the evidence package and its digests. Native NFNETLINK socket creation works while static AArch64 socket creation returns `EPROTONOSUPPORT`; the original dynamic target fixture also cannot load against Entware libc. Host NFQUEUE modules are not active and no host-module mutation was approved. A13/A14/A17 and MVP 1C remain BLOCKED. Full cross-target A01 and recovery A18 remain PARTIAL.
 
 ## Verified
 
@@ -55,21 +55,17 @@ P0 technical-risk work is in progress. P0-01 through p0-06 are verified; p0-07 c
 
 ## Acceptance truth
 
-- A01: PARTIAL overall; real Docker/binfmt target shell, opkg, child ELF and shebang PASS on AArch64 only. MIPS/MIPSEL absent. A18: PARTIAL overall; bounded native init signal-forwarding/reaping and clean owner-only shutdown PASS, but interruption recovery remains later work. A20: limited applied container inspect only; no full isolation PASS.
-- A19: PARTIAL supporting evidence only; not PASS.
-- A21: PARTIAL supporting evidence now includes schema-valid doctor JSON, Markdown generated from the same common model, immutable metadata, parity and consistency validation, atomic write-once bundles, JSONL operation records, and failed-run artifact coverage. Full lifecycle reports and complete runtime provenance remain later work.
-- A07: PASS for the required AArch64 P0-06 slice. The Docker-host-vantage observer received the expected HTTP endpoint through the explicit localhost TCP publish while the application container inspection and `docker port` proved no non-loopback publish.
-- A08: PASS for the required AArch64 P0-06 slice. The same Docker-host-vantage observer received the expected UDP echo through the explicit localhost UDP publish.
-- A09: PASS for the required AArch64 P0-06 slice. A non-default state survived the service restart and Docker stop/start of the same labeled container; hash equality and final host-vantage HTTP/UDP readback are retained.
-- A13/A14/A17: BLOCKED for NFQUEUE capability and unimplemented routing/network-demo packet path. Native socket success does not prove a native NFQUEUE verdict; target socket fails before queue binding. No acceptance PASS is claimed for these IDs.
-- No TASK.md overall gate is complete; p0-07 is complete under its explicit "evidence or bounded blocker" objective, but P0 and MVP 1C gates remain incomplete.
+- P0 is complete only as the four-condition technical-risk gate defined in `TASK.md`: target execution, localhost publishing/persistence, reproducible NFQUEUE blocker, and committed locks/ADRs. The digest-bound package is `docs/evidence/p0-evidence-manifest.md`.
+- A07/A08/A09: PASS for the exact AArch64 P0-06 fixture slice only. Their general lifecycle features remain unimplemented.
+- A01/A18/A19/A20/A21 remain PARTIAL. A13/A14/A17 remain BLOCKED; native socket success and static argument parsing are not NFQUEUE verdict evidence. Every acceptance ID's exact status and gap is maintained in `docs/traceability.md`.
+- MVP 1A, MVP 1B, MVP 1C, and MVP 1 are not complete.
 
 ## Next operation
 
-P0-07 bounded blocker is verified. Do not execute p0-08 or any later subtask from this session; the durable supervisor must consume the exact p0-07 completion marker and attest this worker before advancing. The p0-07 quota admission is subtask-bound and recorded in `.agent/STATE.json`. Future NFQUEUE work requires a separately approved/preconfigured kernel capability gate and a resolved target NFNETLINK socket path; this subtask granted neither host-module mutation nor a network topology experiment.
+P0-08 evidence closure is verified. Do not work ahead from this session: the durable supervisor must consume the exact p0-08 completion marker, attest this worker, and advance only to the frozen `m1a-09` subtask. Future NFQUEUE work requires separately approved/preconfigured kernel capability and a resolved target NFNETLINK socket path; this subtask granted neither host-module mutation nor a network topology experiment.
 
-Kanban handoff state was not mutated in p0-07; supervisor reconciliation is separate from this worker's evidence.
+Kanban/supervisor reconciliation remains external to this worker's evidence package.
 
 ## Blockers
 
-No p0-05 or p0-06 capability blocker remains on this host; revalidate binfmt after reboot or runner change. P0-07 identified a target socket failure and absent active NFQUEUE handler, so true ACCEPT/DROP, counters, no-listener behavior and A13/A14/A17 acceptance remain blocked. Do not autoload host modules under this authorization. Full isolation/recovery remains later work.
+Revalidate binfmt after reboot or runner change. P0-07 identified a target socket failure and absent active NFQUEUE handler, so true ACCEPT/DROP, counters, no-listener behavior and A13/A14/A17 acceptance remain blocked. Do not autoload host modules under this authorization. Full isolation/recovery remains later work.

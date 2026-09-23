@@ -51,3 +51,7 @@ The Hermes worker network namespace cannot directly observe Docker daemon host l
 ## D-013 — P0-07 NFQUEUE blocker is not a verdict substitution
 
 In project-owned isolation, the native NFNETLINK socket opens but the statically linked AArch64 socket returns `EPROTONOSUPPORT`. The original dynamically linked target consumer also fails the Entware libc version check; static target execution alone does not establish queue support. Host NFQUEUE modules were not active and host-module mutation requires separate approval. No queue binding or rule was attempted. This is an explicit bounded P0 blocker, not A13/A14/A17 PASS; MVP 1C stays blocked. `docs/decisions/0004-p0-nfqueue-gate.md` has the evidence and scope.
+
+## D-014 — P0 closure distinguishes gate completion from acceptance completion
+
+P0 is closed when its `TASK.md` technical-risk conditions have exact evidence: real AArch64 execution, explicit localhost publish plus down/up persistence, and either NFQUEUE ACCEPT/DROP evidence or a reproducible capability blocker, with committed locks and ADRs. P0-07 supplied the latter blocker; it does not make A13/A14/A17 PASS. `docs/evidence/p0-evidence-manifest.md` records recomputed SHA-256 digests for all committed P0 locks and retained ignored runtime reports. ADR-0005 limits the P0-06 Docker-host observer to localhost-evidence collection; it is not a general host-network component or later network-topology authorization.
