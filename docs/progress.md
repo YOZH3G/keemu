@@ -2,7 +2,7 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. The next frozen subtask is MVP 1A work; no MVP 1A implementation is claimed here.
+P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtask m1a-09 adds versioned input schemas and safe-path parsing; no lifecycle or MVP 1A acceptance is claimed.
 
 ## P0 verified results
 
@@ -10,7 +10,11 @@ P0 technical-risk experiments are complete on branch `agent/keemu`. The next fro
 - Real Docker/binfmt AArch64 execution passed target `/bin/sh`, real `opkg`, nested AArch64 ELF, and executable target shebang. The derived P0-05 init also passed bounded daemon adoption, child reaping, signal forwarding, and owner-only cleanup.
 - Real P0-06 execution passed explicit `127.0.0.1:18080→8080/tcp` and `127.0.0.1:18081→8081/udp` Docker publishing, host-vantage HTTP/UDP observation, state write, service restart, Docker stop/start persistence, and verified cleanup.
 - P0-07 produced a bounded NFQUEUE BLOCKED diagnosis. Native NFNETLINK socket creation succeeded while equivalent static AArch64 creation returned `EPROTONOSUPPORT`; no queue bind, rule, verdict, packet, kernel-module load, or host-network topology was attempted.
-- The report model is schema version 2 with immutable metadata and atomic write-once JSON/Markdown/JSONL bundles. Current portable verification passes: 30 passed, 3 skipped; Ruff and whitespace checks pass.
+- The report model is schema version 2 with immutable metadata and atomic write-once JSON/Markdown/JSONL bundles. The P0 baseline portable suite passed 30 tests with 3 skipped; schema-slice results are recorded below.
+
+## MVP 1A schema slice
+
+Schema-version-1 scenario, production lock and persistent-environment models and generated JSON schemas are implemented. Tests cover duplicate keys, unknown fields/versions, pinned-installer contracts, explicit localhost publish and vantage, CA-backed HTTPS, safe project-relative inputs, symlinks, source/scenario hashes, environment ownership metadata and parser bounds. This is input validation only: no persistent registry mutation, Docker runtime, lifecycle, archive inspection, runtime digest/label proof, or A18/A21 full acceptance is claimed.
 
 ## Evidence package
 

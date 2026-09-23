@@ -2,10 +2,11 @@
 
 ## Status
 
-This document describes the implemented P0 diagnostic, report-foundation, and mixed-image build/inspect slices. Docker container execution and later MVP components remain unverified.
+This document describes the implemented P0 diagnostic, report foundation, mixed-image build and bounded P0 Docker/binfmt experiments, plus the MVP 1A input-schema slice. The full lifecycle, persistent registry and network topology are not implemented.
 
 ## Implemented components
 
+- `src/keemu/scenarios.py`, `src/keemu/input_locks.py`, and `src/keemu/input_paths.py` define strict, frozen schema-version-1 input models for scenarios, production source locks, persistent-environment entries, explicit TCP/UDP publication, vantage-aware checks, persistence, cleanup and bounded safe paths. The committed JSON schemas are generated from these models and parity-tested. Duplicate YAML/JSON keys, unknown fields and unsupported versions fail closed. The loaders confine scenario-relative inputs to the project, reject symlink components, and compare source/scenario SHA-256 values against production lock metadata; runtime profile/image/ownership proof and mutation remain later tasks. Historical P0 locks are unchanged.
 - `src/keemu/entware.py` parses an Entware package index, resolves a dependency closure, creates lock data, and verifies cached artifacts by SHA-256.
 - `src/keemu/p0.py` constructs an AArch64 diagnostic rootfs with the real target `opkg` under direct QEMU user-mode and runs nested target execution through unprivileged PRoot.
 - `src/keemu/cli.py` exposes `keemu p0 verify-lock` for offline verification of the committed package lock.

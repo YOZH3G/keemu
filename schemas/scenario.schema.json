@@ -1,0 +1,729 @@
+{
+  "$defs": {
+    "Cleanup": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_residual_paths": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 512,
+          "title": "Allowed Residual Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "allowed_residual_paths"
+      ],
+      "title": "Cleanup",
+      "type": "object"
+    },
+    "Command": {
+      "additionalProperties": false,
+      "properties": {
+        "argv": {
+          "items": {
+            "maxLength": 8192,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Argv",
+          "type": "array"
+        },
+        "timeout_seconds": {
+          "default": 60,
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "argv"
+      ],
+      "title": "Command",
+      "type": "object"
+    },
+    "CommandCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "command",
+          "title": "Kind",
+          "type": "string"
+        },
+        "command": {
+          "$ref": "#/$defs/Command"
+        },
+        "expected_exit_code": {
+          "title": "Expected Exit Code",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "command",
+        "expected_exit_code"
+      ],
+      "title": "CommandCheck",
+      "type": "object"
+    },
+    "FileCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "file",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "exists": {
+          "title": "Exists",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "path",
+        "exists"
+      ],
+      "title": "FileCheck",
+      "type": "object"
+    },
+    "HTTPCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "http",
+            "https"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "vantage": {
+          "enum": [
+            "target_loopback",
+            "host_publish",
+            "client"
+          ],
+          "title": "Vantage",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 2048,
+          "minLength": 8,
+          "title": "Url",
+          "type": "string"
+        },
+        "expected_status": {
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Expected Status",
+          "type": "array"
+        },
+        "body_contains": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Body Contains",
+          "type": "string"
+        },
+        "ca_cert": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ca Cert"
+        },
+        "timeout_seconds": {
+          "default": 30,
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "vantage",
+        "url",
+        "expected_status",
+        "body_contains",
+        "id"
+      ],
+      "title": "HTTPCheck",
+      "type": "object"
+    },
+    "HTTPProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "http",
+            "https"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "vantage": {
+          "enum": [
+            "target_loopback",
+            "host_publish",
+            "client"
+          ],
+          "title": "Vantage",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 2048,
+          "minLength": 8,
+          "title": "Url",
+          "type": "string"
+        },
+        "expected_status": {
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Expected Status",
+          "type": "array"
+        },
+        "body_contains": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Body Contains",
+          "type": "string"
+        },
+        "ca_cert": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ca Cert"
+        },
+        "timeout_seconds": {
+          "default": 30,
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "vantage",
+        "url",
+        "expected_status",
+        "body_contains"
+      ],
+      "title": "HTTPProbe",
+      "type": "object"
+    },
+    "IPKInstall": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "ipk",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "package_name": {
+          "title": "Package Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "path",
+        "package_name"
+      ],
+      "title": "IPKInstall",
+      "type": "object"
+    },
+    "Persistence": {
+      "additionalProperties": false,
+      "properties": {
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 512,
+          "title": "Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "paths"
+      ],
+      "title": "Persistence",
+      "type": "object"
+    },
+    "PinnedInstaller": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "pinned-installer",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "source_lock": {
+          "title": "Source Lock",
+          "type": "string"
+        },
+        "entrypoint": {
+          "items": {
+            "maxLength": 8192,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Entrypoint",
+          "type": "array"
+        },
+        "working_directory": {
+          "title": "Working Directory",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        },
+        "verify_install": {
+          "$ref": "#/$defs/Command"
+        },
+        "uninstall": {
+          "$ref": "#/$defs/Command"
+        }
+      },
+      "required": [
+        "kind",
+        "path",
+        "source_lock",
+        "entrypoint",
+        "working_directory",
+        "timeout_seconds",
+        "verify_install",
+        "uninstall"
+      ],
+      "title": "PinnedInstaller",
+      "type": "object"
+    },
+    "Publish": {
+      "additionalProperties": false,
+      "properties": {
+        "host_ip": {
+          "const": "127.0.0.1",
+          "default": "127.0.0.1",
+          "title": "Host Ip",
+          "type": "string"
+        },
+        "host_port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Host Port",
+          "type": "integer"
+        },
+        "target_port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Target Port",
+          "type": "integer"
+        },
+        "protocol": {
+          "enum": [
+            "tcp",
+            "udp"
+          ],
+          "title": "Protocol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "host_port",
+        "target_port",
+        "protocol"
+      ],
+      "title": "Publish",
+      "type": "object"
+    },
+    "Requirements": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "items": {
+            "enum": [
+              "NET_ADMIN",
+              "NET_RAW"
+            ],
+            "type": "string"
+          },
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "ndm_fixtures": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ndm Fixtures",
+          "type": "array"
+        }
+      },
+      "required": [
+        "capabilities",
+        "ndm_fixtures"
+      ],
+      "title": "Requirements",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "env": {
+          "patternProperties": {
+            "^[A-Z][A-Z0-9_]{0,63}$": {
+              "type": "string"
+            }
+          },
+          "title": "Env",
+          "type": "object"
+        },
+        "cwd": {
+          "title": "Cwd",
+          "type": "string"
+        },
+        "settle_seconds": {
+          "maximum": 300,
+          "minimum": 0,
+          "title": "Settle Seconds",
+          "type": "integer"
+        },
+        "publish": {
+          "items": {
+            "$ref": "#/$defs/Publish"
+          },
+          "maxItems": 64,
+          "title": "Publish",
+          "type": "array"
+        }
+      },
+      "required": [
+        "env",
+        "cwd",
+        "settle_seconds",
+        "publish"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "Service": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "items": {
+            "maxLength": 8192,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Start",
+          "type": "array"
+        },
+        "stop": {
+          "items": {
+            "maxLength": 8192,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Stop",
+          "type": "array"
+        },
+        "readiness": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTPProbe"
+            },
+            {
+              "$ref": "#/$defs/UDPProbe"
+            }
+          ],
+          "title": "Readiness"
+        }
+      },
+      "required": [
+        "start",
+        "stop",
+        "readiness"
+      ],
+      "title": "Service",
+      "type": "object"
+    },
+    "UDPCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "udp",
+          "title": "Kind",
+          "type": "string"
+        },
+        "vantage": {
+          "enum": [
+            "target_loopback",
+            "host_publish",
+            "client"
+          ],
+          "title": "Vantage",
+          "type": "string"
+        },
+        "host": {
+          "maxLength": 253,
+          "minLength": 1,
+          "title": "Host",
+          "type": "string"
+        },
+        "port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Port",
+          "type": "integer"
+        },
+        "request": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Request",
+          "type": "string"
+        },
+        "expected_response": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Expected Response",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "default": 30,
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "vantage",
+        "host",
+        "port",
+        "request",
+        "expected_response",
+        "id"
+      ],
+      "title": "UDPCheck",
+      "type": "object"
+    },
+    "UDPProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "udp",
+          "title": "Kind",
+          "type": "string"
+        },
+        "vantage": {
+          "enum": [
+            "target_loopback",
+            "host_publish",
+            "client"
+          ],
+          "title": "Vantage",
+          "type": "string"
+        },
+        "host": {
+          "maxLength": 253,
+          "minLength": 1,
+          "title": "Host",
+          "type": "string"
+        },
+        "port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Port",
+          "type": "integer"
+        },
+        "request": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Request",
+          "type": "string"
+        },
+        "expected_response": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Expected Response",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "default": 30,
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "vantage",
+        "host",
+        "port",
+        "request",
+        "expected_response"
+      ],
+      "title": "UDPProbe",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "profile": {
+      "title": "Profile",
+      "type": "string"
+    },
+    "install": {
+      "discriminator": {
+        "mapping": {
+          "ipk": "#/$defs/IPKInstall",
+          "pinned-installer": "#/$defs/PinnedInstaller"
+        },
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/IPKInstall"
+        },
+        {
+          "$ref": "#/$defs/PinnedInstaller"
+        }
+      ],
+      "title": "Install"
+    },
+    "service": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Service"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "requirements": {
+      "$ref": "#/$defs/Requirements"
+    },
+    "checks": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "command": "#/$defs/CommandCheck",
+            "file": "#/$defs/FileCheck",
+            "http": "#/$defs/HTTPCheck",
+            "https": "#/$defs/HTTPCheck",
+            "udp": "#/$defs/UDPCheck"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/HTTPCheck"
+          },
+          {
+            "$ref": "#/$defs/UDPCheck"
+          },
+          {
+            "$ref": "#/$defs/CommandCheck"
+          },
+          {
+            "$ref": "#/$defs/FileCheck"
+          }
+        ]
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "persistence": {
+      "$ref": "#/$defs/Persistence"
+    },
+    "cleanup": {
+      "$ref": "#/$defs/Cleanup"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "profile",
+    "install",
+    "service",
+    "runtime",
+    "requirements",
+    "checks",
+    "persistence",
+    "cleanup"
+  ],
+  "title": "Scenario",
+  "type": "object"
+}

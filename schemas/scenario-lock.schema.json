@@ -1,0 +1,149 @@
+{
+  "$defs": {
+    "SourceLock": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "ipk",
+            "pinned-bundle"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "origin": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "title": "Origin",
+          "type": "string"
+        },
+        "release": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Release",
+          "type": "string"
+        },
+        "architecture": {
+          "enum": [
+            "aarch64",
+            "mips",
+            "mipsel",
+            "all"
+          ],
+          "title": "Architecture",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "path",
+        "sha256",
+        "origin",
+        "release",
+        "architecture"
+      ],
+      "title": "SourceLock",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "kind": {
+      "const": "scenario-lock",
+      "title": "Kind",
+      "type": "string"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "scenario_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Scenario Sha256",
+      "type": "string"
+    },
+    "profile_id": {
+      "title": "Profile Id",
+      "type": "string"
+    },
+    "profile_revision": {
+      "minimum": 1,
+      "title": "Profile Revision",
+      "type": "integer"
+    },
+    "profile_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Profile Sha256",
+      "type": "string"
+    },
+    "entware_target": {
+      "enum": [
+        "aarch64-3.10",
+        "mipsel-3.4",
+        "mips-3.4"
+      ],
+      "title": "Entware Target",
+      "type": "string"
+    },
+    "oci_digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Oci Digest",
+      "type": "string"
+    },
+    "qemu_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Qemu Version",
+      "type": "string"
+    },
+    "feed_lock_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Feed Lock Sha256",
+      "type": "string"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceLock"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "scenario_id",
+    "scenario_sha256",
+    "profile_id",
+    "profile_revision",
+    "profile_sha256",
+    "entware_target",
+    "oci_digest",
+    "qemu_version",
+    "feed_lock_sha256",
+    "sources"
+  ],
+  "title": "ScenarioLock",
+  "type": "object"
+}

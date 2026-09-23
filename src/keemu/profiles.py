@@ -12,7 +12,10 @@ class ProfileError(ValueError):
 
 
 class _UniqueKeyLoader(yaml.SafeLoader):
-    pass
+    def compose_node(self, parent: yaml.Node | None, index: int) -> yaml.Node | None:
+        if self.check_event(yaml.AliasEvent):
+            raise ProfileError("YAML aliases are not allowed")
+        return super().compose_node(parent, index)
 
 
 def _construct_unique_mapping(
@@ -94,10 +97,17 @@ class GenericProfile(StrictModel):
         return self
 
 
-def load_profile(path: Path) -> GenericProfile:
+def load_yaml_unique(path: Path) -> object:
+    """Read a single YAML document without aliases, duplicate keys or custom tags."""
+    if path.stat().st_size > 1024 * 1024:
+        raise ProfileError("YAML input exceeds 1 MiB")
     loader = _UniqueKeyLoader(path.read_text(encoding="utf-8"))
     try:
         data = loader.get_single_data()
     finally:
         loader.dispose()
-    return GenericProfile.model_validate(data)
+    return data
+
+
+def load_profile(path: Path) -> GenericProfile:
+    return GenericProfile.model_validate(load_yaml_unique(path))

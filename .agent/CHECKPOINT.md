@@ -2,7 +2,7 @@
 
 ## Current status
 
-P0 technical-risk work is complete. P0-01 through p0-06 are verified; p0-07 completed a bounded isolated NFQUEUE diagnosis, not an ACCEPT/DROP proof; p0-08 independently reconciled the evidence package and its digests. Native NFNETLINK socket creation works while static AArch64 socket creation returns `EPROTONOSUPPORT`; the original dynamic target fixture also cannot load against Entware libc. Host NFQUEUE modules are not active and no host-module mutation was approved. A13/A14/A17 and MVP 1C remain BLOCKED. Full cross-target A01 and recovery A18 remain PARTIAL.
+P0 technical-risk work is complete; m1a-09 input-schema slice is implemented and portable-verified. This is not MVP 1A acceptance: the scenario runner, IPK inspector, Docker lifecycle and persistent registry remain future frozen subtasks. P0-01 through p0-06 are verified; p0-07 completed a bounded isolated NFQUEUE diagnosis, not an ACCEPT/DROP proof; p0-08 independently reconciled the evidence package and its digests. Native NFNETLINK socket creation works while static AArch64 socket creation returns `EPROTONOSUPPORT`; the original dynamic target fixture also cannot load against Entware libc. Host NFQUEUE modules are not active and no host-module mutation was approved. A13/A14/A17 and MVP 1C remain BLOCKED. Full cross-target A01 and recovery A18 remain PARTIAL.
 
 ## Verified
 
@@ -58,11 +58,14 @@ P0 technical-risk work is complete. P0-01 through p0-06 are verified; p0-07 comp
 - P0 is complete only as the four-condition technical-risk gate defined in `TASK.md`: target execution, localhost publishing/persistence, reproducible NFQUEUE blocker, and committed locks/ADRs. The digest-bound package is `docs/evidence/p0-evidence-manifest.md`.
 - A07/A08/A09: PASS for the exact AArch64 P0-06 fixture slice only. Their general lifecycle features remain unimplemented.
 - A01/A18/A19/A20/A21 remain PARTIAL. A13/A14/A17 remain BLOCKED; native socket success and static argument parsing are not NFQUEUE verdict evidence. Every acceptance ID's exact status and gap is maintained in `docs/traceability.md`.
+- m1a-09 implemented strict schema-version-1 scenario, production scenario-lock and persistent-environment input models; generated schemas `schemas/scenario.schema.json`, `schemas/scenario-lock.schema.json`, and `schemas/persistent-environment.schema.json` pass model parity. The shared YAML loader rejects duplicate keys and aliases, JSON parsing rejects duplicate keys and non-finite numbers, and file sizes are bounded. Scenario-relative file inputs reject project escapes, missing files and symlink components; target mutation paths are canonical `/opt` descendants. Explicit argv shell mode, pinned-installer required commands/source reference, localhost-only TCP/UDP publication, observation vantage, CA-backed HTTPS, source/scenario SHA-256 binding, and environment identity constraints have negative/positive unit cases. Historical P0 locks and P0 runtime evidence are unchanged.
+- Portable suite after m1a-09: 59 passed, 3 skipped; `uv run ruff check .`, formatting of touched Python files and `git diff --check` pass. No Docker runtime/registry mutation or new host resource was requested or claimed. A18/A21 remain PARTIAL.
+- Validation-to-use race safety, profile/feed/OCI/QEMU live verification, label reconciliation, atomic registry writes, full lifecycle and cleanup are explicitly later work, not proofs from these schemas.
 - MVP 1A, MVP 1B, MVP 1C, and MVP 1 are not complete.
 
 ## Next operation
 
-P0-08 evidence closure is verified. Do not work ahead from this session: the durable supervisor must consume the exact p0-08 completion marker, attest this worker, and advance only to the frozen `m1a-09` subtask. Future NFQUEUE work requires separately approved/preconfigured kernel capability and a resolved target NFNETLINK socket path; this subtask granted neither host-module mutation nor a network topology experiment.
+m1a-09 schema work and portable tests are verified; do not work ahead from this worker session. The next operation, after the coherent implementation/checkpoint commit, is for the supervisor to consume the exact m1a-09 completion marker, attest this worker and advance only to the frozen `m1a-10` inspection subtask. The supervisor, not this worker, owns `.agent/STATE.json` and `.agent/router-events.jsonl`; their existing uncommitted routing changes must not be overwritten. Future NFQUEUE work requires separately approved/preconfigured kernel capability and a resolved target NFNETLINK socket path; this subtask granted neither host-module mutation nor a network topology experiment.
 
 Kanban/supervisor reconciliation remains external to this worker's evidence package.
 

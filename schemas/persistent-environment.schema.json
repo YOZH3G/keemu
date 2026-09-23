@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "ResourceIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "container_id": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Container Id",
+          "type": "string"
+        },
+        "owner_label": {
+          "const": "keemu",
+          "title": "Owner Label",
+          "type": "string"
+        },
+        "run_id_label": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{2,127}$",
+          "title": "Run Id Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "container_id",
+        "owner_label",
+        "run_id_label"
+      ],
+      "title": "ResourceIdentity",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "kind": {
+      "const": "persistent-environment",
+      "title": "Kind",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{2,127}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "creating",
+        "installing",
+        "stopped",
+        "starting",
+        "running",
+        "stopping",
+        "failed",
+        "destroyed"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "scenario_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Scenario Sha256",
+      "type": "string"
+    },
+    "profile_id": {
+      "title": "Profile Id",
+      "type": "string"
+    },
+    "profile_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Profile Sha256",
+      "type": "string"
+    },
+    "lock_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Lock Sha256",
+      "type": "string"
+    },
+    "oci_digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Oci Digest",
+      "type": "string"
+    },
+    "resource": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ResourceIdentity"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "name",
+    "run_id",
+    "state",
+    "scenario_id",
+    "scenario_sha256",
+    "profile_id",
+    "profile_sha256",
+    "lock_sha256",
+    "oci_digest",
+    "resource"
+  ],
+  "title": "PersistentEnvironment",
+  "type": "object"
+}
