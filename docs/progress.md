@@ -2,7 +2,7 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 and m1a-10 add versioned input schemas and bounded static IPK inspection; no lifecycle or MVP 1A acceptance is claimed.
+P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-11 add versioned input schemas, bounded static IPK inspection and a locked AArch64 base-init/cache. No scenario lifecycle or full MVP 1A acceptance is claimed.
 
 ## P0 verified results
 
@@ -16,6 +16,10 @@ P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subta
 
 Schema-version-1 scenario, production lock and persistent-environment models and generated JSON schemas are implemented. Tests cover duplicate keys, unknown fields/versions, pinned-installer contracts, explicit localhost publish and vantage, CA-backed HTTPS, safe project-relative inputs, symlinks, source/scenario hashes, environment ownership metadata and parser bounds. Static `inspect` validates bounded IPK archive structure, metadata, target architecture/ELF, interpreters, dependencies, shebangs and permissions without extraction or host `ldd`. The selected locked AArch64 feed's 20 IPKs were inspected read-only. This does not install a package, execute a target app, mutate the registry, or prove the full A01/A02 gates; uncertain dependency/loader paths remain BLOCKED until complete target-state proof.
 
+## MVP 1A locked base init slice
+
+`keemu init --profile generic-aarch64 --locked` verified all 20 real local IPKs, index, bootstrap, QEMU and native-init inputs; installed the closure with target opkg; checked exact inventory and default feed config; normalized volatile installed times; built and audited a scratch mixed-architecture image; and published an atomic, hash-bound cache. Two independent builds yielded the same rootfs tree, saved archive and Docker-local image ID `sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224`. `--offline` revalidated the prepared cache and image without fetch or build. Bounded Docker/binfmt target shell, opkg list-installed, nested ELF and bridge DNS passed; HTTPS passed only from the Hermes process network namespace with CA validation, not inside target. An opt-in integration suite exercised real Docker smoke and corruption rejection; no owned container remained. This is AArch64 base preparation, not fixture installation or full A01/A19 acceptance.
+
 ## Evidence package
 
 `docs/evidence/p0-evidence-manifest.md` binds the committed locks and ignored runtime reports to their independently recomputed SHA-256 digests. ADR-0001 through ADR-0005 record the diagnostic runtime, mixed image, native-init correction, NFQUEUE blocker, and constrained localhost-observer decision.
@@ -26,4 +30,4 @@ P0 is complete as a technical-risk gate. A07–A09 pass only for the exact P0 AA
 
 ## Cleanup and retained state
 
-Runtime reports and saved images remain ignored under `reports/` and `.runtime/p0/`; their manifest digests permit retention verification. P0 probes removed their project-owned containers after owner/run-id checks. The approved single `qemu-aarch64` host binfmt entry remains registered; no public port, firewall rule, kernel module, or foreign Docker resource was changed.
+Runtime reports and saved images remain ignored under `reports/` and `.runtime/`; committed lock digests permit retention verification. P0 probes and m1a-11 smoke removed their project-owned containers after owner/run-id checks. The approved single `qemu-aarch64` host binfmt entry remains registered; no public port, firewall rule, kernel module, or foreign Docker resource was changed by m1a-11.

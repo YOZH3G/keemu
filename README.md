@@ -4,7 +4,9 @@ KEEMU is a reproducible verification harness for Entware applications. The autho
 
 ## Current status
 
-Implementation is in the P0 technical-risk phase.
+P0 technical-risk experiments are complete. MVP 1A is in progress: strict input
+schemas, static IPK inspection, and locked AArch64 base `init` are implemented;
+scenario lifecycle and persistent-environment commands are later subtasks.
 
 Verified in the current Debian/Docker environment:
 
@@ -18,11 +20,14 @@ Verified in the current Debian/Docker environment:
 
 Not yet verified:
 
-- localhost port publishing, persistent container down/up and NFQUEUE; complete isolation and interruption recovery also remain later work;
+- general scenario-driven localhost publication and persistent-environment commands, complete isolation and interruption recovery; the P0 web-demo did prove an exact localhost publish and stop/start persistence;
+- NFQUEUE ACCEPT/DROP is BLOCKED on the documented target socket/kernel capability, not PASS;
 - any MIPS/MIPSEL runtime;
 - MVP 1A, 1B, or 1C acceptance gates.
 
-The PRoot result is diagnostic evidence only. The separate Docker/binfmt proof covers AArch64 P0-05, not the full P0 gate or compatibility with a physical Keenetic device.
+The PRoot result is diagnostic evidence only. P0 Docker/binfmt and web-demo
+experiments close the technical-risk gate, not full A01/A19 or compatibility
+with a physical Keenetic device.
 
 ## Development
 
@@ -43,6 +48,29 @@ uv run keemu inspect path/to/package.ipk --profile generic-aarch64 --rootfs path
 
 The command emits JSON with `mode=static`, SHA-256, metadata, archive entries, ELF details, findings, status and limitations. A rootfs must include the package's resolved dependencies; unresolved or postinst-created paths remain BLOCKED until a later installation check. Static PASS is not A01 or A02 acceptance. Input must be reopened and rehashed before installing; `inspect` is not an install authorization.
 
+Locked AArch64 base preparation (requires the exact staged P0 package/index,
+bootstrap opkg, QEMU and native-init inputs, Docker Engine and AArch64 binfmt):
+
+```text
+uv run keemu init --profile generic-aarch64 --locked
+uv run keemu init --profile generic-aarch64 --locked --offline
+KEEMU_RUN_INIT_CACHE=1 uv run pytest -q tests/integration/test_init_cache.py
+```
+
+`init` only uses the pre-verified 20 local IPKs; it never updates the live
+Entware feed or installs host packages. It canonicalizes opkg's volatile
+`Installed-Time`, records the exact target `list-installed` inventory and
+default `/opt/etc/opkg.conf`, audits the rootfs and saved scratch-image layer,
+and writes a no-replace, lock-bound cache under `.runtime/init-cache/` after a
+bounded labeled Docker smoke. `--offline` rechecks all inputs, the saved image,
+live image identity and metadata without a network probe or build. The frozen
+Docker-local image ID is `sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224`
+in `locks/m1a-init-aarch64.json`; it is not a registry manifest digest.
+Target shell, opkg inventory, nested ELF and DNS passed in Docker bridge;
+HTTPS passed using the Hermes process CA/hostname verification, **not** in
+the target container, whose locked BusyBox wget lacks TLS. Neither fixture
+installation nor the complete A01/A19 acceptance is claimed.
+
 The P0 diagnostic integration test additionally needs the locked artifacts in `.runtime/p0`:
 
 ```text
@@ -61,7 +89,7 @@ The P0-05 probe requires the locked derived image and a separately authorized Do
 uv run python tests/integration/p0_runtime_probe.py
 ```
 
-Generated reports, downloaded IPK files, root filesystems, saved images, and runtime state are excluded from Git. Exact committed artifact metadata lives in `locks/p0-aarch64.json`, `locks/p0-fixtures-aarch64.json`, `locks/p0-mixed-image-aarch64.json`, and `locks/p0-mixed-image-aarch64-p005.json`. The original image lock records a static create template, not runtime behavior; the P0-05 derived-image lock and ignored report record the bounded real probe.
+Generated reports, downloaded IPK files, root filesystems, saved images, and runtime state are excluded from Git. Committed source and image metadata lives in `locks/` (including `locks/m1a-init-aarch64.json`). The original P0 image lock records a static create template, not runtime behavior; the P0-05 derived-image lock and ignored report record its bounded real probe.
 
 ## Safety
 

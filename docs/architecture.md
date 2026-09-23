@@ -2,7 +2,7 @@
 
 ## Status
 
-This document describes the implemented P0 diagnostic, report foundation, mixed-image build and bounded P0 Docker/binfmt experiments, plus the MVP 1A input-schema and static IPK inspection slices. The full lifecycle, persistent registry and network topology are not implemented.
+This document describes the implemented P0 diagnostic, report foundation, mixed-image build and bounded P0 Docker/binfmt experiments, plus the MVP 1A input-schema, static IPK inspection and locked AArch64 base-init slices. The full lifecycle, persistent registry and network topology are not implemented.
 
 ## Implemented components
 
@@ -17,6 +17,7 @@ This document describes the implemented P0 diagnostic, report foundation, mixed-
 - `src/keemu/reports.py` derives aggregate status and coverage, rejects inconsistent report payloads, renders Markdown from the JSON source object, and atomically publishes immutable run bundles with a JSONL operation log using Linux `renameat2(..., RENAME_NOREPLACE)`.
 - `src/keemu/doctor.py` emits the common report model with a canonical profile hash, profile revision, host kernel, Entware target, Python version, and explicit capability results. Uncollected OCI, QEMU, Git, feed-lock, and network-fidelity values remain `null` rather than being invented.
 - `src/keemu/p0_image.py` rebuilds the locked AArch64 rootfs, compiles a static amd64 PID 1 from `fixtures/recipes/aarch64/keemu-init.c`, audits every rootfs ELF, and builds a scratch `linux/amd64` image with the target architecture in ownership/provenance labels. The content-addressed image ID, saved-layer hash, architecture inventory, and an unexecuted, bounded container-create template are recorded in `locks/p0-mixed-image-aarch64.json`.
+- `src/keemu/init_cache.py` and `keemu init --profile generic-aarch64 --locked` rehash the 20 P0 IPKs, compressed/uncompressed feed index, bootstrap opkg, QEMU DEB and extracted binary, and corrected native-init source/binary. Real target opkg installs the local closure; exact versions/names are checked from `list-installed`. The variable `Installed-Time` fields are normalized to zero after installation. The finished rootfs contains a default `/opt/etc/opkg.conf` and a JSON inventory. A scratch `linux/amd64` image is built without Docker build networking, and every saved-layer file, symlink, byte and mode is compared against the input tree. Docker COPY strips the setuid bit from `/opt/bin/busybox`; that single attenuation is explicit and locked. `locks/m1a-init-aarch64.json` pins the rootfs tree, installed inventory, QEMU binary, feed index/config, saved archive/config/layer and Docker-local content-addressed image ID. A file lock serializes builds and `renameat2(RENAME_NOREPLACE)` publishes only a complete immutable cache directory; offline repeat rehashes it without fetching. The live Docker smoke uses owner/run-id-labeled, resource-bounded, read-only bridge containers and verifies target shell, nested ELF, default opkg inventory and DNS before owner-checked removal. HTTPS is checked separately in the Hermes process network namespace with CA/hostname verification, not in the target container (locked BusyBox wget has no TLS support).
 
 ## P0 diagnostic data flow
 
@@ -36,7 +37,7 @@ The required network topology remains client/router/server in project-owned name
 ## Trust boundaries
 
 - Package input is untrusted. The inspector rejects oversized and malformed wrappers, files, special members, path escapes, symlink traversal/cycles, bad control fields and ELF structures without extracting to the project or executing anything. Its SHA-256 is bound to the inspected bytes, but inspection is not an install-time authorization: later consumers must reopen and rehash input and resolve dependencies at use. In-process static bounds are not an OS sandbox for package execution.
-- Commands are argv arrays. Shell execution is limited to an explicit trusted diagnostic script inside the target environment.
+- Commands are argv arrays. Shell execution is limited to explicit trusted diagnostic smoke scripts inside the target environment. Target opkg may execute maintainer scripts from the pinned base IPKs while installing them into a project-local staging rootfs; untrusted application/fixture installation is not part of `init`.
 - The PRoot path is diagnostic only and is not a container isolation boundary.
 - Reports and runtime state are generated outside Git; lock files, recipes, schemas, and tests belong in Git.
 - Published report directories are write-once evidence: atomic no-replace publication preserves any existing destination entry and fails closed when the required Linux primitive is unavailable.

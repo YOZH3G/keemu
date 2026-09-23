@@ -1,0 +1,43 @@
+{
+  "cache_key": "0e700e5fbd961a51efaa76141dd58be4f57405e63ac9381c1c8c5ee2bec57641",
+  "cache_schema_version": 4,
+  "feed_config_sha256": "44c6c687a39d16b42c1fe9bdc91d06c53fd60be6b21383e6a8b4344501e6db16",
+  "feed_index_sha256": "3e8ce5633dcfacaae96b625b0f568c606c85b88d28c2fef8fc99671a7c8320ee",
+  "image_tree_sha256": "589f073ca955dbb5eab39ec8150f0c88fa170dad685748f3cc439748fede2beb",
+  "input_lock": "locks/p0-aarch64.json",
+  "input_lock_sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+  "installed_inventory_sha256": "333fc833c226bb1cf5fc9aea1de996987be545d43883ea5c41fe5920b4e55828",
+  "kind": "mvp1a-locked-base-image",
+  "labels": {
+    "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+    "org.keemu.native": "linux/amd64",
+    "org.keemu.owner": "keemu",
+    "org.keemu.package-lock-sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+    "org.keemu.phase": "m1a-11",
+    "org.keemu.rootfs-sha256": "019311323a4607edcf952dbffcd6c8b96e99b12c26fde2ca463314c1083f54d0",
+    "org.keemu.target": "aarch64-3.10"
+  },
+  "limitations": [
+    "Docker COPY stripped the setuid bit from /opt/bin/busybox; saved image matches all other input rootfs file bytes and modes",
+    "Target shell, opkg inventory and DNS checked in bounded Docker bridge; HTTPS verified with the Hermes process CA outside the target namespace",
+    "opkg Installed-Time is normalized to 0 after target opkg installation so repeated builds have stable rootfs bytes; package identities and versions are verified before normalization"
+  ],
+  "native_image_id": "sha256:66efaedcbd42ac56db30122762ebf73bcfb41a17dd6404bf22f7af067047b6f6",
+  "native_lock": "locks/p0-mixed-image-aarch64-p005.json",
+  "oci_digest": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "package_count": 20,
+  "platform": "linux/amd64",
+  "qemu_binary_sha256": "73cc2584f119f9e74c85c0a8549dbb6fd104ae3897a06a7500797f9e5b4d0943",
+  "rootfs_tree_sha256": "019311323a4607edcf952dbffcd6c8b96e99b12c26fde2ca463314c1083f54d0",
+  "saved_archive_sha256": "555f3cb5b9277f2c5e3e81b5409ce7bcc35a2a6bdc131ec6641ce3593f3230e9",
+  "saved_config_sha256": "a15ffbbc9ad743262edaa3988d1ca7b5ac62cda28fda62b9c6907428c8a79f1b",
+  "saved_layer_sha256": "4a1dea0d3a3c7256ed45a59214c63a2a97690ad74750483fea949e59456d87fd",
+  "schema_version": 1,
+  "smoke": {
+    "dns": "PASS (target Docker bridge)",
+    "https": "PASS (Hermes host namespace, default CA/hostname verification)",
+    "limitation": "HTTPS was not executed in target namespace: locked BusyBox wget lacks TLS",
+    "target": "PASS"
+  },
+  "target": "aarch64-3.10"
+}
