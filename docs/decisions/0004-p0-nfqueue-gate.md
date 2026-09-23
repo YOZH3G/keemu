@@ -1,0 +1,11 @@
+# ADR-0004: P0-07 NFQUEUE gate is blocked, not substituted
+
+- Status: diagnostic decision; 2026-09-23
+- Scope: P0 native-control/target AArch64 NFQUEUE experiment only
+- Evidence: `reports/20260923T130017Z-p007-1ed1391a9dd4/preflight.json`, SHA-256 `b858e1629dd05c9af4ce8f82c9e33a6ee7cecc83a533716fc68844b18599049b` (ignored runtime artifact; retain separately).
+
+A read-only host preflight found no active `nfnetlink_queue`, `xt_NFQUEUE`, or `nft_queue` module and no `/proc/net/netfilter/nfnetlink_queue`. In one project-owned, labeled, `--network=none`, read-only, nonprivileged Docker container with all capabilities dropped, the native static NFNETLINK socket probe succeeded; the equivalent static AArch64 probe returned `Protocol not supported` (`EPROTONOSUPPORT`). Both native and target statically linked versions of the locked consumer executed argument validation, but neither bound a queue. The original locked dynamic target consumer could not start against Entware libc (`GLIBC_2.34` unavailable). The static variant avoids that loader mismatch, but does not resolve the target socket failure.
+
+These observations differentiate target execution and native socket behavior, not conclusively the QEMU translation layer from seccomp or kernel causes. A queue bind or firewall rule can autoload a host module; TASK.md requires separate approval before host kernel-module mutation. No such call, rule, verdict, packet experiment, host namespace, host firewall change, or topology was created. The disposable container was ownership-checked, stopped, removed and confirmed absent; module snapshots before and after match. The diagnostic image remains project-owned and is not an accepted network runtime.
+
+Decision: do not claim A13, A14, or A17 PASS. P0 records a bounded NFQUEUE blocker; MVP 1C remains blocked until a suitable preconfigured/approved kernel gate and a target NFNETLINK socket path are demonstrated. Do not substitute native socket success or static argument parsing for ACCEPT/DROP evidence. A later, separately authorized network experiment must include native queue bind/verdict, target queue bind/verdict, isolated packet path, kernel/consumer counters, no-listener behavior, and cleanup. No host module load is authorized by this ADR.

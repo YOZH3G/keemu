@@ -2,7 +2,7 @@
 
 ## Current status
 
-P0 technical-risk work is in progress. The p0-01 through p0-05 slices are implemented and verified. P0-06 created and exercised a locked AArch64 web-demo runtime image, but cannot complete on this worker because its network namespace is not the Docker daemon host namespace: an explicit Docker `127.0.0.1` publish cannot be reached from this worker's own loopback. The P0 gate is not complete; host-vantage publish/persistence proof and later NFQUEUE/native-control experiments remain required. Full cross-target A01 and recovery A18 remain PARTIAL.
+P0 technical-risk work is in progress. P0-01 through p0-06 are verified; p0-07 completed a bounded isolated NFQUEUE diagnosis, not an ACCEPT/DROP proof. Native NFNETLINK socket creation works while static AArch64 socket creation returns `EPROTONOSUPPORT`; the original dynamic target fixture also cannot load against Entware libc. Host NFQUEUE modules are not active and no host-module mutation was approved. A13/A14/A17 and MVP 1C remain BLOCKED; P0 as a whole is not complete. Full cross-target A01 and recovery A18 remain PARTIAL.
 
 ## Verified
 
@@ -50,6 +50,8 @@ P0 technical-risk work is in progress. The p0-01 through p0-05 slices are implem
 - P0-06 PASS evidence is `reports/20260923T125140Z-p006-aa4677e64b41/probe.json` (SHA-256 `af6a9d03c1f084ba3257cbfab4f81de8aa4af761bbc62ae66de362ba897fd669`). It independently verified the application image, its exact `127.0.0.1:18080→8080/tcp` and `127.0.0.1:18081→8081/udp` Docker publishes, and matching `docker port` output. The bounded bridge-network application container had no bind mounts, no privilege, dropped capabilities and fixed resource limits.
 - The approved host-vantage proof uses a separate, static amd64 scratch image locked in `locks/p0-host-observer-p006.json`: source SHA-256 `ddcbf1c7320d504ad55f9943b76da680f06d4f40f495009d2780ab4cf64f878d`, binary SHA-256 `7a97b020802ae68fb83c34f172a6823a5ab4ebec33f36d80a814f482900b9b9d`, image `sha256:bbd0043b74fdcd0ba599abd9865823c8c2f222ba3e129a92b9cb6aa5acf2c53a`. Each transient observer had only the explicitly authorized `--network=host` vantage, owner/run-id labels, read-only root, no port publish/binds/privilege, dropped capabilities and bounded resources. It proved HTTP health and UDP echo through host loopback at initial state, after state write, after service restart, and after Docker stop/start. Every observer and the application container was ownership-checked, removed, independently absent; a post-run Docker label query found no P0-06 or KEEMU-owned container.
 - State `p006-aa4677e64b41` was written to `/opt/etc/web-demo/state.txt`; its SHA-256 `bafa47ea6c257db706ecedd28d7f790d266249ae09275847614165b8e7936926` matched before service restart and after the same labeled container exited and restarted. The final host-vantage HTTP and UDP result remained `HTTP_OK UDP_OK state=p006-aa4677e64b41`.
+- P0-07 ran `uv run python tests/integration/p0_nfqueue_preflight.py` with one disposable, labeled, network-none, read-only, cap-drop-all Docker container, derived from the locked P0-05 image. `reports/20260923T130017Z-p007-1ed1391a9dd4/preflight.json` is BLOCKED (SHA-256 `b858e1629dd05c9af4ce8f82c9e33a6ee7cecc83a533716fc68844b18599049b`). Native static `NETLINK_NETFILTER` socket opened; static AArch64 socket returned `Protocol not supported`; the locked dynamic target failed `GLIBC_2.34` and a static target consumer executed argument validation only. The native consumer likewise executed argument validation only. No queue binding, ACCEPT/DROP verdict, packet, firewall rule, host module load, privileged container, host network, or published port occurred. Host module snapshots before/after match (NFQUEUE modules absent). Owner-checked stop/removal and independent label queries found no KEEMU container or network. The diagnostic image ID is `sha256:a9a75dfed53f6cd1c4594c3e110582fb6869500e4a3fe1c988fd18684faa9894`; it is not an accepted network runtime.
+- P0-07 reproducible source and probe are `fixtures/sources/nfqueue/nfqueue_socket_p007.c` and `tests/integration/p0_nfqueue_preflight.py`; `docs/decisions/0004-p0-nfqueue-gate.md` records the explicit gate. Full portable pytest: 30 passed, 3 skipped; Ruff, formatter check, and diff whitespace check passed. This is a bounded blocker, not A13/A14/A17 acceptance.
 
 ## Acceptance truth
 
@@ -59,14 +61,15 @@ P0 technical-risk work is in progress. The p0-01 through p0-05 slices are implem
 - A07: PASS for the required AArch64 P0-06 slice. The Docker-host-vantage observer received the expected HTTP endpoint through the explicit localhost TCP publish while the application container inspection and `docker port` proved no non-loopback publish.
 - A08: PASS for the required AArch64 P0-06 slice. The same Docker-host-vantage observer received the expected UDP echo through the explicit localhost UDP publish.
 - A09: PASS for the required AArch64 P0-06 slice. A non-default state survived the service restart and Docker stop/start of the same labeled container; hash equality and final host-vantage HTTP/UDP readback are retained.
-- No TASK.md overall gate is complete; p0-06 only is complete and does not advance P0/NFQUEUE work.
+- A13/A14/A17: BLOCKED for NFQUEUE capability and unimplemented routing/network-demo packet path. Native socket success does not prove a native NFQUEUE verdict; target socket fails before queue binding. No acceptance PASS is claimed for these IDs.
+- No TASK.md overall gate is complete; p0-07 is complete under its explicit "evidence or bounded blocker" objective, but P0 and MVP 1C gates remain incomplete.
 
 ## Next operation
 
-P0-06 is complete. Do not execute p0-07 from this session; the external durable supervisor must consume the exact p0-06 completion marker, persist the result, and obtain a fresh p0-07 quota admission before any successor work.
+P0-07 bounded blocker is verified. Do not execute p0-08 or any later subtask from this session; the durable supervisor must consume the exact p0-07 completion marker and attest this worker before advancing. The p0-07 quota admission is subtask-bound and recorded in `.agent/STATE.json`. Future NFQUEUE work requires a separately approved/preconfigured kernel capability gate and a resolved target NFNETLINK socket path; this subtask granted neither host-module mutation nor a network topology experiment.
 
-Kanban handoff state before the supervisor consumes this result: board `default` (`KEEMU`) has 6 done and 26 blocked tasks. The p0-05 card `t_e93c7aeb` is done; p0-06 card `t_967aabbb` awaits only supervisor reconciliation of this attested completion.
+Kanban handoff state was not mutated in p0-07; supervisor reconciliation is separate from this worker's evidence.
 
 ## Blockers
 
-No p0-05 capability blocker remains on the current approved Docker/binfmt host. Host binfmt must be revalidated after reboot or runner change. P0-06 has no blocker. NFQUEUE and full isolation/recovery remain later subtasks and were not touched.
+No p0-05 or p0-06 capability blocker remains on this host; revalidate binfmt after reboot or runner change. P0-07 identified a target socket failure and absent active NFQUEUE handler, so true ACCEPT/DROP, counters, no-listener behavior and A13/A14/A17 acceptance remain blocked. Do not autoload host modules under this authorization. Full isolation/recovery remains later work.

@@ -16,11 +16,11 @@ Status values in this file describe verified evidence only. `PARTIAL` is not PAS
 | A10 | NOT RUN | — | — | target matrix not implemented |
 | A11 | NOT RUN | — | — | strict NDM shim not implemented |
 | A12 | NOT RUN | — | Docker image available; no network experiment authorized for p0-04 | event contract and firewall experiment absent |
-| A13 | NOT RUN | — | Docker image available; no network experiment authorized for p0-04 | client/router/server topology absent |
-| A14 | NOT RUN | — | Docker image available; no network experiment authorized for p0-04 | AArch64 NFQUEUE and native control absent |
+| A13 | BLOCKED | `tests/integration/p0_nfqueue_preflight.py` | `reports/20260923T130017Z-p007-1ed1391a9dd4/preflight.json` records isolated capability diagnosis only | client/router/server topology and no-bypass routing not tested; no packet path |
+| A14 | BLOCKED | `tests/integration/p0_nfqueue_preflight.py` | Same report: native NFNETLINK socket succeeds; static AArch64 socket gets `EPROTONOSUPPORT`; no active host NFQUEUE module | no native/target queue bind, ACCEPT/DROP or counters; original dynamic target needs unavailable `GLIBC_2.34`; host module mutation needs separate approval |
 | A15 | NOT RUN | — | Docker image available; no network experiment authorized for p0-04 | network-demo web/API absent |
 | A16 | NOT RUN | — | Docker image available; no network experiment authorized for p0-04 | network-demo persistence absent |
-| A17 | NOT RUN | — | Docker image available; no network experiment authorized for p0-04 | packet-processing evidence absent |
+| A17 | BLOCKED | `tests/integration/p0_nfqueue_preflight.py` | Same bounded blocker, no verdict or packet sent | network-demo packet processing and observed ACCEPT/DROP effect absent |
 | A18 | PARTIAL | `tests/integration/p0_runtime_probe.py`; `fixtures/recipes/aarch64/keemu-init-p005.c` | Adopted daemon/short child, reap after exit, SIGTERM shutdown/0, differential keeper-death/1 vs PID 1 SIGINT/0, owner/run-id checked removal and independent absence in `reports/20260923T080109Z-p005-e6653acf4ef7/probe.json`; original keeper bug retained | interruption/stale-resource recovery not proven; no full A18 PASS |
 | A19 | PARTIAL | `keemu p0 verify-lock`; `keemu p0 verify-fixture-lock --verify-external` | Entware closure plus 12 staged cross-toolchain and all fixture source/recipe hashes verified | complete locked fixture repeat and runtime execution remain unimplemented |
 | A20 | PARTIAL | `tests/unit/test_p0_image.py`; p0-05 Docker probe | Created container inspected as nonprivileged, network-none, 256 MiB memory and 128 PID limit | full capability/mount/socket/isolation and runtime enforcement not proven |
