@@ -57,10 +57,10 @@ P0 technical-risk work is in progress. The p0-01 through p0-04 slices and bounde
 
 ## Next operation
 
-P0-05 implementation, runtime proof, attestation, source commit and Kanban reconciliation are complete. The configured supervisor boundary is active before p0-06; do not launch p0-06 without a new explicit continuation decision. Before a later resume, revalidate the Docker daemon, `qemu-aarch64` handler, branch cleanliness, frozen plan digest and active `p0-06` route lock.
+User explicitly authorized continuation into p0-06 and required live quota verification before every future subtask. Supervisor runtime now supports `quota_admission_scope=every_subtask`; KEEMU config enables it and removes the completed p0-05 pause boundary. Runtime compile and all 74 supervisor/router tests pass. Before p0-06 launch, clear the old task-level admission record, perform and persist a fresh p0-06 OAuth usage observation, then verify the locked `gpt-5.6-terra` / `high` worker invocation.
 
 Kanban handoff state: board `default` (`KEEMU`) has 6 done and 26 blocked tasks. The p0-05 card `t_e93c7aeb` is done with the attested evidence result; successor p0-06 card `t_967aabbb` remains blocked.
 
 ## Blockers
 
-No p0-05 capability blocker remains on the current approved Docker/binfmt host. Host binfmt must be revalidated after reboot or runner change. Port publishing, persistence, NFQUEUE and full isolation/recovery remain outside this subtask.
+No p0-05 capability blocker remains on the current approved Docker/binfmt host. Host binfmt must be revalidated after reboot or runner change. P0-06 localhost-only publishing and persistence are now authorized; NFQUEUE and full isolation/recovery remain later subtasks.

@@ -27,6 +27,7 @@
 - Each subtask receives an explicit disposable-worker lock for provider, model and reasoning. Switching is permitted only after an exact completion marker, runtime attestation, durable outcome, and verified session deletion.
 - C6/C7 (`gpt-6-astra`) are unlocked for frontier escalation at a new audited subtask boundary; if unavailable, the configured fallback is C5 (`gpt-6-sol`, `xhigh`).
 - Quota pauses retain the same subtask, session, provider, model and reasoning; they are not escalation signals.
+- Before launching every new frozen subtask, the supervisor must fetch live OAuth account usage and persist a subtask-bound admission record. Below 11% remaining it warns; below 5% it checkpoints and waits until the stored absolute reset-plus-margin time. Same-subtask session continuations do not repeat the preflight.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
 - Git auto-pull and auto-push are disabled because no remote exists.
 
