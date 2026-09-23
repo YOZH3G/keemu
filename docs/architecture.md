@@ -27,9 +27,9 @@ This document describes the implemented P0 diagnostic, report-foundation, and mi
 
 ## Required production architecture not yet implemented
 
-The accepted runtime remains Docker Engine on Linux x86_64. The first image is built and inspected, but PID 1 behavior, target execution through binfmt, container limits, and isolation are not yet runtime-verified. The future container-create argv specifies ownership labels, memory/CPU/PID limits, dropped capabilities, read-only rootfs, no-new-privileges, and no host network or Docker-socket mount. Persistent environments will be tracked by an atomic registry and reconciled against Docker labels in later subtasks.
+The accepted runtime remains Docker Engine on Linux x86_64. The P0-04 base image and a separately locked P0-05 derived image are audited; on the approved AArch64 binfmt runner, target shell/child/shebang and native PID 1 signal/reap behavior passed bounded runtime probes. Container memory/PID/network-none/nonprivileged settings were inspected, but complete isolation and recovery remain later work. The container-create argv specifies ownership labels, memory/CPU/PID limits, dropped capabilities, read-only rootfs, no-new-privileges, and no host network or Docker-socket mount. Persistent environments will be tracked by an atomic registry and reconciled against Docker labels in later subtasks.
 
-The required network topology remains client/router/server in project-owned namespaces or internal Docker networks. No network implementation choice is accepted until a Docker-capable host can execute the P0 publish, persistence, routing, and NFQUEUE experiments.
+The required network topology remains client/router/server in project-owned namespaces or internal Docker networks. No network implementation choice is accepted until the P0 publish, persistence, routing, and NFQUEUE experiments are executed on a capable runner.
 
 ## Trust boundaries
 

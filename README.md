@@ -6,7 +6,7 @@ KEEMU is a reproducible verification harness for Entware applications. The autho
 
 Implementation is in the P0 technical-risk phase.
 
-Verified in the current Debian container:
+Verified in the current Debian/Docker environment:
 
 - the AArch64 Entware package index and 20-package bootstrap closure were downloaded and SHA-256 verified;
 - the real AArch64 Entware `opkg` and BusyBox shell execute through QEMU user-mode;
@@ -14,14 +14,15 @@ Verified in the current Debian container:
 - the committed lock records exact Entware artifacts and the diagnostic QEMU/PRoot inputs;
 - current `RunReport` schema version 2 uses immutable metadata models for artifacts, scenarios, profiles, runtimes, capabilities, substitutions, checks, operation logs, coverage, and partial failures; each partial failure references one operation-log sequence whose operation name and failure status must match;
 - report bundles use Linux `renameat2(..., RENAME_NOREPLACE)` to atomically publish `report.json`, `report.md`, and `operation-log.jsonl`; existing destination entries are preserved, and publication fails closed if the no-replace primitive is unavailable.
+- on a Docker Engine 29.7.2 host with an explicitly approved AArch64 binfmt registration, the separately locked mixed image executes the target shell, opkg, nested AArch64 ELF and direct shebang; a bounded P0-05 probe also verifies daemon survival, native init signal forwarding/reaping and clean owner-checked shutdown. The original P0-04 image is retained unchanged.
 
 Not yet verified:
 
-- Docker container execution, binfmt integration, localhost port publishing, persistent container down/up, or NFQUEUE (the mixed image itself was built and inspected);
+- localhost port publishing, persistent container down/up and NFQUEUE; complete isolation and interruption recovery also remain later work;
 - any MIPS/MIPSEL runtime;
 - MVP 1A, 1B, or 1C acceptance gates.
 
-The PRoot result is diagnostic evidence only. It does not replace the required Docker runtime proof and does not establish compatibility with a physical Keenetic device.
+The PRoot result is diagnostic evidence only. The separate Docker/binfmt proof covers AArch64 P0-05, not the full P0 gate or compatibility with a physical Keenetic device.
 
 ## Development
 
@@ -45,7 +46,13 @@ The p0-04 image audit requires the already-built project image and the saved arc
 KEEMU_RUN_P0_IMAGE_AUDIT=1 uv run pytest -q tests/integration/test_p0_image.py
 ```
 
-Generated reports, downloaded IPK files, root filesystems, saved images, and runtime state are excluded from Git. Exact committed artifact metadata lives in `locks/p0-aarch64.json`, `locks/p0-fixtures-aarch64.json`, and `locks/p0-mixed-image-aarch64.json`. The last lock records the image ID, labels, architecture audit, and an unexecuted resource-limited create template; it does not assert container behavior.
+The P0-05 probe requires the locked derived image and a separately authorized Docker/binfmt runner; it creates and cleans only labeled KEEMU containers:
+
+```text
+uv run python tests/integration/p0_runtime_probe.py
+```
+
+Generated reports, downloaded IPK files, root filesystems, saved images, and runtime state are excluded from Git. Exact committed artifact metadata lives in `locks/p0-aarch64.json`, `locks/p0-fixtures-aarch64.json`, `locks/p0-mixed-image-aarch64.json`, and `locks/p0-mixed-image-aarch64-p005.json`. The original image lock records a static create template, not runtime behavior; the P0-05 derived-image lock and ignored report record the bounded real probe.
 
 ## Safety
 
