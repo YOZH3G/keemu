@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "MODEL_ATTESTATION_FAILED",
-  "session_id": "20260922_200432_b1ebd3",
-  "pause_reason": "runtime model/reasoning metadata unavailable or mismatched",
+  "status": "RESUMING",
+  "session_id": null,
+  "pause_reason": null,
   "quota": {
     "kind": "unknown",
     "detected_at": "2026-09-22T08:13:38+00:00",
@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-22T20:04:30+00:00",
+    "last_evaluated_at": "2026-09-23T03:22:19+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -28,11 +28,11 @@
     },
     "signals": {
       "score": 14,
-      "task_chars": 12675,
+      "task_chars": 13804,
       "changed_files": 0,
-      "repo_files_sampled": 675,
+      "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 268967,
+      "graphify_bytes": 313520,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -58,27 +58,11 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {
-      "provider": "openai-codex",
-      "tier": "C3",
-      "model": "gpt-5.6-terra",
-      "reasoning": "high",
-      "expected_model": "gpt-5.6-terra",
-      "expected_reasoning": "high",
-      "policy_version": "v1",
-      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-      "subtask_id": "p0-03",
-      "subtask_digest": "e0c2763b02655aac948d9c750a74eeb5b09804b5bce1243d6cef7ec5d721bcc3",
-      "route_event_id": "evt_b0385af30f9be2ae81627488",
-      "session_id": "20260922_200432_b1ebd3",
-      "model_attested": false,
-      "attestation_status": "MODEL_ATTESTATION_FAILED",
-      "session_deleted": false
-    },
+    "worker_lock": {},
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 3,
+      "active_index": 4,
       "items": [
         {
           "id": "preflight",
@@ -159,8 +143,15 @@
             "model": "gpt-5.6-terra",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "e0c2763b02655aac948d9c750a74eeb5b09804b5bce1243d6cef7ec5d721bcc3"
+          "status": "complete",
+          "digest": "e0c2763b02655aac948d9c750a74eeb5b09804b5bce1243d6cef7ec5d721bcc3",
+          "outcome": {
+            "event_id": "evt_0f2c7b6ef01212f963e53eb8",
+            "route_event_id": "evt_b0385af30f9be2ae81627488",
+            "completed_at": "2026-09-23T03:23:04+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "p0-04",
@@ -176,7 +167,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "0a230d0509a372b80472b1b6fcbb644c961c12021fbdad8a783f416f40e5f820"
         },
         {
@@ -630,7 +621,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_bac290eeeabe1fddae53ed59",
+      "last_event_id": "evt_0f2c7b6ef01212f963e53eb8",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -785,11 +776,11 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 1,
-    "last_run_started_at": "2026-09-22T20:04:30+00:00",
-    "last_run_finished_at": "2026-09-22T20:04:45+00:00",
-    "last_log": ".agent/runs/20260922T200430Z.log",
-    "last_checkpoint_at": "2026-09-22T20:04:45+00:00"
+    "last_exit_code": 0,
+    "last_run_started_at": "2026-09-23T03:22:19+00:00",
+    "last_run_finished_at": "2026-09-23T03:23:03+00:00",
+    "last_log": ".agent/runs/20260923T032219Z.log",
+    "last_checkpoint_at": "2026-09-23T03:23:04+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-22T07:37:55+00:00",

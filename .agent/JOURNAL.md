@@ -25,3 +25,4 @@
 - 2026-09-22T20:04:45+00:00 — Disposable worker result rejected: runtime model/reasoning attestation failed.
 - 2026-09-23T03:06:20Z — p0-03 technical work built project-owned hello, web-demo, and raw NFQUEUE-consumer AArch64 fixture sources with a real, SHA-256-locked 12-DEB Debian cross-toolchain. Clean rebuild reproduced all three locked binary hashes; `readelf` confirmed ELF64/little-endian/AArch64. Source/recipe/toolchain verification passed; portable suite reported 28 passed, 1 skipped; Ruff passed. The existing supervisor model-attestation failure still prevents a valid supervised completion outcome.
 - 2026-09-23T03:06:20Z — Committed p0-03 technical deliverable as `f64bb9a` (`feat: lock P0 fixture sources`).
+- 2026-09-23T03:23:04+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
