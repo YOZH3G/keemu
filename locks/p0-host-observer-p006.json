@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "p0-host-vantage-observer-lock",
+  "image_reference": "keemu/p0-host-observer:p006",
+  "image_id": "sha256:bbd0043b74fdcd0ba599abd9865823c8c2f222ba3e129a92b9cb6aa5acf2c53a",
+  "source_path": "fixtures/sources/p0-host-observer/host_observer.c",
+  "source_sha256": "ddcbf1c7320d504ad55f9943b76da680f06d4f40f495009d2780ab4cf64f878d",
+  "binary_path": "host-observer",
+  "binary_sha256": "7a97b020802ae68fb83c34f172a6823a5ab4ebec33f36d80a814f482900b9b9d",
+  "platform": "linux/amd64",
+  "entrypoint": [
+    "/host-observer"
+  ],
+  "labels": {
+    "org.keemu.host-observer-binary-sha256": "7a97b020802ae68fb83c34f172a6823a5ab4ebec33f36d80a814f482900b9b9d",
+    "org.keemu.host-observer-source-sha256": "ddcbf1c7320d504ad55f9943b76da680f06d4f40f495009d2780ab4cf64f878d",
+    "org.keemu.owner": "keemu",
+    "org.keemu.phase": "p0-06",
+    "org.keemu.role": "host-vantage-observer"
+  },
+  "saved_image": ".runtime/p0/host-observer-p006-image.tar",
+  "saved_archive_sha256": "79b44bab4e5db81c29496ead22542e2429ed2fd52be9402b3516ff4a2b543e4c",
+  "saved_config_sha256": "d51b85490ce33526e58847c77948fa40bc83b0051e848659e096d71eca09fccd",
+  "saved_layer_sha256": "c63b3c4782a599c4a6ba2a4ea68680fc0f24227b66a288c2b8ac16bb7c4d8320",
+  "web_demo_image_id": "sha256:fa618afa80cab7d081e8012ed8209cf16d95507263c412ba119d131510e888bc",
+  "scope": "p0-06 only: explicitly approved, owner-labeled host-network HTTP/UDP observation client; no host mutation"
+}

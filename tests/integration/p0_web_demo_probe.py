@@ -8,9 +8,7 @@ cleanup. The generated report is runtime evidence under ignored reports/.
 from __future__ import annotations
 
 import hashlib
-import http.client
 import json
-import socket
 import subprocess
 import sys
 import time
@@ -18,6 +16,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
+from keemu.p0_host_observer import verify as verify_host_observer
 from keemu.p0_web_demo import STATE_PATH
 from keemu.p0_web_demo import verify as verify_web_image
 
@@ -31,55 +30,6 @@ TARGET_UDP_PORT = 8081
 
 def now() -> str:
     return datetime.now(UTC).isoformat()
-
-
-def _port_preflight() -> None:
-    for kind, port in ((socket.SOCK_STREAM, HTTP_PORT), (socket.SOCK_DGRAM, UDP_PORT)):
-        with socket.socket(socket.AF_INET, kind) as probe:
-            probe.bind(("127.0.0.1", port))
-
-
-def _http(method: str, path: str) -> tuple[int, str]:
-    connection = http.client.HTTPConnection("127.0.0.1", HTTP_PORT, timeout=2)
-    try:
-        connection.request(method, path)
-        response = connection.getresponse()
-        return response.status, response.read().decode("utf-8")
-    finally:
-        connection.close()
-
-
-def _udp(payload: bytes) -> bytes:
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as client:
-        client.settimeout(2)
-        client.sendto(payload, ("127.0.0.1", UDP_PORT))
-        response, peer = client.recvfrom(1024)
-    if peer[0] != "127.0.0.1":
-        raise AssertionError(f"unexpected UDP source: {peer!r}")
-    return response
-
-
-def _tcp_refused() -> bool:
-    try:
-        with socket.create_connection(("127.0.0.1", HTTP_PORT), timeout=1):
-            return False
-    except OSError:
-        return True
-
-
-def _wait_http(expected: str, timeout: float = 15) -> dict[str, object]:
-    deadline = time.monotonic() + timeout
-    last_error = "not attempted"
-    while time.monotonic() < deadline:
-        try:
-            status, body = _http("GET", "/health")
-            if status == 200 and body == expected:
-                return {"status": status, "body": body}
-            last_error = f"status={status} body={body!r}"
-        except OSError as error:
-            last_error = repr(error)
-        time.sleep(0.2)
-    raise AssertionError(f"HTTP readiness failed: {last_error}")
 
 
 def _state_sha256(value: str) -> str:
@@ -167,6 +117,123 @@ def main() -> int:
             )
         return stdout
 
+    observer_names: set[str] = set()
+
+    def cleanup_observer(observer_name: str, label: str) -> None:
+        ownership = run(
+            label + "_observer_owner_check",
+            [
+                "docker",
+                "inspect",
+                observer_name,
+                "--format",
+                "{{json .Config.Labels}}",
+            ],
+        )
+        labels = (
+            json.loads(str(ownership["stdout"])) if ownership.get("rc") == 0 else {}
+        )
+        if (
+            labels.get("org.keemu.owner") != "keemu"
+            or labels.get("org.keemu.run-id") != run_id
+            or labels.get("org.keemu.role") != "host-vantage-observer"
+        ):
+            raise AssertionError("observer ownership mismatch; refusing removal")
+        running = run(
+            label + "_observer_running_check",
+            ["docker", "inspect", observer_name, "--format", "{{.State.Running}}"],
+        )
+        if running.get("stdout") == "true":
+            require(
+                run(
+                    label + "_observer_stop",
+                    ["docker", "stop", "-t", "5", observer_name],
+                )
+            )
+        require(run(label + "_observer_remove", ["docker", "rm", observer_name]))
+        absent = run(
+            label + "_observer_absence",
+            ["docker", "container", "inspect", observer_name],
+        )
+        if absent.get("rc") == 0 or "No such container" not in str(
+            absent.get("stderr", "")
+        ):
+            raise AssertionError("observer absence not verified")
+        observer_names.discard(observer_name)
+
+    def observe_from_docker_host(expected_state: str, label: str) -> None:
+        observer_name = name + "-observer-" + label
+        create = [
+            "docker",
+            "create",
+            "--name",
+            observer_name,
+            "--platform",
+            "linux/amd64",
+            "--network",
+            "host",
+            "--read-only",
+            "--label",
+            "org.keemu.owner=keemu",
+            "--label",
+            "org.keemu.phase=p0-06",
+            "--label",
+            "org.keemu.role=host-vantage-observer",
+            "--label",
+            f"org.keemu.run-id={run_id}",
+            "--memory=64m",
+            "--memory-swap=64m",
+            "--cpus=0.5",
+            "--pids-limit=32",
+            "--cap-drop=ALL",
+            "--security-opt=no-new-privileges",
+            "--restart=no",
+            observer_image["image_id"],
+            str(HTTP_PORT),
+            str(UDP_PORT),
+            expected_state,
+        ]
+        require(run(label + "_observer_create", create))
+        observer_names.add(observer_name)
+        try:
+            observed = json.loads(
+                require(
+                    run(
+                        label + "_observer_inspect",
+                        ["docker", "inspect", observer_name],
+                    )
+                )
+            )[0]
+            assert observed["Image"] == observer_image["image_id"]
+            assert observed["Config"]["Labels"]["org.keemu.owner"] == "keemu"
+            assert observed["Config"]["Labels"]["org.keemu.run-id"] == run_id
+            assert observed["HostConfig"]["NetworkMode"] == "host"
+            assert observed["HostConfig"]["Privileged"] is False
+            assert observed["HostConfig"]["ReadonlyRootfs"] is True
+            assert observed["HostConfig"]["Binds"] in (None, [])
+            assert observed["HostConfig"]["PortBindings"] in (None, {})
+            assert observed["HostConfig"]["Memory"] == 64 * 1024 * 1024
+            assert observed["HostConfig"]["PidsLimit"] == 32
+            require(run(label + "_observer_start", ["docker", "start", observer_name]))
+            require(
+                run(label + "_observer_wait", ["docker", "wait", observer_name]), "0"
+            )
+            output = require(
+                run(label + "_observer_logs", ["docker", "logs", observer_name]),
+                "host-observer HTTP_OK UDP_OK state=" + expected_state,
+            )
+            observations = evidence.setdefault("docker_host_observations", {})
+            assert isinstance(observations, dict)
+            observations[label] = {
+                "output": output,
+                "network_mode": observed["HostConfig"]["NetworkMode"],
+                "read_only": observed["HostConfig"]["ReadonlyRootfs"],
+                "port_bindings": observed["HostConfig"]["PortBindings"],
+            }
+            save()
+        finally:
+            cleanup_observer(observer_name, label)
+
     def start_service(expected_state: str, label: str) -> int:
         service_pid = int(
             require(
@@ -202,9 +269,6 @@ def main() -> int:
         expected = f"keemu-web-demo\nstate={expected_state}"
         assert target_loopback == expected
         evidence[label + "_target_loopback_http"] = target_loopback
-        save()
-        ready = _wait_http(f"keemu-web-demo\nstate={expected_state}\n")
-        evidence[label + "_http_readiness"] = ready
         save()
         return service_pid
 
@@ -246,8 +310,12 @@ def main() -> int:
     created = False
     failure: str | None = None
     try:
-        _port_preflight()
-        evidence["port_preflight"] = "127.0.0.1 TCP and UDP ports available"
+        observer_image = verify_host_observer(ROOT)
+        evidence["host_observer_verification"] = observer_image
+        evidence["host_vantage_scope"] = (
+            "explicitly approved, owner-labeled Docker --network=host HTTP/UDP "
+            "observer only; no host mutation"
+        )
         server = require(
             run(
                 "docker_server",
@@ -324,15 +392,27 @@ def main() -> int:
         require(run("docker_port", ["docker", "port", name]))
 
         first_pid = start_service("initial", "first")
-        first_udp = _udp(b"first-udp")
-        assert first_udp == b"keemu-udp:first-udp"
-        evidence["first_udp"] = first_udp.decode("ascii")
-        save()
+        observe_from_docker_host("initial", "first")
 
         persisted_state = "p006-" + run_id.rsplit("-", 1)[1]
-        status, body = _http("POST", "/state?value=" + persisted_state)
-        assert status == 200 and body == f"keemu-web-demo\nstate={persisted_state}\n"
-        evidence["state_write"] = {"status": status, "body": body}
+        state_write = require(
+            run(
+                "state_write_target_loopback",
+                [
+                    "docker",
+                    "exec",
+                    name,
+                    "/opt/bin/busybox",
+                    "wget",
+                    "-qO-",
+                    "--post-data=",
+                    "http://127.0.0.1:8080/state?value=" + persisted_state,
+                ],
+            )
+        )
+        assert state_write == f"keemu-web-demo\nstate={persisted_state}"
+        evidence["state_write_target_loopback"] = state_write
+        observe_from_docker_host(persisted_state, "state_write")
         state_before_restart = require(
             run(
                 "state_before_service_restart",
@@ -347,6 +427,7 @@ def main() -> int:
 
         stop_service(first_pid, "service_restart")
         second_pid = start_service(persisted_state, "service_restart")
+        observe_from_docker_host(persisted_state, "service_restart")
         stop_service(second_pid, "pre_down")
 
         require(run("down_stop", ["docker", "stop", "-t", "5", name], 20))
@@ -360,7 +441,6 @@ def main() -> int:
         )
         assert down_state["Status"] == "exited" and down_state["ExitCode"] == 0
         assert down_state["Running"] is False and down_state["OOMKilled"] is False
-        assert _tcp_refused(), "localhost HTTP port still accepted after docker stop"
         evidence["down_summary"] = down_state
         save()
 
@@ -383,9 +463,7 @@ def main() -> int:
         ]
         evidence["state_after_down_up_sha256"] = _state_sha256(state_after_up + "\n")
         final_pid = start_service(persisted_state, "after_down_up")
-        final_udp = _udp(b"after-down-up")
-        assert final_udp == b"keemu-udp:after-down-up"
-        evidence["after_down_up_udp"] = final_udp.decode("ascii")
+        observe_from_docker_host(persisted_state, "after_down_up")
         stop_service(final_pid, "final_service")
         evidence["target_http_udp_and_persistence_verified"] = True
         save()
@@ -394,6 +472,11 @@ def main() -> int:
         evidence["failure"] = failure
         save()
     finally:
+        for observer_name in sorted(observer_names):
+            try:
+                cleanup_observer(observer_name, "final_cleanup")
+            except Exception as error:  # pragma: no cover - defensive cleanup evidence.
+                failure = failure or repr(error)
         if created:
             ownership = run(
                 "owner_check_before_cleanup",

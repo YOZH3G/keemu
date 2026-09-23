@@ -11,7 +11,7 @@ REPO = Path(__file__).resolve().parents[2]
 
 @unittest.skipUnless(
     os.environ.get("KEEMU_RUN_P0_WEB_DEMO_PROBE") == "1",
-    "set KEEMU_RUN_P0_WEB_DEMO_PROBE=1 after building the p0-06 locked image",
+    "set KEEMU_RUN_P0_WEB_DEMO_PROBE=1 after building p0-06 web and observer locks",
 )
 class P0WebDemoIntegrationTests(unittest.TestCase):
     def test_live_p0_web_demo_probe_passes(self) -> None:
