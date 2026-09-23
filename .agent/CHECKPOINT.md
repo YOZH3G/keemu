@@ -60,7 +60,7 @@ P0 technical-risk work is in progress. The p0-01 through p0-05 slices are implem
 
 ## Next operation
 
-Stop at the incomplete p0-06 boundary. Human input is required for a Docker-host-vantage test without violating the repository prohibition on `--network=host`: either run the recorded HTTP/UDP checks directly on the Docker daemon host, or explicitly authorize one tightly bounded project-owned host-network diagnostic client. Only after host-vantage HTTP and UDP results are real may the same labeled persistent container be exercised through service restart and down/up state checks.
+User explicitly authorized one tightly bounded KEEMU-owned `--network=host` diagnostic client with owner/run-id labels, no host mutation and verified cleanup. Resume the existing p0-06 session and use this client only as the Docker-host-vantage HTTP/UDP observer. Preserve the application container's explicit `127.0.0.1` publishes. After verified client removal, complete the same labeled persistent container's service restart and down/up state checks; do not advance to p0-07 without an exact p0-06 completion marker and a fresh p0-07 quota admission.
 
 Kanban handoff state: board `default` (`KEEMU`) has 6 done and 26 blocked tasks. The p0-05 card `t_e93c7aeb` is done with the attested evidence result; successor p0-06 card `t_967aabbb` remains blocked.
 
