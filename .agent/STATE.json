@@ -6,16 +6,16 @@
   "pause_reason": null,
   "quota": {
     "kind": "usage_limit_reached",
-    "detected_at": "2026-09-23T13:43:12+00:00",
-    "resets_at": "2026-09-23T17:46:00+00:00",
-    "resets_in_seconds": 14580,
-    "wake_at": "2026-09-23T17:48:00+00:00",
+    "detected_at": "2026-09-23T20:15:52+00:00",
+    "resets_at": "2026-09-29T07:03:00+00:00",
+    "resets_in_seconds": 470880,
+    "wake_at": "2026-09-29T07:05:00+00:00",
     "plan_type": "ChatGPT or Codex Subscription",
-    "raw_excerpt": "Provider said: HTTP 429: The usage limit has been reached. Limit resets at 17:46 (in 4h 03m)."
+    "raw_excerpt": "Provider said: HTTP 429: The usage limit has been reached. Limit resets at 07:03 (in 130h 48m)."
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-23T20:15:35+00:00",
+    "last_evaluated_at": "2026-09-23T20:15:54+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -686,7 +686,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_dad30222d8b765e3b8cf31c2",
+      "last_event_id": "evt_41271864c071be5a5aa23762",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -842,13 +842,13 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 1,
-    "last_run_started_at": "2026-09-23T20:15:35+00:00",
+    "last_run_started_at": "2026-09-23T20:15:54+00:00",
     "last_run_finished_at": "2026-09-23T20:15:52+00:00",
     "last_log": ".agent/runs/20260923T201535Z.log",
     "last_checkpoint_at": "2026-09-23T20:15:52+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-23T20:03:26+00:00",
+    "checked_at": "2026-09-23T20:18:31+00:00",
     "scope": "subtask",
     "admission_key": "subtask:m1a-11:f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
@@ -856,8 +856,8 @@
     "subtask_id": "m1a-11",
     "subtask_digest": "f60ffd1451caed583ee2546437742321684ab12e877d86d7eabdc3c63d11d5b0",
     "action": "admit",
-    "remaining_percent": 79.0,
-    "reset_at": "2026-09-24T00:54:22+00:00",
+    "remaining_percent": 100.0,
+    "reset_at": "2026-09-24T01:18:09+00:00",
     "source": "hermes_oauth_usage_api",
     "message": "5-hour OAuth quota admits new task"
   }

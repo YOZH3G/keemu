@@ -64,3 +64,4 @@
 - 2026-09-23T20:15:13+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
 - 2026-09-23T20:15:32+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
 - 2026-09-23T20:15:52+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
+- 2026-09-23T20:18:31Z — User reported limits reset and requested continued automatic execution. m1a-11 remained incomplete on its exact `gpt-6-sol` / `high` session lock after three resume attempts returned HTTP 429 with a stated reset at 2026-09-29 07:03Z; no supervisor/worker process remained. A new read-only OAuth observation reported 100.0% remaining with next reset at 2026-09-24T01:18:09Z. Preserved session `20260923_200330_125e2a`, uncommitted init/cache work and route evidence; repaired state to RESUMING for a bounded retry.
