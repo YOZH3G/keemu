@@ -228,3 +228,4 @@
 - 2026-09-24T07:33:33+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
 - 2026-09-24T07:33:52+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
 - 2026-09-24T07:34:12+00:00 — Verified subtask boundary committed; routing a new disposable worker for the next subtask.
+- 2026-09-24T07:38:26Z — User required a hard publication boundary after m1a-14: finish and attest the active subtask, then stop before m1a-15 for a joint GitHub push. Backed up the supervisor config at `/opt/data/backups/keemu-stack-20260922T073131Z/pause-after-m1a14-20260924T073826Z` and configured `pause_after_subtask_ids=["m1a-14"]`. A controlled same-session supervisor restart is required because the running process loaded config only at startup; no model or subtask boundary change is authorized.

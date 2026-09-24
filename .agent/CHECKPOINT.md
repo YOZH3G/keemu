@@ -75,7 +75,7 @@ P0 technical-risk work is complete; m1a-09 input schemas, m1a-10 static IPK insp
 
 ## Next operation
 
-m1a-14 is active. Next: verify enhanced replacement guard, exercise failure/CLI service paths, correct lint, reconcile docs and rerun portable/live tests. Do not start m1a-15. Supervisor owns `.agent/STATE.json` and `.agent/router-events.jsonl`; this worker must not rewrite them. A02–A06/A18/A21 remain PARTIAL as whole acceptance IDs; A13/A14/A17 remain BLOCKED.
+m1a-14 is active. Next: verify enhanced replacement guard, exercise failure/CLI service paths, correct lint, reconcile docs and rerun portable/live tests. After the exact m1a-14 completion marker and runtime attestation, stop at the configured boundary with `m1a-15` still pending so the repository can be prepared and pushed to GitHub with the user. Supervisor owns `.agent/STATE.json` and `.agent/router-events.jsonl`; this worker must not rewrite them. A02–A06/A18/A21 remain PARTIAL as whole acceptance IDs; A13/A14/A17 remain BLOCKED.
 
 Kanban/supervisor reconciliation remains external to this worker's evidence package.
 
