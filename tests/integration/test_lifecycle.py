@@ -16,6 +16,9 @@ from click.testing import CliRunner
 
 from keemu.cli import cli
 from keemu.lifecycle import run_scenario
+from keemu.persistent import create as create_persistent
+from keemu.persistent import operate
+from keemu.registry import Registry, RegistryError
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -443,3 +446,112 @@ def test_cleanup_failure_preserves_primary_failure(monkeypatch):
     assert result.report.checks[-1].id == "cleanup"
     assert result.report.checks[-1].status == "ERROR"
     assert result.paths.json.is_file()
+
+
+@pytest.mark.docker
+def test_persistent_registry_real_target_restart_and_replacement():
+    if os.getenv("KEEMU_TEST_PERSISTENT") != "1":
+        pytest.skip("opt in to owned persistent Docker lifecycle test")
+    runtime_root = ROOT / ".runtime"
+    runtime_root.mkdir(exist_ok=True)
+    name = "persist-" + uuid.uuid4().hex[:12]
+    with tempfile.TemporaryDirectory(dir=runtime_root, prefix="m1a14-") as folder:
+        scenario, lock = inputs(Path(folder))
+        try:
+            cli_create = CliRunner().invoke(
+                cli,
+                [
+                    "up", "--name", name, "--scenario", str(scenario),
+                    "--lock", str(lock), "--repo", str(ROOT),
+                ],
+            )
+            assert cli_create.exit_code == 0, cli_create.output
+            assert json.loads(cli_create.output)["environment"]["state"] == "running"
+            with Registry(ROOT / ".runtime/registry").locked(name) as entry:
+                created = entry.read()
+            assert created.state == "running"
+            assert created.resource is not None
+            identifier = created.resource.container_id
+            assert operate(ROOT, name, "status")["consistent"]
+            output = operate(ROOT, name, "exec", argv=("/opt/bin/keemu-hello",))
+            assert output["exit_code"] == 0
+            assert "KEEMU-HELLO" in output["stdout"]
+            cli_exec = CliRunner().invoke(
+                cli, ["exec", name, "--repo", str(ROOT), "--", "/opt/bin/keemu-hello"]
+            )
+            assert cli_exec.exit_code == 0, cli_exec.output
+            assert json.loads(cli_exec.output)["exit_code"] == 0
+            with pytest.raises(RegistryError, match="already exists"):
+                create_persistent(ROOT, name, scenario, lock)
+            assert (
+                operate(ROOT, name, "restart")["environment"]["resource"][
+                    "container_id"
+                ]
+                == identifier
+            )
+            assert operate(ROOT, name, "down")["environment"]["state"] == "stopped"
+            assert operate(ROOT, name, "up")["environment"]["state"] == "running"
+            count = operate(
+                ROOT,
+                name,
+                "exec",
+                argv=("/bin/sh", "-c", 'read n < /opt/etc/keemu-count; echo "$n"'),
+            )
+            assert count["stdout"].strip() == "1"
+            assert operate(ROOT, name, "down")["environment"]["state"] == "stopped"
+            assert operate(ROOT, name, "destroy")["environment"]["state"] == "destroyed"
+            assert operate(ROOT, name, "status")["consistent"]
+            with pytest.raises(RegistryError, match="already exists"):
+                create_persistent(ROOT, name, scenario, lock)
+            cli_result = CliRunner().invoke(cli, ["status", name, "--repo", str(ROOT)])
+            assert cli_result.exit_code == 0, cli_result.output
+            assert json.loads(cli_result.output)["environment"]["state"] == "destroyed"
+            print(
+                json.dumps(
+                    {"name": name, "container_id": identifier, "state": "destroyed"}
+                )
+            )
+        finally:
+            # If an assertion fails, leave a truthful record while removing only
+            # the exact run's owned container, never a foreign label match.
+            with Registry(ROOT / ".runtime/registry").locked(name) as entry:
+                try:
+                    record = entry.read()
+                except (OSError, ValueError):
+                    record = None
+                if record is not None and record.resource is not None:
+                    from keemu.docker_runtime import DockerRuntime
+
+                    runtime = DockerRuntime(record.run_id, record.oci_digest)
+                    state = runtime.reconcile()
+                    for owned in state["container_owned"]:
+                        runtime.remove_container(owned)
+                    assert not runtime.reconcile()["container_owned"]
+
+
+@pytest.mark.docker
+def test_persistent_failed_postinst_records_failure_and_cleans_owned():
+    if os.getenv("KEEMU_TEST_PERSISTENT") != "1":
+        pytest.skip("opt in to owned persistent Docker lifecycle test")
+    runtime_root = ROOT / ".runtime"
+    runtime_root.mkdir(exist_ok=True)
+    name = "persist-fail-" + uuid.uuid4().hex[:12]
+    with tempfile.TemporaryDirectory(dir=runtime_root, prefix="m1a14-fail-") as folder:
+        scenario, lock = inputs(Path(folder), failed_postinst=True)
+        from keemu.persistent import PersistentError
+
+        with pytest.raises(
+            PersistentError, match="opkg install failed.*verified absent"
+        ):
+            create_persistent(ROOT, name, scenario, lock)
+    with Registry(ROOT / ".runtime/registry").locked(name) as entry:
+        record = entry.read()
+    assert record.state == "failed" and record.resource is not None
+    assert not operate(ROOT, name, "status")["consistent"]
+    from keemu.docker_runtime import DockerRuntime
+
+    runtime = DockerRuntime(record.run_id, record.oci_digest)
+    assert runtime.reconcile()["container_owned"] == []
+    print(
+        json.dumps({"name": name, "state": record.state, "cleanup": "verified absent"})
+    )

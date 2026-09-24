@@ -15,7 +15,10 @@ from keemu.fixture_lock import FixtureLockError, verify_fixture_lock
 from keemu.init_cache import InitError, init_locked
 from keemu.ipk_inspect import IPKError, inspect_ipk
 from keemu.lifecycle import run_scenario
+from keemu.persistent import PersistentError, operate
+from keemu.persistent import create as create_environment
 from keemu.profiles import ProfileError, load_profile
+from keemu.registry import RegistryError
 from keemu.reports import exit_code_for_status
 
 
@@ -144,6 +147,102 @@ def test_scenario(
     ):
         context.exit(2)
     context.exit(exit_code_for_status(result.report.overall))
+
+
+@cli.command()
+@click.option("--name", required=True)
+@click.option("--scenario", type=click.Path(path_type=Path))
+@click.option("--lock", type=click.Path(path_type=Path))
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def up(name: str, scenario: Path | None, lock: Path | None, repo: Path) -> None:
+    """Create a locked persistent IPK environment, or start a stopped one."""
+    if (scenario is None) != (lock is None):
+        raise InputError("--scenario and --lock must be supplied together")
+    try:
+        if scenario is not None and lock is not None:
+            result = {
+                "environment": create_environment(
+                    repo, name, scenario, lock
+                ).model_dump(mode="json")
+            }
+        else:
+            result = operate(repo, name, "up")
+    except (OSError, ValueError, RegistryError, PersistentError) as exc:
+        raise InputError(str(exc)) from exc
+    except RuntimeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(result, sort_keys=True))
+
+
+def _environment_command(
+    action: str, name: str, repo: Path, argv: tuple[str, ...] = ()
+) -> None:
+    try:
+        result = operate(repo, name, action, argv=argv)
+    except (OSError, ValueError, RegistryError, PersistentError) as exc:
+        raise InputError(str(exc)) from exc
+    except RuntimeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(result, sort_keys=True))
+    if action == "exec" and result["exit_code"]:
+        raise SystemExit(1)
+
+
+@cli.command()
+@click.argument("name")
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def down(name: str, repo: Path) -> None:
+    """Stop a running, ID-verified environment."""
+    _environment_command("down", name, repo)
+
+
+@cli.command()
+@click.argument("name")
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def restart(name: str, repo: Path) -> None:
+    """Stop and start the same ID-verified container."""
+    _environment_command("restart", name, repo)
+
+
+@cli.command()
+@click.argument("name")
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def destroy(name: str, repo: Path) -> None:
+    """Remove a stopped owned container; retain its registry tombstone."""
+    _environment_command("destroy", name, repo)
+
+
+@cli.command()
+@click.argument("name")
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def status(name: str, repo: Path) -> None:
+    """Compare registry with Docker labels and actual state without mutation."""
+    _environment_command("status", name, repo)
+
+
+@cli.command()
+@click.argument("name")
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def ports(name: str, repo: Path) -> None:
+    """Show only the inspected container's port map."""
+    _environment_command("ports", name, repo)
+
+
+@cli.command()
+@click.argument("name")
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def logs(name: str, repo: Path) -> None:
+    """Read bounded logs from the inspected owned container."""
+    _environment_command("logs", name, repo)
+
+
+@cli.command("exec", context_settings={"ignore_unknown_options": True})
+@click.argument("name")
+@click.argument("argv", nargs=-1, type=click.UNPROCESSED)
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+def exec_environment(name: str, argv: tuple[str, ...], repo: Path) -> None:
+    """Run explicit argv inside a running owned target; use -- before COMMAND."""
+    _environment_command("exec", name, repo, argv)
 
 
 @cli.command("init")
