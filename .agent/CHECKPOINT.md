@@ -76,7 +76,7 @@ P0 technical-risk work is complete; m1a-09 input schemas, m1a-10 static IPK insp
 
 ## Next operation
 
-m1a-14 implementation, real runner proof, exact supervisor attestation and independent review are verified. Publish `agent/keemu` to the private GitHub remote, verify the remote branch head, and retain the configured stop with `m1a-15` unlaunched. Future exact, attested subtask boundaries use full checkpoint staging plus automatic push. Do not start m1a-15 without explicit continuation. A02–A06/A18/A21 remain PARTIAL as whole acceptance IDs; A13/A14/A17 remain BLOCKED.
+m1a-14 implementation, real runner proof, exact supervisor attestation, independent review and GitHub publication are verified. Private remote branch `agent/keemu` matched local commit `476c7ee427558145bed8f7696a448a5dd9589728` after the first push. Future exact, attested subtask boundaries use full checkpoint staging plus automatic push. The supervisor remains stopped at `configured_subtask_boundary:m1a-14`; do not start m1a-15 without explicit continuation. A02–A06/A18/A21 remain PARTIAL as whole acceptance IDs; A13/A14/A17 remain BLOCKED.
 
 Kanban reconciliation remains external to this evidence package.
 
