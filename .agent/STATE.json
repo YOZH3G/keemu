@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-24T02:35:50+00:00",
+    "last_evaluated_at": "2026-09-24T05:35:49+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -59,27 +59,11 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {
-      "provider": "openai-codex",
-      "tier": "C5",
-      "model": "gpt-6-sol",
-      "reasoning": "xhigh",
-      "expected_model": "gpt-6-sol",
-      "expected_reasoning": "xhigh",
-      "policy_version": "v2",
-      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-      "subtask_id": "m1a-13",
-      "subtask_digest": "f3dcdacfe2ee110239f55bf581d96ba7f0fcee848769df9cde446994c4a54328",
-      "route_event_id": "evt_6d624a953261afa809c35303",
-      "session_id": null,
-      "model_attested": null,
-      "attestation_status": "PENDING",
-      "session_deleted": null
-    },
+    "worker_lock": {},
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 13,
+      "active_index": 14,
       "items": [
         {
           "id": "preflight",
@@ -398,8 +382,15 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "active",
-          "digest": "f3dcdacfe2ee110239f55bf581d96ba7f0fcee848769df9cde446994c4a54328"
+          "status": "complete",
+          "digest": "f3dcdacfe2ee110239f55bf581d96ba7f0fcee848769df9cde446994c4a54328",
+          "outcome": {
+            "event_id": "evt_3ae4635858cec307f0ca621a",
+            "route_event_id": "evt_6d624a953261afa809c35303",
+            "completed_at": "2026-09-24T06:30:04+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1a-14",
@@ -417,7 +408,7 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "68804780094f08eb44af55b2edb9eb85614c6311aeaf34ed9b64fabc7494b8f5"
         },
         {
@@ -701,7 +692,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_ff019827ff19c003e9646f40",
+      "last_event_id": "evt_3ae4635858cec307f0ca621a",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -857,10 +848,10 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-24T02:35:50+00:00",
-    "last_run_finished_at": "2026-09-24T05:35:03+00:00",
-    "last_log": ".agent/runs/20260924T023550Z.log",
-    "last_checkpoint_at": "2026-09-24T05:35:03+00:00"
+    "last_run_started_at": "2026-09-24T05:35:49+00:00",
+    "last_run_finished_at": "2026-09-24T06:30:02+00:00",
+    "last_log": ".agent/runs/20260924T053549Z.log",
+    "last_checkpoint_at": "2026-09-24T06:30:04+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-24T05:35:03+00:00",
