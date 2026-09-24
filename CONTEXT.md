@@ -7,7 +7,7 @@
 - Durable compatibility path: `/opt/data/hermes-projects/keemu` (symlink to the project root)
 - Branch: `agent/keemu`
 - Specification: `KEEMU_MVP1_updated.md`, revision 2.2
-- Git remote: none configured at stack activation time; local Git is the durable source until a private remote is supplied.
+- Git remote: `git@github.com:YOZH3G/keemu.git`; repository-local SSH configuration isolates the KEEMU deploy key from unrelated GitHub keys.
 
 ## Current runtime
 
@@ -30,7 +30,7 @@
 - Before launching every new frozen subtask, the supervisor must fetch live OAuth account usage and persist a subtask-bound admission record. Below 11% remaining it warns; below 5% it checkpoints and waits until the stored absolute reset-plus-margin time. Same-subtask session continuations do not repeat the preflight.
 - User-requested publication boundary: finish and attest `m1a-14`, then pause before launching `m1a-15` so the accumulated repository work can be prepared and pushed to GitHub. This is enforced by `pause_after_subtask_ids` in the project supervisor config.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
-- Git auto-pull and auto-push are disabled because no remote exists.
+- Git auto-pull remains disabled to avoid hidden remote integration. Git checkpoints stage the complete task result (excluding secret-like paths) and auto-push `agent/keemu` after each verified subtask boundary.
 
 ## Verification commands
 

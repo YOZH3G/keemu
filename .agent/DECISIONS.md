@@ -12,9 +12,9 @@ Supervised work is fixed to tier C5: `gpt-5.6-sol` with reasoning `xhigh`. Route
 
 At the verified p0-02 boundary, future Luna/Sol routes move from `gpt-5.6-luna`/`gpt-5.6-sol` to `gpt-6-luna`/`gpt-6-sol`. Existing attested route and outcome records retain the literal models that actually ran. The active p0-03 lock remains `gpt-5.6-terra` / `high`; all subsequent frozen plan entries and live policy/config use the updated IDs. Runtime attestation remains mandatory before a new model is treated as active.
 
-## D-003 — Local Git until a private remote exists
+## D-003 — Push each verified subtask through an isolated deploy key
 
-Git auto-pull and auto-push are disabled. Local commits remain the durable boundary; adding a private remote and deploy key requires a separate explicit operation.
+The private remote is `git@github.com:YOZH3G/keemu.git`. Repository-local `core.sshCommand` uses only `/opt/data/.ssh/id_ed25519_keemu` with `-F /dev/null`, `IdentitiesOnly=yes`, and strict host-key checking, so the unrelated `hermes-workspace` key cannot create a false-positive access test. `git_auto_pull` remains disabled; `git_auto_push` is enabled and checkpoint mode is `all`, so each exact, attested subtask boundary commits new implementation files plus durable state and pushes `agent/keemu`. Secret-like paths remain refused by the supervisor checkpoint filter. No force-push or automatic merge to `main` is allowed.
 
 ## D-004 — Preserve the Hostinger baseline
 
