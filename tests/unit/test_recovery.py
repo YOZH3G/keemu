@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 import pytest
@@ -112,7 +113,9 @@ def test_recovery_requires_explicit_cli_confirmation_and_retries(tmp_path, fake)
         persistent.recover(tmp_path, "fixture")
     with Registry(tmp_path / ".runtime/registry").locked("fixture") as entry:
         assert entry.read().state == "installing"
-    result = persistent.recover(tmp_path, "fixture")
+    cli_result = CliRunner().invoke(cli, [*cmd, "--yes"])
+    assert cli_result.exit_code == 0, cli_result.output
+    result = json.loads(cli_result.output)
     assert result["removed"] == [CID] and result["state"] == "destroyed"
     assert fake.all_ids == {FOREIGN} and fake.removed == [CID]
     assert persistent.recover(tmp_path, "fixture")["retry"] is True
