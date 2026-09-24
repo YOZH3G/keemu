@@ -1,0 +1,71 @@
+{
+  "a01_three_target": "BLOCKED",
+  "a10_matrix": "NOT RUN (scheduled for m1b-19)",
+  "created_at": "2026-09-24T19:02:39+00:00",
+  "limitation": "Direct QEMU/PRoot proves diagnostic behavior only; Docker target exec is blocked by unusable MIPS binfmt in Docker. No host registration was authorized or changed. AArch64 and full A01 remain as in the m1a-17 ledger; this is not matrix acceptance.",
+  "raw_probe": ".runtime/m1b18/probe.json",
+  "raw_probe_sha256": "2d57090222f0b1b96a54cbf131b2f4ce0a49ac48becba2f21e5aea69a43a60b7",
+  "schema_version": 1,
+  "slice_status": "BLOCKED",
+  "subtask": "m1b-18",
+  "targets": [
+    {
+      "abi": "o32",
+      "direct_qemu_proot": "PASS",
+      "docker_binfmt": "BLOCKED",
+      "docker_error": "exec /bin/sh: exec format error\n",
+      "elf_class": 32,
+      "endianness": "little",
+      "fixture_hashes": {
+        "hello": "c0619d4a25148b24b471354bc15f7157bc0d9a49c6241e9be35f3ab99b7aba96",
+        "nfqueue-consumer": "fbf241de45c130f0139f0674e0be7c716407e688f167bb2b504c766d3f2f42a7",
+        "web-demo": "90951a8f53f9e40878c9b736de3e306a86b4c04f9d7a3116d75100d3c0ea3fea"
+      },
+      "fpu": "soft-float",
+      "image_id": "sha256:9822813438c56f173491a7b205b0c536e632582493282f77e0049da8d5276e2c",
+      "isa": "MIPS32r2",
+      "locks": {
+        "m1b18-fixtures-mipsel-3.4.json": "84485a7581a47887624146609db997eaf7895a89e8206dfdc3d1b73f82c0073f",
+        "m1b18-image-mipsel-3.4.json": "7b5c34b1f43c4df63fa0c2f23ced532660e385f47209ee327a2383da08909f5f",
+        "m1b18-mipsel-3.4.json": "aad4b3b1638bcb197aa860ec2e6fbd2f2443309da22d8e56c7a723fe962a1888",
+        "m1b18-sdk-mipsel-3.4.json": "77d0607e2e09452cccef54846a6571e917fb65fc7f14f5b7bd580304bbf8f701"
+      },
+      "offline_integrity": "PASS",
+      "owned_container_cleanup": "PASS",
+      "profile": "generic-mipsel",
+      "root_packages": 20,
+      "saved_archive_sha256": "895785cf9562943f28db7a95c8dd913ca38e263f9e50eec8d9978f4b2ff46c69",
+      "target": "mipsel-3.4",
+      "target_elf_count": 31
+    },
+    {
+      "abi": "o32",
+      "direct_qemu_proot": "PASS",
+      "docker_binfmt": "BLOCKED",
+      "docker_error": "exec /bin/sh: exec format error\n",
+      "elf_class": 32,
+      "endianness": "big",
+      "fixture_hashes": {
+        "hello": "83224ac67c9e137df360a50563726242cdd519fd56c7c8e6f99c530ce5ea1641",
+        "nfqueue-consumer": "74902debe66eb8bf93d9ecd708a82aa5136c0e527d4195ec214b007e66f17177",
+        "web-demo": "74e938202956b6262dbf1b190e057040867d7bde1ea9ba752018d3a4c7cb3e1d"
+      },
+      "fpu": "soft-float",
+      "image_id": "sha256:1767195564c09eeb7e0eb7eccb31b3fd4fe0aa8725e2005677a07abad99d09c1",
+      "isa": "MIPS32r2",
+      "locks": {
+        "m1b18-fixtures-mips-3.4.json": "fb8a21ce4511ddf0a21f0177e22363fb23645473fb53530fbf1e1bba9103aad2",
+        "m1b18-image-mips-3.4.json": "bafc09e003314250aa1328f9de3f705ae4f75acee98612ec84b0fb81463b1266",
+        "m1b18-mips-3.4.json": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+        "m1b18-sdk-mips-3.4.json": "a6cf99629947dcdedc5acd1b16a55fe52b263146099cc5a162e1cdd6a3dba122"
+      },
+      "offline_integrity": "PASS",
+      "owned_container_cleanup": "PASS",
+      "profile": "generic-mips",
+      "root_packages": 20,
+      "saved_archive_sha256": "cd7671b118add3d8cabd7e7c8abd23ad3df67683f67938c1311f996b1e293cae",
+      "target": "mips-3.4",
+      "target_elf_count": 31
+    }
+  ]
+}

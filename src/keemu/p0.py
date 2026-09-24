@@ -85,9 +85,7 @@ def build_diagnostic_rootfs(
             ),
             encoding="utf-8",
         )
-        packages = [
-            str((package_cache / filename).resolve()) for filename in verified
-        ]
+        packages = [str((package_cache / filename).resolve()) for filename in verified]
         base = [
             str(qemu.resolve()),
             str(bootstrap_opkg.resolve()),
@@ -101,9 +99,13 @@ def build_diagnostic_rootfs(
         _run(base + ["--nodeps", "install", *packages], timeout=timeout)
         installed = _run(base + ["list-installed"], timeout=60).stdout
         (temporary / "bin/sh").symlink_to("/opt/bin/busybox")
-        (temporary / "lib/ld-linux-aarch64.so.1").symlink_to(
-            "/opt/lib/ld-linux-aarch64.so.1"
-        )
+        loaders = {
+            "aarch64-3.10": "ld-linux-aarch64.so.1",
+            "mipsel-3.4": "ld.so.1",
+            "mips-3.4": "ld.so.1",
+        }
+        loader = loaders[lock["target"]]
+        (temporary / "lib" / loader).symlink_to("/opt/lib/" + loader)
         opkg_config.unlink()
         temporary.replace(destination)
         return DiagnosticRootfsResult(
@@ -125,9 +127,7 @@ def run_proot_smoke(
     """Run nested target ELF and shebang checks in unprivileged PRoot."""
     script = rootfs / "opt/tmp/keemu-nested-smoke.sh"
     script.write_text(
-        "#!/bin/sh\n"
-        "echo shebang-child-ok\n"
-        "/opt/bin/busybox uname -m\n",
+        "#!/bin/sh\necho shebang-child-ok\n/opt/bin/busybox uname -m\n",
         encoding="utf-8",
     )
     script.chmod(0o755)

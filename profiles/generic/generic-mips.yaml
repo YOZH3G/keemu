@@ -1,0 +1,22 @@
+schema_version: 1
+id: generic-mips
+revision: 1
+kind: generic
+entware_target: mips-3.4
+cpu:
+  arch: mips
+  endian: big
+  elf_class: 32
+  qemu: qemu-mips
+kernel:
+  execution: host
+  reported_release: null
+filesystem:
+  entware_root: /opt
+ndm:
+  mode: strict
+  fixtures: []
+network:
+  logical_to_linux:
+    ISP: wan0
+    Bridge0: br0

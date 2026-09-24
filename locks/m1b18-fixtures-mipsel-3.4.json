@@ -1,0 +1,42 @@
+{
+  "target": "mipsel-3.4",
+  "sdk_lock_sha256": "77d0607e2e09452cccef54846a6571e917fb65fc7f14f5b7bd580304bbf8f701",
+  "qemu_sha256": "40be2a933d47494134ddc8947ce09c41af6ea29056a4e552da8e8cd8375f2229",
+  "compiler": "gcc (OpenWrt GCC 8.4.0) 8.4.0",
+  "flags": [
+    "-std=c17",
+    "-O2",
+    "-g0",
+    "-fno-ident",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-mabi=32",
+    "-march=mips32r2",
+    "-msoft-float",
+    "-Wl,--build-id=none"
+  ],
+  "fixtures": {
+    "hello": {
+      "status": "PASS",
+      "source": "fixtures/sources/hello/hello.c",
+      "source_sha256": "352e8a9df529faaa2e96c0898e7a7fb56de2d5ced9a52a90a270330fa1b20ff7",
+      "path": ".runtime/m1b18/mipsel-3.4/fixtures/hello",
+      "sha256": "c0619d4a25148b24b471354bc15f7157bc0d9a49c6241e9be35f3ab99b7aba96"
+    },
+    "web-demo": {
+      "status": "PASS",
+      "source": "fixtures/sources/web-demo/web_demo.c",
+      "source_sha256": "95cf98d61c6f4709be17ed915ecce23a91ebd7b89ea0df634bad54ce1033c98f",
+      "path": ".runtime/m1b18/mipsel-3.4/fixtures/web-demo",
+      "sha256": "90951a8f53f9e40878c9b736de3e306a86b4c04f9d7a3116d75100d3c0ea3fea"
+    },
+    "nfqueue-consumer": {
+      "status": "PASS",
+      "source": "fixtures/sources/nfqueue/nfqueue_consumer.c",
+      "source_sha256": "01c077324c48fe467ae69410e01f32348c8a394f210ab9717ba0b1698a2e1078",
+      "path": ".runtime/m1b18/mipsel-3.4/fixtures/nfqueue-consumer",
+      "sha256": "fbf241de45c130f0139f0674e0be7c716407e688f167bb2b504c766d3f2f42a7"
+    }
+  }
+}

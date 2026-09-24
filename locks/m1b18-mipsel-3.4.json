@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "kind": "entware-rootfs-lock",
+  "target": "mipsel-3.4",
+  "captured_at": "2026-09-24T18:48:39+00:00",
+  "root_packages": [
+    "entware-opt",
+    "busybox",
+    "ca-bundle"
+  ],
+  "source": {
+    "index_url": "https://bin.entware.net/mipselsf-k3.4/Packages.gz",
+    "index_sha256": "dfc4ef4ee101f1ffd52095c183b6a4460740520ac2dcc5a2a0b4400092d6016c",
+    "base_url": "https://bin.entware.net/mipselsf-k3.4",
+    "index_content_encoding": "gzip",
+    "index_compressed_sha256": "22cc370f8a81b3b6906e5e66d296375376d8d98aea247140edd497c170c6e445"
+  },
+  "packages": [
+    {
+      "name": "entware-opt",
+      "version": "227000-3",
+      "architecture": "all",
+      "filename": "entware-opt_227000-3_all.ipk",
+      "sha256": "5a58514d284fd760080bef6076bdd115856a19a2379d9ce35e00c5b6931fd3b5",
+      "url": "https://bin.entware.net/mipselsf-k3.4/entware-opt_227000-3_all.ipk"
+    },
+    {
+      "name": "busybox",
+      "version": "1.37.0-6",
+      "architecture": "mipsel-3.4",
+      "filename": "busybox_1.37.0-6_mipsel-3.4.ipk",
+      "sha256": "9153db51d5bc8f6a9ee8e32d7072a588c7e794abc4c80e9214a6f666c4028289",
+      "url": "https://bin.entware.net/mipselsf-k3.4/busybox_1.37.0-6_mipsel-3.4.ipk"
+    },
+    {
+      "name": "ca-bundle",
+      "version": "20250419-2",
+      "architecture": "all",
+      "filename": "ca-bundle_20250419-2_all.ipk",
+      "sha256": "e4206917b1aa53a1a365fb21909da79d6b2d0b6b15fa50f79a4221fcb6d6192d",
+      "url": "https://bin.entware.net/mipselsf-k3.4/ca-bundle_20250419-2_all.ipk"
+    },
+    {
+      "name": "libc",
+      "version": "2.27-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libc_2.27-12_mipsel-3.4.ipk",
+      "sha256": "6b4040c416fa360772508faf01a4c06236a0efd8a3444ea4a2eda2e75b2c12a7",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libc_2.27-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libssp",
+      "version": "8.4.0-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libssp_8.4.0-12_mipsel-3.4.ipk",
+      "sha256": "e61402e8702182dc648d645d5f3c97baa050e80d1f6ab2388bfc24c98372f9f1",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libssp_8.4.0-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "librt",
+      "version": "2.27-12",
+      "architecture": "mipsel-3.4",
+      "filename": "librt_2.27-12_mipsel-3.4.ipk",
+      "sha256": "4f290a2d23e589f01714192f3eac7773af967c91a6bacba242efcbe7b47161b9",
+      "url": "https://bin.entware.net/mipselsf-k3.4/librt_2.27-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libpthread",
+      "version": "2.27-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libpthread_2.27-12_mipsel-3.4.ipk",
+      "sha256": "1e85b7ce7ef55f86d876774bab60bb274938d6247dc97e614834564184a93ef2",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libpthread_2.27-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libgcc",
+      "version": "8.4.0-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libgcc_8.4.0-12_mipsel-3.4.ipk",
+      "sha256": "098b8c6f6c9f8195f91ece7bf0bb6a1f6350bbb5d2a4bf2208dfaaa7fe00a46b",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libgcc_8.4.0-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libstdcpp",
+      "version": "8.4.0-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libstdcpp_8.4.0-12_mipsel-3.4.ipk",
+      "sha256": "bdfffaf5d95f9bf3eabbdac72924f0b338a3a7d021d958f57dd9432d28a56c17",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libstdcpp_8.4.0-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "entware-release",
+      "version": "2025.05-1",
+      "architecture": "all",
+      "filename": "entware-release_2025.05-1_all.ipk",
+      "sha256": "b94b21ecb843c3f4659c9764ef19abb39ab5f48cfcda66263f2dc6c754b3f984",
+      "url": "https://bin.entware.net/mipselsf-k3.4/entware-release_2025.05-1_all.ipk"
+    },
+    {
+      "name": "zoneinfo-asia",
+      "version": "2025c-1",
+      "architecture": "mipsel-3.4",
+      "filename": "zoneinfo-asia_2025c-1_mipsel-3.4.ipk",
+      "sha256": "6b53bd728703ada8af5048ae615595723d5e5368961fe0dd041cc929c7a3fde6",
+      "url": "https://bin.entware.net/mipselsf-k3.4/zoneinfo-asia_2025c-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "zoneinfo-europe",
+      "version": "2025c-1",
+      "architecture": "mipsel-3.4",
+      "filename": "zoneinfo-europe_2025c-1_mipsel-3.4.ipk",
+      "sha256": "7e9c58aa7fb9ec50b48b32e26ff9648ff2101ba55b192ff91544ae54ade77010",
+      "url": "https://bin.entware.net/mipselsf-k3.4/zoneinfo-europe_2025c-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "findutils",
+      "version": "4.10.0-1",
+      "architecture": "mipsel-3.4",
+      "filename": "findutils_4.10.0-1_mipsel-3.4.ipk",
+      "sha256": "abd9954b27f64df3239b3dd5cb0c80b13530d19fa46e59a1fee520cadc91a134",
+      "url": "https://bin.entware.net/mipselsf-k3.4/findutils_4.10.0-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "terminfo",
+      "version": "6.4-3",
+      "architecture": "mipsel-3.4",
+      "filename": "terminfo_6.4-3_mipsel-3.4.ipk",
+      "sha256": "f302a486000a2a09ac78596437d549796684f7706382453d34810d1469abbec9",
+      "url": "https://bin.entware.net/mipselsf-k3.4/terminfo_6.4-3_mipsel-3.4.ipk"
+    },
+    {
+      "name": "locales",
+      "version": "2.27-9",
+      "architecture": "mipsel-3.4",
+      "filename": "locales_2.27-9_mipsel-3.4.ipk",
+      "sha256": "36a58bdf420a663b7b758921276c6ca2a1885df0921beb3476770d362eefa171",
+      "url": "https://bin.entware.net/mipselsf-k3.4/locales_2.27-9_mipsel-3.4.ipk"
+    },
+    {
+      "name": "opkg",
+      "version": "2025.11.05~80503d94-1",
+      "architecture": "mipsel-3.4",
+      "filename": "opkg_2025.11.05~80503d94-1_mipsel-3.4.ipk",
+      "sha256": "8b197fda578a26b19a96356119ef419c0ca236b2c99fed551763eb332f97d348",
+      "url": "https://bin.entware.net/mipselsf-k3.4/opkg_2025.11.05~80503d94-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "entware-upgrade",
+      "version": "1.0-1",
+      "architecture": "all",
+      "filename": "entware-upgrade_1.0-1_all.ipk",
+      "sha256": "ed0db9ab7e0abc6141e4322a8b60a70f7693366005474b25b6b4b2c4175eac50",
+      "url": "https://bin.entware.net/mipselsf-k3.4/entware-upgrade_1.0-1_all.ipk"
+    },
+    {
+      "name": "zoneinfo-core",
+      "version": "2025c-1",
+      "architecture": "mipsel-3.4",
+      "filename": "zoneinfo-core_2025c-1_mipsel-3.4.ipk",
+      "sha256": "75ff13adaa64a0686a29ef5bd219af830bad11532b908fd5e9afa7e966e1b9c9",
+      "url": "https://bin.entware.net/mipselsf-k3.4/zoneinfo-core_2025c-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "grep",
+      "version": "3.12-1",
+      "architecture": "mipsel-3.4",
+      "filename": "grep_3.12-1_mipsel-3.4.ipk",
+      "sha256": "0ebf4e7caa04d341ec361f29cb2d358705e51fc54ab4b23bc48405b84965b0da",
+      "url": "https://bin.entware.net/mipselsf-k3.4/grep_3.12-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libpcre2",
+      "version": "10.47-1",
+      "architecture": "mipsel-3.4",
+      "filename": "libpcre2_10.47-1_mipsel-3.4.ipk",
+      "sha256": "96eeae6b3508a45e7a46d3eef8d6808ae4f4e2ff570194e2524b2da3ab2b041c",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libpcre2_10.47-1_mipsel-3.4.ipk"
+    }
+  ],
+  "bootstrap_artifacts": [
+    {
+      "filename": "generic.sh",
+      "url": "https://bin.entware.net/mipselsf-k3.4/installer/generic.sh",
+      "sha256": "3a31d6384907d3239f15a1b554edccfbdc5116e064b91bb9c67ae88cd8ba25e9",
+      "size": 2760
+    },
+    {
+      "filename": "opkg",
+      "url": "https://bin.entware.net/mipselsf-k3.4/installer/opkg",
+      "sha256": "6a84ba53d2542acb5cc3efa59cc98fd80de883de705ce9bc8a41d58b8345f017",
+      "size": 877204
+    },
+    {
+      "filename": "opkg.conf",
+      "url": "https://bin.entware.net/mipselsf-k3.4/installer/opkg.conf",
+      "sha256": "b4c049ecea87c2f6595aee89f7c9e31995fedf0d17dc6dbfc5c0df987a079548",
+      "size": 150
+    }
+  ],
+  "evidence_scope": "Captured and SHA-256-verified feed closure and installer bytes only; feed URL is mutable; target execution and image verification are separate."
+}

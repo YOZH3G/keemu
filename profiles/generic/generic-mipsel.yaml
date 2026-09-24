@@ -1,0 +1,22 @@
+schema_version: 1
+id: generic-mipsel
+revision: 1
+kind: generic
+entware_target: mipsel-3.4
+cpu:
+  arch: mipsel
+  endian: little
+  elf_class: 32
+  qemu: qemu-mipsel
+kernel:
+  execution: host
+  reported_release: null
+filesystem:
+  entware_root: /opt
+ndm:
+  mode: strict
+  fixtures: []
+network:
+  logical_to_linux:
+    ISP: wan0
+    Bridge0: br0

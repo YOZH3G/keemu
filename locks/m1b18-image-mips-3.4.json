@@ -1,0 +1,421 @@
+{
+  "archive_sha256": "cd7671b118add3d8cabd7e7c8abd23ad3df67683f67938c1311f996b1e293cae",
+  "audit": {
+    "elf": {
+      "opt/bin/busybox": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "9dd1a46a727d77925f4fea259c83c419fc5615ff2daf7c152ea9ef8b75bb10e8"
+      },
+      "opt/bin/locale.new": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "cfd741378a98bc18e264df0bfdc31f3ca57840a3206f291ae2610d0984ea1533"
+      },
+      "opt/bin/localedef.new": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "bc5045f18343861146f63a58a0a242db10dbf6c15276a20c71032c90326cb1cf"
+      },
+      "opt/bin/opkg": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "059f54bf9bcc889baacf18de11a0cdd1b82328e245e80a25299426d98f6a79e4"
+      },
+      "opt/keemu/fixtures/hello": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "83224ac67c9e137df360a50563726242cdd519fd56c7c8e6f99c530ce5ea1641"
+      },
+      "opt/keemu/fixtures/nfqueue-consumer": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "74902debe66eb8bf93d9ecd708a82aa5136c0e527d4195ec214b007e66f17177"
+      },
+      "opt/keemu/fixtures/web-demo": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "74e938202956b6262dbf1b190e057040867d7bde1ea9ba752018d3a4c7cb3e1d"
+      },
+      "opt/lib/ld-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001007",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "88e1185058bee6ea88b83e5b2fcb4aaf5619638cab7fb0fb2168365b48eae919"
+      },
+      "opt/lib/libanl-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "7d7dde80f7b3f3ec2a49d8833bf101b453952b72d4b84dc202e05bf18efab789"
+      },
+      "opt/lib/libc-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "1fdd8853c18dc88b95614257aee0dd39caec82ea984e43d46615b1ab5e73793f"
+      },
+      "opt/lib/libcidn-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "a5bba5a92e81a49163888a911b3ebf66071b5c82c805eed7ea8328cbf61f97d9"
+      },
+      "opt/lib/libcrypt-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "b512cf411b6b21ac3116019d0fd9d467d3447b04459ea8d813d8fc8b788dfaac"
+      },
+      "opt/lib/libdl-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "e95b6edf5cb5302625fdc6d34bc26b99e917120f1acbbfce08db1386f77d13c7"
+      },
+      "opt/lib/libgcc_s.so.1": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001007",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "a5ecfca43cf86c76f367632206f19e4eac5c844b1e605f8ee5b184cf16963690"
+      },
+      "opt/lib/libm-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "ff31df743641fda8650cf483a6ac1fcef5db3a0090e0fffd878b599166b5a3e1"
+      },
+      "opt/lib/libmemusage.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "fcc0e12762d83e696050273ae272eb98376d1449319ac67f3d9b7a5a12a3cfc0"
+      },
+      "opt/lib/libnsl-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "3037718e75c8e9c8e2ba32c102eb4ca2c6f0efcd59572c30a980f54ccdebc84a"
+      },
+      "opt/lib/libnss_dns-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "50131e79f98e268a5db58cb8584a4c95d1a87f8e817588ce1052d22e89c805e0"
+      },
+      "opt/lib/libnss_files-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "3807de87063e98e375f1a0d69c76fc71db03fd5a649a00029ddeaa39bb0ddeff"
+      },
+      "opt/lib/libpcprofile.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "ca4fdf64e45154484f0dcd023ecba0db2bf41583654b8c6dd82e41936ba6f062"
+      },
+      "opt/lib/libpcre2-8.so.0.15.0": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001007",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "6421bb477c903e2950cb7b067220915d4c69ac9b7a914a752fb1c537044c3ad7"
+      },
+      "opt/lib/libpcre2-posix.so.3.0.7": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001007",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "188631839522cdcfe7682a3ac91d2c82b90920cc9078963b6d5b71fc957fea36"
+      },
+      "opt/lib/libpthread-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "c22138dad1c7119a3c3496cab9f19c0f0cbcdc18904ba018ff0481a84a5ee114"
+      },
+      "opt/lib/libresolv-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "b4e0740dd98ff3dfc1c1068a9bfbb094884e95d65f0944248c037797aa17f6a5"
+      },
+      "opt/lib/librt-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "43118bf876932f04386268be9975ac155b16f7564d7046b89f320b82a5e947af"
+      },
+      "opt/lib/libssp.so.0.0.0": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001007",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "0642c198fac641b20076a841e98fe2ba150976be83b917ac1dff99ae3996ab0c"
+      },
+      "opt/lib/libstdc++.so.6.0.25": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001007",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "0dac9fa15540c7b1188e569682937d63caf93c734b707730eb483782822e4dc0"
+      },
+      "opt/lib/libutil-2.27.so": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "5e88aa5c9d370e6d83d533f7d3071eaf69d3a66a3d508555dd2e462b15137187"
+      },
+      "opt/libexec/find-gnu": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "21af6a47c115b80f1bb05157c63c456688349c868d8cf4294adab4109e39ceab"
+      },
+      "opt/libexec/grep-gnu": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "6a943a17f91a58f8ac427a98f49584c6a09a9048dd765b38c56479b4f72064be"
+      },
+      "opt/libexec/xargs-gnu": {
+        "abi": "o32",
+        "class": 32,
+        "endian": "big",
+        "flags": "0x70001005",
+        "fpu": "soft-float",
+        "isa": "MIPS32r2",
+        "machine": 8,
+        "sha256": "b9864b8428d41b16ae7ab4129bcb47edf9ee4b8fe35b687ba83eeb396f4ef24d"
+      }
+    },
+    "native_init_sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+    "target_elf_count": 31,
+    "tree_sha256": "64ab6c1a130cd447bcc3fb4eeb71f2590d70abf5ecc3fe99f3cd0c3c3c10079a"
+  },
+  "image_id": "sha256:1767195564c09eeb7e0eb7eccb31b3fd4fe0aa8725e2005677a07abad99d09c1",
+  "inventory": [
+    {
+      "name": "busybox",
+      "version": "1.37.0-6"
+    },
+    {
+      "name": "ca-bundle",
+      "version": "20250419-2"
+    },
+    {
+      "name": "entware-opt",
+      "version": "227000-3"
+    },
+    {
+      "name": "entware-release",
+      "version": "2025.05-1"
+    },
+    {
+      "name": "entware-upgrade",
+      "version": "1.0-1"
+    },
+    {
+      "name": "findutils",
+      "version": "4.10.0-1"
+    },
+    {
+      "name": "grep",
+      "version": "3.12-1"
+    },
+    {
+      "name": "libc",
+      "version": "2.27-12"
+    },
+    {
+      "name": "libgcc",
+      "version": "8.4.0-12"
+    },
+    {
+      "name": "libpcre2",
+      "version": "10.47-1"
+    },
+    {
+      "name": "libpthread",
+      "version": "2.27-12"
+    },
+    {
+      "name": "librt",
+      "version": "2.27-12"
+    },
+    {
+      "name": "libssp",
+      "version": "8.4.0-12"
+    },
+    {
+      "name": "libstdcpp",
+      "version": "8.4.0-12"
+    },
+    {
+      "name": "locales",
+      "version": "2.27-9"
+    },
+    {
+      "name": "opkg",
+      "version": "2025.11.05~80503d94-1"
+    },
+    {
+      "name": "terminfo",
+      "version": "6.4-3"
+    },
+    {
+      "name": "zoneinfo-asia",
+      "version": "2025c-1"
+    },
+    {
+      "name": "zoneinfo-core",
+      "version": "2025c-1"
+    },
+    {
+      "name": "zoneinfo-europe",
+      "version": "2025c-1"
+    }
+  ],
+  "kind": "m1b18-locked-target-image",
+  "labels": {
+    "org.keemu.fixture-lock-sha256": "fb8a21ce4511ddf0a21f0177e22363fb23645473fb53530fbf1e1bba9103aad2",
+    "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+    "org.keemu.native": "linux/amd64",
+    "org.keemu.owner": "keemu",
+    "org.keemu.package-lock-sha256": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+    "org.keemu.phase": "m1b-18",
+    "org.keemu.rootfs-sha256": "64ab6c1a130cd447bcc3fb4eeb71f2590d70abf5ecc3fe99f3cd0c3c3c10079a",
+    "org.keemu.target": "mips-3.4"
+  },
+  "opkg_config_sha256": "310da7670bce1a868fa9925781773976c427dca37fb26f495f2fda29914700ee",
+  "package_count": 20,
+  "platform": "linux/amd64",
+  "saved_config_sha256": "3356b2648e8978c7991f6e2d965b71cd37a768eeefd6b7277963e96ff87370f3",
+  "saved_layer_sha256": "1a3832de543eae3a355fe5fef12c2366f29fa774883a05f30ab757685f8e343f",
+  "schema_version": 1,
+  "target": "mips-3.4"
+}

@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "kind": "entware-rootfs-lock",
+  "target": "mips-3.4",
+  "captured_at": "2026-09-24T18:48:44+00:00",
+  "root_packages": [
+    "entware-opt",
+    "busybox",
+    "ca-bundle"
+  ],
+  "source": {
+    "index_url": "https://bin.entware.net/mipssf-k3.4/Packages.gz",
+    "index_sha256": "8a41c1921252cf9a8e52ad5a1e3f97761df04b70aad2afc38552d20165e273d3",
+    "base_url": "https://bin.entware.net/mipssf-k3.4",
+    "index_content_encoding": "gzip",
+    "index_compressed_sha256": "5ab00d952cf8c13a10218df1540d1603cedead24926356bd4e8db850d11d516c"
+  },
+  "packages": [
+    {
+      "name": "entware-opt",
+      "version": "227000-3",
+      "architecture": "all",
+      "filename": "entware-opt_227000-3_all.ipk",
+      "sha256": "5a58514d284fd760080bef6076bdd115856a19a2379d9ce35e00c5b6931fd3b5",
+      "url": "https://bin.entware.net/mipssf-k3.4/entware-opt_227000-3_all.ipk"
+    },
+    {
+      "name": "busybox",
+      "version": "1.37.0-6",
+      "architecture": "mips-3.4",
+      "filename": "busybox_1.37.0-6_mips-3.4.ipk",
+      "sha256": "2666501f7428bdafa0e3d1192d4f61ef7dbeca682c4f13bf8ef081fa9e14b79b",
+      "url": "https://bin.entware.net/mipssf-k3.4/busybox_1.37.0-6_mips-3.4.ipk"
+    },
+    {
+      "name": "ca-bundle",
+      "version": "20250419-2",
+      "architecture": "all",
+      "filename": "ca-bundle_20250419-2_all.ipk",
+      "sha256": "e4206917b1aa53a1a365fb21909da79d6b2d0b6b15fa50f79a4221fcb6d6192d",
+      "url": "https://bin.entware.net/mipssf-k3.4/ca-bundle_20250419-2_all.ipk"
+    },
+    {
+      "name": "libc",
+      "version": "2.27-12",
+      "architecture": "mips-3.4",
+      "filename": "libc_2.27-12_mips-3.4.ipk",
+      "sha256": "6847df117aabcab1929932b2621f551b12ed5dff11e7812957d29ea787cbb2db",
+      "url": "https://bin.entware.net/mipssf-k3.4/libc_2.27-12_mips-3.4.ipk"
+    },
+    {
+      "name": "libssp",
+      "version": "8.4.0-12",
+      "architecture": "mips-3.4",
+      "filename": "libssp_8.4.0-12_mips-3.4.ipk",
+      "sha256": "ad810eae8f7473bb2ab2c2f4a04d9189662c0367559f61aeed007b707ba304f4",
+      "url": "https://bin.entware.net/mipssf-k3.4/libssp_8.4.0-12_mips-3.4.ipk"
+    },
+    {
+      "name": "librt",
+      "version": "2.27-12",
+      "architecture": "mips-3.4",
+      "filename": "librt_2.27-12_mips-3.4.ipk",
+      "sha256": "2756cc06c63f26a7cbc62982a584bd723d1934e0adde0b78437995bf467dd395",
+      "url": "https://bin.entware.net/mipssf-k3.4/librt_2.27-12_mips-3.4.ipk"
+    },
+    {
+      "name": "libpthread",
+      "version": "2.27-12",
+      "architecture": "mips-3.4",
+      "filename": "libpthread_2.27-12_mips-3.4.ipk",
+      "sha256": "f4fc62597129f354b09bc326b35793baa363f12cb0bfca7687bd425b103ff77d",
+      "url": "https://bin.entware.net/mipssf-k3.4/libpthread_2.27-12_mips-3.4.ipk"
+    },
+    {
+      "name": "libgcc",
+      "version": "8.4.0-12",
+      "architecture": "mips-3.4",
+      "filename": "libgcc_8.4.0-12_mips-3.4.ipk",
+      "sha256": "a8a8907f893c56b1fe04a907286078f25ecdd1320bd1c6b6454c0f07b8de5d57",
+      "url": "https://bin.entware.net/mipssf-k3.4/libgcc_8.4.0-12_mips-3.4.ipk"
+    },
+    {
+      "name": "libstdcpp",
+      "version": "8.4.0-12",
+      "architecture": "mips-3.4",
+      "filename": "libstdcpp_8.4.0-12_mips-3.4.ipk",
+      "sha256": "5272d282515bfdbdede0977ac784b6e6ee45b75330835320e32010cfec1c3d69",
+      "url": "https://bin.entware.net/mipssf-k3.4/libstdcpp_8.4.0-12_mips-3.4.ipk"
+    },
+    {
+      "name": "entware-release",
+      "version": "2025.05-1",
+      "architecture": "all",
+      "filename": "entware-release_2025.05-1_all.ipk",
+      "sha256": "d214205391aea262f48117dcb95f86daa1416ac46ec53f037af91bcb4882da48",
+      "url": "https://bin.entware.net/mipssf-k3.4/entware-release_2025.05-1_all.ipk"
+    },
+    {
+      "name": "zoneinfo-asia",
+      "version": "2025c-1",
+      "architecture": "mips-3.4",
+      "filename": "zoneinfo-asia_2025c-1_mips-3.4.ipk",
+      "sha256": "b6c6c1958d5f1d4502125ac4a38bd8f7f79eebb28644690d8c41cbeafa2a4d41",
+      "url": "https://bin.entware.net/mipssf-k3.4/zoneinfo-asia_2025c-1_mips-3.4.ipk"
+    },
+    {
+      "name": "zoneinfo-europe",
+      "version": "2025c-1",
+      "architecture": "mips-3.4",
+      "filename": "zoneinfo-europe_2025c-1_mips-3.4.ipk",
+      "sha256": "e60a0b5b633690e24f0256e79874acdd6fd118a5a2c5aa17ba348ac725ea84c8",
+      "url": "https://bin.entware.net/mipssf-k3.4/zoneinfo-europe_2025c-1_mips-3.4.ipk"
+    },
+    {
+      "name": "findutils",
+      "version": "4.10.0-1",
+      "architecture": "mips-3.4",
+      "filename": "findutils_4.10.0-1_mips-3.4.ipk",
+      "sha256": "48b3b2c52e2df33ff2c461e126a81b292cd1ff5a12c85e7180323c5950fe02e4",
+      "url": "https://bin.entware.net/mipssf-k3.4/findutils_4.10.0-1_mips-3.4.ipk"
+    },
+    {
+      "name": "terminfo",
+      "version": "6.4-3",
+      "architecture": "mips-3.4",
+      "filename": "terminfo_6.4-3_mips-3.4.ipk",
+      "sha256": "e21208e29c205081a221931d2dc478d98e522c78437b01ac65fc91b262cd69c5",
+      "url": "https://bin.entware.net/mipssf-k3.4/terminfo_6.4-3_mips-3.4.ipk"
+    },
+    {
+      "name": "locales",
+      "version": "2.27-9",
+      "architecture": "mips-3.4",
+      "filename": "locales_2.27-9_mips-3.4.ipk",
+      "sha256": "96103416e656dedea6fcef381c34d58c9230b3b9bfaeb62215b44e7a26d37f03",
+      "url": "https://bin.entware.net/mipssf-k3.4/locales_2.27-9_mips-3.4.ipk"
+    },
+    {
+      "name": "opkg",
+      "version": "2025.11.05~80503d94-1",
+      "architecture": "mips-3.4",
+      "filename": "opkg_2025.11.05~80503d94-1_mips-3.4.ipk",
+      "sha256": "8a576a9cf8fa42b098507ae48cf78b0d8d6f0f3db459a772e7f0829c091bf28d",
+      "url": "https://bin.entware.net/mipssf-k3.4/opkg_2025.11.05~80503d94-1_mips-3.4.ipk"
+    },
+    {
+      "name": "entware-upgrade",
+      "version": "1.0-1",
+      "architecture": "all",
+      "filename": "entware-upgrade_1.0-1_all.ipk",
+      "sha256": "ed0db9ab7e0abc6141e4322a8b60a70f7693366005474b25b6b4b2c4175eac50",
+      "url": "https://bin.entware.net/mipssf-k3.4/entware-upgrade_1.0-1_all.ipk"
+    },
+    {
+      "name": "zoneinfo-core",
+      "version": "2025c-1",
+      "architecture": "mips-3.4",
+      "filename": "zoneinfo-core_2025c-1_mips-3.4.ipk",
+      "sha256": "031758b4f97bc26c643ada6f7a0583ded1de769efe88febe1423b6d458bd4327",
+      "url": "https://bin.entware.net/mipssf-k3.4/zoneinfo-core_2025c-1_mips-3.4.ipk"
+    },
+    {
+      "name": "grep",
+      "version": "3.12-1",
+      "architecture": "mips-3.4",
+      "filename": "grep_3.12-1_mips-3.4.ipk",
+      "sha256": "53163625077f83609995d4c81d7928798f1f5c69022a0d194ee9b67899b0d47f",
+      "url": "https://bin.entware.net/mipssf-k3.4/grep_3.12-1_mips-3.4.ipk"
+    },
+    {
+      "name": "libpcre2",
+      "version": "10.47-1",
+      "architecture": "mips-3.4",
+      "filename": "libpcre2_10.47-1_mips-3.4.ipk",
+      "sha256": "5e56174cd25b65eb85d75880f16442dd32ae058b7f4097e09b135689de4f898c",
+      "url": "https://bin.entware.net/mipssf-k3.4/libpcre2_10.47-1_mips-3.4.ipk"
+    }
+  ],
+  "bootstrap_artifacts": [
+    {
+      "filename": "generic.sh",
+      "url": "https://bin.entware.net/mipssf-k3.4/installer/generic.sh",
+      "sha256": "357119a6bc926c53c49179fd51b88f26381e1ff7b1628e762d052017c3b1fc0c",
+      "size": 2198
+    },
+    {
+      "filename": "opkg",
+      "url": "https://bin.entware.net/mipssf-k3.4/installer/opkg",
+      "sha256": "059f54bf9bcc889baacf18de11a0cdd1b82328e245e80a25299426d98f6a79e4",
+      "size": 877204
+    },
+    {
+      "filename": "opkg.conf",
+      "url": "https://bin.entware.net/mipssf-k3.4/installer/opkg.conf",
+      "sha256": "9a0c715f665f5d572ee8d8e7b9b876bbc610776ceaae06fa9bb94f7dc0a4846e",
+      "size": 144
+    }
+  ],
+  "evidence_scope": "Captured and SHA-256-verified feed closure and installer bytes only; feed URL is mutable; target execution and image verification are separate."
+}

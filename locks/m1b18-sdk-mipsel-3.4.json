@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "kind": "entware-rootfs-lock",
+  "target": "mipsel-3.4",
+  "captured_at": "2026-09-24T18:48:39+00:00",
+  "root_packages": [
+    "gcc"
+  ],
+  "source": {
+    "index_url": "https://bin.entware.net/mipselsf-k3.4/Packages.gz",
+    "index_sha256": "dfc4ef4ee101f1ffd52095c183b6a4460740520ac2dcc5a2a0b4400092d6016c",
+    "base_url": "https://bin.entware.net/mipselsf-k3.4",
+    "index_compressed_sha256": "22cc370f8a81b3b6906e5e66d296375376d8d98aea247140edd497c170c6e445"
+  },
+  "packages": [
+    {
+      "name": "gcc",
+      "version": "8.4.0-8",
+      "architecture": "mipsel-3.4",
+      "filename": "gcc_8.4.0-8_mipsel-3.4.ipk",
+      "sha256": "f442e7d702ef25f6689d386ebb3ff6586d19a2ce8fdeaf32925c1713e3febf89",
+      "url": "https://bin.entware.net/mipselsf-k3.4/gcc_8.4.0-8_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libc",
+      "version": "2.27-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libc_2.27-12_mipsel-3.4.ipk",
+      "sha256": "6b4040c416fa360772508faf01a4c06236a0efd8a3444ea4a2eda2e75b2c12a7",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libc_2.27-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libssp",
+      "version": "8.4.0-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libssp_8.4.0-12_mipsel-3.4.ipk",
+      "sha256": "e61402e8702182dc648d645d5f3c97baa050e80d1f6ab2388bfc24c98372f9f1",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libssp_8.4.0-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "librt",
+      "version": "2.27-12",
+      "architecture": "mipsel-3.4",
+      "filename": "librt_2.27-12_mipsel-3.4.ipk",
+      "sha256": "4f290a2d23e589f01714192f3eac7773af967c91a6bacba242efcbe7b47161b9",
+      "url": "https://bin.entware.net/mipselsf-k3.4/librt_2.27-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libpthread",
+      "version": "2.27-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libpthread_2.27-12_mipsel-3.4.ipk",
+      "sha256": "1e85b7ce7ef55f86d876774bab60bb274938d6247dc97e614834564184a93ef2",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libpthread_2.27-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "binutils",
+      "version": "2.45.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "binutils_2.45.1-1_mipsel-3.4.ipk",
+      "sha256": "26ac6f8a9575ef2442a4ae15618e33b7dc76928302fc65b8ed9aadf70f695376",
+      "url": "https://bin.entware.net/mipselsf-k3.4/binutils_2.45.1-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libstdcpp",
+      "version": "8.4.0-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libstdcpp_8.4.0-12_mipsel-3.4.ipk",
+      "sha256": "bdfffaf5d95f9bf3eabbdac72924f0b338a3a7d021d958f57dd9432d28a56c17",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libstdcpp_8.4.0-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libzstd",
+      "version": "1.5.7-1",
+      "architecture": "mipsel-3.4",
+      "filename": "libzstd_1.5.7-1_mipsel-3.4.ipk",
+      "sha256": "f66296207fb59454d14ef54192f7141ba7e30423765fefb4788a1ec29e688e99",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libzstd_1.5.7-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libgcc",
+      "version": "8.4.0-12",
+      "architecture": "mipsel-3.4",
+      "filename": "libgcc_8.4.0-12_mipsel-3.4.ipk",
+      "sha256": "098b8c6f6c9f8195f91ece7bf0bb6a1f6350bbb5d2a4bf2208dfaaa7fe00a46b",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libgcc_8.4.0-12_mipsel-3.4.ipk"
+    },
+    {
+      "name": "objdump",
+      "version": "2.45.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "objdump_2.45.1-1_mipsel-3.4.ipk",
+      "sha256": "73b7d47063a6503d563020a88250cb233a049cc6edfd2faedda9a756ee7102ce",
+      "url": "https://bin.entware.net/mipselsf-k3.4/objdump_2.45.1-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "ar",
+      "version": "2.45.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "ar_2.45.1-1_mipsel-3.4.ipk",
+      "sha256": "75ba6424f486028a3985eb459b2c6ce29e36ea2f0ba04a639cc742447972831a",
+      "url": "https://bin.entware.net/mipselsf-k3.4/ar_2.45.1-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libopcodes",
+      "version": "2.45.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "libopcodes_2.45.1-1_mipsel-3.4.ipk",
+      "sha256": "dda14564a2ffc2c3413419ced394692a668675f4b419ce82063137d0e94e85ae",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libopcodes_2.45.1-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libctf",
+      "version": "2.45.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "libctf_2.45.1-1_mipsel-3.4.ipk",
+      "sha256": "18fb92330ac330b40e0451b0474ba914f7837ea01f7f51c04fb5c49cb689ef68",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libctf_2.45.1-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "zlib_1.3.1-1_mipsel-3.4.ipk",
+      "sha256": "163b18eb6893e3d136e49ec4869d68de9a7d76c561888abd5d506e08d5da5a6c",
+      "url": "https://bin.entware.net/mipselsf-k3.4/zlib_1.3.1-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libbfd",
+      "version": "2.45.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "libbfd_2.45.1-1_mipsel-3.4.ipk",
+      "sha256": "a0e2ee85f0fa403cbe178d162ac95b9d20eb08288c5a0e7981972208383fd1b2",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libbfd_2.45.1-1_mipsel-3.4.ipk"
+    },
+    {
+      "name": "libintl-full",
+      "version": "0.24.1-1",
+      "architecture": "mipsel-3.4",
+      "filename": "libintl-full_0.24.1-1_mipsel-3.4.ipk",
+      "sha256": "b2bd5c0304ca9c72db09c37c286f1632a5ccca8c67cd194107fd6e8e9809212c",
+      "url": "https://bin.entware.net/mipselsf-k3.4/libintl-full_0.24.1-1_mipsel-3.4.ipk"
+    }
+  ]
+}

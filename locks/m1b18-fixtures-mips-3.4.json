@@ -1,0 +1,42 @@
+{
+  "target": "mips-3.4",
+  "sdk_lock_sha256": "a6cf99629947dcdedc5acd1b16a55fe52b263146099cc5a162e1cdd6a3dba122",
+  "qemu_sha256": "7ccb9c526e2eec1c24a984cc5172619ad88e34025f3f2d7014ec3867ad1c1b45",
+  "compiler": "gcc (OpenWrt GCC 8.4.0) 8.4.0",
+  "flags": [
+    "-std=c17",
+    "-O2",
+    "-g0",
+    "-fno-ident",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-mabi=32",
+    "-march=mips32r2",
+    "-msoft-float",
+    "-Wl,--build-id=none"
+  ],
+  "fixtures": {
+    "hello": {
+      "status": "PASS",
+      "source": "fixtures/sources/hello/hello.c",
+      "source_sha256": "352e8a9df529faaa2e96c0898e7a7fb56de2d5ced9a52a90a270330fa1b20ff7",
+      "path": ".runtime/m1b18/mips-3.4/fixtures/hello",
+      "sha256": "83224ac67c9e137df360a50563726242cdd519fd56c7c8e6f99c530ce5ea1641"
+    },
+    "web-demo": {
+      "status": "PASS",
+      "source": "fixtures/sources/web-demo/web_demo.c",
+      "source_sha256": "95cf98d61c6f4709be17ed915ecce23a91ebd7b89ea0df634bad54ce1033c98f",
+      "path": ".runtime/m1b18/mips-3.4/fixtures/web-demo",
+      "sha256": "74e938202956b6262dbf1b190e057040867d7bde1ea9ba752018d3a4c7cb3e1d"
+    },
+    "nfqueue-consumer": {
+      "status": "PASS",
+      "source": "fixtures/sources/nfqueue/nfqueue_consumer.c",
+      "source_sha256": "01c077324c48fe467ae69410e01f32348c8a394f210ab9717ba0b1698a2e1078",
+      "path": ".runtime/m1b18/mips-3.4/fixtures/nfqueue-consumer",
+      "sha256": "74902debe66eb8bf93d9ecd708a82aa5136c0e527d4195ec214b007e66f17177"
+    }
+  }
+}
