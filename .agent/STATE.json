@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-24T13:54:57+00:00",
+    "last_evaluated_at": "2026-09-24T13:55:20+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -721,7 +721,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_a3049a80eb1c20414d1318b5",
+      "last_event_id": "evt_a5b00eeff34332b67b94545a",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -877,10 +877,10 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 1,
-    "last_run_started_at": "2026-09-24T13:54:57+00:00",
-    "last_run_finished_at": "2026-09-24T13:55:15+00:00",
-    "last_log": ".agent/runs/20260924T135457Z.log",
-    "last_checkpoint_at": "2026-09-24T13:55:15+00:00"
+    "last_run_started_at": "2026-09-24T13:55:20+00:00",
+    "last_run_finished_at": "2026-09-24T13:55:38+00:00",
+    "last_log": ".agent/runs/20260924T135520Z.log",
+    "last_checkpoint_at": "2026-09-24T13:55:38+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-24T13:29:25+00:00",
