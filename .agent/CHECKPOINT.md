@@ -72,7 +72,7 @@ P0 technical-risk work is complete; m1a-09 input schemas, m1a-10 static IPK insp
 
 ## Next operation
 
-m1a-12 Docker runtime boundary and portable/live verification are complete for this frozen objective only. Stage and commit only coherent m1a-12 source/tests/docs/durable files (never ignored `.runtime/` or `reports/`, nor supervisor-owned uncommitted `.agent/STATE.json` and `.agent/router-events.jsonl`), then emit the exact subtask marker. The supervisor alone must attest this worker and advance the frozen plan boundary; this worker must not launch `m1a-13`. A18/A20 remain PARTIAL overall; registry lifecycle, interruption/retry and disk-capacity enforcement remain later work. P0 NFQUEUE capability and A13/A14/A17 remain BLOCKED.
+m1a-12 is committed and attested. m1a-13 is the first unfinished verified operation. Its prior worker launch left no live process or durable session ID; the run record contains only the redacted command. Preserve the uncommitted lifecycle implementation and resume m1a-13 on its existing `gpt-6-sol` / `xhigh` lock. Current diagnostics are not final evidence: the opt-in lifecycle test is skipped and Ruff reports unfinished-source errors. Do not advance to m1a-14 until m1a-13 emits its exact marker and runtime attestation succeeds. A18/A20 remain PARTIAL overall; P0 NFQUEUE capability and A13/A14/A17 remain BLOCKED.
 
 Kanban/supervisor reconciliation remains external to this worker's evidence package.
 
