@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "m1a15-aarch64-https-frontend-lock",
+  "source": "fixtures/sources/web-demo/https_frontend_m1a15.c",
+  "source_sha256": "851f88cd93ce0ddb549c5f448bc7aa0b52d7a7cb5165e2b1904b06c4d0b44ba1",
+  "recipe": "fixtures/recipes/aarch64/https-frontend-m1a15.mk",
+  "recipe_sha256": "8c1f8045e665f44d705395ab2fb36d2d5c7e08eba19e358a1ab4910a0ebde60c",
+  "binary": ".runtime/m1a15/https-frontend-aarch64",
+  "binary_sha256": "857719c919b01eb1091c83ef31a620ec06e0849d51ce7e56ced449cd95b3b4f0",
+  "architecture": "ELF64 little-endian AArch64 static",
+  "sdk_artifacts": [
+    {"path": ".runtime/m1a15/libssl-dev_3.5.7-1~deb13u2_arm64.deb", "sha256": "b81910e8728fab596158c8384d6aa101c8249c1769eb2d33c73643b2be7a0bcf", "origin": "https://deb.debian.org/debian/pool/main/o/openssl/libssl-dev_3.5.7-1~deb13u2_arm64.deb"},
+    {"path": ".runtime/m1a15/zlib1g-dev_1.3.dfsg+really1.3.1-1+b1_arm64.deb", "sha256": "745ebcf1fa115e230af76216355d7290a24f1790fe3780249b519c0e4d30534f", "origin": "https://deb.debian.org/debian/pool/main/z/zlib/zlib1g-dev_1.3.dfsg%2breally1.3.1-1%2bb1_arm64.deb"},
+    {"path": ".runtime/m1a15/libzstd-dev_1.5.7+dfsg-1_arm64.deb", "sha256": "05cf42de5c9fdf17f49f663b47bfe736f10fbc7080fcc3a86ac43d5d670de149", "origin": "https://deb.debian.org/debian/pool/main/libz/libzstd/libzstd-dev_1.5.7%2bdfsg-1_arm64.deb"}
+  ],
+  "web_image_id": "sha256:fa618afa80cab7d081e8012ed8209cf16d95507263c412ba119d131510e888bc",
+  "observer_image_id": "sha256:7956ad1f365ad2ce4454673cb3f3ab31798703b2a3ea1d1329c509250f974bee",
+  "certificate_policy": "Ephemeral local CA, generated test-only key/cert under ignored runtime, never committed or installed globally"
+}

@@ -2,7 +2,7 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-14 add versioned inputs, bounded static IPK inspection, locked AArch64 base init, an owned Docker boundary, one-shot IPK lifecycle and a restricted persistent AArch64 CLI path. No full cross-target lifecycle or MVP 1A acceptance is claimed.
+P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-15 add versioned inputs, bounded static IPK inspection, locked AArch64 base init, an owned Docker boundary, one-shot IPK lifecycle, restricted persistent AArch64 CLI and an AArch64 HTTP/HTTPS/UDP fixture test. No full cross-target lifecycle or MVP 1A acceptance is claimed.
 
 ## P0 verified results
 
@@ -32,13 +32,17 @@ Schema-version-1 scenario, production lock and persistent-environment models and
 
 `keemu up --scenario FILE --lock FILE --name NAME` verifies no-follow input bytes, static IPK, offline base and immutable image; writes an atomic, per-name locked registry record; records the owner-checked full container ID before installation; installs using target opkg; checks inventory/files and target-loopback HTTP readiness. `up --name`, `down`, `restart`, `destroy`, `status`, `ports`, `logs`, and `exec` reconcile exact Docker identity and actual running state before access or mutation. Real opt-in AArch64 tests passed CLI creation, hello execution, same-ID restart, down/up without rerunning postinst, web-demo target-loopback readiness across restart/down/up, permanent tombstone, and failed-postinst owner-only cleanup with a retained failed record. Portable tests reject same-name contention, replacement, symlinks and foreign Docker labels. No persistent report bundle, automatic crash recovery, host publishing, target HTTPS/UDP or full acceptance is claimed. See ADR-0008.
 
+## MVP 1A AArch64 fixture slice
+
+The m1a-15 static AArch64 TLS frontend was reproducibly rebuilt offline from three SHA-256-pinned SDK archives and the locked cross-toolchain. A generated, short-lived local CA was trusted only by the diagnostic client; Docker-host-vantage probes verified expected HTTP/HTTPS/UDP on loopback-only publishes, rejected untrusted CA and wrong hostname, wrote state through HTTPS, and rechecked after service restart and same-container stop/start. The host observer had no mounts, privilege, added capabilities or published ports and was removed by verified owner ID; private keys were deleted. A separate twice-repeated one-shot hello fixture used the same locked scenario/IPK bytes, offline base, real target opkg and owner-only cleanup. Latest evidence: `.runtime/m1a15/live-m1a15-0303315534cc/evidence.json` SHA-256 `6758497e7db513891b6f2f9ae089518903293edda6793cee50172e625d8843a3`. This fixture-specific Docker test does not extend `keemu test`/`up` to general host publish/HTTPS/UDP. See ADR-0009.
+
 ## Evidence package
 
 `docs/evidence/p0-evidence-manifest.md` binds the committed locks and ignored runtime reports to their independently recomputed SHA-256 digests. ADR-0001 through ADR-0005 record the diagnostic runtime, mixed image, native-init correction, NFQUEUE blocker, and constrained localhost-observer decision.
 
 ## Acceptance status
 
-P0 is complete as a technical-risk gate. A07–A09 pass only for the exact P0 AArch64 web-demo slice. A13/A14/A17 are BLOCKED, not PASS. A01–A06, A18, A19, A20 and A21 remain PARTIAL as detailed in `docs/traceability.md`. MVP 1A, MVP 1B, MVP 1C and MVP 1 are not complete.
+P0 is complete as a technical-risk gate. A07–A09 pass for bounded AArch64 fixture slices only, not as whole IDs. A13/A14/A17 are BLOCKED, not PASS. A01–A09, A18–A21 remain PARTIAL as detailed in `docs/traceability.md`. MVP 1A, MVP 1B, MVP 1C and MVP 1 are not complete.
 
 ## Cleanup and retained state
 

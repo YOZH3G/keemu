@@ -109,6 +109,24 @@ environment or execute scenario checks as a `test` run. Persistent CLI failures
 do not yet produce write-once JSON/Markdown/JSONL report bundles; use `keemu
 test` when a full failure report is required. See ADR-0008.
 
+AArch64 fixture-only HTTP/HTTPS/UDP and offline locked repeat (requires the
+prepared local SDK and immutable images; opt-in Docker/binfmt):
+
+```text
+make -f fixtures/recipes/aarch64/https-frontend-m1a15.mk KEEMU_TOOLCHAIN_ROOT="$PWD/.runtime/p0/cross-toolchain/root"
+KEEMU_M1A15_LIVE=1 uv run pytest -q tests/integration/test_m1a15_https.py
+```
+
+The recipe never fetches; `locks/m1a15-https-frontend-aarch64.json` pins the
+three staged SDK artifacts and static AArch64 TLS binary. The test generates
+an ephemeral local CA/certificate (private keys remain under ignored `.runtime/`
+until test cleanup), observes the localhost-only Docker publishes from a
+separate bounded host-vantage observer, checks trusted TLS and rejects wrong
+hostnames/untrusted CAs, repeats HTTP/HTTPS/UDP after service and same-container
+restart, and runs two identical locked hello IPK one-shot tests against the
+offline-verified base. It does not enable generic `test` or `up` publication,
+TLS or UDP; see ADR-0009 and `docs/traceability.md`.
+
 The P0 diagnostic integration test additionally needs the locked artifacts in `.runtime/p0`:
 
 ```text
@@ -131,4 +149,4 @@ Generated reports, downloaded IPK files, root filesystems, saved images, and run
 
 ## Safety
 
-KEEMU never treats a skipped check or missing capability as PASS. It must not use privileged target containers, host networking/PID namespaces, Docker-socket mounts, `SYS_MODULE`, global firewall resets, or `docker system prune`.
+KEEMU never treats a skipped check or missing capability as PASS. Targets must not use privileged/host network/PID namespaces, Docker-socket mounts, `SYS_MODULE`, global firewall resets, or `docker system prune`. Only bounded, owner-labeled evidence observers use host networking for Docker-host loopback checks; no package runs there.
