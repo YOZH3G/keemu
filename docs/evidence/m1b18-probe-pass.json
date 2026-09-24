@@ -1,0 +1,75 @@
+{
+  "created_at": "2026-09-24T20:20:45+00:00",
+  "results": [
+    {
+      "cleanup": {
+        "absent": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "remove": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "cde37006ef72ee9ab87619ee41ef48848609d34a4a8002384ddeaf44c91a67b3\n"
+        },
+        "stop": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "cde37006ef72ee9ab87619ee41ef48848609d34a4a8002384ddeaf44c91a67b3\n"
+        }
+      },
+      "container_id": "cde37006ef72ee9ab87619ee41ef48848609d34a4a8002384ddeaf44c91a67b3",
+      "direct_qemu_proot": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": "target-shell-ok\nopkg version 80503d94e356476250adaf1f669ee955ec26de76 (2025-11-05)\nbusybox - 1.37.0-6\nca-bundle - 20250419-2\nentware-opt - 227000-3\nentware-release - 2025.05-1\nentware-upgrade - 1.0-1\nfindutils - 4.10.0-1\ngrep - 3.12-1\nlibc - 2.27-12\nlibgcc - 8.4.0-12\nlibpcre2 - 10.47-1\nlibpthread - 2.27-12\nlibrt - 2.27-12\nlibssp - 8.4.0-12\nlibstdcpp - 8.4.0-12\nlocales - 2.27-9\nopkg - 2025.11.05~80503d94-1\nterminfo - 6.4-3\nzoneinfo-asia - 2025c-1\nzoneinfo-core - 2025c-1\nzoneinfo-europe - 2025c-1\nnested-elf-ok\ndirect-shebang-ok\nkeemu-hello\nfixture-argument-check-ok\n"
+      },
+      "direct_status": "PASS",
+      "docker_exec": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": "shell-ok\nopkg version 80503d94e356476250adaf1f669ee955ec26de76 (2025-11-05)\nkeemu-hello\nnested-fixture-ok\nfixture-argument-check-ok\n"
+      },
+      "docker_status": "PASS",
+      "scope": "Direct QEMU/PRoot is diagnostic only; Docker shell requires host binfmt. No binfmt entry, privilege, host network, or public port was changed.",
+      "target": "mipsel-3.4"
+    },
+    {
+      "cleanup": {
+        "absent": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "remove": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "21381f63c794d5a4d3da3719b21dd9a688b28da6a141c77ee2a5c94852002cbd\n"
+        },
+        "stop": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "21381f63c794d5a4d3da3719b21dd9a688b28da6a141c77ee2a5c94852002cbd\n"
+        }
+      },
+      "container_id": "21381f63c794d5a4d3da3719b21dd9a688b28da6a141c77ee2a5c94852002cbd",
+      "direct_qemu_proot": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": "target-shell-ok\nopkg version 80503d94e356476250adaf1f669ee955ec26de76 (2025-11-05)\nbusybox - 1.37.0-6\nca-bundle - 20250419-2\nentware-opt - 227000-3\nentware-release - 2025.05-1\nentware-upgrade - 1.0-1\nfindutils - 4.10.0-1\ngrep - 3.12-1\nlibc - 2.27-12\nlibgcc - 8.4.0-12\nlibpcre2 - 10.47-1\nlibpthread - 2.27-12\nlibrt - 2.27-12\nlibssp - 8.4.0-12\nlibstdcpp - 8.4.0-12\nlocales - 2.27-9\nopkg - 2025.11.05~80503d94-1\nterminfo - 6.4-3\nzoneinfo-asia - 2025c-1\nzoneinfo-core - 2025c-1\nzoneinfo-europe - 2025c-1\nnested-elf-ok\ndirect-shebang-ok\nkeemu-hello\nfixture-argument-check-ok\n"
+      },
+      "direct_status": "PASS",
+      "docker_exec": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": "shell-ok\nopkg version 80503d94e356476250adaf1f669ee955ec26de76 (2025-11-05)\nkeemu-hello\nnested-fixture-ok\nfixture-argument-check-ok\n"
+      },
+      "docker_status": "PASS",
+      "scope": "Direct QEMU/PRoot is diagnostic only; Docker shell requires host binfmt. No binfmt entry, privilege, host network, or public port was changed.",
+      "target": "mips-3.4"
+    }
+  ],
+  "schema_version": 1,
+  "subtask": "m1b-18"
+}

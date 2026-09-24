@@ -1,0 +1,60 @@
+{
+  "a01_target_exec_three_generic": "PASS (AArch64 previous ledger plus both current MIPS Docker probes)",
+  "a10_matrix": "NOT RUN (m1b-19)",
+  "aarch64_ledger": "docs/evidence/m1a17-acceptance.json",
+  "aarch64_ledger_sha256": "b8c6fea25231dc5fbe4f30b3607fc9d289d3f5deef706e44369d19ac27b829be",
+  "created_at": "2026-09-24T20:22:36+00:00",
+  "historical_blocked_ledger": "docs/evidence/m1b18-targets.json",
+  "historical_blocked_ledger_sha256": "816727a7b0ea632946cbca3dcad6a2f75b286df7916f6705c34a9b16c8ea8f0c",
+  "limitation": "A01 target ELF/shell/nested execution only; MIPS/MIPSEL general init/test lifecycle, A10 matrix validation and MVP 1B gate are not implemented. Historical blocked observation is immutable and its ignored raw probe was overwritten during approved host remediation; the old digest is retained but old raw bytes are unavailable. Current probe bytes are tracked and hash-bound. Host binfmt registration was separately approved, not performed by this probe.",
+  "owned_docker_resources_after": 0,
+  "raw_probe": "docs/evidence/m1b18-probe-pass.json",
+  "raw_probe_sha256": "b17b30fed1e00c71e681df01dbd7d64c4998358a7be68e244d06826aded7a9ed",
+  "schema_version": 1,
+  "slice_status": "PASS",
+  "subtask": "m1b-18",
+  "targets": [
+    {
+      "abi": "o32",
+      "direct_qemu_proot": "PASS",
+      "docker_binfmt": "PASS",
+      "elf_class": 32,
+      "endianness": "little",
+      "fpu": "soft-float",
+      "image_id": "sha256:9822813438c56f173491a7b205b0c536e632582493282f77e0049da8d5276e2c",
+      "isa": "MIPS32r2",
+      "locks": {
+        "m1b18-fixtures-mipsel-3.4.json": "84485a7581a47887624146609db997eaf7895a89e8206dfdc3d1b73f82c0073f",
+        "m1b18-image-mipsel-3.4.json": "7b5c34b1f43c4df63fa0c2f23ced532660e385f47209ee327a2383da08909f5f",
+        "m1b18-mipsel-3.4.json": "aad4b3b1638bcb197aa860ec2e6fbd2f2443309da22d8e56c7a723fe962a1888",
+        "m1b18-sdk-mipsel-3.4.json": "77d0607e2e09452cccef54846a6571e917fb65fc7f14f5b7bd580304bbf8f701"
+      },
+      "owned_container_cleanup": "PASS",
+      "package_count": 20,
+      "profile": "generic-mipsel",
+      "target": "mipsel-3.4",
+      "target_elf_count": 31
+    },
+    {
+      "abi": "o32",
+      "direct_qemu_proot": "PASS",
+      "docker_binfmt": "PASS",
+      "elf_class": 32,
+      "endianness": "big",
+      "fpu": "soft-float",
+      "image_id": "sha256:1767195564c09eeb7e0eb7eccb31b3fd4fe0aa8725e2005677a07abad99d09c1",
+      "isa": "MIPS32r2",
+      "locks": {
+        "m1b18-fixtures-mips-3.4.json": "fb8a21ce4511ddf0a21f0177e22363fb23645473fb53530fbf1e1bba9103aad2",
+        "m1b18-image-mips-3.4.json": "bafc09e003314250aa1328f9de3f705ae4f75acee98612ec84b0fb81463b1266",
+        "m1b18-mips-3.4.json": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+        "m1b18-sdk-mips-3.4.json": "a6cf99629947dcdedc5acd1b16a55fe52b263146099cc5a162e1cdd6a3dba122"
+      },
+      "owned_container_cleanup": "PASS",
+      "package_count": 20,
+      "profile": "generic-mips",
+      "target": "mips-3.4",
+      "target_elf_count": 31
+    }
+  ]
+}

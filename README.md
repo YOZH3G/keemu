@@ -22,9 +22,8 @@ Not yet verified:
 
 - general scenario-driven localhost publication, complete isolation and automatic/one-shot interruption recovery; the persistent runner supports target-loopback HTTP service probes and explicit owner-checked interrupted-state cleanup only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
 - NFQUEUE ACCEPT/DROP is BLOCKED on the documented target socket/kernel capability, not PASS;
-- Docker/binfmt MIPS/MIPSEL target execution: locked roots/images and direct
-  QEMU/PRoot diagnostics pass, but target `docker exec` returns
-  `exec /bin/sh: exec format error` for both on this host;
+- general MIPS/MIPSEL `keemu init`/`test` lifecycle, A10 matrix execution and
+  strict NDM/event contracts (the locked per-target Docker probes now pass);
 - MVP 1A, 1B, or 1C acceptance gates.
 
 The PRoot result is diagnostic evidence only. P0 Docker/binfmt and web-demo
@@ -37,10 +36,14 @@ ELF32 endian/o32/MIPS32r2/soft-float audit and 20-package opkg inventory are
 available. `uv run python -m scripts.verify_m1b18` rechecks cached bytes,
 saved single-layer images and local image identity offline. The direct
 QEMU/PRoot shell, nested ELF/shebang, opkg, hello and fixture argument probes
-pass; Docker target shell remains BLOCKED without usable host MIPS binfmt.
+pass. After separately approved MIPS binfmt registration, bounded Docker/binfmt
+probes also pass target shell, opkg, nested fixture and argument checks for
+both profiles. `docs/evidence/m1b18-targets-pass.json` binds the raw probe and
+both architecture locks; the earlier BLOCKED ledger remains immutable.
 `docs/evidence/m1b18-targets.md` has digests, repeat commands and exact scope.
 The general `keemu init`/`test` CLI still accepts only AArch64; A10 matrix is
-reserved for m1b-19. No host binfmt setting was changed.
+reserved for m1b-19. The binfmt approval changed only `qemu-mipsel` and
+`qemu-mips` host handlers; the project-owned probes made no host change.
 
 ## Development
 

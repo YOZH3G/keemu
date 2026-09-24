@@ -129,7 +129,11 @@ def probe(target: str) -> dict:
                     "-c",
                     "set -e; echo shell-ok; /opt/bin/opkg --version; "
                     "/opt/bin/busybox true; /opt/keemu/fixtures/hello; "
-                    "echo nested-fixture-ok",
+                    "/opt/keemu/fixtures/web-demo wrong >/dev/null 2>&1 "
+                    "&& exit 17 || test $? -eq 2; "
+                    "/opt/keemu/fixtures/nfqueue-consumer wrong >/dev/null 2>&1 "
+                    "&& exit 18 || test $? -eq 2; "
+                    "echo nested-fixture-ok; echo fixture-argument-check-ok",
                 ],
                 timeout=120,
             )
@@ -163,6 +167,16 @@ def probe(target: str) -> dict:
         "docker_status": (
             "PASS"
             if proof["exit"] == 0
+            and all(
+                marker in proof["stdout"]
+                for marker in (
+                    "shell-ok",
+                    "opkg version ",
+                    "keemu-hello",
+                    "nested-fixture-ok",
+                    "fixture-argument-check-ok",
+                )
+            )
             else "BLOCKED"
             if "exec format error" in proof["stderr"]
             else "FAIL"
@@ -185,8 +199,9 @@ if __name__ == "__main__":
         "created_at": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "results": [probe(t) for t in ("mipsel-3.4", "mips-3.4")],
     }
-    report = RUNTIME / "probe.json"
-    report.write_text(json.dumps(bundle, indent=2, sort_keys=True) + "\n")
+    report = RUNTIME / f"probe-{uuid.uuid4().hex}.json"
+    with report.open("x") as output:
+        output.write(json.dumps(bundle, indent=2, sort_keys=True) + "\n")
     print(
         json.dumps(
             [
@@ -201,4 +216,5 @@ if __name__ == "__main__":
             indent=2,
         )
     )
+    print("probe_path", report.relative_to(REPO))
     print("probe_sha256", hashlib.sha256(report.read_bytes()).hexdigest())
