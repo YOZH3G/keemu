@@ -28,7 +28,7 @@
 - C6/C7 (`gpt-6-astra`) are unlocked for frontier escalation at a new audited subtask boundary; if unavailable, the configured fallback is C5 (`gpt-6-sol`, `xhigh`).
 - Quota pauses retain the same subtask, session, provider, model and reasoning; they are not escalation signals.
 - Before launching every new frozen subtask, the supervisor must fetch live OAuth account usage and persist a subtask-bound admission record. Below 11% remaining it warns; below 5% it checkpoints and waits until the stored absolute reset-plus-margin time. Same-subtask session continuations do not repeat the preflight.
-- User-requested publication boundary: finish and attest `m1a-14`, then pause before launching `m1a-15` so the accumulated repository work can be prepared and pushed to GitHub. This is enforced by `pause_after_subtask_ids` in the project supervisor config.
+- The user-requested publication boundary after `m1a-14` was completed: the accumulated branch was independently reviewed, pushed, and verified on GitHub. Explicit continuation for `m1a-15` was granted on 2026-09-24; `pause_after_subtask_ids` is now empty.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
 - Git auto-pull remains disabled to avoid hidden remote integration. Git checkpoints stage the complete task result (excluding secret-like paths) and auto-push `agent/keemu` after each verified subtask boundary.
 
