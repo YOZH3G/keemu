@@ -77,7 +77,7 @@ P0 technical-risk work is complete; m1a-09 input schemas, m1a-10 static IPK insp
 
 ## Next operation
 
-m1a-15 technical fixture slice is verified and ready for supervisor attestation at this exact boundary. The supervisor, not this worker, must verify its runtime route, checkpoint/commit/push, delete its disposable session and only then route m1a-16. Preserve current m1a-15 `gpt-6-sol`/`high` lock across an interruption. A02–A09/A18/A19/A21 remain PARTIAL as whole IDs; A13/A14/A17 remain BLOCKED.
+m1a-15 is complete, attested, session-cleaned and published. m1a-16 remains the only active subtask with preserved session `20260924_132930_caa9a2` and `openai-codex` / `gpt-6-sol` / `xhigh` lock. A quota-response control-flow defect repeatedly mislabeled retry checkpoints as subtask boundaries without advancing `active_index`; no later subtask was activated. The external supervisor was regression-tested and fixed by resetting the per-iteration terminal flag before quota classification. Fresh OAuth observation at 2026-09-24T18:26:20Z reported 91% remaining and permits same-session m1a-16 relaunch. A02–A09/A18/A19/A21 remain PARTIAL as whole IDs; A13/A14/A17 remain BLOCKED.
 
 Kanban reconciliation remains external to this evidence package.
 
