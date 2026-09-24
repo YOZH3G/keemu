@@ -14,6 +14,7 @@ from keemu.entware import ArtifactIntegrityError, verify_artifact_cache
 from keemu.fixture_lock import FixtureLockError, verify_fixture_lock
 from keemu.init_cache import InitError, init_locked
 from keemu.ipk_inspect import IPKError, inspect_ipk
+from keemu.lifecycle import run_scenario
 from keemu.profiles import ProfileError, load_profile
 from keemu.reports import exit_code_for_status
 
@@ -116,6 +117,33 @@ def inspect(
         raise InputError(str(error)) from error
     click.echo(json.dumps(result.to_dict(), sort_keys=True))
     context.exit(exit_code_for_status(result.status))
+
+
+@cli.command("test")
+@click.option("scenario", "--scenario", type=click.Path(path_type=Path), required=True)
+@click.option("lock", "--lock", type=click.Path(path_type=Path), required=True)
+@click.option("repo", "--repo", type=click.Path(path_type=Path), default=Path("."))
+@click.pass_context
+def test_scenario(
+    context: click.Context, scenario: Path, lock: Path, repo: Path
+) -> None:
+    """Run one locked disposable IPK lifecycle and publish a report, even on failure."""
+    try:
+        result = run_scenario(scenario, lock, project_root=repo)
+    except (OSError, ValueError) as error:
+        # Publication itself can fail closed (e.g. an existing report directory).
+        raise InputError(str(error)) from error
+    click.echo(json.dumps(result.report.model_dump(mode="json"), sort_keys=True))
+    failure = result.report.partial_failure
+    if failure and failure.message.startswith(
+        (
+            "invalid scenario input:",
+            "invalid scenario/lock input:",
+            "invalid package input:",
+        )
+    ):
+        context.exit(2)
+    context.exit(exit_code_for_status(result.report.overall))
 
 
 @cli.command("init")

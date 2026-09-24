@@ -4,9 +4,10 @@ import ctypes
 import errno
 import json
 import os
+import re
 import shutil
 import tempfile
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -194,14 +195,34 @@ def _publish_directory_noreplace(temporary: Path, directory: Path) -> None:
     raise OSError(error, os.strerror(error), directory)
 
 
-def write_report_bundle(report: RunReport, directory: Path) -> ReportPaths:
+def write_report_bundle(
+    report: RunReport,
+    directory: Path,
+    *,
+    evidence: Mapping[str, bytes] | None = None,
+) -> ReportPaths:
+    """Publish one immutable bundle, including bounded optional run evidence."""
+    evidence = evidence or {}
+    for name, data in evidence.items():
+        if (
+            (
+                name
+                not in {"resolved-scenario.yaml", "lock.json", "filesystem.diff.json"}
+                and not re.fullmatch(
+                    r"(?:stdout|stderr)/[0-9]{3,4}-[a-z0-9._-]+\.bin", name
+                )
+            )
+            or not isinstance(data, bytes)
+            or len(data) > 2 * 1024 * 1024
+        ):
+            raise ValueError("invalid or oversized report evidence")
     directory.parent.mkdir(parents=True, exist_ok=True)
     temporary = Path(
         tempfile.mkdtemp(prefix=f".{directory.name}.", dir=directory.parent)
     )
-    payload = json.dumps(
-        report.model_dump(mode="json"), indent=2, sort_keys=True
-    ) + "\n"
+    payload = (
+        json.dumps(report.model_dump(mode="json"), indent=2, sort_keys=True) + "\n"
+    )
     operation_log = "".join(
         json.dumps(entry.model_dump(mode="json"), sort_keys=True) + "\n"
         for entry in report.operation_log
@@ -210,6 +231,11 @@ def write_report_bundle(report: RunReport, directory: Path) -> ReportPaths:
         _atomic_write_text(temporary / "report.json", payload)
         _atomic_write_text(temporary / "report.md", render_markdown(report))
         _atomic_write_text(temporary / "operation-log.jsonl", operation_log)
+        for name, data in evidence.items():
+            destination = temporary / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(data)
+            destination.chmod(0o600)
         _publish_directory_noreplace(temporary, directory)
     except BaseException:
         shutil.rmtree(temporary, ignore_errors=True)

@@ -5,8 +5,8 @@ KEEMU is a reproducible verification harness for Entware applications. The autho
 ## Current status
 
 P0 technical-risk experiments are complete. MVP 1A is in progress: strict input
-schemas, static IPK inspection, and locked AArch64 base `init` are implemented;
-scenario lifecycle and persistent-environment commands are later subtasks.
+schemas, static IPK inspection, locked AArch64 base `init`, and disposable
+one-shot `test` are implemented; persistent-environment commands are later subtasks.
 
 Verified in the current Debian/Docker environment:
 
@@ -20,7 +20,7 @@ Verified in the current Debian/Docker environment:
 
 Not yet verified:
 
-- general scenario-driven localhost publication and persistent-environment commands, complete isolation and interruption recovery; the P0 web-demo did prove an exact localhost publish and stop/start persistence;
+- general scenario-driven localhost publication and persistent-environment commands, complete isolation and interruption recovery; the one-shot runner probes target loopback only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
 - NFQUEUE ACCEPT/DROP is BLOCKED on the documented target socket/kernel capability, not PASS;
 - any MIPS/MIPSEL runtime;
 - MVP 1A, 1B, or 1C acceptance gates.
@@ -70,6 +70,21 @@ Target shell, opkg inventory, nested ELF and DNS passed in Docker bridge;
 HTTPS passed using the Hermes process CA/hostname verification, **not** in
 the target container, whose locked BusyBox wget lacks TLS. Neither fixture
 installation nor the complete A01/A19 acceptance is claimed.
+
+One-shot locked IPK lifecycle (requires the prepared offline base image, Docker
+and AArch64 binfmt):
+
+```text
+uv run keemu test --scenario path/to/scenario.yaml --lock path/to/scenario-lock.json --repo .
+KEEMU_TEST_LIFECYCLE=1 uv run pytest -q tests/integration/test_lifecycle.py
+```
+
+`test` validates and rehashes locked inputs, statically inspects the IPK,
+installs through target opkg in a fresh owned container, runs declared checks,
+stops/removes, compares metadata-only residual paths, and attempts owner-checked
+cleanup even on failures. Its write-once report is under `reports/<run-id>/` and
+keeps failed-run stage and cleanup results. No persistent `up`/`down`, host-publish
+vantage, HTTPS/UDP, cross-target acceptance, or interruption recovery is claimed.
 
 The P0 diagnostic integration test additionally needs the locked artifacts in `.runtime/p0`:
 

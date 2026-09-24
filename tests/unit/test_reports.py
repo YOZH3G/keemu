@@ -75,6 +75,29 @@ def _passing_report(run_id: str) -> RunReport:
     )
 
 
+def test_optional_evidence_is_bounded_private_and_no_traversal(tmp_path: Path) -> None:
+    report = _passing_report("run-evidence")
+    paths = write_report_bundle(
+        report,
+        tmp_path / report.run_id,
+        evidence={
+            "resolved-scenario.yaml": b"schema_version: 1\n",
+            "stdout/001-install.bin": b"opkg result\n",
+        },
+    )
+    saved = paths.json.parent / "stdout/001-install.bin"
+    assert saved.read_bytes() == b"opkg result\n"
+    assert saved.stat().st_mode & 0o777 == 0o600
+    assert (paths.json.parent / "resolved-scenario.yaml").is_file()
+    with pytest.raises(ValueError, match="invalid or oversized"):
+        write_report_bundle(
+            report,
+            tmp_path / "run-escape",
+            evidence={"stdout/../../escape.bin": b"no"},
+        )
+    assert not (tmp_path / "run-escape").exists()
+
+
 def test_required_skip_aggregates_to_blocked_with_coverage() -> None:
     report = build_report(
         run_id="run-123",

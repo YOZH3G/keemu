@@ -28,6 +28,9 @@ RUN_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{2,127}\Z")
 LOG_LIMIT = 20 * 1024 * 1024
 COMMAND_LIMIT = 1024 * 1024
 WRITABLE_THRESHOLD = 512 * 1024 * 1024
+STAGED_IPK = re.compile(
+    r"/opt/tmp/[a-z][a-z0-9+.-]*_[A-Za-z0-9+~._-]+_[a-z0-9.-]+\.ipk\Z"
+)
 
 
 class DockerBoundaryError(RuntimeError):
@@ -40,6 +43,7 @@ class Output:
     stderr: bytes
     truncated_stdout: bool = False
     truncated_stderr: bool = False
+    exit_code: int = 0
 
 
 def _valid(pattern: re.Pattern[str], value: str, what: str) -> str:
@@ -54,6 +58,7 @@ def _exec(
     timeout: float = 30,
     limit: int = COMMAND_LIMIT,
     truncate: bool = False,
+    allow_failure: bool = False,
 ) -> Output:
     """Read both pipes concurrently with a deadline and per-stream byte cap."""
     if (
@@ -99,7 +104,8 @@ def _exec(
         left = deadline - time.monotonic()
         if left <= 0:
             raise DockerBoundaryError(f"Docker command timed out: {argv[1]}")
-        if process.wait(timeout=left):
+        code = process.wait(timeout=left)
+        if code and not allow_failure:
             message = bytes(chunks["stderr"][:4096]).decode("utf-8", "replace")
             raise DockerBoundaryError(f"Docker {argv[1]} failed: {message}")
         return Output(
@@ -107,6 +113,7 @@ def _exec(
             bytes(chunks["stderr"]),
             excess["stdout"],
             excess["stderr"],
+            code,
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise DockerBoundaryError(f"Docker command failed: {argv[1]}") from exc
@@ -331,7 +338,15 @@ class DockerRuntime:
             )
         self.inspect("container", identifier)
 
-    def exec(self, identifier: str, argv: list[str], *, timeout: float = 30) -> Output:
+    def exec(
+        self,
+        identifier: str,
+        argv: list[str],
+        *,
+        timeout: float = 30,
+        allow_failure: bool = False,
+        cwd: str | None = None,
+    ) -> Output:
         if (
             not argv
             or len(argv) > 128
@@ -343,9 +358,22 @@ class DockerRuntime:
             raise DockerBoundaryError("invalid target argv")
         self.inspect("container", identifier)
         self.check_writable_layer(identifier)
+        if cwd is not None and (
+            cwd != "/opt" and (not cwd.startswith("/opt/") or ".." in cwd.split("/"))
+        ):
+            raise DockerBoundaryError("invalid target cwd")
         try:
             return _exec(
-                ["docker", "container", "exec", identifier, *argv], timeout=timeout
+                [
+                    "docker",
+                    "container",
+                    "exec",
+                    *(["--workdir", cwd] if cwd else []),
+                    identifier,
+                    *argv,
+                ],
+                timeout=timeout,
+                allow_failure=allow_failure,
             )
         finally:
             self.check_writable_layer(identifier)
@@ -383,6 +411,50 @@ class DockerRuntime:
             output.truncated_stdout,
             output.truncated_stderr,
         )
+
+    def copy_file(self, identifier: str, source: str, destination: str) -> None:
+        """Stage a private regular local input at a fixed fresh-container /opt path."""
+        import stat
+
+        info = os.lstat(source)
+        if not stat.S_ISREG(info.st_mode) or info.st_size > 64 * 1024 * 1024:
+            raise DockerBoundaryError("unsafe staged input")
+        if not STAGED_IPK.fullmatch(destination) or len(destination) > 200:
+            raise DockerBoundaryError("unsafe target staging path")
+        self.inspect("container", identifier)
+        _exec(
+            ["docker", "container", "cp", "--", source, f"{identifier}:{destination}"],
+            timeout=90,
+        )
+        self.inspect("container", identifier)
+
+    def read_staged_file(self, identifier: str, source: str, destination: str) -> None:
+        """Read back a fixed target IPK into a private, absent local path."""
+        if not STAGED_IPK.fullmatch(source) or len(source) > 200:
+            raise DockerBoundaryError("unsafe target staging path")
+        parent = os.path.dirname(destination)
+        if (
+            not os.path.isdir(parent)
+            or os.path.islink(parent)
+            or os.path.lexists(destination)
+        ):
+            raise DockerBoundaryError("unsafe local readback destination")
+        self.inspect("container", identifier)
+        _exec(
+            ["docker", "container", "cp", "--", f"{identifier}:{source}", destination],
+            timeout=90,
+        )
+        self.inspect("container", identifier)
+
+    def diff(self, identifier: str) -> tuple[str, ...]:
+        self.inspect("container", identifier)
+        output = _exec(["docker", "container", "diff", identifier], timeout=60)
+        if output.truncated_stdout or output.truncated_stderr:
+            raise DockerBoundaryError("filesystem diff truncated")
+        lines = output.stdout.decode("utf-8").splitlines()
+        if any(not re.fullmatch(r"[ACD] /[^\n\r]+", line) for line in lines):
+            raise DockerBoundaryError("invalid Docker filesystem diff")
+        return tuple(sorted(lines))
 
     def remove_container(self, identifier: str) -> None:
         self.stop(identifier)
