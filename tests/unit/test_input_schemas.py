@@ -16,7 +16,7 @@ from keemu.input_locks import (
     load_scenario_lock,
 )
 from keemu.input_paths import UnsafePath, resolve_input_path
-from keemu.profiles import ProfileError
+from keemu.profiles import ProfileError, load_profile, load_yaml_unique
 from keemu.scenarios import Scenario, load_scenario
 
 SCENARIO = """schema_version: 1
@@ -131,6 +131,21 @@ def test_rejects_yaml_duplicate_and_alias(tmp_path: Path) -> None:
     )
     with pytest.raises(ProfileError, match="aliases"):
         load_scenario(path, project_root=tmp_path)
+
+
+@pytest.mark.parametrize("loader", [load_yaml_unique, load_profile])
+def test_yaml_path_loader_bounds_read_before_allocation(
+    tmp_path: Path, monkeypatch, loader
+) -> None:
+    path = tmp_path / "oversized.yaml"
+    path.write_bytes(b"x" * (1024 * 1024 + 1))
+
+    def unbounded_read_forbidden(_path):
+        raise AssertionError("Path.read_bytes performs an unbounded allocation")
+
+    monkeypatch.setattr(Path, "read_bytes", unbounded_read_forbidden)
+    with pytest.raises(ProfileError, match="exceeds 1 MiB"):
+        loader(path)
 
 
 def test_resolve_input_rejects_escape_symlink_and_missing(tmp_path: Path) -> None:

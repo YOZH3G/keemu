@@ -24,7 +24,7 @@ from keemu.input_paths import (
     TargetPath,
     resolve_input_path,
 )
-from keemu.profiles import load_yaml_unique
+from keemu.profiles import load_yaml_unique, load_yaml_unique_bytes
 
 
 class InputModel(BaseModel):
@@ -282,8 +282,28 @@ def load_scenario(path: Path, *, project_root: Path) -> Scenario:
         path.name, scenario_dir=path.parent, project_root=project_root
     )
     scenario = Scenario.model_validate(load_yaml_unique(source))
+    _validate_scenario_paths(
+        scenario, scenario_dir=source.parent, project_root=project_root
+    )
+    return scenario
+
+
+def load_scenario_bytes(
+    data: bytes, *, scenario_dir: Path, project_root: Path
+) -> Scenario:
+    """Parse and validate the exact scenario bytes captured by a secure reader."""
+    scenario = Scenario.model_validate(load_yaml_unique_bytes(data))
+    _validate_scenario_paths(
+        scenario, scenario_dir=scenario_dir, project_root=project_root
+    )
+    return scenario
+
+
+def _validate_scenario_paths(
+    scenario: Scenario, *, scenario_dir: Path, project_root: Path
+) -> None:
     resolve_input_path(
-        scenario.install.path, scenario_dir=source.parent, project_root=project_root
+        scenario.install.path, scenario_dir=scenario_dir, project_root=project_root
     )
     checks: list[object] = list(scenario.checks)
     if scenario.service is not None:
@@ -291,6 +311,5 @@ def load_scenario(path: Path, *, project_root: Path) -> Scenario:
     for check in checks:
         if isinstance(check, HTTPProbe) and check.ca_cert:
             resolve_input_path(
-                check.ca_cert, scenario_dir=source.parent, project_root=project_root
+                check.ca_cert, scenario_dir=scenario_dir, project_root=project_root
             )
-    return scenario

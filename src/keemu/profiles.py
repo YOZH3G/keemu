@@ -11,6 +11,9 @@ class ProfileError(ValueError):
     """Raised when profile YAML is ambiguous or malformed."""
 
 
+MAX_YAML_BYTES = 1024 * 1024
+
+
 class _UniqueKeyLoader(yaml.SafeLoader):
     def compose_node(self, parent: yaml.Node | None, index: int) -> yaml.Node | None:
         if self.check_event(yaml.AliasEvent):
@@ -97,11 +100,15 @@ class GenericProfile(StrictModel):
         return self
 
 
-def load_yaml_unique(path: Path) -> object:
-    """Read a single YAML document without aliases, duplicate keys or custom tags."""
-    if path.stat().st_size > 1024 * 1024:
+def load_yaml_unique_bytes(data: bytes) -> object:
+    """Parse one bounded YAML document without aliases or duplicate keys."""
+    if len(data) > MAX_YAML_BYTES:
         raise ProfileError("YAML input exceeds 1 MiB")
-    loader = _UniqueKeyLoader(path.read_text(encoding="utf-8"))
+    try:
+        text = data.decode("utf-8")
+    except UnicodeError as exc:
+        raise ProfileError("YAML input is not UTF-8") from exc
+    loader = _UniqueKeyLoader(text)
     try:
         data = loader.get_single_data()
     finally:
@@ -109,5 +116,22 @@ def load_yaml_unique(path: Path) -> object:
     return data
 
 
+def load_yaml_unique(path: Path) -> object:
+    """Read a single YAML document without aliases, duplicate keys or custom tags."""
+    return load_yaml_unique_bytes(_read_yaml(path))
+
+
+def load_profile_bytes(data: bytes) -> GenericProfile:
+    return GenericProfile.model_validate(load_yaml_unique_bytes(data))
+
+
 def load_profile(path: Path) -> GenericProfile:
-    return GenericProfile.model_validate(load_yaml_unique(path))
+    return load_profile_bytes(_read_yaml(path))
+
+
+def _read_yaml(path: Path) -> bytes:
+    with path.open("rb") as stream:
+        data = stream.read(MAX_YAML_BYTES + 1)
+    if len(data) > MAX_YAML_BYTES:
+        raise ProfileError("YAML input exceeds 1 MiB")
+    return data
