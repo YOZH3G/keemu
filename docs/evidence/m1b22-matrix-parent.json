@@ -1,0 +1,151 @@
+{
+  "artifact": null,
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "environment",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "all three generic targets mapped to distinct locked scenarios"
+      ],
+      "id": "completeness",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "unknown",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "child_report=/opt/data/workspace/keemu/reports/matrix-f3557d174f1d4cc99b83431b151fd726-case-1/report.json; sha256=a7afdd55e9d5ebee7d6d1f779326b9c5e93a12190630d032c80247148bfcf5f5; mode=real; overall=PASS"
+      ],
+      "id": "generic-aarch64",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "environment",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "profile=generic-mipsel; scenario=/opt/data/workspace/keemu/.runtime/m1b19-i0jpq21a/cases/generic-mipsel/scenario.yaml; target lifecycle unsupported: locked MIPS/MIPSEL rootfs probes do not implement keemu test"
+      ],
+      "id": "generic-mipsel",
+      "limitations": [
+        "profile=generic-mipsel; scenario=/opt/data/workspace/keemu/.runtime/m1b19-i0jpq21a/cases/generic-mipsel/scenario.yaml; target lifecycle unsupported: locked MIPS/MIPSEL rootfs probes do not implement keemu test"
+      ],
+      "mode": "static",
+      "required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "cause_class": "environment",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "profile=generic-mips; scenario=/opt/data/workspace/keemu/.runtime/m1b19-i0jpq21a/cases/generic-mips/scenario.yaml; target lifecycle unsupported: locked MIPS/MIPSEL rootfs probes do not implement keemu test"
+      ],
+      "id": "generic-mips",
+      "limitations": [
+        "profile=generic-mips; scenario=/opt/data/workspace/keemu/.runtime/m1b19-i0jpq21a/cases/generic-mips/scenario.yaml; target lifecycle unsupported: locked MIPS/MIPSEL rootfs probes do not implement keemu test"
+      ],
+      "mode": "static",
+      "required": true,
+      "status": "BLOCKED"
+    }
+  ],
+  "coverage": {
+    "blocked": 2,
+    "errors": 0,
+    "failed": 0,
+    "passed": 2,
+    "required": 4,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-24T21:17:45.204985+00:00",
+  "limitations": [
+    "MIPS/MIPSEL target probes are not a general IPK lifecycle; required cases remain BLOCKED until supported",
+    "Each child report has its own cleanup and evidence; static mismatch is not target execution"
+  ],
+  "operation": "matrix",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-24T21:17:45.204902+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "case-generic-aarch64",
+      "sequence": 1,
+      "started_at": "2026-09-24T21:17:40.363843+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-24T21:17:45.204964+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "case-generic-mipsel",
+      "sequence": 2,
+      "started_at": "2026-09-24T21:17:45.204928+00:00",
+      "status": "BLOCKED",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-24T21:17:45.204979+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "case-generic-mips",
+      "sequence": 3,
+      "started_at": "2026-09-24T21:17:45.204972+00:00",
+      "status": "BLOCKED",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "BLOCKED",
+  "partial_failure": null,
+  "profile": {
+    "id": "matrix",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": null
+  },
+  "run_id": "matrix-f3557d174f1d4cc99b83431b151fd726",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "matrix",
+    "feed_lock_sha256": null,
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": null,
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": {
+    "id": "hello-matrix",
+    "schema_version": 1,
+    "sha256": "a8728e50d4447f0563b93dc238768926b12200fd0c4ec5d40e48e3433639b550",
+    "source": "/opt/data/workspace/keemu/.runtime/m1b19-i0jpq21a/matrix.yaml"
+  },
+  "schema_version": 2,
+  "substitutions": []
+}

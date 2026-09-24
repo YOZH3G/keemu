@@ -1,6 +1,6 @@
 # Acceptance traceability
 
-This table retains the pre-m1a-17 slice statuses. `PARTIAL` is not PASS; the frozen m1a-17 ledger below is authoritative **at its capture time**. The later m1b-18 PASS follow-up closes the A01 three-generic-target execution gap without rewriting either earlier observation.
+This table retains the pre-m1a-17 slice statuses. `PARTIAL` is not PASS; the frozen m1a-17 ledger below is authoritative **at its capture time**. The later m1b-18 PASS follow-up closes the A01 three-generic-target execution gap without rewriting either earlier observation. The m1b-22 frozen three-target observation below supersedes stale A02–A06/A10/A11 table readings, without changing prior ledgers.
 
 | ID | Prior slice status | Test or scenario | Latest evidence | Gap |
 |---|---|---|---|---|
@@ -37,6 +37,10 @@ The initial `docs/evidence/m1b18-targets.json` (SHA-256 `816727a7b0ea632946cbca3
 ## MVP 1B m1b-19 matrix observation
 
 `docs/evidence/m1b19-matrix.md` records the first complete three-profile matrix with one real, owned AArch64 IPK lifecycle PASS and two required static BLOCKED cases for unsupported MIPS/MIPSEL lifecycle. This is an A10 BLOCKED observation, not a three-target PASS. A separate locked wrong-architecture case returns FAIL/exit 1 and overrides BLOCKED; malformed inputs return 2 before Docker. No NDM/event or new MIPS lifecycle claim.
+
+## MVP 1B m1b-22 frozen three-target acceptance and capability observation
+
+`docs/evidence/m1b22-acceptance.json` (SHA-256 `cf0dca2c0775fed8b055dd6454ecf4195957eb8dd9048d83751b10509d481841`) and `docs/evidence/m1b22-acceptance.md` bind tracked raw JUnit, complete matrix parent/child, per-target Docker capability probe and per-profile doctor results. On this shared Docker host the selected opt-in suite was 28 PASS/0 FAIL/0 SKIP; pre-ledger portable suite 187 PASS/0 FAIL/22 opt-in SKIP. A01's specified three generic target-exec check is PASS, not general MIPS package lifecycle. A02–A06/A10/A11 are BLOCKED as whole IDs for all three targets; AArch64 negative package reports remain FAIL as expected with PASS harness tests. Matrix has AArch64 child PASS, MIPSEL/MIPS static BLOCKED and aggregate BLOCKED. Synthetic host NDM subprocess proof does not establish target/device A11. Every target NFNETLINK socket call returned `Protocol not supported` while the same-namespace native control succeeded; no queue bind, packet, verdict, firewall or module mutation occurred. All project-owned probe containers were verified absent; doctor remained BLOCKED/4 on worker binfmt visibility. MVP 1B remains BLOCKED. See ADR-0014 for limits and source bindings.
 
 ## P0 gate summary
 

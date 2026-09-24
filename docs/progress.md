@@ -56,6 +56,10 @@ The immutable initial `docs/evidence/m1b18-targets.json` (SHA-256 `816727a7b0ea6
 
 The m1b-20 strict host-side NDM shim has exact synthetic process/state tests, but no observed device bytes or target lifecycle integration (ADR-0012); A11 remains BLOCKED. m1b-21 adds an opt-in host-local synthetic boot/netfilter handler contract with pinned script digests, ordered selection, explicit environment/cwd/PATH, timeout and nonexecutable/error policies, and three-step rule-list restoration without duplicates. The test-owned JSON state is an S0 rules-mock, not a kernel firewall. Unknown events are BLOCKED; no real netfilter event, actual firewall, target hook, `keemu event NAME EVENT` or A21 bundle is claimed. A12 and MVP 1B remain BLOCKED; see ADR-0013 and `docs/traceability.md`.
 
+## MVP 1B m1b-22 frozen three-target observation
+
+The opt-in AArch64 lifecycle/recovery plus three-profile matrix and offline MIPS/MIPSEL integrity suite passed 28 tests; the pre-ledger portable suite passed 187 with 22 opt-in skips. `docs/evidence/m1b22-acceptance.json` (SHA-256 `cf0dca2c0775fed8b055dd6454ecf4195957eb8dd9048d83751b10509d481841`) binds tracked raw evidence. A01 specified three-target ELF/shell/nested execution is PASS; A02–A06/A10/A11 remain BLOCKED on each target and MVP 1B remains BLOCKED. Per-target non-mutating Docker capability probes returned target NFNETLINK `Protocol not supported`/1 and native control success/0 for all three; no rule, module, queue, packet, verdict, host exposure or actual firewall change was made. Read-only doctor returned BLOCKED/4 for binfmt visibility in the worker despite separately proven Docker target execution. Ownership-checked final Docker resource queries returned empty. See ADR-0014 and `docs/evidence/m1b22-acceptance.md`.
+
 `docs/evidence/p0-evidence-manifest.md` binds the committed locks and ignored runtime reports to their independently recomputed SHA-256 digests. ADR-0001 through ADR-0005 record the diagnostic runtime, mixed image, native-init correction, NFQUEUE blocker, and constrained localhost-observer decision.
 
 ## Acceptance status

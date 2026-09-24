@@ -1,0 +1,122 @@
+{
+  "created_at": "2026-09-24T21:14:19.260607+00:00",
+  "kernel": "6.8.0-138-generic",
+  "modules_after": {
+    "nfnetlink_queue": false,
+    "nft_queue": false,
+    "xt_NFQUEUE": false
+  },
+  "modules_before": {
+    "nfnetlink_queue": false,
+    "nft_queue": false,
+    "xt_NFQUEUE": false
+  },
+  "results": [
+    {
+      "capabilities": "drop ALL",
+      "cleanup": "PASS",
+      "conntrack": "BLOCKED",
+      "container_id": "952ec7f902045ad6c593c7fe0ed40f704223d6acc9f60dd0ac3cc1143bf049ca",
+      "forwarding": "BLOCKED",
+      "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+      "ipset_create": "BLOCKED",
+      "iptables_backend": "BLOCKED",
+      "native_control_sha256": "378db5054cec52bc8422845c3bef0fe7dec032188a7c35a3adf32b8113e28167",
+      "native_control_status": "PASS",
+      "native_socket": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": "NETLINK_NETFILTER socket opened; NFQUEUE bind and verdict NOT attempted\n"
+      },
+      "network": "none",
+      "packet_verdict": "BLOCKED",
+      "queue_bind": "NOT RUN",
+      "reason": "Target socket unavailable or rejected; native same-namespace control recorded. No queue bind, packet or verdict.",
+      "socket_status": "BLOCKED",
+      "target": "aarch64-3.10",
+      "target_probe_sha256": "c82cf028a2eceb93e45b54e3bb883ca3a6edde2b0949b73884d3ed1f96857655",
+      "target_socket": {
+        "exit": 1,
+        "stderr": "NETLINK_NETFILTER socket: Protocol not supported\n",
+        "stdout": ""
+      },
+      "target_tools": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "capabilities": "drop ALL",
+      "cleanup": "PASS",
+      "conntrack": "BLOCKED",
+      "container_id": "bf4a726d99847b36d9e31c86d1dfaf1821b74c92c917fffbdba14373a5d5d750",
+      "forwarding": "BLOCKED",
+      "image_id": "sha256:9822813438c56f173491a7b205b0c536e632582493282f77e0049da8d5276e2c",
+      "ipset_create": "BLOCKED",
+      "iptables_backend": "BLOCKED",
+      "native_control_sha256": "378db5054cec52bc8422845c3bef0fe7dec032188a7c35a3adf32b8113e28167",
+      "native_control_status": "PASS",
+      "native_socket": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": "NETLINK_NETFILTER socket opened; NFQUEUE bind and verdict NOT attempted\n"
+      },
+      "network": "none",
+      "packet_verdict": "BLOCKED",
+      "queue_bind": "NOT RUN",
+      "reason": "Target socket unavailable or rejected; native same-namespace control recorded. No queue bind, packet or verdict.",
+      "socket_status": "BLOCKED",
+      "target": "mipsel-3.4",
+      "target_probe_sha256": "eae67685f9518beb4a55c301fc766641b3e8f0cca86c5d46ad483f46561f1478",
+      "target_socket": {
+        "exit": 1,
+        "stderr": "NETLINK_NETFILTER socket: Protocol not supported\n",
+        "stdout": ""
+      },
+      "target_tools": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "capabilities": "drop ALL",
+      "cleanup": "PASS",
+      "conntrack": "BLOCKED",
+      "container_id": "10405d7e6854f372f738dde3fc169ad2815ac62580d770cfcae66cd625dc7efe",
+      "forwarding": "BLOCKED",
+      "image_id": "sha256:1767195564c09eeb7e0eb7eccb31b3fd4fe0aa8725e2005677a07abad99d09c1",
+      "ipset_create": "BLOCKED",
+      "iptables_backend": "BLOCKED",
+      "native_control_sha256": "378db5054cec52bc8422845c3bef0fe7dec032188a7c35a3adf32b8113e28167",
+      "native_control_status": "PASS",
+      "native_socket": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": "NETLINK_NETFILTER socket opened; NFQUEUE bind and verdict NOT attempted\n"
+      },
+      "network": "none",
+      "packet_verdict": "BLOCKED",
+      "queue_bind": "NOT RUN",
+      "reason": "Target socket unavailable or rejected; native same-namespace control recorded. No queue bind, packet or verdict.",
+      "socket_status": "BLOCKED",
+      "target": "mips-3.4",
+      "target_probe_sha256": "a28ed14c139453fc734ca68ada361212fbf5b32acae727bf41bf29fb1ed6ef5f",
+      "target_socket": {
+        "exit": 1,
+        "stderr": "NETLINK_NETFILTER socket: Protocol not supported\n",
+        "stdout": ""
+      },
+      "target_tools": {
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Socket creation/native control only; backend presence is not functional testing; no queue bind, rule, ipset, packet, module loading, host networking or public publish.",
+  "source_sha256": "b272ceb093102f721385ba069d34e4611614e6b56f476f1d51192f8fe167e0ef",
+  "subtask": "m1b-22"
+}

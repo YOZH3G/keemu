@@ -1,0 +1,240 @@
+{
+  "capabilities": {
+    "artifact": {
+      "path": ".runtime/m1b22/01ea6ddb443b4e00a758b1e7fe6b4b51/capabilities.json",
+      "sha256": "8145f33913581e566935a48e4f2bf8ec55dd596e232db4fabdc9140d370ee8f8"
+    },
+    "per_target": {
+      "aarch64-3.10": {
+        "cleanup": "PASS",
+        "conntrack": "BLOCKED",
+        "forwarding": "BLOCKED",
+        "ipset_create": "BLOCKED",
+        "iptables_backend": "BLOCKED",
+        "native_socket": "PASS",
+        "packet_verdict": "BLOCKED",
+        "queue_bind": "NOT RUN",
+        "target_error": "NETLINK_NETFILTER socket: Protocol not supported",
+        "target_exit": 1,
+        "target_socket": "BLOCKED"
+      },
+      "mips-3.4": {
+        "cleanup": "PASS",
+        "conntrack": "BLOCKED",
+        "forwarding": "BLOCKED",
+        "ipset_create": "BLOCKED",
+        "iptables_backend": "BLOCKED",
+        "native_socket": "PASS",
+        "packet_verdict": "BLOCKED",
+        "queue_bind": "NOT RUN",
+        "target_error": "NETLINK_NETFILTER socket: Protocol not supported",
+        "target_exit": 1,
+        "target_socket": "BLOCKED"
+      },
+      "mipsel-3.4": {
+        "cleanup": "PASS",
+        "conntrack": "BLOCKED",
+        "forwarding": "BLOCKED",
+        "ipset_create": "BLOCKED",
+        "iptables_backend": "BLOCKED",
+        "native_socket": "PASS",
+        "packet_verdict": "BLOCKED",
+        "queue_bind": "NOT RUN",
+        "target_error": "NETLINK_NETFILTER socket: Protocol not supported",
+        "target_exit": 1,
+        "target_socket": "BLOCKED"
+      }
+    }
+  },
+  "created_at": "2026-09-24T21:20:57.166604+00:00",
+  "doctor": {
+    "generic-aarch64": {
+      "checks": {
+        "binfmt": "BLOCKED",
+        "disk-space": "PASS",
+        "docker-cli": "PASS",
+        "docker-daemon": "PASS",
+        "host-platform": "PASS",
+        "qemu": "PASS"
+      },
+      "exit_code": 4,
+      "note": "doctor sees worker /proc only; binfmt BLOCKED is visibility, not a Docker target-exec failure",
+      "overall": "BLOCKED"
+    },
+    "generic-mips": {
+      "checks": {
+        "binfmt": "BLOCKED",
+        "disk-space": "PASS",
+        "docker-cli": "PASS",
+        "docker-daemon": "PASS",
+        "host-platform": "PASS",
+        "qemu": "PASS"
+      },
+      "exit_code": 4,
+      "note": "doctor sees worker /proc only; binfmt BLOCKED is visibility, not a Docker target-exec failure",
+      "overall": "BLOCKED"
+    },
+    "generic-mipsel": {
+      "checks": {
+        "binfmt": "BLOCKED",
+        "disk-space": "PASS",
+        "docker-cli": "PASS",
+        "docker-daemon": "PASS",
+        "host-platform": "PASS",
+        "qemu": "PASS"
+      },
+      "exit_code": 4,
+      "note": "doctor sees worker /proc only; binfmt BLOCKED is visibility, not a Docker target-exec failure",
+      "overall": "BLOCKED"
+    }
+  },
+  "doctor_visibility": "Worker /proc lacks host binfmt registration; each Docker target execution is independently proven. Doctor result is not promoted to PASS.",
+  "gaps": {
+    "A02": "Installed-file byte equality and independent postinst exit unproved; MIPS lifecycles unsupported",
+    "A03": "Full process/socket census and cross-target stop/remove unproved",
+    "A04": "Wrong ELF/loader/dependency end-to-end cases absent on all three",
+    "A05": "Permission/broken-link end-to-end cases absent on all three",
+    "A06": "Persistent failure report and one-shot crash recovery absent; cross-target errors unrun",
+    "A10": "MIPS/MIPSEL static BLOCKED; no installed-package child report for either",
+    "A11": "Synthetic host shim only; no observed physical bytes, target ndmc or package invocation"
+  },
+  "git_commit": "d44918167ad05f002526e17606314c568442727a",
+  "interpretation": "A01 is PASS for target ELF/shell/nested exec on three generic targets only. A02-A06/A10/A11 remain BLOCKED across three targets. Negative fixture FAIL is correct when the harness expects FAIL; synthetic NDM process PASS does not satisfy target/device A11.",
+  "matrix": {
+    "checks": {
+      "completeness": "PASS",
+      "generic-aarch64": "PASS",
+      "generic-mips": "BLOCKED",
+      "generic-mipsel": "BLOCKED"
+    },
+    "child": {
+      "path": "reports/matrix-f3557d174f1d4cc99b83431b151fd726-case-1/report.json",
+      "sha256": "a7afdd55e9d5ebee7d6d1f779326b9c5e93a12190630d032c80247148bfcf5f5"
+    },
+    "parent": {
+      "path": "reports/matrix-f3557d174f1d4cc99b83431b151fd726/report.json",
+      "sha256": "8c20c0a4a62655f4e28392bc42a0e41d4d249df1989b5809f64bd8df59545189"
+    },
+    "status": "BLOCKED"
+  },
+  "mvp1b_gate": "BLOCKED",
+  "negative_package_observation": {
+    "harness_status": "PASS",
+    "harness_tests": [
+      "test_static_defect_reports_fail_before_docker[options0-architecture]",
+      "test_static_defect_reports_fail_before_docker[options1-shebang]"
+    ],
+    "package_reports": "FAIL at inspect",
+    "scope": "AArch64 wrong architecture and bad shebang"
+  },
+  "owned_resources_after": {
+    "container": [],
+    "network": []
+  },
+  "previous_evidence": {
+    "aarch64": {
+      "path": "docs/evidence/m1a17-acceptance.json",
+      "sha256": "b8c6fea25231dc5fbe4f30b3607fc9d289d3f5deef706e44369d19ac27b829be"
+    },
+    "mips": {
+      "path": "docs/evidence/m1b18-targets-pass.json",
+      "sha256": "ca7b0741c09997ffb606077422503198cfde3245c16d9db1a2a24f495fe03f70"
+    }
+  },
+  "required_ids": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A10",
+    "A11"
+  ],
+  "schema_version": 1,
+  "subtask": "m1b-22",
+  "targets": {
+    "generic-aarch64": {
+      "A01": "PASS",
+      "A02": "BLOCKED",
+      "A03": "BLOCKED",
+      "A04": "BLOCKED",
+      "A05": "BLOCKED",
+      "A06": "BLOCKED",
+      "A10": "BLOCKED",
+      "A11": "BLOCKED",
+      "reason": "Real AArch64 one-shot/persistent bounded tests PASS, but full file/process/socket/negative-case and report facets remain unproved.",
+      "target": "aarch64-3.10"
+    },
+    "generic-mips": {
+      "A01": "PASS",
+      "A02": "BLOCKED",
+      "A03": "BLOCKED",
+      "A04": "BLOCKED",
+      "A05": "BLOCKED",
+      "A06": "BLOCKED",
+      "A10": "BLOCKED",
+      "A11": "BLOCKED",
+      "reason": "Rootfs/opkg/target fixture smoke PASS; general keemu init/test lifecycle and required negative/failure cases are unsupported.",
+      "target": "mips-3.4"
+    },
+    "generic-mipsel": {
+      "A01": "PASS",
+      "A02": "BLOCKED",
+      "A03": "BLOCKED",
+      "A04": "BLOCKED",
+      "A05": "BLOCKED",
+      "A06": "BLOCKED",
+      "A10": "BLOCKED",
+      "A11": "BLOCKED",
+      "reason": "Rootfs/opkg/target fixture smoke PASS; general keemu init/test lifecycle and required negative/failure cases are unsupported.",
+      "target": "mipsel-3.4"
+    }
+  },
+  "test_runs": {
+    "live": {
+      "artifact": {
+        "path": ".runtime/m1b22-full-live-junit.xml",
+        "sha256": "e060dcb37965dd64b7a833e0e8e3ff3b07c277bfc6259c8616d22ea73fbb4393"
+      },
+      "counts": {
+        "FAIL": 0,
+        "PASS": 28,
+        "SKIP": 0
+      },
+      "required_nodes": {
+        "test_cleanup_failure_preserves_primary_failure": "PASS",
+        "test_locked_target_image_and_offline_inventory[mips-3.4]": "PASS",
+        "test_locked_target_image_and_offline_inventory[mipsel-3.4]": "PASS",
+        "test_matrix_real_child_and_unsupported_targets": "PASS",
+        "test_persistent_service_readiness_after_same_container_restart": "PASS",
+        "test_real_ipk_success_and_failed_postinst": "PASS",
+        "test_static_defect_reports_fail_before_docker[options0-architecture]": "PASS",
+        "test_static_defect_reports_fail_before_docker[options1-shebang]": "PASS",
+        "test_target_opkg_inventory_and_network_with_owned_cleanup": "PASS"
+      }
+    },
+    "portable": {
+      "artifact": {
+        "path": ".runtime/m1b22-portable-junit.xml",
+        "sha256": "535463d9cea257823a07117a681b3d53601e2785eb4279afcb238ae6ed4e4b39"
+      },
+      "counts": {
+        "FAIL": 0,
+        "PASS": 187,
+        "SKIP": 22
+      },
+      "required_nodes": {
+        "test_exact_process_and_persistent_state": "PASS",
+        "test_mismatch_is_fail_and_overrides_unsupported_target": "PASS",
+        "test_unknown_is_not_success_and_required_check_blocks": "PASS"
+      }
+    }
+  },
+  "unrun": {
+    "fresh_ubuntu": "SKIP shared Docker host",
+    "mips_lifecycle": "BLOCKED unsupported implementation",
+    "queue_bind_verdict": "BLOCKED host module approval and target socket failure",
+    "target_ndm": "BLOCKED no target installation/observed response"
+  }
+}

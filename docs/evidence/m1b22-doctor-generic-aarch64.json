@@ -1,0 +1,186 @@
+{
+  "exit_code": 4,
+  "report": {
+    "artifact": null,
+    "capabilities": [
+      {
+        "evidence": [
+          "system=Linux machine=x86_64"
+        ],
+        "id": "host-platform",
+        "limitations": [],
+        "mode": "real",
+        "status": "PASS"
+      },
+      {
+        "evidence": [
+          "/usr/bin/docker"
+        ],
+        "id": "docker-cli",
+        "limitations": [],
+        "mode": "real",
+        "status": "PASS"
+      },
+      {
+        "evidence": [
+          "server=29.7.2"
+        ],
+        "id": "docker-daemon",
+        "limitations": [],
+        "mode": "real",
+        "status": "PASS"
+      },
+      {
+        "evidence": [
+          "/opt/data/workspace/keemu/.runtime/p0/qemu-user-root/usr/bin/qemu-aarch64"
+        ],
+        "id": "qemu",
+        "limitations": [],
+        "mode": "real",
+        "status": "PASS"
+      },
+      {
+        "evidence": [
+          "no registration for aarch64 under /proc/sys/fs/binfmt_misc"
+        ],
+        "id": "binfmt",
+        "limitations": [
+          "no registration for aarch64 under /proc/sys/fs/binfmt_misc"
+        ],
+        "mode": "real",
+        "status": "BLOCKED"
+      },
+      {
+        "evidence": [
+          "free_bytes=80118931456 minimum_bytes=5368709120"
+        ],
+        "id": "disk-space",
+        "limitations": [],
+        "mode": "real",
+        "status": "PASS"
+      }
+    ],
+    "checks": [
+      {
+        "cause_class": "environment",
+        "duration_seconds": 0.0,
+        "evidence": [
+          "system=Linux machine=x86_64"
+        ],
+        "id": "host-platform",
+        "limitations": [],
+        "mode": "real",
+        "required": true,
+        "status": "PASS"
+      },
+      {
+        "cause_class": "environment",
+        "duration_seconds": 0.0,
+        "evidence": [
+          "/usr/bin/docker"
+        ],
+        "id": "docker-cli",
+        "limitations": [],
+        "mode": "real",
+        "required": true,
+        "status": "PASS"
+      },
+      {
+        "cause_class": "environment",
+        "duration_seconds": 0.0,
+        "evidence": [
+          "server=29.7.2"
+        ],
+        "id": "docker-daemon",
+        "limitations": [],
+        "mode": "real",
+        "required": true,
+        "status": "PASS"
+      },
+      {
+        "cause_class": "environment",
+        "duration_seconds": 0.0,
+        "evidence": [
+          "/opt/data/workspace/keemu/.runtime/p0/qemu-user-root/usr/bin/qemu-aarch64"
+        ],
+        "id": "qemu",
+        "limitations": [],
+        "mode": "real",
+        "required": true,
+        "status": "PASS"
+      },
+      {
+        "cause_class": "environment",
+        "duration_seconds": 0.0,
+        "evidence": [
+          "no registration for aarch64 under /proc/sys/fs/binfmt_misc"
+        ],
+        "id": "binfmt",
+        "limitations": [
+          "no registration for aarch64 under /proc/sys/fs/binfmt_misc"
+        ],
+        "mode": "real",
+        "required": true,
+        "status": "BLOCKED"
+      },
+      {
+        "cause_class": "environment",
+        "duration_seconds": 0.0,
+        "evidence": [
+          "free_bytes=80118931456 minimum_bytes=5368709120"
+        ],
+        "id": "disk-space",
+        "limitations": [],
+        "mode": "real",
+        "required": true,
+        "status": "PASS"
+      }
+    ],
+    "coverage": {
+      "blocked": 1,
+      "errors": 0,
+      "failed": 0,
+      "passed": 5,
+      "required": 6,
+      "skipped": 0,
+      "warned": 0
+    },
+    "created_at": "2026-09-24T21:20:55+00:00",
+    "limitations": [
+      "no registration for aarch64 under /proc/sys/fs/binfmt_misc"
+    ],
+    "operation": "doctor",
+    "operation_log": [],
+    "overall": "BLOCKED",
+    "partial_failure": null,
+    "profile": {
+      "id": "generic-aarch64",
+      "kind": "generic",
+      "revision": 1,
+      "sha256": "34ce638082e71b22ba9b665427412da10f2c3d603fe9150c3c00bd5d74f0d790"
+    },
+    "run_id": "doctor-576ea43e2737474d959617d750570934",
+    "runtime": {
+      "binfmt_configuration": [],
+      "entware_target": "aarch64-3.10",
+      "feed_lock_sha256": null,
+      "git_commit": null,
+      "git_dirty": null,
+      "host_kernel": "6.8.0-138-generic",
+      "keemu_version": "0.1.0",
+      "native_tools": [],
+      "network_fidelity": null,
+      "oci_digest": null,
+      "qemu_version": null,
+      "versions": [
+        {
+          "name": "python",
+          "version": "3.12.13"
+        }
+      ]
+    },
+    "scenario": null,
+    "schema_version": 2,
+    "substitutions": []
+  }
+}
