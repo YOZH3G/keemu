@@ -480,6 +480,21 @@ class DockerRuntime:
         if identifier in _exec(args).stdout.decode().splitlines():
             raise DockerBoundaryError(f"removed {kind} still listed")
 
+    @staticmethod
+    def listed_ids(kind: Literal["container", "network"]) -> set[str]:
+        """Read all full IDs, including unlabelled resources, without adopting any."""
+        if kind not in {"container", "network"}:
+            raise DockerBoundaryError("invalid resource kind")
+        args = (
+            ["docker", "container", "ls", "--all", "--no-trunc", "--quiet"]
+            if kind == "container"
+            else ["docker", "network", "ls", "--no-trunc", "--quiet"]
+        )
+        return {
+            _valid(ID, identifier, "listed resource ID")
+            for identifier in _exec(args).stdout.decode().splitlines()
+        }
+
     def reconcile(
         self,
         expected_containers: set[str] | frozenset[str] = frozenset(),

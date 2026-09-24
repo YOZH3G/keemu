@@ -20,7 +20,7 @@ Verified in the current Debian/Docker environment:
 
 Not yet verified:
 
-- general scenario-driven localhost publication, complete isolation and interruption recovery; the persistent runner supports target-loopback HTTP service probes only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
+- general scenario-driven localhost publication, complete isolation and automatic/one-shot interruption recovery; the persistent runner supports target-loopback HTTP service probes and explicit owner-checked interrupted-state cleanup only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
 - NFQUEUE ACCEPT/DROP is BLOCKED on the documented target socket/kernel capability, not PASS;
 - any MIPS/MIPSEL runtime;
 - MVP 1A, 1B, or 1C acceptance gates.
@@ -97,7 +97,9 @@ uv run keemu restart demo --repo .
 uv run keemu down demo --repo .
 uv run keemu up --name demo --repo .
 uv run keemu destroy demo --repo .  # only after down; name remains reserved
+uv run keemu recover demo --repo . --yes  # only failed/interrupted state; discard owned container
 KEEMU_TEST_PERSISTENT=1 uv run pytest -q tests/integration/test_lifecycle.py
+KEEMU_TEST_RECOVERY=1 uv run pytest -q tests/integration/test_m1a16_recovery.py
 ```
 
 `ports` and `logs` also require a name. State is atomically written under
@@ -107,7 +109,11 @@ foreign/replaced containers, and uncertain state are refused; destroyed names
 remain tombstones. This slice does not install extra packages into an existing
 environment or execute scenario checks as a `test` run. Persistent CLI failures
 do not yet produce write-once JSON/Markdown/JSONL report bundles; use `keemu
-test` when a full failure report is required. See ADR-0008.
+test` when a full failure report is required. `recover --yes` is explicit,
+refuses healthy or ambiguous/foreign resources, and removes only exact
+run-owned containers after a failed or interrupted create/start/stop. It never
+replays an uncertain postinst; it retains a name tombstone. See ADR-0008 and
+ADR-0010.
 
 AArch64 fixture-only HTTP/HTTPS/UDP and offline locked repeat (requires the
 prepared local SDK and immutable images; opt-in Docker/binfmt):

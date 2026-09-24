@@ -428,6 +428,71 @@ def create(
             ) from exc
 
 
+def recover(root: Path, name: str) -> dict:
+    """Explicit, retryable cleanup of a failed/interrupted environment.
+
+    Never resume an uncertain install or service transition: a postinst or service
+    start may already have run. Never adopt a labelled but unrecorded resource
+    unless it has the one expected deterministic name and exact run identity.
+    """
+    safe_name(name)
+    with Registry(root.resolve() / ".runtime/registry").locked(name) as entry:
+        record = entry.read()
+        runtime = DockerRuntime(record.run_id, record.oci_digest)
+        observed = runtime.reconcile()
+        owned = observed["container_owned"]
+        if observed["network_owned"]:
+            raise RegistryError("unexpected owned network; recovery refused")
+        expected = record.resource.container_id if record.resource else None
+        if (
+            expected
+            and expected not in owned
+            and expected in DockerRuntime.listed_ids("container")
+        ):
+            # Including tombstones: a labelled query cannot establish that
+            # a recorded ID has disappeared if its labels no longer match.
+            raise RegistryError("recorded container exists without matching ownership")
+        if record.state == "destroyed":
+            if owned:
+                raise RegistryError("destroyed registry has owned resources")
+            return {"name": name, "state": "destroyed", "removed": [], "retry": True}
+        if record.state not in {
+            "creating",
+            "installing",
+            "starting",
+            "stopping",
+            "failed",
+        }:
+            raise RegistryError("healthy environment; recovery refused")
+        if expected is not None:
+            if any(identifier != expected for identifier in owned):
+                raise RegistryError(
+                    "unexpected extra owned container; recovery refused"
+                )
+        else:
+            if record.state not in {"creating", "failed"} or len(owned) > 1:
+                raise RegistryError("ambiguous unrecorded container; recovery refused")
+            if owned:
+                identifier = owned[0]
+                if runtime.inspect("container", identifier).get("Name") != (
+                    "/keemu-" + record.run_id
+                ):
+                    raise RegistryError("unrecorded container name mismatch")
+        removed = []
+        for identifier in owned:
+            runtime.remove_container(identifier)
+            removed.append(identifier)
+        final = runtime.reconcile()
+        if final["container_owned"] or final["network_owned"]:
+            raise RegistryError("owned resources remain; recovery can be retried")
+        if expected is not None and expected in DockerRuntime.listed_ids("container"):
+            raise RegistryError("recorded container remains; recovery refused")
+        if record.state != "failed":
+            record = _transition(entry, record, "failed")
+        _transition(entry, record, "destroyed")
+        return {"name": name, "state": "destroyed", "removed": removed, "retry": False}
+
+
 def operate(root: Path, name: str, action: str, *, argv: tuple[str, ...] = ()) -> dict:
     safe_name(name)
     if action not in {

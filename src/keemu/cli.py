@@ -17,6 +17,7 @@ from keemu.ipk_inspect import IPKError, inspect_ipk
 from keemu.lifecycle import run_scenario
 from keemu.persistent import PersistentError, operate
 from keemu.persistent import create as create_environment
+from keemu.persistent import recover as recover_environment
 from keemu.profiles import ProfileError, load_profile
 from keemu.registry import RegistryError
 from keemu.reports import exit_code_for_status
@@ -216,6 +217,26 @@ def restart(name: str, repo: Path) -> None:
 def destroy(name: str, repo: Path) -> None:
     """Remove a stopped owned container; retain its registry tombstone."""
     _environment_command("destroy", name, repo)
+
+
+@cli.command()
+@click.argument("name")
+@click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
+@click.option(
+    "--yes",
+    is_flag=True,
+    required=True,
+    help="Remove only verified run-owned resources.",
+)
+def recover(name: str, repo: Path, yes: bool) -> None:
+    """Explicitly discard an interrupted/failed environment; retain its tombstone."""
+    try:
+        result = recover_environment(repo, name)
+    except (OSError, ValueError, RegistryError, PersistentError) as exc:
+        raise InputError(str(exc)) from exc
+    except RuntimeError as exc:
+        raise RuntimeFailure(str(exc)) from exc
+    click.echo(json.dumps(result, sort_keys=True))
 
 
 @cli.command()
