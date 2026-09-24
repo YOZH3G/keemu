@@ -52,6 +52,10 @@ The immutable initial `docs/evidence/m1b18-targets.json` (SHA-256 `816727a7b0ea6
 
 `keemu test --matrix FILE [--strict]` validates bounded, unique schema-version-1 entries with explicit per-case scenario and lock paths, one logical package, exact profile/lock/source hashes, and separate architecture applicability before starting any child. All three generic profiles are required; missing targets are BLOCKED, malformed inputs exit 2, proven wrong-architecture IPKs FAIL/1, and unsupported target lifecycle is BLOCKED/4. Cases are visited sequentially in file order, with independent write-once child reports and one aggregate JSON/Markdown/JSONL bundle. A real opt-in complete mapping ran one AArch64 IPK lifecycle PASS, then recorded MIPSEL/MIPS as BLOCKED without pretending their m1b-18 root probes implement general IPK installation. Aggregate BLOCKED and owner-clean Docker readback are recorded in `docs/evidence/m1b19-matrix.md`. A10 and MVP 1B remain incomplete; NDM/event work belongs to later subtasks.
 
+## MVP 1B m1b-20/21 synthetic integration slices
+
+The m1b-20 strict host-side NDM shim has exact synthetic process/state tests, but no observed device bytes or target lifecycle integration (ADR-0012); A11 remains BLOCKED. m1b-21 adds an opt-in host-local synthetic boot/netfilter handler contract with pinned script digests, ordered selection, explicit environment/cwd/PATH, timeout and nonexecutable/error policies, and three-step rule-list restoration without duplicates. The test-owned JSON state is an S0 rules-mock, not a kernel firewall. Unknown events are BLOCKED; no real netfilter event, actual firewall, target hook, `keemu event NAME EVENT` or A21 bundle is claimed. A12 and MVP 1B remain BLOCKED; see ADR-0013 and `docs/traceability.md`.
+
 `docs/evidence/p0-evidence-manifest.md` binds the committed locks and ignored runtime reports to their independently recomputed SHA-256 digests. ADR-0001 through ADR-0005 record the diagnostic runtime, mixed image, native-init correction, NFQUEUE blocker, and constrained localhost-observer decision.
 
 ## Acceptance status
