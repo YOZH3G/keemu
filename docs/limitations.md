@@ -22,4 +22,6 @@ The P0 technical-risk gate has real AArch64 evidence for Docker/binfmt target ex
 
 ## Truthfulness rule
 
+The m1a-17 ledger in `docs/evidence/m1a17-acceptance.json` freezes a project-clean but shared-host AArch64 Docker/binfmt run, not a clean-Ubuntu installation. All A01–A09 and A18–A21 whole IDs are BLOCKED for specifically listed gaps even though their tested AArch64 slices passed. MIPS/MIPSEL and the fresh-Ubuntu instruction were SKIP; wrong-architecture and shebang package reports correctly FAIL at inspection. Ignored raw JUnit/reports must remain available locally to recheck their recorded SHA-256 values. No later-target or network acceptance is inferred.
+
 P0 completion means its four technical-risk conditions have evidence or an explicit reproducible blocker. It is not a claim that every acceptance ID is PASS, that NFQUEUE ACCEPT/DROP works, or that MVP 1 is complete. Missing checks remain NOT RUN, PARTIAL, or BLOCKED as shown in `docs/traceability.md`.

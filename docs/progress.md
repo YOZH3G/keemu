@@ -2,7 +2,7 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-16 add versioned inputs, bounded static IPK inspection, locked AArch64 base init, an owned Docker boundary, one-shot IPK lifecycle, restricted persistent AArch64 CLI, HTTP/HTTPS/UDP fixtures and explicit interruption recovery verification. No full cross-target lifecycle or MVP 1A acceptance is claimed.
+P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-16 add versioned inputs, bounded static IPK inspection, locked AArch64 base init, an owned Docker boundary, one-shot IPK lifecycle, restricted persistent AArch64 CLI, HTTP/HTTPS/UDP fixtures and explicit interruption recovery verification. m1a-17 froze the bounded AArch64 acceptance observation. No full cross-target lifecycle or MVP 1A acceptance is claimed.
 
 ## P0 verified results
 
@@ -42,11 +42,13 @@ The m1a-15 static AArch64 TLS frontend was reproducibly rebuilt offline from thr
 
 ## Evidence package
 
+The m1a-17 frozen MVP 1A acceptance observation is `docs/evidence/m1a17-acceptance.json` (SHA-256 `b8c6fea25231dc5fbe4f30b3607fc9d289d3f5deef706e44369d19ac27b829be`) with interpretation in `docs/evidence/m1a17-acceptance.md`. On the project-clean shared Docker/binfmt host, 22 opt-in live tests passed; the default portable run had 130 passed/19 opt-in skips. Two expected static package FAIL reports and explicit MIPS/MIPSEL/fresh-Ubuntu SKIPs are separately recorded. All 13 whole MVP 1A acceptance IDs and the phase gate remain BLOCKED, despite bounded AArch64 PASS slices. No clean Ubuntu VM was tested; no project-owned Docker container/network remained. The next frozen subtask is m1b-18, not part of this evidence bundle.
+
 `docs/evidence/p0-evidence-manifest.md` binds the committed locks and ignored runtime reports to their independently recomputed SHA-256 digests. ADR-0001 through ADR-0005 record the diagnostic runtime, mixed image, native-init correction, NFQUEUE blocker, and constrained localhost-observer decision.
 
 ## Acceptance status
 
-P0 is complete as a technical-risk gate. A07–A09 pass for bounded AArch64 fixture slices only, not as whole IDs. A13/A14/A17 are BLOCKED, not PASS. A01–A09, A18–A21 remain PARTIAL as detailed in `docs/traceability.md`. MVP 1A, MVP 1B, MVP 1C and MVP 1 are not complete.
+P0 is complete as a technical-risk gate. A07–A09 pass for bounded AArch64 fixture slices only, not as whole IDs. A13/A14/A17 are BLOCKED, not PASS. The frozen m1a-17 ledger classifies A01–A09/A18–A21 whole IDs and MVP 1A gate as BLOCKED, with historical partial slices in `docs/traceability.md`. MVP 1A, MVP 1B, MVP 1C and MVP 1 are not complete.
 
 ## Cleanup and retained state
 

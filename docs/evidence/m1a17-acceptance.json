@@ -1,0 +1,415 @@
+{
+  "acceptance": {
+    "A01": {
+      "aarch64_slice": "PASS",
+      "blocker": "MIPS/MIPSEL required by spec, deferred to MVP 1B; no cross-target result",
+      "live_tests": [
+        "test_target_opkg_inventory_and_network_with_owned_cleanup"
+      ],
+      "status": "BLOCKED"
+    },
+    "A02": {
+      "aarch64_slice": "PASS",
+      "blocker": "installed-file byte equality, independent postinst exit and MIPS/MIPSEL absent",
+      "live_tests": [
+        "test_aarch64_hello_offline_locked_repeat",
+        "test_real_ipk_success_and_failed_postinst"
+      ],
+      "status": "BLOCKED"
+    },
+    "A03": {
+      "aarch64_slice": "PASS",
+      "blocker": "full process/socket census, generic host publish and cross-target runs absent",
+      "live_tests": [
+        "test_real_ipk_success_and_failed_postinst",
+        "test_persistent_service_readiness_after_same_container_restart"
+      ],
+      "status": "BLOCKED"
+    },
+    "A04": {
+      "aarch64_slice": "PASS",
+      "blocker": "wrong-ELF/loader/dependency end-to-end cases and other targets absent",
+      "live_tests": [
+        "test_static_defect_reports_fail_before_docker[options0-architecture]"
+      ],
+      "status": "BLOCKED"
+    },
+    "A05": {
+      "aarch64_slice": "PASS",
+      "blocker": "permission/broken-link end-to-end cases and other targets absent",
+      "live_tests": [
+        "test_static_defect_reports_fail_before_docker[options1-shebang]"
+      ],
+      "status": "BLOCKED"
+    },
+    "A06": {
+      "aarch64_slice": "PASS",
+      "blocker": "persistent failure report bundle, one-shot SIGKILL recovery and other targets absent",
+      "live_tests": [
+        "test_real_ipk_success_and_failed_postinst",
+        "test_cleanup_failure_preserves_primary_failure"
+      ],
+      "status": "BLOCKED"
+    },
+    "A07": {
+      "aarch64_slice": "PASS",
+      "blocker": "fixture-only host HTTP/HTTPS; generic test/up publishing absent",
+      "live_tests": [
+        "test_https_aarch64_with_local_ca"
+      ],
+      "status": "BLOCKED"
+    },
+    "A08": {
+      "aarch64_slice": "PASS",
+      "blocker": "fixture-only host UDP; generic scenario UDP probe absent",
+      "live_tests": [
+        "test_https_aarch64_with_local_ca"
+      ],
+      "status": "BLOCKED"
+    },
+    "A09": {
+      "aarch64_slice": "PASS",
+      "blocker": "fixture-only persisted state; generic published persistent lifecycle absent",
+      "live_tests": [
+        "test_https_aarch64_with_local_ca",
+        "test_persistent_service_readiness_after_same_container_restart"
+      ],
+      "status": "BLOCKED"
+    },
+    "A18": {
+      "aarch64_slice": "PASS",
+      "blocker": "explicit persistent recovery only; one-shot and network interruption coverage absent",
+      "live_tests": [
+        "test_sigkill_recovery_isolation_and_foreign_preservation"
+      ],
+      "status": "BLOCKED"
+    },
+    "A19": {
+      "aarch64_slice": "PASS",
+      "blocker": "offline prepared local AArch64 repeat only; clean air-gapped install and general/cross-target repeats absent",
+      "live_tests": [
+        "test_aarch64_hello_offline_locked_repeat",
+        "test_live_image_and_offline_repeat_never_fetches"
+      ],
+      "status": "BLOCKED"
+    },
+    "A20": {
+      "aarch64_slice": "PASS",
+      "blocker": "no hard continuous disk quota or complete socket/process/security-profile audit",
+      "live_tests": [
+        "test_owned_runtime_boundary",
+        "test_sigkill_recovery_isolation_and_foreign_preservation"
+      ],
+      "status": "BLOCKED"
+    },
+    "A21": {
+      "aarch64_slice": "PASS",
+      "blocker": "persistent failures have no schema-version-2 report; full provenance/coverage absent",
+      "live_tests": [
+        "test_real_ipk_success_and_failed_postinst",
+        "test_cleanup_failure_preserves_primary_failure"
+      ],
+      "status": "BLOCKED"
+    }
+  },
+  "artifacts": {
+    "cleanup_error": [
+      {
+        "path": "reports/m1a13-cleanup-7dcc68f1dcca/report.json",
+        "sha256": "9fd38b13447d75230169bc177b202843dcc34a38da42c05c779ba0ad36398c4e"
+      }
+    ],
+    "defect": [
+      {
+        "path": "reports/m1a13-static-0e2a591acb9d/report.json",
+        "sha256": "f8a190d46cbf4bc017642100739da9c0c881e1748f66b41c47ff712ebc70a76a"
+      },
+      {
+        "path": "reports/m1a13-static-1a92b91bc9d1/report.json",
+        "sha256": "5e42e72e9cf1ade3c0e24e97eead795612e34dc52749623b9120ba66bfdc1eb2"
+      }
+    ],
+    "hello": [
+      {
+        "path": "reports/m1a15-hello-5f77a5855c32/report.json",
+        "sha256": "e9ef7eb04916a5841ce0610b8e09cb24c71a45cf216010c5de6f1af1b5135ecb"
+      },
+      {
+        "path": "reports/m1a15-hello-b2908ab1dd2e/report.json",
+        "sha256": "f8eef6897eeb679f3cf7eebfe86daf8c974f18acec19eed5336d5ee380140ab9"
+      }
+    ],
+    "recovery": {
+      "path": ".runtime/m1a16/m1a16-3c761d203e67.json",
+      "sha256": "f53cd9ff5c7ef0b4dbfaed66ccb71275dcaef01d7883da5c1fcafa3cdeeeacf2"
+    },
+    "service": [
+      {
+        "path": "reports/m1a13-service-f0ea82551637/report.json",
+        "sha256": "33e023d1459130cac3f02ccc6197fba5ae10d6f5ead2637c9c006923f432f1c2"
+      }
+    ],
+    "startup": [
+      {
+        "path": "reports/m1a13-startup-87469926cc66/report.json",
+        "sha256": "cf568a784cecf5744d577f3c7e35e79e6a4ba6d2d411f1451e3aedbbe1486431"
+      }
+    ],
+    "timeout": [
+      {
+        "path": "reports/m1a13-timeout-765d5637e7d4/report.json",
+        "sha256": "5407859bf2d940d88ecec2c4870e0f07dace97039d1c13a39a7dcf19525ac262"
+      }
+    ],
+    "tls": {
+      "path": ".runtime/m1a15/live-m1a15-fe12840358aa/evidence.json",
+      "sha256": "4e55508cc1f85209f8fb4d2cc24049ad64950bd6a181da154a6ca77df8f92237"
+    }
+  },
+  "created_at": "2026-09-24T18:37:14.674058+00:00",
+  "git_commit": "2b382772e38d434a8b3c662cbc731b73fa7bdf9a",
+  "interpretation": "Live PASS is a bounded AArch64 slice only; negative package FAIL is expected. No full acceptance ID is PASS. SKIP is not PASS. This is not release or clean-host acceptance.",
+  "mvp1a_gate": "BLOCKED",
+  "negative_package_observations": [
+    {
+      "expected": "FAIL",
+      "harness_result": "PASS",
+      "observed": "FAIL",
+      "report": {
+        "path": "reports/m1a13-static-0e2a591acb9d/report.json",
+        "sha256": "f8a190d46cbf4bc017642100739da9c0c881e1748f66b41c47ff712ebc70a76a"
+      },
+      "stage": "inspect"
+    },
+    {
+      "expected": "FAIL",
+      "harness_result": "PASS",
+      "observed": "FAIL",
+      "report": {
+        "path": "reports/m1a13-static-1a92b91bc9d1/report.json",
+        "sha256": "5e42e72e9cf1ade3c0e24e97eead795612e34dc52749623b9120ba66bfdc1eb2"
+      },
+      "stage": "inspect"
+    }
+  ],
+  "phase_skips": [
+    {
+      "reason": "deferred to MVP 1B; required for whole A01-A06",
+      "scope": "MIPS/MIPSEL target acceptance",
+      "status": "SKIP"
+    },
+    {
+      "reason": "shared Docker host is project-clean, not a fresh Ubuntu VM",
+      "scope": "fresh-Ubuntu instruction",
+      "status": "SKIP"
+    }
+  ],
+  "runner": {
+    "binfmt_proof": "AArch64 target shell/opkg/nested ELF executed in live tests; host proc entry not visible in worker namespace",
+    "docker_server": "29.7.2",
+    "foreign_resources": "preserved before/after recovery probe; see recovery artifact",
+    "host_kernel": "6.8.0-138-generic",
+    "kind": "project-clean shared Docker host, NOT clean Ubuntu VM",
+    "locked_base_image": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+    "owned_containers_after": [],
+    "owned_networks_after": []
+  },
+  "schema_version": 1,
+  "subtask_digest": "912e38d2c86706657d67ab27fe36716b1143d564707c6a2233614f5da756b119",
+  "subtask_id": "m1a-17",
+  "test_runs": {
+    "live": {
+      "counts": {
+        "FAIL": 0,
+        "PASS": 22,
+        "SKIP": 0
+      },
+      "path": ".runtime/m1a17-live-junit.xml",
+      "sha256": "9395f325d02384a3ae02bcac133d78982c784fd713bf7b8cb9fa4f436689c99e",
+      "tests": {
+        "test_aarch64_hello_offline_locked_repeat": "PASS",
+        "test_cleanup_failure_preserves_primary_failure": "PASS",
+        "test_copied_corrupt_cache_fails_closed[archive-byte]": "PASS",
+        "test_copied_corrupt_cache_fails_closed[feed-byte]": "PASS",
+        "test_copied_corrupt_cache_fails_closed[inventory-byte]": "PASS",
+        "test_copied_corrupt_cache_fails_closed[missing-manifest]": "PASS",
+        "test_copied_corrupt_cache_fails_closed[rootfs-byte]": "PASS",
+        "test_https_aarch64_with_local_ca": "PASS",
+        "test_live_image_and_offline_repeat_never_fetches": "PASS",
+        "test_malformed_package_cli_returns_2_and_keeps_report": "PASS",
+        "test_owned_runtime_boundary": "PASS",
+        "test_persistent_failed_postinst_records_failure_and_cleans_owned": "PASS",
+        "test_persistent_registry_real_target_restart_and_replacement": "PASS",
+        "test_persistent_service_readiness_after_same_container_restart": "PASS",
+        "test_persistent_static_defect_refused_before_registry_and_docker[options0]": "PASS",
+        "test_persistent_static_defect_refused_before_registry_and_docker[options1]": "PASS",
+        "test_real_ipk_success_and_failed_postinst": "PASS",
+        "test_run_id_collision_never_removes_preexisting_resource": "PASS",
+        "test_sigkill_recovery_isolation_and_foreign_preservation": "PASS",
+        "test_static_defect_reports_fail_before_docker[options0-architecture]": "PASS",
+        "test_static_defect_reports_fail_before_docker[options1-shebang]": "PASS",
+        "test_target_opkg_inventory_and_network_with_owned_cleanup": "PASS"
+      }
+    },
+    "portable": {
+      "counts": {
+        "FAIL": 0,
+        "PASS": 130,
+        "SKIP": 19
+      },
+      "path": ".runtime/m1a17-portable-junit.xml",
+      "sha256": "496db0afe757a4c5f7fc2affaeef76ceda9b48789f3ea41800161d331a0f2e2e",
+      "tests": {
+        "test_aarch64_hello_offline_locked_repeat": "SKIP",
+        "test_aarch64_shell_opkg_child_elf_and_shebang": "SKIP",
+        "test_architecture_audit_rejects_foreign_application_elf": "PASS",
+        "test_architecture_permissions_and_scripts": "PASS",
+        "test_atomic_state_transitions_and_tombstone": "PASS",
+        "test_attached_network_never_removed": "PASS",
+        "test_bad_shebang_mode_and_hardcoded_path": "PASS",
+        "test_bounded_and_corrupt_inputs": "PASS",
+        "test_bounded_scenario_and_lock_inputs": "PASS",
+        "test_builds_deterministic_lock_with_source_urls_and_index_hash": "PASS",
+        "test_cleanup_failure_preserves_primary_failure": "SKIP",
+        "test_cli_requires_identity_and_lock_pair": "PASS",
+        "test_command_bounds_and_per_stream_truncation": "PASS",
+        "test_committed_digest_and_archive_bind_manifest_before_publication": "PASS",
+        "test_committed_input_schemas_match_models": "PASS",
+        "test_committed_json_schemas_match_current_models": "PASS",
+        "test_container_template_has_identity_and_limits_without_forbidden_flags": "PASS",
+        "test_copied_corrupt_cache_fails_closed[archive-byte]": "SKIP",
+        "test_copied_corrupt_cache_fails_closed[feed-byte]": "SKIP",
+        "test_copied_corrupt_cache_fails_closed[inventory-byte]": "SKIP",
+        "test_copied_corrupt_cache_fails_closed[missing-manifest]": "SKIP",
+        "test_copied_corrupt_cache_fails_closed[rootfs-byte]": "SKIP",
+        "test_dangling_destination_symlink_is_not_replaced": "PASS",
+        "test_dangling_symlink_with_complete_rootfs": "PASS",
+        "test_doctor_rejects_invalid_profile_id_with_input_exit_code": "PASS",
+        "test_doctor_reports_docker_probe_timeout_as_error": "PASS",
+        "test_doctor_reports_missing_runtime_capabilities_as_blocked": "PASS",
+        "test_doctor_returns_blocked_exit_code_and_json": "PASS",
+        "test_elf_dependency_interpreter_and_postinst_defer": "PASS",
+        "test_elf_from_locked_rootfs_if_cached": "PASS",
+        "test_elf_runpath_and_unknown_loader_variable": "PASS",
+        "test_environment_strict_state_and_ownership": "PASS",
+        "test_existing_empty_report_directory_is_not_replaced": "PASS",
+        "test_exit_code_for_aggregate_status": "PASS",
+        "test_extra_resources_and_network_refuse_cleanup": "PASS",
+        "test_failed_report_bundle_is_complete_and_cannot_be_overwritten": "PASS",
+        "test_fixture_lock_rejects_tampered_source": "PASS",
+        "test_foreign_docker_identity_refuses_lifecycle_and_cli_error": "PASS",
+        "test_foreign_labels_refuse_stop_remove_and_exec": "PASS",
+        "test_format_metadata_and_cli[ar]": "PASS",
+        "test_format_metadata_and_cli[plain]": "PASS",
+        "test_format_metadata_and_cli[tar]": "PASS",
+        "test_healthy_environment_never_recovered": "PASS",
+        "test_https_aarch64_with_local_ca": "SKIP",
+        "test_https_requires_trust_file_even_in_readiness": "PASS",
+        "test_image_audit_rejects_mutated_content_and_extras": "PASS",
+        "test_init_rejects_unsupported_profile_and_requires_locked_flag": "PASS",
+        "test_invalid_metadata[Package: hello\\nArchitecture: all\\n]": "PASS",
+        "test_invalid_metadata[Package: hello\\nPackage: evil\\nVersion: 1\\nArchitecture: all\\n]": "PASS",
+        "test_invalid_metadata[Package: hello\\nVersion: 1\\nArchitecture: aarch64-3.10\\nDepends: lib (>=)\\n]": "PASS",
+        "test_invalid_untrusted_identifiers_never_reach_docker": "PASS",
+        "test_inventory_exact_versions_names_and_duplicates": "PASS",
+        "test_json_and_markdown_are_written_from_same_report_object": "PASS",
+        "test_link_cycle_and_duplicate_rejected": "PASS",
+        "test_live_image_and_offline_repeat_never_fetches": "SKIP",
+        "test_live_image_and_saved_layer_match_lock": "SKIP",
+        "test_live_p0_web_demo_probe_passes": "SKIP",
+        "test_loads_strict_generic_profile": "PASS",
+        "test_lock_contends_across_processes_but_not_names": "PASS",
+        "test_lock_rejects_missing_and_symlinked_artifacts": "PASS",
+        "test_lock_strictness_identity_and_duplicate_keys": "PASS",
+        "test_locked_rootfs_rejects_untrusted_cache_key[../outside]": "PASS",
+        "test_locked_rootfs_rejects_untrusted_cache_key[/absolute]": "PASS",
+        "test_locked_rootfs_rejects_untrusted_cache_key[not-a-digest]": "PASS",
+        "test_logs_mark_each_truncated_stream_without_exposing_unbounded_data": "PASS",
+        "test_malformed_package_cli_returns_2_and_keeps_report": "PASS",
+        "test_modified_snapshot_and_partial_directory_fail_closed": "PASS",
+        "test_name_lock_serializes_only_same_name": "PASS",
+        "test_nested_compression_detected[bz2-compress]": "PASS",
+        "test_nested_compression_detected[xz-compress]": "PASS",
+        "test_optional_evidence_is_bounded_private_and_no_traversal": "PASS",
+        "test_owned_runtime_boundary": "SKIP",
+        "test_p0_fixture_lock_covers_sources_recipes_and_external_provenance": "PASS",
+        "test_p0_verify_fixture_lock_reports_locked_sources": "PASS",
+        "test_p0_verify_lock_reports_verified_artifacts": "PASS",
+        "test_partial_failure_rejects_contradictory_operation_status": "PASS",
+        "test_partial_failure_rejects_missing_operation_sequence": "PASS",
+        "test_partial_failure_rejects_wrong_operation_sequence": "PASS",
+        "test_persistent_failed_postinst_records_failure_and_cleans_owned": "SKIP",
+        "test_persistent_registry_real_target_restart_and_replacement": "SKIP",
+        "test_persistent_service_readiness_after_same_container_restart": "SKIP",
+        "test_persistent_static_defect_refused_before_registry_and_docker[options0]": "PASS",
+        "test_persistent_static_defect_refused_before_registry_and_docker[options1]": "PASS",
+        "test_pinned_installer_requires_explicit_contract": "PASS",
+        "test_pinned_lock_binds_exact_source_reference": "PASS",
+        "test_portable_elf_arch_abi_and_bounds": "PASS",
+        "test_prepare_uses_secure_scenario_snapshot_after_path_replacement": "PASS",
+        "test_real_ipk_success_and_failed_postinst": "SKIP",
+        "test_real_locked_aarch64_feed_if_cached": "PASS",
+        "test_reconciliation_never_adopts_wrong_base_or_foreign_resources": "PASS",
+        "test_recovery_requires_explicit_cli_confirmation_and_retries": "PASS",
+        "test_registry_rejects_symlinked_runtime_ancestor": "PASS",
+        "test_rejects_corrupt_locked_artifact": "PASS",
+        "test_rejects_duplicate_yaml_keys": "PASS",
+        "test_rejects_target_and_cpu_architecture_mismatch": "PASS",
+        "test_rejects_yaml_duplicate_and_alias": "PASS",
+        "test_report_captures_a21_metadata_and_is_frozen": "PASS",
+        "test_report_directory_created_during_publication_is_not_replaced": "PASS",
+        "test_report_publication_fails_closed_without_renameat2": "PASS",
+        "test_required_skip_aggregates_to_blocked_with_coverage": "PASS",
+        "test_residual_exempts_only_exact_opkg_bookkeeping": "PASS",
+        "test_resolve_input_rejects_escape_symlink_and_missing": "PASS",
+        "test_resolves_transitive_dependencies_and_first_available_alternative": "PASS",
+        "test_run_id_collision_never_removes_preexisting_resource": "PASS",
+        "test_scenario_rejects_invalid_inputs[      protocol: tcp-      protocol: foo]": "PASS",
+        "test_scenario_rejects_invalid_inputs[      target_port: 8080-      target_port: 65536]": "PASS",
+        "test_scenario_rejects_invalid_inputs[    - host_port: 18080-    - host_ip: 0.0.0.0\\n      host_port: 18080]": "PASS",
+        "test_scenario_rejects_invalid_inputs[    - host_port: 18080-    - host_port: 18081]": "PASS",
+        "test_scenario_rejects_invalid_inputs[    body_contains: healthy-    body_contains: '']": "PASS",
+        "test_scenario_rejects_invalid_inputs[    expected_status: [200]-    expected_status: [true]]": "PASS",
+        "test_scenario_rejects_invalid_inputs[    vantage: host_publish-    vantage: client]": "PASS",
+        "test_scenario_rejects_invalid_inputs[  capabilities: []-  capabilities: [NET_ADMIN, NET_ADMIN]]": "PASS",
+        "test_scenario_rejects_invalid_inputs[  capabilities: []-  capabilities: [SYS_MODULE]]": "PASS",
+        "test_scenario_rejects_invalid_inputs[  env: {}-  env: {API_KEY: literal-secret}]": "PASS",
+        "test_scenario_rejects_invalid_inputs[  paths: [/opt/etc/web-demo/config.json]-  paths: [/etc/passwd]]": "PASS",
+        "test_scenario_rejects_invalid_inputs[  paths: [/opt/etc/web-demo/config.json]-  paths: [/opt/../etc/passwd]]": "PASS",
+        "test_scenario_rejects_invalid_inputs[  publish:\\n-  publish:\\n    - host_port: 18080\\n      target_port: 8080\\n      protocol: tcp\\n]": "PASS",
+        "test_scenario_rejects_invalid_inputs[package_name: web-demo-package_name: web-demo\\n  unknown: true]": "PASS",
+        "test_scenario_rejects_invalid_inputs[schema_version: 1-schema_version: \"1\"]": "PASS",
+        "test_scenario_rejects_invalid_inputs[schema_version: 1-schema_version: 2]": "PASS",
+        "test_scenario_rejects_invalid_inputs[schema_version: 1-schema_version: true]": "PASS",
+        "test_scenario_sample_and_strict_contract": "PASS",
+        "test_shell_is_explicit_and_argv_only": "PASS",
+        "test_sigkill_recovery_isolation_and_foreign_preservation": "SKIP",
+        "test_stale_registry_with_foreign_id_refuses_mutation": "PASS",
+        "test_static_defect_reports_fail_before_docker[options0-architecture]": "PASS",
+        "test_static_defect_reports_fail_before_docker[options1-shebang]": "PASS",
+        "test_status_marks_transitional_registry_state_inconsistent": "PASS",
+        "test_status_reports_creating_without_container_as_inconsistent": "PASS",
+        "test_stopped_endpoint_distinguishes_refused_from_failed_readiness[output0-PASS]": "PASS",
+        "test_stopped_endpoint_distinguishes_refused_from_failed_readiness[output1-FAIL]": "PASS",
+        "test_stopped_endpoint_distinguishes_refused_from_failed_readiness[output2-BLOCKED]": "PASS",
+        "test_symlink_lock_and_replaced_state_are_rejected": "PASS",
+        "test_symlink_parent_even_when_listed_later": "PASS",
+        "test_target_opkg_inventory_and_network_with_owned_cleanup": "SKIP",
+        "test_truncated_compression_and_trailing_member": "PASS",
+        "test_unbound_orphan_recovered_only_with_expected_name[creating]": "PASS",
+        "test_unbound_orphan_recovered_only_with_expected_name[failed]": "PASS",
+        "test_unexpected_labeled_resource_is_reported_not_removed": "PASS",
+        "test_unsafe_members_rejected[../escape-0-None]": "PASS",
+        "test_unsafe_members_rejected[/outside-0-None]": "PASS",
+        "test_unsafe_members_rejected[opt/../escape-0-None]": "PASS",
+        "test_unsafe_members_rejected[opt/dev-3-None]": "PASS",
+        "test_unsafe_members_rejected[opt/link-1-opt/missing]": "PASS",
+        "test_unsafe_members_rejected[opt/link-2-../../outside]": "PASS",
+        "test_verifies_every_locked_artifact": "PASS",
+        "test_writable_threshold_stops_only_verified_container": "PASS",
+        "test_yaml_path_loader_bounds_read_before_allocation[load_profile]": "PASS",
+        "test_yaml_path_loader_bounds_read_before_allocation[load_yaml_unique]": "PASS"
+      }
+    }
+  }
+}
