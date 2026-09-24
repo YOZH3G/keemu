@@ -15,24 +15,24 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-24T20:17:11+00:00",
+    "last_evaluated_at": "2026-09-24T20:29:01+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C5",
+      "tier": "C4",
       "model": "gpt-6-sol",
-      "reasoning": "xhigh"
+      "reasoning": "high"
     },
     "signals": {
       "score": 14,
       "task_chars": 24002,
-      "changed_files": 0,
+      "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1227184,
+      "graphify_bytes": 1235936,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -62,7 +62,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 19,
+      "active_index": 20,
       "items": [
         {
           "id": "preflight",
@@ -528,8 +528,15 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "4f008b5c5c24deb9ce7dd878b7fd5fb216bc5750fadd0173b94620acc44b5c87"
+          "status": "complete",
+          "digest": "4f008b5c5c24deb9ce7dd878b7fd5fb216bc5750fadd0173b94620acc44b5c87",
+          "outcome": {
+            "event_id": "evt_7b173ba023c6d90708febd09",
+            "route_event_id": "evt_d25b84a983d00b1a4dea5087",
+            "completed_at": "2026-09-24T20:44:28+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1b-20",
@@ -543,7 +550,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "02d851993cb4e7c9a031b4ce1ce4d7947054365c95e81f442ea094ab57a3fc44"
         },
         {
@@ -726,7 +733,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_6d584765b57eacac282d882c",
+      "last_event_id": "evt_7b173ba023c6d90708febd09",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -882,10 +889,23 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-24T20:17:11+00:00",
-    "last_run_finished_at": "2026-09-24T20:28:53+00:00",
-    "last_log": ".agent/runs/20260924T201711Z.log",
-    "last_checkpoint_at": "2026-09-24T20:28:55+00:00"
+    "last_run_started_at": "2026-09-24T20:29:01+00:00",
+    "last_run_finished_at": "2026-09-24T20:44:26+00:00",
+    "last_log": ".agent/runs/20260924T202901Z.log",
+    "last_checkpoint_at": "2026-09-24T20:44:28+00:00"
   },
-  "quota_admission": {}
+  "quota_admission": {
+    "checked_at": "2026-09-24T20:28:59+00:00",
+    "scope": "subtask",
+    "admission_key": "subtask:m1b-19:4f008b5c5c24deb9ce7dd878b7fd5fb216bc5750fadd0173b94620acc44b5c87",
+    "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+    "task_intent": "Implement matrix validation and sequential execution with honest architecture-mismatch, unsupported-target, and aggregate status semantics",
+    "subtask_id": "m1b-19",
+    "subtask_digest": "4f008b5c5c24deb9ce7dd878b7fd5fb216bc5750fadd0173b94620acc44b5c87",
+    "action": "admit",
+    "remaining_percent": 79.0,
+    "reset_at": "2026-09-25T01:16:35+00:00",
+    "source": "hermes_oauth_usage_api",
+    "message": "5-hour OAuth quota admits new task"
+  }
 }

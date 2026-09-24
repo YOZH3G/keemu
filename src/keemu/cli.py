@@ -15,6 +15,7 @@ from keemu.fixture_lock import FixtureLockError, verify_fixture_lock
 from keemu.init_cache import InitError, init_locked
 from keemu.ipk_inspect import IPKError, inspect_ipk
 from keemu.lifecycle import run_scenario
+from keemu.matrix import run_matrix
 from keemu.persistent import PersistentError, operate
 from keemu.persistent import create as create_environment
 from keemu.persistent import recover as recover_environment
@@ -128,16 +129,34 @@ def inspect(
 
 
 @cli.command("test")
-@click.option("scenario", "--scenario", type=click.Path(path_type=Path), required=True)
-@click.option("lock", "--lock", type=click.Path(path_type=Path), required=True)
+@click.option("scenario", "--scenario", type=click.Path(path_type=Path))
+@click.option("lock", "--lock", type=click.Path(path_type=Path))
+@click.option("matrix", "--matrix", type=click.Path(path_type=Path))
+@click.option("--strict", is_flag=True, help="Treat WARN-only runs as exit 5.")
 @click.option("repo", "--repo", type=click.Path(path_type=Path), default=Path("."))
 @click.pass_context
 def test_scenario(
-    context: click.Context, scenario: Path, lock: Path, repo: Path
+    context: click.Context,
+    scenario: Path | None,
+    lock: Path | None,
+    matrix: Path | None,
+    strict: bool,
+    repo: Path,
 ) -> None:
-    """Run one locked disposable IPK lifecycle and publish a report, even on failure."""
+    """Run a locked IPK scenario or sequential three-target matrix."""
+    if (
+        (matrix is None) == (scenario is None)
+        or (matrix is not None and lock is not None)
+        or (scenario is not None and lock is None)
+    ):
+        raise InputError("supply --matrix alone, or --scenario and --lock together")
     try:
-        result = run_scenario(scenario, lock, project_root=repo)
+        if matrix is not None:
+            result = run_matrix(matrix, project_root=repo)
+        else:
+            if scenario is None or lock is None:
+                raise InputError("--scenario requires --lock")
+            result = run_scenario(scenario, lock, project_root=repo)
     except (OSError, ValueError) as error:
         # Publication itself can fail closed (e.g. an existing report directory).
         raise InputError(str(error)) from error
@@ -151,6 +170,8 @@ def test_scenario(
         )
     ):
         context.exit(2)
+    if strict and result.report.overall == "WARN":
+        context.exit(5)
     context.exit(exit_code_for_status(result.report.overall))
 
 

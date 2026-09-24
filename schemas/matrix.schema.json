@@ -1,0 +1,56 @@
+{
+  "$defs": {
+    "MatrixCase": {
+      "additionalProperties": false,
+      "properties": {
+        "lock": {
+          "title": "Lock",
+          "type": "string"
+        },
+        "profile": {
+          "title": "Profile",
+          "type": "string"
+        },
+        "scenario": {
+          "title": "Scenario",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile",
+        "scenario",
+        "lock"
+      ],
+      "title": "MatrixCase",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/MatrixCase"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Cases",
+      "type": "array"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "cases"
+  ],
+  "title": "Matrix",
+  "type": "object"
+}

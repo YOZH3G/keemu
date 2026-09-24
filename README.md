@@ -22,8 +22,9 @@ Not yet verified:
 
 - general scenario-driven localhost publication, complete isolation and automatic/one-shot interruption recovery; the persistent runner supports target-loopback HTTP service probes and explicit owner-checked interrupted-state cleanup only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
 - NFQUEUE ACCEPT/DROP is BLOCKED on the documented target socket/kernel capability, not PASS;
-- general MIPS/MIPSEL `keemu init`/`test` lifecycle, A10 matrix execution and
-  strict NDM/event contracts (the locked per-target Docker probes now pass);
+- general MIPS/MIPSEL `keemu init`/single-scenario `test` lifecycle, full A10
+  matrix PASS and strict NDM/event contracts (locked target probes pass, but
+  the new matrix correctly records required MIPS cases BLOCKED);
 - MVP 1A, 1B, or 1C acceptance gates.
 
 The PRoot result is diagnostic evidence only. P0 Docker/binfmt and web-demo
@@ -41,8 +42,9 @@ probes also pass target shell, opkg, nested fixture and argument checks for
 both profiles. `docs/evidence/m1b18-targets-pass.json` binds the raw probe and
 both architecture locks; the earlier BLOCKED ledger remains immutable.
 `docs/evidence/m1b18-targets.md` has digests, repeat commands and exact scope.
-The general `keemu init`/`test` CLI still accepts only AArch64; A10 matrix is
-reserved for m1b-19. The binfmt approval changed only `qemu-mipsel` and
+The general `keemu init`/single-scenario `test` CLI still accepts only AArch64;
+`test --matrix` aggregates the other targets as BLOCKED. The binfmt approval
+changed only `qemu-mipsel` and
 `qemu-mips` host handlers; the project-owned probes made no host change.
 
 ## Development
@@ -101,6 +103,25 @@ stops/removes, compares metadata-only residual paths, and attempts owner-checked
 cleanup even on failures. Its write-once report is under `reports/<run-id>/` and
 keeps failed-run stage and cleanup results. No host-publish vantage, HTTPS/UDP,
 cross-target acceptance, or interruption recovery is claimed.
+
+Matrix v1 requires `schema_version: 1`, a unique `id`, and `cases` with one
+`profile`, `scenario` and explicit `lock` path per case (relative to the matrix
+file). For complete coverage include `generic-aarch64`, `generic-mipsel` and
+`generic-mips`, each naming its own locked IPK for the same logical package.
+The extra `lock` path is mandatory because unlocked scenarios cannot run.
+
+```text
+uv run keemu test --matrix path/to/matrix.yaml --strict --repo .
+KEEMU_TEST_MATRIX=1 uv run pytest -q tests/integration/test_matrix.py
+```
+
+The parser rejects duplicate/unsafe/malformed cases before Docker. Missing
+targets and unsupported MIPS/MIPSEL lifecycle are required BLOCKED/exit 4;
+verified wrong-architecture IPKs FAIL/exit 1; an ERROR takes precedence over
+FAIL, then BLOCKED, WARN and PASS. Child and parent reports are write-once.
+`--strict` maps a WARN-only report to exit 5, not an incomplete matrix to PASS.
+The real m1b-19 observation had AArch64 PASS, MIPSEL/MIPS BLOCKED and overall
+BLOCKED; see `docs/evidence/m1b19-matrix.md`. No A10 whole-ID PASS is claimed.
 
 Bounded persistent AArch64 IPK lifecycle (same prepared base and Docker/binfmt
 prerequisites; no host port publishing):
