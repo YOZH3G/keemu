@@ -26,6 +26,10 @@ class InputError(click.ClickException):
     exit_code = 2
 
 
+class RuntimeFailure(click.ClickException):
+    exit_code = 3
+
+
 @click.group()
 def cli() -> None:
     """Verify Entware applications in locked target environments."""
@@ -170,7 +174,7 @@ def up(name: str, scenario: Path | None, lock: Path | None, repo: Path) -> None:
     except (OSError, ValueError, RegistryError, PersistentError) as exc:
         raise InputError(str(exc)) from exc
     except RuntimeError as exc:
-        raise click.ClickException(str(exc)) from exc
+        raise RuntimeFailure(str(exc)) from exc
     click.echo(json.dumps(result, sort_keys=True))
 
 
@@ -182,8 +186,10 @@ def _environment_command(
     except (OSError, ValueError, RegistryError, PersistentError) as exc:
         raise InputError(str(exc)) from exc
     except RuntimeError as exc:
-        raise click.ClickException(str(exc)) from exc
+        raise RuntimeFailure(str(exc)) from exc
     click.echo(json.dumps(result, sort_keys=True))
+    if action == "status" and not result["consistent"]:
+        raise SystemExit(3)
     if action == "exec" and result["exit_code"]:
         raise SystemExit(1)
 

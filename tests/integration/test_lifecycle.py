@@ -461,8 +461,15 @@ def test_persistent_registry_real_target_restart_and_replacement():
             cli_create = CliRunner().invoke(
                 cli,
                 [
-                    "up", "--name", name, "--scenario", str(scenario),
-                    "--lock", str(lock), "--repo", str(ROOT),
+                    "up",
+                    "--name",
+                    name,
+                    "--scenario",
+                    str(scenario),
+                    "--lock",
+                    str(lock),
+                    "--repo",
+                    str(ROOT),
                 ],
             )
             assert cli_create.exit_code == 0, cli_create.output
@@ -548,6 +555,9 @@ def test_persistent_failed_postinst_records_failure_and_cleans_owned():
         record = entry.read()
     assert record.state == "failed" and record.resource is not None
     assert not operate(ROOT, name, "status")["consistent"]
+    cli_status = CliRunner().invoke(cli, ["status", name, "--repo", str(ROOT)])
+    assert cli_status.exit_code == 3
+    assert json.loads(cli_status.output)["environment"]["state"] == "failed"
     from keemu.docker_runtime import DockerRuntime
 
     runtime = DockerRuntime(record.run_id, record.oci_digest)
@@ -555,3 +565,87 @@ def test_persistent_failed_postinst_records_failure_and_cleans_owned():
     print(
         json.dumps({"name": name, "state": record.state, "cleanup": "verified absent"})
     )
+
+
+@pytest.mark.parametrize(
+    "options", [{"architecture": "mipsel-3.4"}, {"hello": b"#!relative\n"}]
+)
+def test_persistent_static_defect_refused_before_registry_and_docker(
+    options, monkeypatch
+):
+    from keemu import persistent
+
+    runtime_root = ROOT / ".runtime"
+    runtime_root.mkdir(exist_ok=True)
+    name = "persist-defect-" + uuid.uuid4().hex[:12]
+    with tempfile.TemporaryDirectory(
+        dir=runtime_root, prefix="m1a14-static-"
+    ) as folder:
+        scenario, lock = inputs(Path(folder), **options)
+
+        def forbidden(*_args, **_kwargs):
+            raise AssertionError("Docker called for static defect")
+
+        monkeypatch.setattr(persistent, "init_locked", forbidden)
+        with pytest.raises(
+            persistent.PersistentError, match="static inspection failed"
+        ):
+            persistent.create(ROOT, name, scenario, lock)
+    assert not (ROOT / ".runtime/registry" / name).exists()
+
+
+@pytest.mark.docker
+def test_persistent_service_readiness_after_same_container_restart():
+    if os.getenv("KEEMU_TEST_PERSISTENT") != "1":
+        pytest.skip("opt in to owned persistent Docker lifecycle test")
+    runtime_root = ROOT / ".runtime"
+    runtime_root.mkdir(exist_ok=True)
+    name = "persist-web-" + uuid.uuid4().hex[:12]
+    with tempfile.TemporaryDirectory(dir=runtime_root, prefix="m1a14-web-") as folder:
+        scenario, lock = inputs(Path(folder), web_demo=True)
+        scenario.write_text(
+            scenario.read_text().replace(
+                "service: null",
+                "service:\n"
+                "  start: [/bin/sh, -c, "
+                "'/opt/bin/web-demo 18765 18766 /opt/etc/keemu-count "
+                ">/dev/null 2>&1 & echo $! > /opt/tmp/web-demo.pid']\n"
+                "  stop: [/bin/sh, -c, "
+                '\'read pid < /opt/tmp/web-demo.pid; kill -TERM "$pid"; '
+                "/opt/bin/busybox rm -f /opt/tmp/web-demo.pid']\n"
+                "  readiness: {kind: http, vantage: target_loopback, "
+                "url: 'http://127.0.0.1:18765/health', "
+                "expected_status: [200], body_contains: 'state=1', "
+                "timeout_seconds: 5}",
+            )
+        )
+        bind_scenario(lock, scenario)
+        try:
+            created = create_persistent(ROOT, name, scenario, lock)
+            assert created.state == "running" and created.resource is not None
+            identifier = created.resource.container_id
+            result = operate(ROOT, name, "restart")
+            assert result["environment"]["resource"]["container_id"] == identifier
+            assert operate(ROOT, name, "status")["consistent"]
+            assert operate(ROOT, name, "down")["environment"]["state"] == "stopped"
+            assert operate(ROOT, name, "up")["environment"]["state"] == "running"
+            assert operate(ROOT, name, "down")["environment"]["state"] == "stopped"
+            assert operate(ROOT, name, "destroy")["environment"]["state"] == "destroyed"
+            print(
+                json.dumps(
+                    {"name": name, "container_id": identifier, "state": "destroyed"}
+                )
+            )
+        finally:
+            with Registry(ROOT / ".runtime/registry").locked(name) as entry:
+                try:
+                    record = entry.read()
+                except (OSError, ValueError):
+                    record = None
+                if record is not None and record.resource is not None:
+                    from keemu.docker_runtime import DockerRuntime
+
+                    runtime = DockerRuntime(record.run_id, record.oci_digest)
+                    for owned in runtime.reconcile()["container_owned"]:
+                        runtime.remove_container(owned)
+                    assert not runtime.reconcile()["container_owned"]

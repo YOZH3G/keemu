@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
-  "session_id": "20260924_063009_b4b0ea",
-  "pause_reason": null,
+  "status": "NEEDS_HUMAN",
+  "session_id": null,
+  "pause_reason": "configured_subtask_boundary:m1a-14",
   "quota": {
     "kind": "usage_limit_reached",
     "detected_at": "2026-09-23T20:15:52+00:00",
@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-24T07:34:15+00:00",
+    "last_evaluated_at": "2026-09-24T07:39:59+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -27,12 +27,12 @@
       "reasoning": "xhigh"
     },
     "signals": {
-      "score": 14,
+      "score": 15,
       "task_chars": 24002,
-      "changed_files": 3,
+      "changed_files": 5,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1017655,
+      "graphify_bytes": 1035988,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -44,6 +44,7 @@
       "read_only_scope": true,
       "reasons": [
         "long task/context",
+        "multiple changed files",
         "large repository",
         "production/remote-system risk",
         "security/auth/network privilege risk",
@@ -51,34 +52,18 @@
         "architecture/system-design scope"
       ]
     },
-    "reason": "long task/context; large repository; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
+    "reason": "long task/context; multiple changed files; large repository; production/remote-system risk; security/auth/network privilege risk; destructive/irreversible operation risk; architecture/system-design scope",
     "force_min_tier": null,
     "capabilities": {
       "gpt-6-astra": null
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {
-      "provider": "openai-codex",
-      "tier": "C5",
-      "model": "gpt-6-sol",
-      "reasoning": "xhigh",
-      "expected_model": "gpt-6-sol",
-      "expected_reasoning": "xhigh",
-      "policy_version": "v2",
-      "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-      "subtask_id": "m1a-14",
-      "subtask_digest": "68804780094f08eb44af55b2edb9eb85614c6311aeaf34ed9b64fabc7494b8f5",
-      "route_event_id": "evt_cbfaeaa85ef40a4dd8550ede",
-      "session_id": "20260924_063009_b4b0ea",
-      "model_attested": null,
-      "attestation_status": "PENDING",
-      "session_deleted": null
-    },
+    "worker_lock": {},
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 14,
+      "active_index": 15,
       "items": [
         {
           "id": "preflight",
@@ -423,8 +408,15 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "active",
-          "digest": "68804780094f08eb44af55b2edb9eb85614c6311aeaf34ed9b64fabc7494b8f5"
+          "status": "complete",
+          "digest": "68804780094f08eb44af55b2edb9eb85614c6311aeaf34ed9b64fabc7494b8f5",
+          "outcome": {
+            "event_id": "evt_0d9ddbf1f9bd07c478285f33",
+            "route_event_id": "evt_cbfaeaa85ef40a4dd8550ede",
+            "completed_at": "2026-09-24T07:49:54+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1a-15",
@@ -446,7 +438,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "5cd934da733940395bae1a80fd51483a6f261c9bda2d1cc42d7926a040d8970a"
         },
         {
@@ -707,7 +699,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_8904f0b90a1d41641777e831",
+      "last_event_id": "evt_0d9ddbf1f9bd07c478285f33",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -862,11 +854,11 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 1,
-    "last_run_started_at": "2026-09-24T07:34:15+00:00",
-    "last_run_finished_at": "2026-09-24T07:39:22+00:00",
-    "last_log": ".agent/runs/20260924T073415Z.log",
-    "last_checkpoint_at": "2026-09-24T07:39:22+00:00"
+    "last_exit_code": 0,
+    "last_run_started_at": "2026-09-24T07:39:59+00:00",
+    "last_run_finished_at": "2026-09-24T07:49:52+00:00",
+    "last_log": ".agent/runs/20260924T073959Z.log",
+    "last_checkpoint_at": "2026-09-24T07:49:54+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-24T07:39:22+00:00",

@@ -2,7 +2,7 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-13 add versioned inputs, bounded static IPK inspection, locked AArch64 base init, an owned Docker boundary and one-shot IPK lifecycle. No persistent environment, full cross-target lifecycle or MVP 1A acceptance is claimed.
+P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-14 add versioned inputs, bounded static IPK inspection, locked AArch64 base init, an owned Docker boundary, one-shot IPK lifecycle and a restricted persistent AArch64 CLI path. No full cross-target lifecycle or MVP 1A acceptance is claimed.
 
 ## P0 verified results
 
@@ -28,6 +28,10 @@ Schema-version-1 scenario, production lock and persistent-environment models and
 
 `keemu test --scenario PATH --lock PATH` verifies the scenario/profile/source/base bindings, statically inspects the IPK, verifies the offline base and exact Docker image, refuses a pre-existing run-ID collision, creates a disposable owned environment, installs with real target opkg, checks installed inventory/files, runs explicit readiness and scenario checks, stops, removes, compares Docker metadata diff to an explicit residual allowance, and cleans owned resources in `finally`. The locked base lacks a `gzip` command link required by opkg's archive reader; an ephemeral target BusyBox gzip link is checked, injected before baseline and recorded as a substitution. No host gzip or base-image mutation is claimed. Generated reports atomically retain JSON/Markdown/JSONL, validated scenario/lock bytes, bounded captured command output where available, exit/timeout metadata, optional Docker metadata-only diff, substitutions, coverage, primary failure and cleanup status even for failed runs. Real AArch64 tests passed synthetic hello/postinst-once, static web-demo target-loopback service start/readiness/stop/connection refusal, and partial-report cleanup for failed postinst, failed startup, target command timeout and an injected cleanup-reporting error after actual removal. See ADR-0007. This is not persistent `up/down`, full file-content comparison, host publish/UDP, or complete A02–A06/A18/A21 acceptance.
 
+## MVP 1A persistent registry slice
+
+`keemu up --scenario FILE --lock FILE --name NAME` verifies no-follow input bytes, static IPK, offline base and immutable image; writes an atomic, per-name locked registry record; records the owner-checked full container ID before installation; installs using target opkg; checks inventory/files and target-loopback HTTP readiness. `up --name`, `down`, `restart`, `destroy`, `status`, `ports`, `logs`, and `exec` reconcile exact Docker identity and actual running state before access or mutation. Real opt-in AArch64 tests passed CLI creation, hello execution, same-ID restart, down/up without rerunning postinst, web-demo target-loopback readiness across restart/down/up, permanent tombstone, and failed-postinst owner-only cleanup with a retained failed record. Portable tests reject same-name contention, replacement, symlinks and foreign Docker labels. No persistent report bundle, automatic crash recovery, host publishing, target HTTPS/UDP or full acceptance is claimed. See ADR-0008.
+
 ## Evidence package
 
 `docs/evidence/p0-evidence-manifest.md` binds the committed locks and ignored runtime reports to their independently recomputed SHA-256 digests. ADR-0001 through ADR-0005 record the diagnostic runtime, mixed image, native-init correction, NFQUEUE blocker, and constrained localhost-observer decision.
@@ -38,4 +42,4 @@ P0 is complete as a technical-risk gate. A07–A09 pass only for the exact P0 AA
 
 ## Cleanup and retained state
 
-Runtime reports and saved images remain ignored under `reports/` and `.runtime/`; committed lock digests permit retention verification. P0 probes and m1a-11 through m1a-13 tests removed their project-owned containers after owner/run-id checks. Final Docker owner-label queries returned no KEEMU container or network. The approved single `qemu-aarch64` host binfmt entry remains registered; m1a-13 made no direct host firewall/binfmt/module change and no public port was published.
+Runtime reports, registry state and saved images remain ignored under `reports/` and `.runtime/`; committed lock digests permit retention verification. P0 probes and m1a-11 through m1a-14 tests removed their project-owned containers after owner/run-id checks. Real m1a-14 target execution passed through the Docker runner, but the Hermes namespace did not expose `/proc/sys/fs/binfmt_misc/qemu-aarch64` for independent current registration readback; revalidate the approved host entry after runner changes. m1a-14 made no direct host firewall/binfmt/module change and published no port.

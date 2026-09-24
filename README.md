@@ -5,8 +5,8 @@ KEEMU is a reproducible verification harness for Entware applications. The autho
 ## Current status
 
 P0 technical-risk experiments are complete. MVP 1A is in progress: strict input
-schemas, static IPK inspection, locked AArch64 base `init`, and disposable
-one-shot `test` are implemented; persistent-environment commands are later subtasks.
+schemas, static IPK inspection, locked AArch64 base `init`, disposable
+one-shot `test`, and bounded AArch64 persistent-environment commands are implemented.
 
 Verified in the current Debian/Docker environment:
 
@@ -20,7 +20,7 @@ Verified in the current Debian/Docker environment:
 
 Not yet verified:
 
-- general scenario-driven localhost publication and persistent-environment commands, complete isolation and interruption recovery; the one-shot runner probes target loopback only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
+- general scenario-driven localhost publication, complete isolation and interruption recovery; the persistent runner supports target-loopback HTTP service probes only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
 - NFQUEUE ACCEPT/DROP is BLOCKED on the documented target socket/kernel capability, not PASS;
 - any MIPS/MIPSEL runtime;
 - MVP 1A, 1B, or 1C acceptance gates.
@@ -83,8 +83,31 @@ KEEMU_TEST_LIFECYCLE=1 uv run pytest -q tests/integration/test_lifecycle.py
 installs through target opkg in a fresh owned container, runs declared checks,
 stops/removes, compares metadata-only residual paths, and attempts owner-checked
 cleanup even on failures. Its write-once report is under `reports/<run-id>/` and
-keeps failed-run stage and cleanup results. No persistent `up`/`down`, host-publish
-vantage, HTTPS/UDP, cross-target acceptance, or interruption recovery is claimed.
+keeps failed-run stage and cleanup results. No host-publish vantage, HTTPS/UDP,
+cross-target acceptance, or interruption recovery is claimed.
+
+Bounded persistent AArch64 IPK lifecycle (same prepared base and Docker/binfmt
+prerequisites; no host port publishing):
+
+```text
+uv run keemu up --name demo --scenario path/to/scenario.yaml --lock path/to/scenario-lock.json --repo .
+uv run keemu status demo --repo .
+uv run keemu exec demo --repo . -- /opt/bin/example
+uv run keemu restart demo --repo .
+uv run keemu down demo --repo .
+uv run keemu up --name demo --repo .
+uv run keemu destroy demo --repo .  # only after down; name remains reserved
+KEEMU_TEST_PERSISTENT=1 uv run pytest -q tests/integration/test_lifecycle.py
+```
+
+`ports` and `logs` also require a name. State is atomically written under
+`.runtime/registry/` with per-name locking and an immutable scenario snapshot.
+Each mutation re-inspects the exact owner-labeled Docker ID. Existing names,
+foreign/replaced containers, and uncertain state are refused; destroyed names
+remain tombstones. This slice does not install extra packages into an existing
+environment or execute scenario checks as a `test` run. Persistent CLI failures
+do not yet produce write-once JSON/Markdown/JSONL report bundles; use `keemu
+test` when a full failure report is required. See ADR-0008.
 
 The P0 diagnostic integration test additionally needs the locked artifacts in `.runtime/p0`:
 
