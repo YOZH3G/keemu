@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-24T20:29:01+00:00",
+    "last_evaluated_at": "2026-09-24T20:44:33+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -32,7 +32,7 @@
       "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1235936,
+      "graphify_bytes": 1303722,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -62,7 +62,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 20,
+      "active_index": 21,
       "items": [
         {
           "id": "preflight",
@@ -550,8 +550,15 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "02d851993cb4e7c9a031b4ce1ce4d7947054365c95e81f442ea094ab57a3fc44"
+          "status": "complete",
+          "digest": "02d851993cb4e7c9a031b4ce1ce4d7947054365c95e81f442ea094ab57a3fc44",
+          "outcome": {
+            "event_id": "evt_f295b2dd0777b91f2e8cea67",
+            "route_event_id": "evt_5b0eb9439f7d830b919d9bd4",
+            "completed_at": "2026-09-24T20:54:20+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1b-21",
@@ -565,7 +572,7 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "ab049249a9113b11a0d4b3b4fb03580b3d4693c122fb4d61e87bd2f75d46a6c1"
         },
         {
@@ -733,7 +740,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_7b173ba023c6d90708febd09",
+      "last_event_id": "evt_f295b2dd0777b91f2e8cea67",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -889,21 +896,21 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-24T20:29:01+00:00",
-    "last_run_finished_at": "2026-09-24T20:44:26+00:00",
-    "last_log": ".agent/runs/20260924T202901Z.log",
-    "last_checkpoint_at": "2026-09-24T20:44:28+00:00"
+    "last_run_started_at": "2026-09-24T20:44:33+00:00",
+    "last_run_finished_at": "2026-09-24T20:54:19+00:00",
+    "last_log": ".agent/runs/20260924T204433Z.log",
+    "last_checkpoint_at": "2026-09-24T20:54:20+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-24T20:28:59+00:00",
+    "checked_at": "2026-09-24T20:44:31+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1b-19:4f008b5c5c24deb9ce7dd878b7fd5fb216bc5750fadd0173b94620acc44b5c87",
+    "admission_key": "subtask:m1b-20:02d851993cb4e7c9a031b4ce1ce4d7947054365c95e81f442ea094ab57a3fc44",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-    "task_intent": "Implement matrix validation and sequential execution with honest architecture-mismatch, unsupported-target, and aggregate status semantics",
-    "subtask_id": "m1b-19",
-    "subtask_digest": "4f008b5c5c24deb9ce7dd878b7fd5fb216bc5750fadd0173b94620acc44b5c87",
+    "task_intent": "Implement the strict stateful NDM shim with exact process contracts, redacted logs, unknown-call failure, and environment-gap propagation",
+    "subtask_id": "m1b-20",
+    "subtask_digest": "02d851993cb4e7c9a031b4ce1ce4d7947054365c95e81f442ea094ab57a3fc44",
     "action": "admit",
-    "remaining_percent": 79.0,
+    "remaining_percent": 55.0,
     "reset_at": "2026-09-25T01:16:35+00:00",
     "source": "hermes_oauth_usage_api",
     "message": "5-hour OAuth quota admits new task"
