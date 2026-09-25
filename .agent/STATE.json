@@ -952,5 +952,18 @@
     "last_log": ".agent/runs/20260925T021214Z.log",
     "last_checkpoint_at": "2026-09-25T02:20:44+00:00"
   },
-  "quota_admission": {}
+  "quota_admission": {
+    "checked_at": "2026-09-25T02:50:54+00:00",
+    "scope": "subtask_resume",
+    "admission_key": "subtask:m1c-26:be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
+    "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+    "task_intent": "Verify target packet processing end to end with routed flow, consumer and kernel counters, ACCEPT, DROP, restored ACCEPT, and bounded packet evidence",
+    "subtask_id": "m1c-26",
+    "subtask_digest": "be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
+    "action": "admit_warning",
+    "remaining_percent": 6.0,
+    "reset_at": "2026-09-25T06:18:47+00:00",
+    "source": "hermes_oauth_usage_api",
+    "message": "5-hour OAuth quota admits existing-session resume above configured 5% pause threshold"
+  }
 }
