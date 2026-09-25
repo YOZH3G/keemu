@@ -12,6 +12,7 @@ verification remains BLOCKED: the retained 238-case sweep has 233 PASS, 2
 missing-locked-image prerequisite FAILs and 3 intentional SKIPs. The default
 portable run has 208 PASS and 30 opt-in SKIPs. See
 `docs/evidence/final28-acceptance.json`, `docs/evidence/final29-release.json`,
+`docs/evidence/final31-independent-audit.md` (exact remaining-BLOCKED list),
 and `docs/traceability.md`.
 
 Verified in the current Debian/Docker environment:

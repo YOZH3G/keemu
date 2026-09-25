@@ -6,7 +6,9 @@ P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A,
 MVP 1B and MVP 1C each have verified bounded slices, but no phase or MVP 1 gate
 is complete. Final-28 reconciled whole IDs: the specified A01 three-target
 execution check is PASS; A02–A21 remain BLOCKED. Final-29 release verification
-is also BLOCKED and final-31 has not run.
+is also BLOCKED. The final-31 independent audit records the exact outstanding
+requirements in `docs/evidence/final31-independent-audit.md`; no MVP or release
+completion is claimed.
 
 ## P0 verified results
 

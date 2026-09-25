@@ -18,8 +18,9 @@ passed 208 with 30 opt-in skips; fresh packet verdict and fresh Ubuntu checks
 were NOT RUN. A14/A17 retain real PASS only for bounded substituted fixture
 checks; direct target NFNETLINK still fails and generic lifecycle is unproved.
 Earlier PARTIAL table rows are verified slices, not competing release statuses.
-Historical frozen ledgers remain unchanged; final-31 independent audit has not
-run.
+Historical frozen ledgers remain unchanged. The final-31 independent audit in
+`docs/evidence/final31-independent-audit.md` records the exact A02–A21 remaining
+BLOCKED list and release prerequisites; it does not promote any whole ID.
 
 Most rows retain pre-m1a-17 slice statuses; A14/A17 reflect the later bounded m1c-26 fixture. `PARTIAL` is not PASS; the frozen m1a-17 ledger below is authoritative **at its capture time**. The later m1b-18 PASS follow-up closes the A01 three-generic-target execution gap without rewriting either earlier observation. The m1b-22 frozen three-target observation below supersedes stale A02–A06/A10/A11 table readings, without changing prior ledgers.
 

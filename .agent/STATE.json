@@ -1,49 +1,30 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
+  "status": "COMPLETED",
   "session_id": null,
   "pause_reason": null,
-  "quota": {},
-  "scheduled_resume": {
-    "job_id": "cbf7a478f426",
-    "subtask_id": "final-31",
-    "run_at": "2026-09-25T16:24:16+00:00",
-    "requires_fresh_quota": true,
-    "expected_provider": "openai-codex",
-    "expected_model": "gpt-6-sol",
-    "expected_reasoning": "xhigh",
-    "future_addendum_verdict": "/opt/data/attachments/KEEMU_MVP_addendum_script_execution_verdict.md",
-    "status": "consumed",
-    "consumed_at": "2026-09-25T16:25:10+00:00"
-  },
-  "continuation_authorization": {
-    "authorized_at": "2026-09-25T16:25:10+00:00",
-    "scope": "final-31-only",
-    "source": "scheduled_job:cbf7a478f426",
-    "expected_provider": "openai-codex",
-    "expected_model": "gpt-6-sol",
-    "expected_reasoning": "xhigh",
-    "subtask_id": "final-31",
-    "subtask_digest": "6678a8033b908ea2fdf328f849c6effe277f9df935178692d8c502699b9e3d7d",
-    "quota_observed_at": "2026-09-25T16:25:10+00:00",
-    "quota_remaining_percent": 97.0,
-    "quota_reset_at": "2026-09-25T21:24:54+00:00",
-    "future_addendum_excluded": true,
-    "astra_authorized": false
+  "quota": {
+    "kind": null,
+    "detected_at": null,
+    "resets_at": null,
+    "resets_in_seconds": null,
+    "wake_at": null,
+    "plan_type": null,
+    "raw_excerpt": null
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T12:16:11+00:00",
+    "last_evaluated_at": "2026-09-25T16:27:51+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C2",
-      "model": "gpt-5.6-terra",
-      "reasoning": "medium"
+      "tier": "C5",
+      "model": "gpt-6-sol",
+      "reasoning": "xhigh"
     },
     "signals": {
       "score": 14,
@@ -51,7 +32,7 @@
       "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1686072,
+      "graphify_bytes": 1690058,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -81,7 +62,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 31,
+      "active_index": 32,
       "items": [
         {
           "id": "preflight",
@@ -821,15 +802,22 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "active",
-          "digest": "6678a8033b908ea2fdf328f849c6effe277f9df935178692d8c502699b9e3d7d"
+          "status": "complete",
+          "digest": "6678a8033b908ea2fdf328f849c6effe277f9df935178692d8c502699b9e3d7d",
+          "outcome": {
+            "event_id": "evt_a9e46cc3cfbdb0384f866323",
+            "route_event_id": "evt_704536f402561b74499d91d5",
+            "completed_at": "2026-09-25T16:35:46+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         }
       ]
     },
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_d5aa878535bd5a5b010222b3",
+      "last_event_id": "evt_a9e46cc3cfbdb0384f866323",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -985,10 +973,50 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T12:16:11+00:00",
-    "last_run_finished_at": "2026-09-25T12:22:02+00:00",
-    "last_log": ".agent/runs/20260925T121611Z.log",
-    "last_checkpoint_at": "2026-09-25T12:22:04+00:00"
+    "last_run_started_at": "2026-09-25T16:27:51+00:00",
+    "last_run_finished_at": "2026-09-25T16:35:44+00:00",
+    "last_log": ".agent/runs/20260925T162751Z.log",
+    "last_checkpoint_at": "2026-09-25T16:35:46+00:00"
   },
-  "quota_admission": {}
+  "scheduled_resume": {
+    "job_id": "cbf7a478f426",
+    "subtask_id": "final-31",
+    "run_at": "2026-09-25T16:24:16+00:00",
+    "requires_fresh_quota": true,
+    "expected_provider": "openai-codex",
+    "expected_model": "gpt-6-sol",
+    "expected_reasoning": "xhigh",
+    "future_addendum_verdict": "/opt/data/attachments/KEEMU_MVP_addendum_script_execution_verdict.md",
+    "status": "consumed",
+    "consumed_at": "2026-09-25T16:25:10+00:00"
+  },
+  "continuation_authorization": {
+    "authorized_at": "2026-09-25T16:25:10+00:00",
+    "scope": "final-31-only",
+    "source": "scheduled_job:cbf7a478f426",
+    "expected_provider": "openai-codex",
+    "expected_model": "gpt-6-sol",
+    "expected_reasoning": "xhigh",
+    "subtask_id": "final-31",
+    "subtask_digest": "6678a8033b908ea2fdf328f849c6effe277f9df935178692d8c502699b9e3d7d",
+    "quota_observed_at": "2026-09-25T16:25:10+00:00",
+    "quota_remaining_percent": 97.0,
+    "quota_reset_at": "2026-09-25T21:24:54+00:00",
+    "future_addendum_excluded": true,
+    "astra_authorized": false
+  },
+  "quota_admission": {
+    "checked_at": "2026-09-25T16:27:48+00:00",
+    "scope": "subtask",
+    "admission_key": "subtask:final-31:6678a8033b908ea2fdf328f849c6effe277f9df935178692d8c502699b9e3d7d",
+    "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
+    "task_intent": "Perform an independent evidence audit and produce either an auditable MVP completion statement or an exact remaining-BLOCKED list",
+    "subtask_id": "final-31",
+    "subtask_digest": "6678a8033b908ea2fdf328f849c6effe277f9df935178692d8c502699b9e3d7d",
+    "action": "admit",
+    "remaining_percent": 93.0,
+    "reset_at": "2026-09-25T21:24:54+00:00",
+    "source": "hermes_oauth_usage_api",
+    "message": "5-hour OAuth quota admits new task"
+  }
 }
