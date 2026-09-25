@@ -1,0 +1,22 @@
+{
+  "subtask": "m1c-26",
+  "purpose": "approved bounded host module preparation only; never a target package or firewall tool",
+  "base_image": "debian@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a",
+  "recipe": "fixtures/recipes/native/kmod-m1c26.Dockerfile",
+  "recipe_sha256": "3cb2956ec2876fcccfa22b61002d9b4c105790c40103ffc9753edec15632a9db",
+  "package": "kmod",
+  "package_version": "34.2-2",
+  "image_id": "sha256:c373e192cd31a2905ebda003581d57f052a5da0ce88991119be76dcea3a139c3",
+  "kmod_binary_sha256": "a775c12b9d71d9548654ff98ecc0e5e3378bdaccd52ccb62fa80a5f41e849caf",
+  "modules": {
+    "iptable_filter": {
+      "path": "/lib/modules/6.8.0-138-generic/kernel/net/ipv4/netfilter/iptable_filter.ko.zst",
+      "sha256": "0d16550ccd44966002a95aa010ca00e63f4d42340bbecb8ef9c012c7d62d3f27"
+    },
+    "xt_NFQUEUE": {
+      "path": "/lib/modules/6.8.0-138-generic/kernel/net/netfilter/xt_NFQUEUE.ko.zst",
+      "sha256": "4b1b28c53baa0247a01bce004a029b17a63aca8025cfed7811a7f86bcbcb3b4c"
+    }
+  },
+  "execution_scope": "owned network-none disposable helper mounted /lib/modules read-only; insmod exact module file only; no modprobe, additional module or host firewall rule"
+}

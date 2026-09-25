@@ -1,0 +1,42 @@
+{
+  "adapter_log": "transport queue_ready=1\n",
+  "after_adapter": {
+    "accepted": 0,
+    "dropped": 0,
+    "mode": "accept",
+    "queue_ready": true
+  },
+  "baseline": {
+    "body": "keemu-web-demo\nstate=routed\n",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  "binary_hashes": {
+    "adapter": "7715a4e8e3064d2e41e711e1561bc7b12449aae0cf0ffa9e57c0f8c9d426ea63",
+    "target": "871165f37cb9ea71eebd473cd7c907460b6d47ceddf6f5047de6cc7f976d8c0e"
+  },
+  "cleanup": {
+    "foreign_containers_unchanged": true,
+    "foreign_networks_unchanged": true
+  },
+  "firewall_image": "sha256:e9f36bf1e977d745f19873637490078724402c5fd3015d770d1dfba055237be9",
+  "initial_target": {
+    "accepted": 0,
+    "dropped": 0,
+    "mode": "accept",
+    "queue_ready": false
+  },
+  "iptables_before": {
+    "exit_code": 3,
+    "stderr": "iptables v1.8.11 (legacy): can't initialize iptables table `filter': Permission denied (you must be root)\nPerhaps iptables or your kernel needs to be upgraded.\n",
+    "stdout": ""
+  },
+  "kernel_queue": "   42    119     0 2 65531     0     0        0  1\n",
+  "result": "QUEUE_READY",
+  "run_id": "m1c26ipc-23bbc0c25eeb",
+  "target_log_before_adapter": "",
+  "topology": {
+    "lan": "10.224.0.0/24",
+    "wan": "10.224.1.0/24"
+  }
+}

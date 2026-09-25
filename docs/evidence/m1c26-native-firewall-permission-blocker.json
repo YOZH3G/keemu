@@ -1,0 +1,52 @@
+{
+  "subtask": "m1c-26",
+  "status": "BLOCKED: owner-scoped native iptables-legacy cannot read filter table despite uid 0 and effective CAP_NET_ADMIN",
+  "raw_report": "docs/evidence/m1c26-native-firewall-permission-raw.json",
+  "raw_report_sha256": "5e574a2d9a2fa8dbca9874a595bf7f1fae32cc3fb9bfec58b6759fc17347526d",
+  "raw_report_note": "Raw result=QUEUE_READY means target/adapter handshake only; the opt-in test failed at iptables_before exit 3. This is not an acceptance PASS.",
+  "observations": {
+    "firewall_image_id": "sha256:e9f36bf1e977d745f19873637490078724402c5fd3015d770d1dfba055237be9",
+    "target_and_adapter_hashes_verified": true,
+    "native_queue_42_bound_and_target_ready": true,
+    "no_rule_routed_http": "keemu-web-demo\nstate=routed\n",
+    "first_filter_read_exit_code": 3,
+    "first_filter_read_stderr": "iptables v1.8.11 (legacy): can't initialize iptables table `filter': Permission denied (you must be root)\nPerhaps iptables or your kernel needs to be upgraded.\n",
+    "same_router_namespace_diagnostic_uid": 0,
+    "same_router_namespace_diagnostic_cap_eff": "0000000000001000",
+    "same_router_namespace_diagnostic_apparmor": "docker-default (enforce)",
+    "same_router_namespace_diagnostic_seccomp": 2,
+    "same_router_namespace_version": "iptables v1.8.11 (legacy)",
+    "repeat_filter_read_exit_code": 3,
+    "permission_failure_cause": "NOT ISOLATED; no seccomp, AppArmor, QEMU or host security policy alteration authorized",
+    "rule_installed": false,
+    "packet_verdict_test_run": false,
+    "target_accepted": 0,
+    "target_dropped": 0,
+    "packet_capture": "NOT RUN",
+    "foreign_docker_container_and_network_id_parity": true
+  },
+  "rollback": {
+    "preflight": "xt_NFQUEUE and iptable_filter loaded with use count 0; nfnetlink_queue loaded; nft_queue absent; taint 0; no KEEMU-owned container/network",
+    "order": ["xt_NFQUEUE", "iptable_filter"],
+    "helper_container_id": "4df57aefeb2defc7ab02f52f4d86cae475f20f256470d180d9c0f18d3e31cfc5",
+    "helper_network": "none",
+    "xt_helper_sha256": "5bb62e5fabd0766ed8a3c1f90cd4ac75d2b735a5d4486dd8a4142cc32a2b71af",
+    "filter_helper_sha256": "27e51648fddd4dfde5f65b33b0423fe595bfb5858e63d368f66e81de81b25689",
+    "stdout": "xt_NFQUEUE safely unloaded\niptable_filter safely unloaded",
+    "exit_code": 0,
+    "verified_at_utc": "2026-09-25T08:48:09Z",
+    "xt_NFQUEUE_loaded_after": false,
+    "iptable_filter_loaded_after": false,
+    "nfnetlink_queue_loaded_after": true,
+    "nft_queue_loaded_after": false,
+    "kernel_taint_after": 0,
+    "keemu_owned_containers_after": 0,
+    "keemu_owned_networks_after": 0
+  },
+  "acceptance": {
+    "MVP1C": "BLOCKED",
+    "A14": "BLOCKED",
+    "A17": "BLOCKED",
+    "m1c-26": "BLOCKED: filter table access denied within owned router namespace; no rule, kernel packet counter, target decision, DROP/restored ACCEPT or pcap verified"
+  }
+}

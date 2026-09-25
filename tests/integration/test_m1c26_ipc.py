@@ -4,6 +4,7 @@ import hashlib
 import ipaddress
 import json
 import os
+import re
 import struct
 import time
 import uuid
@@ -88,14 +89,32 @@ def _iptables(runtime, router, *arguments):
     runtime.inspect("container", router)
     result = _exec(
         [
-            "docker", "container", "run", "--rm", "--pull=never",
-            "--network", f"container:{router}", "--read-only", "--tmpfs", "/run",
-            "--cap-drop=ALL", "--cap-add=NET_ADMIN",
-            "--security-opt", "no-new-privileges",
-            "--label", "org.keemu.owner=keemu",
-            "--label", f"org.keemu.run-id={runtime.run_id}",
-            "--entrypoint", "/usr/sbin/iptables-legacy", FIREWALL,
-            "-w", "2", "--modprobe=/bin/false", *arguments,
+            "docker",
+            "container",
+            "run",
+            "--rm",
+            "--pull=never",
+            "--network",
+            f"container:{router}",
+            "--read-only",
+            "--tmpfs",
+            "/run",
+            "--cap-drop=ALL",
+            "--cap-add=NET_ADMIN",
+            "--cap-add=NET_RAW",
+            "--security-opt",
+            "no-new-privileges",
+            "--label",
+            "org.keemu.owner=keemu",
+            "--label",
+            f"org.keemu.run-id={runtime.run_id}",
+            "--entrypoint",
+            "/usr/sbin/iptables-legacy",
+            FIREWALL,
+            "-w",
+            "2",
+            "--modprobe=/bin/false",
+            *arguments,
         ],
         allow_failure=True,
         timeout=20,
@@ -115,6 +134,33 @@ def _queue(runtime, router):
     ).stdout.decode()[:4096]
 
 
+def _sequence(snapshot):
+    rows = [line.split() for line in snapshot.splitlines()]
+    selected = [row for row in rows if row and row[0] == "42"]
+    assert len(selected) == 1 and len(selected[0]) >= 8, snapshot
+    assert selected[0][5:7] == ["0", "0"], snapshot
+    return int(selected[0][7])
+
+
+def _rule_packets(snapshot, source, destination):
+    rows = [line.split() for line in snapshot["stdout"].splitlines()]
+    selected = [row for row in rows if "NFQUEUE" in row]
+    assert len(selected) == 1, snapshot
+    row = selected[0]
+    assert row[:1] == ["1"] and row[3:5] == ["NFQUEUE", "tcp"]
+    assert row[8:10] == [source, destination]
+    assert "dpt:8080" in row and row[-3:] == ["NFQUEUE", "num", "42"]
+    assert "bypass" not in snapshot["stdout"].lower()
+    return int(row[1])
+
+
+def _decisions(log, prefix):
+    pattern = rf"{prefix} accepted=(\d+) dropped=(\d+) id=(\d+)"
+    rows = [tuple(map(int, item)) for item in re.findall(pattern, log)]
+    assert rows and [item[2] for item in rows] == list(range(1, len(rows) + 1))
+    return rows
+
+
 def _pcap(path, source, destination):
     data = path.read_bytes()
     assert 24 < len(data) <= 24 + 64 * (16 + 256)
@@ -130,6 +176,9 @@ def _pcap(path, source, destination):
         assert payload[12:16] == ipaddress.IPv4Address(source).packed
         assert payload[16:20] == ipaddress.IPv4Address(destination).packed
         assert payload[9] == 6
+        header_length = (payload[0] & 15) * 4
+        assert header_length >= 20 and copied >= header_length + 4
+        assert struct.unpack_from("!H", payload, header_length + 2)[0] == 8080
         cursor += copied
         found += 1
     assert cursor == len(data) and found > 0
@@ -245,13 +294,21 @@ def test_target_decision_packet_flow():
             evidence["baseline"] = _flow_request(runtime, client, addresses.server)
             assert evidence["baseline"]["exit_code"] == 0
             assert "state=routed" in evidence["baseline"]["body"]
-            image = json.loads(_exec(["docker", "image", "inspect", FIREWALL]).stdout)[0]
+            image = json.loads(_exec(["docker", "image", "inspect", FIREWALL]).stdout)[
+                0
+            ]
             assert image["Id"] == FIREWALL
             assert image["Config"]["Labels"]["org.keemu.owner"] == "keemu"
             evidence["firewall_image"] = FIREWALL
             evidence["iptables_before"] = _iptables(
                 runtime, router, "-nvxL", "FORWARD", "--line-numbers"
             )
+            if (
+                evidence["iptables_before"]["exit_code"] == 3
+                and "Permission denied" in evidence["iptables_before"]["stderr"]
+            ):
+                evidence["result"] = "BLOCKED: owner-scoped legacy filter read denied"
+                pytest.skip("legacy filter read denied; no rule or verdict attempted")
             assert evidence["iptables_before"]["exit_code"] == 0, evidence
             exact = rule(topology)[2:]
             assert _iptables(runtime, router, "-C", *exact)["exit_code"] != 0
@@ -306,6 +363,79 @@ def test_target_decision_packet_flow():
                 ]
             )
             evidence["pcap"] = _pcap(capture, addresses.client, addresses.server)
+            target_rows = _decisions(evidence["target_log"], "target")
+            adapter_rows = _decisions(evidence["adapter_log"], "transport")
+            assert target_rows == adapter_rows
+            accepted, dropped, last_id = target_rows[-1]
+            restored_state = evidence["restored_state"]
+            accept_state = evidence["accept_state"]
+            drop_state = evidence["drop_state"]
+            assert isinstance(restored_state, dict)
+            assert isinstance(accept_state, dict)
+            assert isinstance(drop_state, dict)
+            assert (accepted, dropped) == (
+                restored_state["accepted"],
+                restored_state["dropped"],
+            )
+            assert accepted > accept_state["accepted"] > 0
+            assert dropped == drop_state["dropped"] > 0
+            assert accept_state["dropped"] == 0
+            assert drop_state["accepted"] == accept_state["accepted"]
+            assert _sequence(evidence["accept_queue"]) < _sequence(
+                evidence["drop_queue"]
+            )
+            assert _sequence(evidence["drop_queue"]) < _sequence(
+                evidence["restored_queue"]
+            )
+            assert last_id == accepted + dropped == evidence["pcap"]["records"]
+            assert _sequence(evidence["restored_queue"]) == last_id
+            assert (
+                _rule_packets(
+                    evidence["iptables_after_flow"], addresses.client, addresses.server
+                )
+                == last_id
+            )
+            evidence["correlation"] = {
+                "target_accepted": accepted,
+                "target_dropped": dropped,
+                "adapter_verdicts": len(adapter_rows),
+                "kernel_sequence": last_id,
+                "rule_packets": last_id,
+                "pcap_records": last_id,
+            }
+            runtime.exec(
+                router,
+                [
+                    "/bin/sh",
+                    "-c",
+                    "read -r pid < /opt/etc/network-demo/adapter.pid; "
+                    "case \"$pid\" in ''|*[!0-9]*) exit 2;; esac; "
+                    f"{BUSYBOX} grep -aq 'nfqueue-transport-amd64' /proc/$pid/cmdline "
+                    '&& kill -TERM "$pid"',
+                ],
+            )
+            for _ in range(20):
+                if not _queue(runtime, router).strip():
+                    break
+                time.sleep(0.1)
+            evidence["no_listener_queue"] = _queue(runtime, router)
+            assert not evidence["no_listener_queue"].strip()
+            evidence["no_listener"] = _flow_request(runtime, client, addresses.server)
+            assert evidence["no_listener"]["exit_code"] != 0
+            evidence["no_listener_state"] = _get(runtime, client, addresses.router)
+            no_listener_state = evidence["no_listener_state"]
+            assert isinstance(no_listener_state, dict)
+            assert no_listener_state["accepted"] == accepted
+            assert no_listener_state["dropped"] == dropped
+            evidence["no_listener_rule"] = _iptables(
+                runtime, router, "-nvxL", "FORWARD", "--line-numbers"
+            )
+            assert (
+                _rule_packets(
+                    evidence["no_listener_rule"], addresses.client, addresses.server
+                )
+                > last_id
+            )
             evidence["remove"] = _iptables(runtime, router, "-D", *exact)
             assert evidence["remove"]["exit_code"] == 0
             rule_attempted = False
@@ -313,6 +443,8 @@ def test_target_decision_packet_flow():
                 runtime, router, "-nvxL", "FORWARD", "--line-numbers"
             )
             assert _iptables(runtime, router, "-C", *exact)["exit_code"] != 0
+            evidence["post_remove"] = _flow_request(runtime, client, addresses.server)
+            assert evidence["post_remove"]["exit_code"] == 0
             evidence["result"] = "PASS: target IPC decisions and routed verdicts"
     finally:
         if rule_attempted and topology is not None and router is not None:

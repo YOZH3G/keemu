@@ -1,0 +1,28 @@
+{
+  "subtask": "m1c-26",
+  "at_utc": "2026-09-25T09:02:18Z",
+  "packet_run": "m1c26ipc-52c6ecfaa326",
+  "preparation": {
+    "kernel": "6.8.0-138-generic",
+    "preflight_at_utc": "2026-09-25T08:55:02Z",
+    "module_hashes": "locks/m1c26-kmod-helper.json",
+    "before": {"nfnetlink_queue_loaded": true, "iptable_filter_loaded": false, "xt_NFQUEUE_loaded": false, "nft_queue_loaded": false, "kernel_taint": 0},
+    "after": {"nfnetlink_queue_loaded": true, "iptable_filter_use_count": 0, "xt_NFQUEUE_use_count": 0, "nft_queue_loaded": false, "kernel_taint": 0},
+    "insmod_order": ["iptable_filter", "xt_NFQUEUE"],
+    "other_newly_loaded_modules": "not exhaustively inventoried; the monitored nft_queue module remained absent"
+  },
+  "packet_run_cleanup": {
+    "exact_rule_removed": true,
+    "rule_check_after_removal": "absent",
+    "foreign_container_and_network_ids_unchanged": true,
+    "keemu_owned_containers": 0,
+    "keemu_owned_networks": 0
+  },
+  "rollback": {
+    "preflight_use_counts": {"xt_NFQUEUE": 0, "iptable_filter": 0},
+    "rollback_helper_sha256": {"xt_NFQUEUE": "5bb62e5fabd0766ed8a3c1f90cd4ac75d2b735a5d4486dd8a4142cc32a2b71af", "iptable_filter": "27e51648fddd4dfde5f65b33b0423fe595bfb5858e63d368f66e81de81b25689"},
+    "unload_order": ["xt_NFQUEUE", "iptable_filter"],
+    "helper_result": "both safely unloaded, exit 0",
+    "independent_postflight": {"xt_NFQUEUE_loaded": false, "iptable_filter_loaded": false, "nft_queue_loaded": false, "nfnetlink_queue_use_count": 0, "kernel_taint": 0, "keemu_owned_containers": 0, "keemu_owned_networks": 0}
+  }
+}

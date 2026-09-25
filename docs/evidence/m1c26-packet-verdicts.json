@@ -1,0 +1,139 @@
+{
+  "accept": {
+    "body": "keemu-web-demo\nstate=routed\n",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  "accept_queue": "   42    119     0 2 65531     0     0        5  1\n",
+  "accept_state": {
+    "accepted": 5,
+    "dropped": 0,
+    "mode": "accept",
+    "queue_ready": true
+  },
+  "adapter_log": "transport queue_ready=1\ntransport accepted=1 dropped=0 id=1 target=1\ntransport accepted=2 dropped=0 id=2 target=1\ntransport accepted=3 dropped=0 id=3 target=1\ntransport accepted=4 dropped=0 id=4 target=1\ntransport accepted=5 dropped=0 id=5 target=1\ntransport accepted=5 dropped=1 id=6 target=1\ntransport accepted=5 dropped=2 id=7 target=1\ntransport accepted=5 dropped=3 id=8 target=1\ntransport accepted=5 dropped=4 id=9 target=1\ntransport accepted=5 dropped=5 id=10 target=1\ntransport accepted=5 dropped=6 id=11 target=1\ntransport accepted=5 dropped=7 id=12 target=1\ntransport accepted=6 dropped=7 id=13 target=1\ntransport accepted=7 dropped=7 id=14 target=1\ntransport accepted=8 dropped=7 id=15 target=1\ntransport accepted=9 dropped=7 id=16 target=1\ntransport accepted=10 dropped=7 id=17 target=1\n",
+  "after_adapter": {
+    "accepted": 0,
+    "dropped": 0,
+    "mode": "accept",
+    "queue_ready": true
+  },
+  "baseline": {
+    "body": "keemu-web-demo\nstate=routed\n",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  "binary_hashes": {
+    "adapter": "7715a4e8e3064d2e41e711e1561bc7b12449aae0cf0ffa9e57c0f8c9d426ea63",
+    "target": "871165f37cb9ea71eebd473cd7c907460b6d47ceddf6f5047de6cc7f976d8c0e"
+  },
+  "cleanup": {
+    "foreign_containers_unchanged": true,
+    "foreign_networks_unchanged": true
+  },
+  "correlation": {
+    "adapter_verdicts": 17,
+    "kernel_sequence": 17,
+    "pcap_records": 17,
+    "rule_packets": 17,
+    "target_accepted": 10,
+    "target_dropped": 7
+  },
+  "drop": {
+    "body": "",
+    "exit_code": "TIMEOUT",
+    "stderr": "Docker command timed out: container"
+  },
+  "drop_queue": "   42    119     0 2 65531     0     0       12  1\n",
+  "drop_state": {
+    "accepted": 5,
+    "dropped": 7,
+    "mode": "drop",
+    "queue_ready": true
+  },
+  "firewall_image": "sha256:e9f36bf1e977d745f19873637490078724402c5fd3015d770d1dfba055237be9",
+  "initial_target": {
+    "accepted": 0,
+    "dropped": 0,
+    "mode": "accept",
+    "queue_ready": false
+  },
+  "insert": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "iptables_after_flow": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "Chain FORWARD (policy ACCEPT 10 packets, 760 bytes)\nnum      pkts      bytes target     prot opt in     out     source               destination         \n1          17     1124 NFQUEUE    tcp  --  *      *       10.224.0.3           10.224.1.3           tcp dpt:8080 NFQUEUE num 42\n"
+  },
+  "iptables_after_install": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)\nnum      pkts      bytes target     prot opt in     out     source               destination         \n1           0        0 NFQUEUE    tcp  --  *      *       10.224.0.3           10.224.1.3           tcp dpt:8080 NFQUEUE num 42\n"
+  },
+  "iptables_after_remove": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "Chain FORWARD (policy ACCEPT 20 packets, 1492 bytes)\nnum      pkts      bytes target     prot opt in     out     source               destination         \n"
+  },
+  "iptables_before": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)\nnum      pkts      bytes target     prot opt in     out     source               destination         \n"
+  },
+  "kernel_queue": "   42    119     0 2 65531     0     0        0  1\n",
+  "no_listener": {
+    "body": "",
+    "exit_code": "TIMEOUT",
+    "stderr": "Docker command timed out: container"
+  },
+  "no_listener_queue": "",
+  "no_listener_rule": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "Chain FORWARD (policy ACCEPT 10 packets, 760 bytes)\nnum      pkts      bytes target     prot opt in     out     source               destination         \n1          25     1604 NFQUEUE    tcp  --  *      *       10.224.0.3           10.224.1.3           tcp dpt:8080 NFQUEUE num 42\n"
+  },
+  "no_listener_state": {
+    "accepted": 10,
+    "dropped": 7,
+    "mode": "accept",
+    "queue_ready": true
+  },
+  "pcap": {
+    "bytes": 1420,
+    "records": 17,
+    "sha256": "e8081be081e6b068b02eed7f02a11a0bc1d97fb730d3cebb390e741c1677c445"
+  },
+  "post_remove": {
+    "body": "keemu-web-demo\nstate=routed\n",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  "remove": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "restored": {
+    "body": "keemu-web-demo\nstate=routed\n",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  "restored_queue": "   42    119     0 2 65531     0     0       17  1\n",
+  "restored_state": {
+    "accepted": 10,
+    "dropped": 7,
+    "mode": "accept",
+    "queue_ready": true
+  },
+  "result": "PASS: target IPC decisions and routed verdicts",
+  "run_id": "m1c26ipc-52c6ecfaa326",
+  "target_log": "target accepted=1 dropped=0 id=1\ntarget accepted=2 dropped=0 id=2\ntarget accepted=3 dropped=0 id=3\ntarget accepted=4 dropped=0 id=4\ntarget accepted=5 dropped=0 id=5\ntarget accepted=5 dropped=1 id=6\ntarget accepted=5 dropped=2 id=7\ntarget accepted=5 dropped=3 id=8\ntarget accepted=5 dropped=4 id=9\ntarget accepted=5 dropped=5 id=10\ntarget accepted=5 dropped=6 id=11\ntarget accepted=5 dropped=7 id=12\ntarget accepted=6 dropped=7 id=13\ntarget accepted=7 dropped=7 id=14\ntarget accepted=8 dropped=7 id=15\ntarget accepted=9 dropped=7 id=16\ntarget accepted=10 dropped=7 id=17\n",
+  "target_log_before_adapter": "",
+  "topology": {
+    "lan": "10.224.0.0/24",
+    "wan": "10.224.1.0/24"
+  }
+}
