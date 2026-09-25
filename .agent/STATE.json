@@ -1,18 +1,17 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
+  "status": "WAITING_QUOTA",
   "session_id": null,
-  "pause_reason": null,
+  "pause_reason": "pre_subtask_oauth_quota_admission",
   "quota": {
     "kind": "primary_window",
-    "detected_at": "2026-09-25T08:36:19+00:00",
+    "detected_at": "2026-09-25T09:11:41+00:00",
     "resets_at": "2026-09-25T11:20:52+00:00",
-    "resets_in_seconds": 9873,
+    "resets_in_seconds": 7751,
     "wake_at": "2026-09-25T11:22:52+00:00",
     "plan_type": null,
-    "raw_excerpt": "Fresh OAuth primary-window observation was 100% used; user explicitly authorized immediate m1c-26 launch without another quota check.",
-    "bypass_launched_at": "2026-09-25T08:42:50+00:00"
+    "raw_excerpt": "5-hour OAuth quota has 0.0% remaining; defer new task until reset"
   },
   "routing": {
     "mode": "auto",
@@ -942,20 +941,20 @@
     "last_run_started_at": "2026-09-25T08:43:50+00:00",
     "last_run_finished_at": "2026-09-25T09:11:35+00:00",
     "last_log": ".agent/runs/20260925T084350Z.log",
-    "last_checkpoint_at": "2026-09-25T09:11:37+00:00"
+    "last_checkpoint_at": "2026-09-25T09:11:41+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-25T08:36:19+00:00",
-    "scope": "subtask_resume",
-    "admission_key": "subtask:m1c-26:be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
+    "checked_at": "2026-09-25T09:11:41+00:00",
+    "scope": "subtask",
+    "admission_key": "subtask:m1c-27:f3dd647dbf09070820245c2836359da34dc99db9f2c9d01befdc98a09a6db5ab",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-    "task_intent": "Verify target packet processing end to end with routed flow, consumer and kernel counters, ACCEPT, DROP, restored ACCEPT, and bounded packet evidence",
-    "subtask_id": "m1c-26",
-    "subtask_digest": "be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
-    "action": "user_authorized_immediate_one_time_bypass",
+    "task_intent": "Run controlled interruption and isolation regressions for network resources while proving foreign containers, networks, and rules remain untouched",
+    "subtask_id": "m1c-27",
+    "subtask_digest": "f3dd647dbf09070820245c2836359da34dc99db9f2c9d01befdc98a09a6db5ab",
+    "action": "pause",
     "remaining_percent": 0.0,
     "reset_at": "2026-09-25T11:20:52+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota was at 0%; user explicitly authorized immediate launch without another check for m1c-26 only"
+    "message": "5-hour OAuth quota has 0.0% remaining; defer new task until reset"
   }
 }
