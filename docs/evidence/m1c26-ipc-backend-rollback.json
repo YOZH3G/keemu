@@ -1,0 +1,47 @@
+{
+  "scope": "m1c-26 approved native transport workaround; blocker and scoped host-module rollback",
+  "packet_report": "reports/m1c26ipc-2fa35a1b085f-packet-flow.json",
+  "tracked_packet_report": "docs/evidence/m1c26-ipc-backend-blocker.json",
+  "packet_report_sha256": "c4f2af1804355c3b77304acd95ba4b613c5ba698a5fcd0e6aa4308ad1ac2b25f",
+  "observations": {
+    "routed_http_without_rule": "PASS: keemu-web-demo state=routed",
+    "target_aarch64_api_initial_queue_ready": false,
+    "native_adapter_after_bind_ack": "transport queue_ready=1",
+    "target_aarch64_api_after_adapter_queue_ready": true,
+    "kernel_queue_42_present": true,
+    "target_accepted": 0,
+    "target_dropped": 0,
+    "target_iptables_command": "/opt/sbin/iptables -nvxL FORWARD --line-numbers",
+    "target_iptables_exit": 127,
+    "target_iptables_error": "OCI runtime exec failed: exec failed: unable to start container process: exec: \"/opt/sbin/iptables\": stat /opt/sbin/iptables: no such file or directory",
+    "project_rule_installed": false,
+    "queued_packet_or_verdict_test_run": false,
+    "packet_capture_records": 0,
+    "foreign_docker_id_sets_unchanged": true,
+    "keemu_owned_resources_after": "0 containers, 0 networks"
+  },
+  "host_module_rollback": {
+    "approved_module": "xt_NFQUEUE",
+    "preflight_loaded": true,
+    "preflight_use_count": 0,
+    "helper_sha256": "5bb62e5fabd0766ed8a3c1f90cd4ac75d2b735a5d4486dd8a4142cc32a2b71af",
+    "helper_scope": "disposable network-none privileged helper; delete_module xt_NFQUEUE only when its use count is zero",
+    "helper_exit_code": 0,
+    "helper_stdout": "xt_NFQUEUE safely unloaded",
+    "verified_at_utc": "2026-09-25T07:07:15Z",
+    "postflight_loaded": false,
+    "postflight_sysfs_absent": true,
+    "nfnetlink_queue_remains_loaded": true,
+    "nft_queue_remains_unloaded": true,
+    "kernel_taint_after": 0,
+    "helper_container_removed": true,
+    "owned_containers_and_networks_after": "0/0"
+  },
+  "acceptance": {
+    "MVP1C": "BLOCKED",
+    "A14": "BLOCKED",
+    "A17": "BLOCKED",
+    "m1c-26": "BLOCKED: approved rule backend missing; need approved target iptables artifact or separately authorized firewall backend"
+  },
+  "limits": "Queue binding alone is not packet processing: no rule, packet, target verdict, kernel/rule packet counter increment or pcap has been observed. Direct target NFNETLINK remains historically blocked."
+}

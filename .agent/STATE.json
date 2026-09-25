@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
+  "status": "NEEDS_HUMAN",
   "session_id": "20260925_021217_b58cec",
-  "pause_reason": null,
+  "pause_reason": "hermes_requested_human_input",
   "quota": {
     "kind": "primary_window",
     "detected_at": "2026-09-25T06:20:52+00:00",
@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T06:22:37+00:00",
+    "last_evaluated_at": "2026-09-25T06:49:01+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -32,7 +32,7 @@
       "changed_files": 0,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1606943,
+      "graphify_bytes": 1607678,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -791,7 +791,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_6751d18c0c15e4cbc1c090c1",
+      "last_event_id": "evt_ad3778b22275d4ca2034870a",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -947,10 +947,10 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T06:22:37+00:00",
-    "last_run_finished_at": "2026-09-25T06:28:09+00:00",
-    "last_log": ".agent/runs/20260925T062237Z.log",
-    "last_checkpoint_at": "2026-09-25T06:28:09+00:00"
+    "last_run_started_at": "2026-09-25T06:49:01+00:00",
+    "last_run_finished_at": "2026-09-25T07:12:20+00:00",
+    "last_log": ".agent/runs/20260925T064901Z.log",
+    "last_checkpoint_at": "2026-09-25T07:12:20+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-25T06:48:13+00:00",

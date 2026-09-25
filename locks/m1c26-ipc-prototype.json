@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "kind": "m1c26-diagnostic-ipc-prototype-lock",
+  "scope": "Approved native NFQUEUE transport only in owned router namespace; target AArch64 fixture chooses verdict. Startup and queue binding observed, packet verdict path NOT verified: target iptables backend missing.",
+  "architecture": {
+    "target": "ELF64 AArch64 static",
+    "transport": "ELF64 x86-64 static"
+  },
+  "toolchains": {
+    "target": "Debian aarch64-linux-gnu-gcc 14.2.0; pinned artifacts in locks/p0-fixtures-aarch64.json",
+    "host": "gcc 14.2.0 (current runner); native binary must be rebuilt and reverified if runner changes"
+  },
+  "inputs": [
+    {"path": "fixtures/sources/nfqueue/nfqueue_consumer.c", "sha256": "01c077324c48fe467ae69410e01f32348c8a394f210ab9717ba0b1698a2e1078"},
+    {"path": "fixtures/sources/network-demo/network_demo_ipc_m1c26.c", "sha256": "c8862a155632fc443da2724055902a1d3a6e719741fbade96d9a80bc3230c930"},
+    {"path": "fixtures/sources/network-demo/nfqueue_transport_m1c26.c", "sha256": "042964793e0c4a45be167ea4c7c65a61171e1ffcd74ad252b787492df3e29e35"},
+    {"path": "fixtures/recipes/aarch64/network-demo-ipc-m1c26.mk", "sha256": "7d40ade68c22c14e43c38a9dfb71c67bbe49979c67f191476e96611bdbf25fc2"},
+    {"path": "fixtures/recipes/aarch64/common.mk", "sha256": "99c312206fb93a916b603b51e9c06d258d43e896610db5373efebee35120c5bf"}
+  ],
+  "outputs": [
+    {"path": ".runtime/m1c26/network-demo-ipc-aarch64", "sha256": "871165f37cb9ea71eebd473cd7c907460b6d47ceddf6f5047de6cc7f976d8c0e"},
+    {"path": ".runtime/m1c26/nfqueue-transport-amd64", "sha256": "7715a4e8e3064d2e41e711e1561bc7b12449aae0cf0ffa9e57c0f8c9d426ea63"}
+  ],
+  "base_image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "baseline_fixture_lock_sha256": "a67805db40dff17ea35f9651e1e050166b14610eab60020f2f2b6e6d2e92cf7d",
+  "evidence": "docs/evidence/m1c26-ipc-backend-blocker.json",
+  "status": "BLOCKED: no actual queued packet, verdict or pcap despite verified native bind and target readiness handshake"
+}
