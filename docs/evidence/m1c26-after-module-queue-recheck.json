@@ -1,0 +1,65 @@
+{
+  "binary_sha256": "360289633e24822fd1f6be298a4deef6fa790188392106bfd44433297c65e617",
+  "cleanup": "owner resources absent; foreign Docker IDs unchanged",
+  "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "kernel": "6.8.0-138-generic",
+  "module_after": {
+    "nfnetlink": {
+      "proc_modules": true,
+      "sys_module": true
+    },
+    "nfnetlink_queue": {
+      "proc_modules": true,
+      "sys_module": true
+    },
+    "nft_queue": {
+      "proc_modules": false,
+      "sys_module": false
+    },
+    "xt_NFQUEUE": {
+      "proc_modules": false,
+      "sys_module": false
+    }
+  },
+  "module_before": {
+    "nfnetlink": {
+      "proc_modules": true,
+      "sys_module": true
+    },
+    "nfnetlink_queue": {
+      "proc_modules": true,
+      "sys_module": true
+    },
+    "nft_queue": {
+      "proc_modules": false,
+      "sys_module": false
+    },
+    "xt_NFQUEUE": {
+      "proc_modules": false,
+      "sys_module": false
+    }
+  },
+  "native_socket": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "NETLINK_NETFILTER socket opened; NFQUEUE bind and verdict NOT attempted\n"
+  },
+  "packets": "NOT RUN",
+  "result": "BLOCKED: target queue unavailable",
+  "router_id": "7dc36cacdf4a3126c00b6c77acdd1c88e51d5317ae5a285ba6252d3d0d0232e3",
+  "router_ip": "10.224.0.2",
+  "rule": "NOT RUN",
+  "run_id": "m1c26q-8b2dbac7422c",
+  "scope": "same-router native/target socket and target queue binding only; no rule, packet, verdict or host mutation",
+  "socket_sha256": {
+    "native_socket": "378db5054cec52bc8422845c3bef0fe7dec032188a7c35a3adf32b8113e28167",
+    "target_socket": "c82cf028a2eceb93e45b54e3bb883ca3a6edde2b0949b73884d3ed1f96857655"
+  },
+  "startup_error": "network-demo startup/queue unavailable",
+  "startup_log": "network-demo NFQUEUE: Protocol not supported\n",
+  "target_socket": {
+    "exit_code": 1,
+    "stderr": "NETLINK_NETFILTER socket: Protocol not supported\n",
+    "stdout": ""
+  }
+}

@@ -24,6 +24,24 @@ EXPECTED = {
     "target_socket": "c82cf028a2eceb93e45b54e3bb883ca3a6edde2b0949b73884d3ed1f96857655",
 }
 MODULES = ("nfnetlink", "nfnetlink_queue", "xt_NFQUEUE", "nft_queue")
+EVIDENCE = Path("docs/evidence/m1c26-after-module-queue-recheck.json")
+EVIDENCE_SHA256 = "76fb29189c7c5993d79fd64218ddd23686b2bdb2716aafbbe4f1221b885a03d4"
+
+
+def test_frozen_after_module_blocker_record():
+    raw = EVIDENCE.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == EVIDENCE_SHA256
+    record = json.loads(raw)
+    assert record["result"] == "BLOCKED: target queue unavailable"
+    assert record["native_socket"]["exit_code"] == 0
+    assert record["target_socket"]["exit_code"] == 1
+    assert "Protocol not supported" in record["startup_log"]
+    assert record["module_before"] == record["module_after"]
+    assert record["module_after"]["nfnetlink_queue"]["proc_modules"] is True
+    assert record["rule"] == record["packets"] == "NOT RUN"
+    local = Path("reports") / f"{record['run_id']}-queue-recheck.json"
+    if local.exists():
+        assert local.read_bytes() == raw
 
 
 def _modules():
@@ -65,7 +83,10 @@ def test_target_queue_capability_after_approved_module():
         "binary_sha256": binary_sha,
         "socket_sha256": EXPECTED,
         "module_before": modules_before,
-        "scope": "same-router native/target socket and target queue binding only; no rule, packet, verdict or host mutation",
+        "scope": (
+            "same-router native/target socket and target queue binding only; "
+            "no rule, packet, verdict or host mutation"
+        ),
     }
     try:
         topology = create(run_id, IMAGE)
