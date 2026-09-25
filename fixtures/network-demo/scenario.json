@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "network-demo-m1c24",
+  "profile": "generic-aarch64",
+  "fixture_lock": "locks/m1c24-network-demo-aarch64.json",
+  "install": "NetworkDemo.install: verify source SHA-256, Docker copy, target SHA-256; create private config only if missing",
+  "start": "NetworkDemo.start: queue 42, bind router LAN IP:9090; fail closed unless actual target queue is ready",
+  "stop": "NetworkDemo.stop: remove only marked flow rule and stop verified fixture PID; retain mode",
+  "remove": "NetworkDemo.remove: stop, remove staged executable, config and fixture log; topology.cleanup removes owned namespace",
+  "api": {
+    "bind": "router LAN address only; no host publish",
+    "port": 9090,
+    "read": "GET /api/state -> JSON mode, queue_ready, accepted, dropped",
+    "write": "POST /api/mode; Content-Type: application/x-www-form-urlencoded; body mode=accept or mode=drop",
+    "ui": "GET / -> HTML form for ACCEPT and DROP",
+    "health": "GET /health -> 200 only when queue is ready; otherwise 503"
+  },
+  "flow": {
+    "source": "client LAN IP /32",
+    "destination": "server WAN IP /32",
+    "protocol": "tcp",
+    "destination_port": 8080,
+    "chain": "FORWARD",
+    "queue_number": 42,
+    "rule": "target /opt/sbin/iptables -I FORWARD -s CLIENT/32 -d SERVER/32 -p tcp --dport 8080 -j NFQUEUE --queue-num 42",
+    "queue_bypass": false,
+    "control_exclusion": "router LAN IP:9090 and health are not FORWARD client-to-server:8080"
+  },
+  "persistence": ["/opt/etc/network-demo/mode"],
+  "allowed_residual_paths_after_remove": [],
+  "diagnostic_only": "--api-only intentionally reports queue_ready=false and health 503; cannot prove A14/A17"
+}

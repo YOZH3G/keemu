@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T01:18:38+00:00",
+    "last_evaluated_at": "2026-09-25T01:39:06+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -32,7 +32,7 @@
       "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1460541,
+      "graphify_bytes": 1518796,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -62,7 +62,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 24,
+      "active_index": 25,
       "items": [
         {
           "id": "preflight",
@@ -645,8 +645,15 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "active",
-          "digest": "a3356716e42121bfdf565ac45a7bfaf108ed4d23203d2ce5f06c1a88a3232c48"
+          "status": "complete",
+          "digest": "a3356716e42121bfdf565ac45a7bfaf108ed4d23203d2ce5f06c1a88a3232c48",
+          "outcome": {
+            "event_id": "evt_04b66caaa206c168e9587a0e",
+            "route_event_id": "evt_a583cde813a76594ada0c679",
+            "completed_at": "2026-09-25T02:00:33+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1c-25",
@@ -661,7 +668,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "370964c362aeb765aa162207eec50bbb7a93586ab75e609bc2271d03c8290111"
         },
         {
@@ -761,7 +768,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_6c3ed424f2ddc6d1ceddcce7",
+      "last_event_id": "evt_04b66caaa206c168e9587a0e",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -917,22 +924,22 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T01:18:38+00:00",
-    "last_run_finished_at": "2026-09-25T01:38:59+00:00",
-    "last_log": ".agent/runs/20260925T011838Z.log",
-    "last_checkpoint_at": "2026-09-25T01:39:01+00:00"
+    "last_run_started_at": "2026-09-25T01:39:06+00:00",
+    "last_run_finished_at": "2026-09-25T02:00:31+00:00",
+    "last_log": ".agent/runs/20260925T013906Z.log",
+    "last_checkpoint_at": "2026-09-25T02:00:33+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-25T01:18:36+00:00",
+    "checked_at": "2026-09-25T01:39:04+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1c-23:b8aa169cb764317c2f444506d0106e9bd6bffca35096d399ebc88554f2bd7144",
+    "admission_key": "subtask:m1c-24:a3356716e42121bfdf565ac45a7bfaf108ed4d23203d2ce5f06c1a88a3232c48",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-    "task_intent": "Implement isolated client-router-server topology with collision-free subnets, br0 and wan0, routes, forwarding, ownership, no management bypass, and safe cleanup",
-    "subtask_id": "m1c-23",
-    "subtask_digest": "b8aa169cb764317c2f444506d0106e9bd6bffca35096d399ebc88554f2bd7144",
+    "task_intent": "Build network-demo around the proven target NFQUEUE consumer with API, web UI, state, counters, persistence, health-flow exclusion, and lifecycle hooks",
+    "subtask_id": "m1c-24",
+    "subtask_digest": "a3356716e42121bfdf565ac45a7bfaf108ed4d23203d2ce5f06c1a88a3232c48",
     "action": "admit",
-    "remaining_percent": 100.0,
-    "reset_at": "2026-09-25T06:18:36+00:00",
+    "remaining_percent": 75.0,
+    "reset_at": "2026-09-25T06:18:47+00:00",
     "source": "hermes_oauth_usage_api",
     "message": "5-hour OAuth quota admits new task"
   }

@@ -1,0 +1,17 @@
+{
+  "binary_sha256": "360289633e24822fd1f6be298a4deef6fa790188392106bfd44433297c65e617",
+  "cleanup": "owner-verified absent; foreign Docker IDs unchanged",
+  "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "mode_after_failed_queue": "accept\n",
+  "run_id": "m1c24-ce8bd467f384",
+  "target_api_only": {
+    "accepted": 0,
+    "dropped": 0,
+    "mode": "accept",
+    "queue_ready": false
+  },
+  "target_real_queue_start": {
+    "log": "network-demo NFQUEUE: Protocol not supported\n",
+    "status": "BLOCKED"
+  }
+}

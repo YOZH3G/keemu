@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "network-demo-fixture-lock",
+  "target": "aarch64-3.10",
+  "architecture": {"elf_class": 64, "endian": "little", "machine": "AArch64", "linkage": "static"},
+  "toolchain": "Debian trixie aarch64-linux-gnu-gcc 14.2.0; pinned artifacts in locks/p0-fixtures-aarch64.json",
+  "sources": [
+    {"path": "fixtures/sources/nfqueue/nfqueue_consumer.c", "sha256": "01c077324c48fe467ae69410e01f32348c8a394f210ab9717ba0b1698a2e1078"},
+    {"path": "fixtures/sources/network-demo/network_demo.c", "sha256": "2476c2aa786fdf9a02ae2c42e8a982c0b209af2f5018db208ce0d85e7e692baf"}
+  ],
+  "recipe": {"path": "fixtures/recipes/aarch64/network-demo.mk", "sha256": "9c018f935090ce61ceb8a8db741bf708130fbe8ebef79a00f10e4db7a2fc6abf"},
+  "common_recipe_sha256": "99c312206fb93a916b603b51e9c06d258d43e896610db5373efebee35120c5bf",
+  "binary": {"path": ".runtime/m1c24/network-demo-aarch64", "sha256": "360289633e24822fd1f6be298a4deef6fa790188392106bfd44433297c65e617"},
+  "runtime_dependencies": [],
+  "kernel_requirements": ["NETLINK_NETFILTER", "NFQUEUE queue bind and verdict", "iptables NFQUEUE target for routed packet tests"],
+  "base_image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "base_lock_sha256": "1d8acdfb3bb17383f8a4c2dcb28bf71d472e003bcbd841e5e48f48e75ac1089e",
+  "scope": "m1c-24 fixture build and bounded API-only target smoke; target NFQUEUE startup remains BLOCKED, no verdict or kernel counters proven"
+}
