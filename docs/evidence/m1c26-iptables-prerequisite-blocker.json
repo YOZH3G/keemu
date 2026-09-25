@@ -1,0 +1,54 @@
+{
+  "subtask": "m1c-26",
+  "status": "BLOCKED: unapproved iptable_filter host kernel module is required for selected iptables-legacy filter table",
+  "scope": "Read-only prerequisite for the separately approved owner-scoped native iptables-legacy backend; no firewall command against router table, rule, or packet test was executed.",
+  "backend": {
+    "lock": "locks/m1c26-native-iptables.json",
+    "lock_sha256": "9e20ac7bf8a3cf3b8b2731d3e9e431bd5ac08f85ec341817f217f2b6b2ba4212",
+    "image_id": "sha256:e9f36bf1e977d745f19873637490078724402c5fd3015d770d1dfba055237be9",
+    "version": "iptables v1.8.11 (legacy)",
+    "identity_verified": "recipe SHA, image ID/owner label, 10 Debian package versions, binary/xt extensions/12 dependency SHA-256 values",
+    "source": "Debian trixie signed source metadata for iptables 1.8.11-2; source artifact SHA-256 values recorded in lock",
+    "execution": "No backend command was executed in router; identity checks used disposable network-none container."
+  },
+  "preflight": {
+    "kernel": "6.8.0-138-generic",
+    "owned_router_proc_net_ip_tables_names": "",
+    "owned_router_proc_read_exit_code": 0,
+    "filter_module_loaded_before": false,
+    "filter_module_sysfs_present_before": false,
+    "filter_module_loadable_path": "/lib/modules/6.8.0-138-generic/kernel/net/ipv4/netfilter/iptable_filter.ko.zst",
+    "filter_module_loadable_sha256": "0d16550ccd44966002a95aa010ca00e63f4d42340bbecb8ef9c012c7d62d3f27",
+    "filter_module_loadable_size": 4391,
+    "xt_NFQUEUE_was_loaded_by_approved_supervisor_preparation": true,
+    "nfnetlink_queue_loaded": true,
+    "nft_queue_loaded": false,
+    "kernel_taint": 0,
+    "owner_topology_foreign_docker_id_parity_after_cleanup": true
+  },
+  "limit": "A fresh owner router namespace had no registered legacy IPv4 table; iptable_filter is an available but unloaded kernel module. The current approval explicitly excludes other host modules. A filter-table operation could autoload it, so no iptables -L/-C/-I, rule, queued packet, verdict, counter or pcap was attempted. Native transport bind and no-rule routed HTTP in earlier evidence are not packet processing proof.",
+  "rollback": {
+    "approved_extension": "xt_NFQUEUE",
+    "preflight_use_count": 0,
+    "helper_sha256": "5bb62e5fabd0766ed8a3c1f90cd4ac75d2b735a5d4486dd8a4142cc32a2b71af",
+    "helper_container_id": "731d703498aaddf91c87bd68b951df7fa1c4647464348c1d279a03adc243bae8",
+    "helper_network": "none",
+    "helper_output": "xt_NFQUEUE safely unloaded",
+    "helper_exit_code": 0,
+    "verified_at_utc": "2026-09-25T07:29:53Z",
+    "xt_NFQUEUE_loaded_after": false,
+    "xt_NFQUEUE_sysfs_present_after": false,
+    "iptable_filter_loaded_after": false,
+    "nfnetlink_queue_loaded_after": true,
+    "nft_queue_loaded_after": false,
+    "kernel_taint_after": 0,
+    "keemu_owned_containers_after": 0,
+    "keemu_owned_networks_after": 0
+  },
+  "acceptance": {
+    "MVP1C": "BLOCKED",
+    "A14": "BLOCKED",
+    "A17": "BLOCKED",
+    "m1c-26": "BLOCKED pending explicit human authorization for bounded iptable_filter preparation, or a preconfigured capable runner; full ACCEPT/DROP/restored ACCEPT and counters/pcap remain unverified"
+  }
+}

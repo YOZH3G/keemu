@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "kind": "m1c26-owner-scoped-native-iptables-legacy",
+  "base_image": "debian@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a",
+  "recipe": {"path": "fixtures/recipes/native/iptables-m1c26.Dockerfile", "sha256": "8e6a9267a97b7a0b5493a647db6fafe8b6a71de8de624e847c0c2028572d3199"},
+  "image_id": "sha256:e9f36bf1e977d745f19873637490078724402c5fd3015d770d1dfba055237be9",
+  "source_provenance": {
+    "origin": "Debian trixie signed deb-src metadata for iptables 1.8.11-2",
+    "directory": "pool/main/i/iptables",
+    "artifacts": {
+      "iptables_1.8.11-2.dsc": "c58e202f7a61a8a86aec499cacc443fb1ff4cdfa781a1c3641616e38f3e1f32c",
+      "iptables_1.8.11.orig.tar.xz": "d87303d55ef8c92bcad4dd3f978b26d272013642b029425775f5bad1009fe7b2",
+      "iptables_1.8.11-2.debian.tar.xz": "59f5d10a7f95c4da660499bce38332f6d369a58863458b5fd1fb03ae1a801694"
+    },
+    "scope": "Source checksums from signed Debian source index; no local source rebuild claimed. Runtime image is built from pinned Debian binary packages."
+  },
+  "packages": [
+    {"name": "iptables", "version": "1.8.11-2", "sha256": "95ba166bb68a76ca1513196dd59d91e3c33b2096884c6de80406f302b18a030e"},
+    {"name": "libxtables12", "version": "1.8.11-2", "sha256": "4de5aa59faef5e98d6ba9f5f521a915be5641f224f597862f8d29e8319e8db16"},
+    {"name": "libip4tc2", "version": "1.8.11-2", "sha256": "762e4d9c7f86b3fdaefee2baf61ce40073d46d7602651433f2cb7a5eabfb47b4"},
+    {"name": "libip6tc2", "version": "1.8.11-2", "sha256": "d5ecaad5595dc88d08f317997beb53a4906c45ea79ee14ec89103f72573e3f99"},
+    {"name": "libmnl0", "version": "1.0.5-3", "sha256": "4ec9c1096e0b954e3bdb03a62314ee7f49999045d3d55be3e4ded520ffc9baf5"},
+    {"name": "libnfnetlink0", "version": "1.0.2-3", "sha256": "5e4c3c40a04ffdb4139e4bef1136585e151a8eb8c71efa6c7250b636b3c0d1b1"},
+    {"name": "libnetfilter-conntrack3", "version": "1.1.0-1", "sha256": "ffbac5d06fbe432d5171f2eb5b2504968377f27be133f72c81e71250a9957506"},
+    {"name": "libnftnl11", "version": "1.2.9-1", "sha256": "1b3eae46bfb9c6ab44e404797fb45278045f926d73974a84097ad47a3e27d983"},
+    {"name": "netbase", "version": "6.5", "sha256": "76bafa92947ebd37b0a6f9ec6570412041f56edebc1c66d323731216d318471e"},
+    {"name": "libc6", "version": "2.41-12+deb13u4", "sha256": "967aa62605721081c3eb2a17650611a792aa802d76a6511d1840242623d204c9"}
+  ],
+  "files": [
+    {"path": "/usr/sbin/xtables-legacy-multi", "sha256": "36d01dc1a310d5bd478dd83e89ece2532529afbebc8616a0fad1cdc6c95eff5a"},
+    {"path": "/usr/lib/x86_64-linux-gnu/xtables/libxt_NFQUEUE.so", "sha256": "70823c2b020fee5a69b604d56fe52d6537af5b6e85bd470886507d0b6d605f64"},
+    {"path": "/usr/lib/x86_64-linux-gnu/xtables/libxt_tcp.so", "sha256": "b3bc329f5780b5e5424b7c3fcbc764344e4c3d124334452ad88e0d58f4303bcf"},
+    {"path": "/lib/x86_64-linux-gnu/libxtables.so.12", "sha256": "89fdbf8154670046a843a95e5bc0a7581c42c9df1b400680c8a51af885440f2e"},
+    {"path": "/lib/x86_64-linux-gnu/libip4tc.so.2", "sha256": "d71a35d64bdda8403d4265fc096625d7927640f2e31d3476b49dbe703cc420a5"},
+    {"path": "/lib/x86_64-linux-gnu/libip6tc.so.2", "sha256": "047ecf269d630dd54dd24902e96af89c4efe0a6859ee395d6fcac41b58e772b3"},
+    {"path": "/lib/x86_64-linux-gnu/libmnl.so.0", "sha256": "a47e610f22152918a5099937f452894cd1aa80d33d41a645156e35d7fd0678a9"},
+    {"path": "/lib/x86_64-linux-gnu/libnfnetlink.so.0", "sha256": "37804a0aa95d9e63d0b5d5f876221c191756fd3d9b2275c7d7d9da32e7675e95"},
+    {"path": "/lib/x86_64-linux-gnu/libnetfilter_conntrack.so.3", "sha256": "d42bb45a21e767331c8c4818be4ebd9f77e6f5bc81723cb71effccbeaf11e7ff"},
+    {"path": "/lib/x86_64-linux-gnu/libnftnl.so.11", "sha256": "88f791ebfc1d53412e2c6ffbafff929252044a082998334e955822e5d7ea1181"},
+    {"path": "/lib/x86_64-linux-gnu/libc.so.6", "sha256": "9792e3cbb541c8f44c7acf5f14f4022ea62998ecc787d326bed4d8b6547dfd92"},
+    {"path": "/lib64/ld-linux-x86-64.so.2", "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307"}
+  ],
+  "entrypoint": "/usr/sbin/iptables-legacy",
+  "version_output": "iptables v1.8.11 (legacy)",
+  "execution_scope": "Disposable owner-labeled helper sharing only the owned router network namespace; no host namespace, target PATH, nftables, queue-bypass or other rules.",
+  "status": "Binary/package/dependency identity locked; packet verdict path still unverified."
+}
