@@ -961,10 +961,10 @@
     "task_intent": "Verify target packet processing end to end with routed flow, consumer and kernel counters, ACCEPT, DROP, restored ACCEPT, and bounded packet evidence",
     "subtask_id": "m1c-26",
     "subtask_digest": "be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
-    "action": "pause",
+    "action": "user_authorized_one_time_bypass_after_known_reset",
     "remaining_percent": 0.0,
     "reset_at": "2026-09-25T11:20:52+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota is at 0%; resume scheduled after exact reset plus 120-second safety margin and requires a fresh live check"
+    "message": "5-hour OAuth quota was at 0%; user authorized omitting the next live check for m1c-26 only; resume remains scheduled after exact reset plus 120-second safety margin"
   }
 }
