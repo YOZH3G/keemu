@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "subtask": "final-29",
+  "observed_at_utc": "2026-09-25T12:10:17Z",
+  "branch": "agent/keemu",
+  "scope": "One full release sweep plus bounded read-only/focused verification; no final-30 documentation closure or final-31 audit",
+  "release_gate": "BLOCKED",
+  "whole_id_basis": "docs/evidence/final28-acceptance.json: A01 PASS; A02-A21 BLOCKED; fresh checks do not promote historical bounded slices to whole-ID PASS",
+  "full_sweep": {
+    "result": "FAIL",
+    "counts": {"PASS": 233, "FAIL": 2, "SKIP": 3},
+    "source": "reports/final29/release-pytest.xml",
+    "source_sha256": "278dba12eef0311d89cfaa0a96969df6f34120824cb509115790984114646e20",
+    "exact_initial_invocation": "NOT RETAINED: JUnit and pytest log preserved; opt-in selection established by executed testcases",
+    "failed": [
+      {
+        "test": "tests/integration/test_m1a15_https.py::test_https_aarch64_with_local_ca",
+        "cause": "Docker-local locked image sha256:fa618afa80cab7d081e8012ed8209cf16d95507263c412ba119d131510e888bc absent before fixture execution",
+        "classification": "prerequisite FAIL, not target TLS behavior FAIL"
+      },
+      {
+        "test": "tests/integration/test_p0_image.py::P0ImageIntegrationTests::test_live_image_and_saved_layer_match_lock",
+        "cause": "Docker-local locked image sha256:bfc44a226f962eb35251bb51c33caada4a9e0d44b2bb63567a5fff18b35b1f04 absent before live audit",
+        "classification": "prerequisite FAIL, not saved-layer audit FAIL"
+      }
+    ],
+    "skipped": [
+      {"test": "tests/integration/test_m1c26_ipc.py::test_target_decision_packet_flow", "reason": "approved kernel modules xt_NFQUEUE/iptable_filter absent; no release-run rule or verdict; prior hash-bound substituted packet fixture evidence remains historical"},
+      {"test": "tests/integration/test_m1c26_packet_blocker.py::test_routed_baseline_and_target_queue_blocker", "reason": "no-module historical preflight deliberately not repeated after approved nfnetlink_queue load"},
+      {"test": "tests/integration/test_p0_web_demo.py::P0WebDemoIntegrationTests::test_live_p0_web_demo_probe_passes", "reason": "opt-in probe not selected; locked web image absent; historical P0 evidence not a fresh PASS"}
+    ]
+  },
+  "portable": {"result": "PASS", "counts": {"PASS": 208, "SKIP": 30, "FAIL": 0}, "command": "uv run pytest -q", "log": "reports/final29/portable.log", "log_sha256": "8a2b9f8a47111b75599a3315b348d6867e624e363adafc42b6f4c7082b403a7a", "note": "30 opt-in tests skipped in default portable run; the three full-sweep skips above are separately counted"},
+  "three_target": {
+    "aarch64": {"docker": "PASS", "direct_qemu_proot": "NOT RUN in final-29", "evidence": "release-pytest.xml: test_target_opkg_inventory_and_network_with_owned_cleanup PASS; previous direct target proof retained in final-28 ledger"},
+    "mipsel-3.4": {"direct_qemu_proot": "PASS", "docker": "PASS"},
+    "mips-3.4": {"direct_qemu_proot": "PASS", "docker": "PASS"},
+    "raw": ".runtime/m1b18/probe-92ceea1ecf6744ef898b94ae206a4456.json",
+    "raw_sha256": "09e03aae971d06a6e504d597bf9cf67437093fd0e5ec3ea16bd5c689b6ce7a80",
+    "target_socket": "BLOCKED on all three targets: Protocol not supported",
+    "native_same_namespace_socket": "PASS on all three targets; no queue/rule/packet inference",
+    "capability_raw": ".runtime/m1b22/4b81196f729341e6b569f1df3caffd02/capabilities.json",
+    "capability_sha256": "7c22f05e9f82e368c24540524b77db6965f6771bc5f1b53080c64f533aac65e1"
+  },
+  "applicable_network": {
+    "fresh_passes": [
+      "tests/integration/test_m1c23_topology.py: 2 routed/cleanup tests",
+      "tests/integration/test_m1c24_network_demo.py: 1 API-only fixture smoke",
+      "tests/integration/test_m1c25_network_demo.py: 2 cases including one target API-only run",
+      "tests/integration/test_m1c26_queue_recheck.py: 1 target socket differential, without queued-flow rule",
+      "tests/integration/test_m1c27_network_interruption.py: 1 SIGKILL/foreign-rule recovery case"
+    ],
+    "fresh_interruption_raw": "reports/m1c27-m1c27-other-bc4884e9b779-interruption.json",
+    "fresh_interruption_sha256": "339e9b428fa30b3d2e3f678e9dd0d6f040002889cd48af1ff3e7c8a7b098f6db",
+    "foreign_container_network_before_after": "MATCH within fresh SIGKILL test",
+    "foreign_routing_rule_before_after": "MATCH within fresh SIGKILL test",
+    "host_firewall_rules": "NOT RUN; no direct host firewall command",
+    "interrupted_A21_report": "NOT IMPLEMENTED: explicit topology recovery only",
+    "packet_verdict": "NOT RUN in final-29; retained m1c-26 hash-bound substituted fixture PASS is historical only"
+  },
+  "schema_static_offline": {
+    "schema_parity": "PASS in full sweep: run-report/generic-profile, scenario/scenario-lock/persistent-environment, matrix",
+    "static_inspector": "PASS for pinned real aarch64 opkg IPK after correcting a stale guessed filename; first attempted path did not exist",
+    "static_inspector_log": "reports/final29/static-inspect-corrected.log",
+    "offline_mips": "PASS on both targets: 20 packages, 31 target ELFs per target; image/archive/rootfs integrity, not Docker target execution",
+    "offline_aarch64": "PASS: 20 P0 packages, three fixture sources, and prepared base init --offline; no fetch/build claimed",
+    "offline_repeat": "PASS in full sweep: test_aarch64_hello_offline_locked_repeat and test_live_image_and_offline_repeat_never_fetches",
+    "final28_hash_validator": "PASS: 21 IDs, 15 bound sources; release BLOCKED",
+    "ruff_check": "PASS: uv run ruff check .",
+    "ruff_format_check": "FAIL: uv run ruff format --check . found six already-committed files needing formatting (doctor.py, entware.py, models.py, p0_web_demo.py, p0_web_demo_probe.py, test_m1a16_recovery.py); not reformatted within verification-only subtask",
+    "diff_whitespace": "PASS: git diff --check"
+  },
+  "missing_image_diagnosis": {
+    "p0_original": {"locked_id": "sha256:bfc44a226f962eb35251bb51c33caada4a9e0d44b2bb63567a5fff18b35b1f04", "saved_config_sha256": "02f8e0f6614d4ec1685896c570df7f8b46e3c4a3f2188c8099fc756dbe05569f", "local_image_present": false},
+    "p0_web": {"locked_id": "sha256:fa618afa80cab7d081e8012ed8209cf16d95507263c412ba119d131510e888bc", "saved_config_sha256": "ee91c85d856d4b09f17e45573bb56f85cdabc89bb507921e2b4ed4ef40d005a7", "local_image_present": false, "saved_archive_sha256": "4db006f0567ea4696481d18c6f9d8c8791690487a4518150f3a432e63d4c8710"},
+    "restoration": "NOT ATTEMPTED: saved export config digests differ from locked Docker-local IDs; importing cannot be assumed to restore the exact locks; no false rerun PASS"
+  },
+  "clean_host": {
+    "docker_server": "29.7.2",
+    "owner_containers": 0,
+    "owner_networks": 0,
+    "kernel_taint": "0",
+    "modules": {"nfnetlink_queue": true, "xt_NFQUEUE": false, "iptable_filter": false, "nft_queue": false},
+    "worker_binfmt_entry_visible": false,
+    "fresh_ubuntu_vm": "NOT RUN; shared Docker host is not fresh Ubuntu",
+    "source": "reports/final29/clean-host.log",
+    "source_sha256": "3374ab3da9c30a9bddb2cd8a5342b910a85b5269603bc93f716e312f0979158a"
+  },
+  "raw_logs_sha256": {
+    "reports/final29/release-pytest.log": "f7631c8c0135cf8c90a62fe3c670cd8e0c8e3d6be889acf4c61ba8e7774debc0",
+    "reports/final29/three-target.log": "ab7745882d78db884ce6244c8077709a816abe8f9cc8b0b49ac4936bf4538814",
+    "reports/final29/three-target-capability.log": "70e7ba4bd466ff24e57ef341c177a26ffc1e300cb7796051c8c003eff8849de4",
+    "reports/final29/static-offline.log": "fb9ddbc3663035398fed7fa4adc1f8fa7102f32b2d205c0223219ef3c7ce6ff0",
+    "reports/final29/offline-static-explicit.log": "1c1679b56c653dee1c59c9d70c7cc0e6650c5ca38272be1d872ae632548cf694",
+    "reports/final29/static-inspect-corrected.log": "92e8f72dfe2903dad2395efc63fc2edfc3324cc8e4c5f02f182bdbdac69f20ab",
+    "reports/final29/portable.log": "8a2b9f8a47111b75599a3315b348d6867e624e363adafc42b6f4c7082b403a7a"
+  }
+}

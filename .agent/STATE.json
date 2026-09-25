@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T11:53:16+00:00",
+    "last_evaluated_at": "2026-09-25T12:04:42+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -29,7 +29,7 @@
     "signals": {
       "score": 14,
       "task_chars": 24002,
-      "changed_files": 1,
+      "changed_files": 0,
       "repo_files_sampled": 2000,
       "graphify_present": true,
       "graphify_bytes": 1682599,
@@ -62,7 +62,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 29,
+      "active_index": 30,
       "items": [
         {
           "id": "preflight",
@@ -758,8 +758,15 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "active",
-          "digest": "297e8098a2b66c1ea68e1f8bc48b8c61bb83af8c1a5d3f5ba4aa3fef9219ce47"
+          "status": "complete",
+          "digest": "297e8098a2b66c1ea68e1f8bc48b8c61bb83af8c1a5d3f5ba4aa3fef9219ce47",
+          "outcome": {
+            "event_id": "evt_f0d1cacd972376a41c899852",
+            "route_event_id": "evt_617c6c3a507b6825ca19d854",
+            "completed_at": "2026-09-25T12:16:05+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "final-30",
@@ -773,7 +780,7 @@
             "model": "gpt-5.6-terra",
             "reasoning": "medium"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "5b87b239b6dd9ec82548207b351dc7ee058b73c5c19a6c92671a609db79663ba"
         },
         {
@@ -796,7 +803,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_30d48e0fed8492ca16ec7573",
+      "last_event_id": "evt_f0d1cacd972376a41c899852",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -952,10 +959,10 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T11:53:16+00:00",
-    "last_run_finished_at": "2026-09-25T11:53:08+00:00",
-    "last_log": ".agent/runs/20260925T114407Z.log",
-    "last_checkpoint_at": "2026-09-25T11:53:10+00:00"
+    "last_run_started_at": "2026-09-25T12:04:42+00:00",
+    "last_run_finished_at": "2026-09-25T12:16:03+00:00",
+    "last_log": ".agent/runs/20260925T120442Z.log",
+    "last_checkpoint_at": "2026-09-25T12:16:05+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-25T12:03:21+00:00",
