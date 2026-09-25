@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
+  "status": "WAITING_QUOTA",
   "session_id": "20260925_021217_b58cec",
-  "pause_reason": null,
+  "pause_reason": "openai_usage_limit",
   "quota": {
-    "kind": "primary_window",
-    "detected_at": "2026-09-25T06:20:52+00:00",
-    "resets_at": "2026-09-25T11:20:52+00:00",
-    "resets_in_seconds": 18000,
-    "wake_at": null,
-    "plan_type": "plus",
-    "raw_excerpt": "5-hour OAuth quota has 99.0% remaining; resume active subtask"
+    "kind": "unknown",
+    "detected_at": "2026-09-25T07:52:11+00:00",
+    "resets_at": null,
+    "resets_in_seconds": null,
+    "wake_at": "2026-09-25T12:57:11+00:00",
+    "plan_type": null,
+    "raw_excerpt": "↻ Resumed session 20260925_021217_b58cec \"Verify routed packet processing end to end\" (4 user messages, 333 total messages) ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~4h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260925_021217_b58cec Provider said: HTTP 429: The usage limit has been reached Limit resets at 11:20 (in 3h 29m)."
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T07:21:03+00:00",
+    "last_evaluated_at": "2026-09-25T07:50:50+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -791,7 +791,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_73052ea3863e6b73d5203287",
+      "last_event_id": "evt_fcd06bf0a194029b8e953f34",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -946,11 +946,11 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T07:21:03+00:00",
-    "last_run_finished_at": "2026-09-25T07:36:10+00:00",
-    "last_log": ".agent/runs/20260925T072103Z.log",
-    "last_checkpoint_at": "2026-09-25T07:36:10+00:00"
+    "last_exit_code": 1,
+    "last_run_started_at": "2026-09-25T07:50:50+00:00",
+    "last_run_finished_at": "2026-09-25T07:52:11+00:00",
+    "last_log": ".agent/runs/20260925T075050Z.log",
+    "last_checkpoint_at": "2026-09-25T07:52:11+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-25T07:50:01+00:00",

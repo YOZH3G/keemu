@@ -12,12 +12,13 @@ from pathlib import Path
 import pytest
 
 from keemu.docker_runtime import DockerBoundaryError, DockerRuntime, _exec
-from keemu.network_demo import NetworkDemo, flow, rule
+from keemu.network_demo import flow, rule
 from keemu.topology import BUSYBOX, cleanup, create
 
 IMAGE = "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224"
 TARGET = Path(".runtime/m1c26/network-demo-ipc-aarch64")
 ADAPTER = Path(".runtime/m1c26/nfqueue-transport-amd64")
+FIREWALL = "sha256:e9f36bf1e977d745f19873637490078724402c5fd3015d770d1dfba055237be9"
 
 
 def _copy(runtime, container, source, destination):
@@ -83,11 +84,21 @@ def _mode(runtime, client, address, selected):
     return observed
 
 
-def _iptables(runtime, router):
-    result = runtime.exec(
-        router,
-        ["/opt/sbin/iptables", "-nvxL", "FORWARD", "--line-numbers"],
+def _iptables(runtime, router, *arguments):
+    runtime.inspect("container", router)
+    result = _exec(
+        [
+            "docker", "container", "run", "--rm", "--pull=never",
+            "--network", f"container:{router}", "--read-only", "--tmpfs", "/run",
+            "--cap-drop=ALL", "--cap-add=NET_ADMIN",
+            "--security-opt", "no-new-privileges",
+            "--label", "org.keemu.owner=keemu",
+            "--label", f"org.keemu.run-id={runtime.run_id}",
+            "--entrypoint", "/usr/sbin/iptables-legacy", FIREWALL,
+            "-w", "2", "--modprobe=/bin/false", *arguments,
+        ],
         allow_failure=True,
+        timeout=20,
     )
     return {
         "exit_code": result.exit_code,
@@ -138,6 +149,9 @@ def test_target_decision_packet_flow():
     before_networks = DockerRuntime.listed_ids("network")
     evidence: dict[str, object] = {"run_id": run_id, "result": "INCOMPLETE"}
     runtime = DockerRuntime(run_id, IMAGE)
+    rule_attempted = False
+    router = None
+    topology = None
     try:
         topology = create(run_id, IMAGE)
         router = topology.containers["router"]
@@ -231,21 +245,23 @@ def test_target_decision_packet_flow():
             evidence["baseline"] = _flow_request(runtime, client, addresses.server)
             assert evidence["baseline"]["exit_code"] == 0
             assert "state=routed" in evidence["baseline"]["body"]
-            demo = NetworkDemo(topology, IMAGE, evidence["binary_hashes"]["target"])
-            evidence["iptables_before"] = _iptables(runtime, router)
-            if evidence["iptables_before"]["exit_code"] != 0:
-                evidence["result"] = "BLOCKED: target iptables backend absent"
-                pytest.skip("target /opt/sbin/iptables unavailable; no rule installed")
-            assert (
-                runtime.exec(
-                    router,
-                    [rule(topology)[0], "-C", *rule(topology)[2:]],
-                    allow_failure=True,
-                ).exit_code
-                != 0
+            image = json.loads(_exec(["docker", "image", "inspect", FIREWALL]).stdout)[0]
+            assert image["Id"] == FIREWALL
+            assert image["Config"]["Labels"]["org.keemu.owner"] == "keemu"
+            evidence["firewall_image"] = FIREWALL
+            evidence["iptables_before"] = _iptables(
+                runtime, router, "-nvxL", "FORWARD", "--line-numbers"
             )
-            demo.install_rule()
-            evidence["iptables_after_install"] = _iptables(runtime, router)
+            assert evidence["iptables_before"]["exit_code"] == 0, evidence
+            exact = rule(topology)[2:]
+            assert _iptables(runtime, router, "-C", *exact)["exit_code"] != 0
+            rule_attempted = True
+            evidence["insert"] = _iptables(runtime, router, "-I", *exact)
+            assert evidence["insert"]["exit_code"] == 0, evidence
+            assert _iptables(runtime, router, "-C", *exact)["exit_code"] == 0
+            evidence["iptables_after_install"] = _iptables(
+                runtime, router, "-nvxL", "FORWARD", "--line-numbers"
+            )
             evidence["accept"] = _flow_request(runtime, client, addresses.server)
             evidence["accept_state"] = _get(runtime, client, addresses.router)
             evidence["accept_queue"] = _queue(runtime, router)
@@ -268,7 +284,9 @@ def test_target_decision_packet_flow():
                 evidence["restored_state"]["accepted"]
                 > evidence["accept_state"]["accepted"]
             )
-            evidence["iptables_after_flow"] = _iptables(runtime, router)
+            evidence["iptables_after_flow"] = _iptables(
+                runtime, router, "-nvxL", "FORWARD", "--line-numbers"
+            )
             evidence["target_log"] = runtime.exec(
                 router, [BUSYBOX, "cat", "/opt/etc/network-demo/target.log"]
             ).stdout.decode()[-4096:]
@@ -288,11 +306,24 @@ def test_target_decision_packet_flow():
                 ]
             )
             evidence["pcap"] = _pcap(capture, addresses.client, addresses.server)
-            demo.remove_rule()
-            evidence["iptables_after_remove"] = _iptables(runtime, router)
-            assert evidence["iptables_after_remove"] == evidence["iptables_before"]
+            evidence["remove"] = _iptables(runtime, router, "-D", *exact)
+            assert evidence["remove"]["exit_code"] == 0
+            rule_attempted = False
+            evidence["iptables_after_remove"] = _iptables(
+                runtime, router, "-nvxL", "FORWARD", "--line-numbers"
+            )
+            assert _iptables(runtime, router, "-C", *exact)["exit_code"] != 0
             evidence["result"] = "PASS: target IPC decisions and routed verdicts"
     finally:
+        if rule_attempted and topology is not None and router is not None:
+            exact = rule(topology)[2:]
+            try:
+                if _iptables(runtime, router, "-C", *exact)["exit_code"] == 0:
+                    evidence["emergency_rule_removal"] = _iptables(
+                        runtime, router, "-D", *exact
+                    )
+            except DockerBoundaryError as exc:
+                evidence["emergency_rule_removal_error"] = str(exc)
         cleanup(run_id, IMAGE)
         evidence["cleanup"] = {
             "foreign_containers_unchanged": DockerRuntime.listed_ids("container")
