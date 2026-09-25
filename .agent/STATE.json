@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "RESUMING",
+  "status": "WAITING_QUOTA",
   "session_id": "20260925_021217_b58cec",
-  "pause_reason": null,
+  "pause_reason": "openai_usage_limit",
   "quota": {
-    "kind": "primary_window",
-    "detected_at": "2026-09-24T21:27:34+00:00",
-    "resets_at": "2026-09-25T01:16:35+00:00",
-    "resets_in_seconds": 13741,
-    "wake_at": "2026-09-25T01:18:35+00:00",
+    "kind": "unknown",
+    "detected_at": "2026-09-25T02:54:32+00:00",
+    "resets_at": null,
+    "resets_in_seconds": null,
+    "wake_at": "2026-09-25T07:59:32+00:00",
     "plan_type": null,
-    "raw_excerpt": "5-hour OAuth quota has 2.0% remaining; defer new task until reset"
+    "raw_excerpt": "↻ Resumed session 20260925_021217_b58cec \"Verify routed packet processing end to end\" (1 user message, 93 total messages) ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~4h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260925_021217_b58cec Provider said: HTTP 429: The usage limit has been reached Limit resets at 06:18 (in 3h 25m)."
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T02:12:14+00:00",
+    "last_evaluated_at": "2026-09-25T02:52:12+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -29,10 +29,10 @@
     "signals": {
       "score": 14,
       "task_chars": 24002,
-      "changed_files": 1,
+      "changed_files": 0,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1584727,
+      "graphify_bytes": 1597717,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -791,7 +791,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_e6adaa60c700c48cbc8ada11",
+      "last_event_id": "evt_64c6e0418ad6a5096f9be0a2",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -946,11 +946,11 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T02:12:14+00:00",
-    "last_run_finished_at": "2026-09-25T02:20:44+00:00",
-    "last_log": ".agent/runs/20260925T021214Z.log",
-    "last_checkpoint_at": "2026-09-25T02:20:44+00:00"
+    "last_exit_code": 1,
+    "last_run_started_at": "2026-09-25T02:52:12+00:00",
+    "last_run_finished_at": "2026-09-25T02:54:32+00:00",
+    "last_log": ".agent/runs/20260925T025212Z.log",
+    "last_checkpoint_at": "2026-09-25T02:54:32+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-25T02:50:54+00:00",
