@@ -4,9 +4,15 @@ KEEMU is a reproducible verification harness for Entware applications. The autho
 
 ## Current status
 
-P0 technical-risk experiments are complete. MVP 1A is in progress: strict input
-schemas, static IPK inspection, locked AArch64 base `init`, disposable
-one-shot `test`, and bounded AArch64 persistent-environment commands are implemented.
+P0 technical-risk experiments are complete. Bounded MVP 1A, MVP 1B and MVP 1C
+slices are implemented and hash-bound evidence is retained; this is not MVP 1
+completion. The final-28 whole-ID ledger marks A01 PASS for the specified
+three-generic-target execution check and A02–A21 BLOCKED. Final-29 release
+verification remains BLOCKED: the retained 238-case sweep has 233 PASS, 2
+missing-locked-image prerequisite FAILs and 3 intentional SKIPs. The default
+portable run has 208 PASS and 30 opt-in SKIPs. See
+`docs/evidence/final28-acceptance.json`, `docs/evidence/final29-release.json`,
+and `docs/traceability.md`.
 
 Verified in the current Debian/Docker environment:
 
@@ -21,11 +27,13 @@ Verified in the current Debian/Docker environment:
 Not yet verified:
 
 - general scenario-driven localhost publication, complete isolation and automatic/one-shot interruption recovery; the persistent runner supports target-loopback HTTP service probes and explicit owner-checked interrupted-state cleanup only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
-- NFQUEUE ACCEPT/DROP is BLOCKED on the documented target socket/kernel capability, not PASS;
+- direct target NFQUEUE remains BLOCKED (`Protocol not supported`); a separate
+  bounded AArch64 packet fixture passed only through declared native transport
+  and firewall-installer substitutions, not as generic target compatibility;
 - general MIPS/MIPSEL `keemu init`/single-scenario `test` lifecycle, full A10
   matrix PASS and strict NDM/event contracts (locked target probes pass, but
   the new matrix correctly records required MIPS cases BLOCKED);
-- MVP 1A, 1B, or 1C acceptance gates.
+- MVP 1A, MVP 1B, MVP 1C, MVP 1 and release acceptance gates.
 
 The PRoot result is diagnostic evidence only. P0 Docker/binfmt and web-demo
 experiments close the technical-risk gate, not full A01/A19 or compatibility

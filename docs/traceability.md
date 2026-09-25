@@ -1,19 +1,25 @@
 # Acceptance traceability
 
-## Final-28 reconciliation (not release acceptance)
+## Final release state (final-28/final-29)
 
-`docs/evidence/final28-acceptance.json` is the current A01–A21 whole-ID ledger;
-`uv run python -m scripts.validate_final28` checks its source SHA-256 values,
-retained JUnit counts, required three-target statuses, negative-package FAIL
-versus harness PASS, historical BLOCKED→bounded PASS chronology, packet/pcap
-correlation, and interruption limitations. A01's specified three-generic-target
-execution check is PASS. A02–A21 remain BLOCKED as **whole release IDs** where
-required generic, target, network, recovery, or report facets lack proof. A14/A17
-have real PASS for the *bounded substituted fixture checks* recorded below;
-direct target NFNETLINK still fails and generic lifecycle is unproved. Earlier
-PARTIAL table rows describe verified slices, not a competing release status.
-Historical frozen ledgers are unchanged. This is evidence reconciliation, not
-the final-29 release test run or final-31 independent completion audit.
+`docs/evidence/final28-acceptance.json` is the authoritative A01–A21 whole-ID
+ledger; `uv run python -m scripts.validate_final28` verifies its 15 retained
+hash-bound sources, historical JUnit counts, target statuses, chronology,
+packet/pcap correlation and interruption gaps. A01's specified three-target
+execution check is PASS. A02–A21 are BLOCKED as whole release IDs because
+required generic, target, network, recovery, or report facets lack proof.
+
+`docs/evidence/final29-release.json` is the subsequent release observation;
+`uv run python -m scripts.validate_final29` verifies retained logs/JUnit,
+two MIPS probes, three socket differentials, interruption evidence and clean-host
+readback. Its full sweep is FAIL (233 PASS, 2 missing-image prerequisite FAIL,
+3 intentional SKIP), so release status remains BLOCKED. Portable-only checks
+passed 208 with 30 opt-in skips; fresh packet verdict and fresh Ubuntu checks
+were NOT RUN. A14/A17 retain real PASS only for bounded substituted fixture
+checks; direct target NFNETLINK still fails and generic lifecycle is unproved.
+Earlier PARTIAL table rows are verified slices, not competing release statuses.
+Historical frozen ledgers remain unchanged; final-31 independent audit has not
+run.
 
 Most rows retain pre-m1a-17 slice statuses; A14/A17 reflect the later bounded m1c-26 fixture. `PARTIAL` is not PASS; the frozen m1a-17 ledger below is authoritative **at its capture time**. The later m1b-18 PASS follow-up closes the A01 three-generic-target execution gap without rewriting either earlier observation. The m1b-22 frozen three-target observation below supersedes stale A02–A06/A10/A11 table readings, without changing prior ledgers.
 

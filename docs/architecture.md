@@ -2,7 +2,10 @@
 
 ## Status
 
-This document describes the P0 diagnostic, report foundation, mixed-image build and bounded P0 Docker/binfmt experiments, plus the MVP 1A input-schema, static IPK inspection, locked AArch64 base-init, Docker boundary, one-shot lifecycle and bounded persistent-registry slices. General network lifecycle and routed topology are not implemented.
+This document describes verified P0 foundations and bounded MVP 1A, MVP 1B and
+MVP 1C slices. It is not a production-complete architecture: final-28 marks
+only the specified A01 three-target execution check PASS; A02–A21 whole release
+IDs remain BLOCKED, and final-29 release verification is BLOCKED.
 
 ## Implemented components
 
@@ -22,6 +25,8 @@ This document describes the P0 diagnostic, report foundation, mixed-image build 
 - `src/keemu/lifecycle.py` runs one-shot, disposable, locked IPKs: validation with no-follow read/rehash, static inspection, offline cache and image verification, owner-checked Docker create, target opkg install, inventory/check/readiness/stop/remove/residual stages, finally cleanup and write-once evidence. Unexpected exits and timeouts retain their primary failure plus independent cleanup status. Metadata-only Docker diff is not a file-content or full process/socket census; network vantage and general persistent acceptance are later. See ADR-0007.
 - `src/keemu/matrix.py` and `schemas/matrix.schema.json` bind each named target to its own strict scenario and production lock, reject duplicate profiles and malformed inputs before Docker, and mark missing required targets BLOCKED. The preflight reopens locked IPK/profile inputs and uses static inspection for architecture mismatch FAIL; MIPS/MIPSEL general lifecycle is still unsupported and thus BLOCKED. Supported child runs execute sequentially through the existing one-shot runner, retaining independent immutable reports; parent `RunReport` aggregates per-case checks using the established ERROR → FAIL → BLOCKED → WARN → PASS rule, with child report path/hash and source matrix bytes. No target-specific PASS is inferred from the earlier MIPS root probes. See ADR-0011.
 - `src/keemu/registry.py`, `src/keemu/persistent.py`, and CLI `up/down/restart/destroy/status/ports/logs/exec/recover` provide a limited persistent AArch64 IPK environment without host publication. Owner-only per-name flock serializes transitions; no-replace creation, fsynced atomic JSON replacement, frozen scenario snapshot, immutable identity checks, and permanent tombstones reject replacement. Every ordinary operation rechecks Docker full ID, run/base/target labels and actual state. Explicit `recover --yes` reconciles a failed/interrupted record, admits at most one unrecorded container only with the exact deterministic name and matching run ownership, rejects foreign/extra resources, verifies absence and tombstones; it never retries uncertain install/service actions. The one-shot report pipeline is not reused for persistent commands. See ADR-0008 and ADR-0010.
+- `src/keemu/ndm.py` and `src/keemu/events.py` provide strict host-local synthetic process/event contracts only. They do not establish target `ndmc`, physical-device behavior, a kernel firewall hook, or A11/A12 acceptance.
+- `src/keemu/topology.py` creates owner-labeled internal LAN/WAN Docker bridges and an AArch64 client/router/server topology with target `br0`, endpoint-named `wan0`, namespace forwarding and explicit full-ID cleanup. `src/keemu/network_demo.py` stages the locked AArch64 network-demo fixture and its diagnostic API. The m1c-26 packet slice uses declared native NFQUEUE transport and native `iptables-legacy` substitutions inside the owned router; direct target `NETLINK_NETFILTER` and target iptables remain unsupported.
 
 ## P0 diagnostic data flow
 
@@ -36,7 +41,11 @@ This document describes the P0 diagnostic, report foundation, mixed-image build 
 
 The accepted runtime remains Docker Engine on Linux x86_64. P0 image/target/init probes and the m1a-12 runtime boundary were exercised on the approved AArch64 binfmt runner. Each created container gets a new writable overlay; persistent down/up and restart retain the same full container ID and layer. The atomic registry and explicit failed/interrupted persistent cleanup have real SIGKILL evidence for this bounded IPK path. Automatic recovery, one-shot crash journaling, complete host/disk isolation and network-resource recovery remain open.
 
-The required network topology remains client/router/server in project-owned namespaces or internal Docker networks. No network implementation choice is accepted until the P0 publish, persistence, routing, and NFQUEUE experiments are executed on a capable runner.
+The verified network topology is a bounded client/router/server implementation
+in project-owned internal Docker networks. It proved routed HTTP, controlled
+SIGKILL cleanup and one substituted packet fixture, but not generic scenario
+network lifecycle, direct target NFQUEUE, hostile-route isolation, automatic
+recovery, or full MVP 1C acceptance.
 
 ## Trust boundaries
 

@@ -4,6 +4,18 @@
 
 The P0 technical-risk gate has real AArch64 evidence for Docker/binfmt target execution, localhost-only HTTP/UDP publishing, and state persistence across service restart and Docker stop/start. Its NFQUEUE requirement is closed as a reproducible BLOCKED capability diagnosis, not an ACCEPT/DROP result. Exact inputs and report digests are in `docs/evidence/p0-evidence-manifest.md`.
 
+Final release status is BLOCKED. `docs/evidence/final28-acceptance.json` gives
+whole-ID semantics: A01 PASS only for the specified three-generic-target
+execution check; A02–A21 remain BLOCKED. `docs/evidence/final29-release.json`
+records a retained full sweep of 233 PASS, 2 prerequisite FAIL and 3 intentional
+SKIP cases, plus a fresh portable 208 PASS/30 opt-in SKIP run. The failed cases
+need absent Docker-local historical P0/TLS image IDs; their saved export config
+digests differ, so no import or replacement was attempted. Current owner
+containers/networks are 0/0; `nfnetlink_queue` remains loaded while
+`xt_NFQUEUE`, `iptable_filter` and `nft_queue` are absent. Fresh Ubuntu and a
+new packet-verdict job are NOT RUN. Repository-wide formatter check still fails
+on six unchanged committed files.
+
 ## Known limitations
 
 - Docker Engine 29.7.2 is reachable through a privileged host socket. The separately approved `qemu-aarch64` binfmt registration must be revalidated after reboot or runner change. No privileged target container or public port was used.

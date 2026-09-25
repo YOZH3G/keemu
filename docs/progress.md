@@ -2,7 +2,11 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A subtasks m1a-09 through m1a-16 add versioned inputs, bounded static IPK inspection, locked AArch64 base init, an owned Docker boundary, one-shot IPK lifecycle, restricted persistent AArch64 CLI, HTTP/HTTPS/UDP fixtures and explicit interruption recovery verification. m1a-17 froze the bounded AArch64 acceptance observation. No full cross-target lifecycle or MVP 1A acceptance is claimed.
+P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A,
+MVP 1B and MVP 1C each have verified bounded slices, but no phase or MVP 1 gate
+is complete. Final-28 reconciled whole IDs: the specified A01 three-target
+execution check is PASS; A02–A21 remain BLOCKED. Final-29 release verification
+is also BLOCKED and final-31 has not run.
 
 ## P0 verified results
 
@@ -90,10 +94,39 @@ The subsequent bounded `iptable_filter` approval enabled frozen m1c-26 packet ve
 
 The opt-in live test SIGKILLed the real AArch64 topology creator at three barriers: first internal network, first container after both networks, and fully configured router. Explicit owner/run-ID/full-ID recovery twice removed only the interrupted run's 0/1, 1/2 and 3/2 container/network resources respectively. A simultaneous foreign test run retained its IPv4 policy-rule sentinel priority 17271, with identical native rule dumps after each kill and recovery. The two unrelated containers and four Docker networks matched exact baseline/postflight identities and selected state; final project-owner resource queries were empty. Inspected interrupted containers/networks retained allowed namespace-only `NET_ADMIN`, internal bridges, no privilege, host mount/network/PID or `SYS_MODULE`, and applied CPU/RAM/PID/log bounds. Live 1 passed; portable 202 passed/30 opt-in skipped. Tracked byte-identical raw `docs/evidence/m1c27-network-interruption.json` SHA-256 `6d60b47c6e4b284b1d615e401f46579ad8f2fbd2f3e0ecf83c939a79e2a32537`; ADR-0017. This proves scoped A18/A20 regressions, not automatic recovery, interrupted A21 reports, foreign firewall rules or whole-ID/MVP 1C acceptance. No host module load or direct host-firewall command was run; Docker's transient host-managed rules were not enumerated.
 
+## Final release verification (final-28/final-29)
+
+`docs/evidence/final28-acceptance.json` SHA-256
+`7d3c0b10dc0c0436b18d4a028bb4e27b80d113fc734adac009784f13dfd74c4`
+reconciles all A01–A21 whole IDs from 15 retained hash-bound sources. A01 is
+PASS only for its specified three-generic-target execution check; A02–A21 and
+all MVP gates are BLOCKED. `docs/evidence/final29-release.json` SHA-256
+`a53b0bd54b94b0d7b2e54cc241d361228b2b8ed2fb8e4fd8bcd2a4c5f0b86fba`
+records a release observation, not a release PASS: retained full sweep 233
+PASS/2 missing-image prerequisite FAIL/3 intentional SKIP; fresh portable run
+208 PASS/30 opt-in SKIP; MIPS/MIPSEL direct and Docker probes PASS; all target
+NFNETLINK sockets BLOCKED with native controls PASS. Applicable topology/API/
+socket/SIGKILL checks passed, while the kernel packet-verdict job was NOT RUN
+because `xt_NFQUEUE` and `iptable_filter` were absent. Owner containers/networks
+were 0/0, taint was 0, fresh Ubuntu was NOT RUN, and a repository-wide format
+check failed only on six unchanged committed files. No historical lock/image was
+rewritten or restored without identity proof.
+
 ## Acceptance status
 
-P0 is complete as a technical-risk gate. A07–A09 pass for bounded AArch64 fixture slices only, not as whole IDs. A13 has an isolated routing PASS slice but remains PARTIAL; A15/A16 retain bounded fixture slices. A14/A17 packet checks now PASS on the approved substituted native transport/firewall fixture; direct AArch64 NFNETLINK and target iptables remain BLOCKED. The frozen m1a-17 ledger classifies A01–A09/A18–A21 and MVP 1A as BLOCKED **at that observation time**; m1b-18 later closes the A01 three-target ELF/shell/nested-exec gap only, without changing the historical ledger. A10 has a real aggregate BLOCKED matrix observation (m1b-19), not full acceptance; MVP 1A, MVP 1B, MVP 1C and MVP 1 are not complete.
+P0 is complete as a technical-risk gate. Final-28 is authoritative for whole
+release IDs: A01 PASS for specified three-target execution only; A02–A21
+BLOCKED. Bounded fixture/slice results remain separately recorded: A13/A15/A16/
+A18/A19/A20/A21 are PARTIAL, while A14/A17 have substituted packet-fixture PASS
+only. Final-29's failed release sweep confirms no release promotion. MVP 1A,
+MVP 1B, MVP 1C and MVP 1 are not complete.
 
 ## Cleanup and retained state
 
-Runtime reports, registry state and saved images remain ignored under `reports/` and `.runtime/`; committed lock digests permit retention verification. P0 probes and m1a-11 through m1a-14 tests removed their project-owned containers after owner/run-id checks. Real m1a-14 target execution passed through the Docker runner, but the Hermes namespace did not expose `/proc/sys/fs/binfmt_misc/qemu-aarch64` for independent current registration readback; revalidate the approved host entry after runner changes. m1a-14 made no direct host firewall/binfmt/module change and published no port.
+Runtime reports, registry state and saved images remain ignored under `reports/`
+and `.runtime/`; committed lock digests permit retention verification. Final-29
+readback found KEEMU owner containers/networks 0/0, taint 0, retained
+`nfnetlink_queue`, and absent `xt_NFQUEUE`/`iptable_filter`/`nft_queue`. No
+image restore, module load, direct host firewall action or full release rerun was
+performed during final verification. Revalidate approved binfmt handlers after a
+runner change; the worker namespace still cannot independently read host binfmt.
