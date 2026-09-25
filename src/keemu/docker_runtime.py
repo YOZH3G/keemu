@@ -215,10 +215,29 @@ class DockerRuntime:
             raise DockerBoundaryError("network driver/scope mismatch")
         return item
 
-    def create_network(self, name: str) -> str:
+    def create_network(
+        self,
+        name: str,
+        *,
+        subnet: str | None = None,
+        gateway: str | None = None,
+        internal: bool = False,
+    ) -> str:
         _valid(NAME, name, "network name")
         if not name.startswith("keemu-"):
             raise DockerBoundaryError("network name must be project-prefixed")
+        if (subnet is None) != (gateway is None):
+            raise DockerBoundaryError("subnet and gateway must be specified together")
+        if subnet is not None:
+            import ipaddress
+
+            try:
+                pool = ipaddress.IPv4Network(subnet, strict=True)
+                address = ipaddress.IPv4Address(gateway)
+            except ValueError as exc:
+                raise DockerBoundaryError("invalid network IPAM") from exc
+            if pool.prefixlen != 24 or address != pool.network_address + 1:
+                raise DockerBoundaryError("invalid network IPAM")
         raw = (
             _exec(
                 [
@@ -227,6 +246,12 @@ class DockerRuntime:
                     "create",
                     "--driver",
                     "bridge",
+                    *(["--internal"] if internal else []),
+                    *(
+                        ["--subnet", subnet, "--gateway", gateway]
+                        if subnet is not None and gateway is not None
+                        else []
+                    ),
                     *self._labels("network"),
                     "--",
                     name,
@@ -236,17 +261,45 @@ class DockerRuntime:
             .strip()
         )
         identifier = _valid(ID, raw, "created network ID")
-        if self.inspect("network", identifier).get("Name") != name:
+        info = self.inspect("network", identifier)
+        if (
+            info.get("Name") != name
+            or (internal and info.get("Internal") is not True)
+            or (
+                subnet
+                and info.get("IPAM", {}).get("Config")
+                != [{"Subnet": subnet, "Gateway": gateway}]
+            )
+        ):
             raise DockerBoundaryError("created network name mismatch")
         return identifier
 
-    def create(self, name: str, *, network_id: str | None = None) -> str:
+    def create(
+        self,
+        name: str,
+        *,
+        network_id: str | None = None,
+        network_ip: str | None = None,
+        net_admin: bool = False,
+        forwarding: bool = False,
+    ) -> str:
         _valid(NAME, name, "container name")
         if not name.startswith("keemu-"):
             raise DockerBoundaryError("container name must be project-prefixed")
         self.image()
         if network_id is not None:
             self.inspect("network", _valid(ID, network_id, "network ID"))
+        if network_ip is not None:
+            import ipaddress
+
+            if network_id is None:
+                raise DockerBoundaryError("static IP requires owned network")
+            try:
+                network_ip = str(ipaddress.IPv4Address(network_ip))
+            except ValueError as exc:
+                raise DockerBoundaryError("invalid static IP") from exc
+        if forwarding and not net_admin:
+            raise DockerBoundaryError("forwarding requires NET_ADMIN")
         # Fresh writable overlay; never mount host paths, volumes, or Docker socket.
         # Explicit limits prevent reverting to Docker's unbounded defaults.
         argv = [
@@ -271,8 +324,10 @@ class DockerRuntime:
             "256",
             "--cap-drop",
             "ALL",
+            *(["--cap-add", "NET_ADMIN"] if net_admin else []),
             "--security-opt",
             "no-new-privileges",
+            *(["--sysctl", "net.ipv4.ip_forward=1"] if forwarding else []),
             "--log-driver",
             "json-file",
             "--log-opt",
@@ -285,6 +340,7 @@ class DockerRuntime:
             "/run:rw,nosuid,nodev,size=4m",
             "--network",
             network_id or "none",
+            *(["--ip", network_ip] if network_ip else []),
             *self._labels("container"),
             "--",
             self.image_id,
@@ -308,7 +364,9 @@ class DockerRuntime:
             or host.get("Mounts")
             or host.get("Devices")
             or config.get("Volumes")
-            or host.get("CapAdd")
+            or (host.get("CapAdd") or []) != (["NET_ADMIN"] if net_admin else [])
+            or (host.get("Sysctls") or {})
+            != ({"net.ipv4.ip_forward": "1"} if forwarding else {})
             or host.get("Memory") != 1073741824
             or host.get("MemorySwap") != 1073741824
             or host.get("NanoCpus") != 2000000000
@@ -323,6 +381,55 @@ class DockerRuntime:
         ):
             raise DockerBoundaryError("Docker did not apply bounded isolation settings")
         return identifier
+
+    def connect(
+        self, network_id: str, identifier: str, address: str, *, interface: str = "wan0"
+    ) -> None:
+        """Attach a verified container to a second verified internal bridge."""
+        import ipaddress
+
+        self.inspect("container", identifier)
+        network = self.inspect("network", network_id)
+        if network.get("Internal") is not True:
+            raise DockerBoundaryError("second network must be internal")
+        try:
+            ip = ipaddress.IPv4Address(address)
+            pool = ipaddress.IPv4Network(network["IPAM"]["Config"][0]["Subnet"])
+        except (ValueError, KeyError, IndexError, TypeError) as exc:
+            raise DockerBoundaryError("invalid owned network IPAM") from exc
+        if ip not in pool or ip in (pool.network_address, pool.broadcast_address):
+            raise DockerBoundaryError("static IP outside owned network")
+        if interface != "wan0":
+            raise DockerBoundaryError("only wan0 is allowed as secondary interface")
+        _exec(
+            [
+                "docker",
+                "network",
+                "connect",
+                "--ip",
+                str(ip),
+                "--driver-opt",
+                "com.docker.network.endpoint.ifname=wan0",
+                network_id,
+                identifier,
+            ]
+        )
+        item = self.inspect("container", identifier)
+        endpoint = (
+            item.get("NetworkSettings", {}).get("Networks", {}).get(network["Name"], {})
+        )
+        if (
+            endpoint.get("NetworkID") not in ("", network_id)
+            or (
+                endpoint.get("IPAddress") != str(ip)
+                and (endpoint.get("IPAMConfig") or {}).get("IPv4Address") != str(ip)
+            )
+            or (endpoint.get("DriverOpts") or {}).get(
+                "com.docker.network.endpoint.ifname"
+            )
+            != "wan0"
+        ):
+            raise DockerBoundaryError("network connection readback mismatch")
 
     def start(self, identifier: str) -> None:
         self.inspect("container", identifier)

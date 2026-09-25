@@ -62,9 +62,13 @@ The opt-in AArch64 lifecycle/recovery plus three-profile matrix and offline MIPS
 
 `docs/evidence/p0-evidence-manifest.md` binds the committed locks and ignored runtime reports to their independently recomputed SHA-256 digests. ADR-0001 through ADR-0005 record the diagnostic runtime, mixed image, native-init correction, NFQUEUE blocker, and constrained localhost-observer decision.
 
+## MVP 1C m1c-23 isolated routing slice
+
+`src/keemu/topology.py` provisions two per-run internal Docker bridge networks, three owner-checked AArch64 containers, a real router `br0` and Docker-named `wan0`, client default/server reverse routes, and namespace-only forwarding. No management network is attached to client/server, no host port is published, and no host firewall/module change is requested. Two opt-in live tests passed: target web-demo HTTP traversed router (forwarded datagrams 0→10); simultaneous runs received non-overlapping subnets; removing one preserved the other; injected post-allocation failure rolled back only owned IDs. Tracked raw evidence `docs/evidence/m1c23-topology.json` SHA-256 `9e8ce09bc0e8f0bc4689af5a03bac36393e58d17309b92b394c3cec30787dfe0`; ADR-0015 records QEMU ioctl failures and limitations. A13 is PARTIAL (isolated routing slice PASS); A18/A20 remain PARTIAL; A14/A17 and MVP 1C remain BLOCKED pending real target consumer/verdict evidence. No m1c-24 implementation is included.
+
 ## Acceptance status
 
-P0 is complete as a technical-risk gate. A07–A09 pass for bounded AArch64 fixture slices only, not as whole IDs. A13/A14/A17 are BLOCKED, not PASS. The frozen m1a-17 ledger classifies A01–A09/A18–A21 and MVP 1A as BLOCKED **at that observation time**; m1b-18 later closes the A01 three-target ELF/shell/nested-exec gap only, without changing the historical ledger. A10 has a real aggregate BLOCKED matrix observation (m1b-19), not full acceptance; MVP 1A, MVP 1B, MVP 1C and MVP 1 are not complete.
+P0 is complete as a technical-risk gate. A07–A09 pass for bounded AArch64 fixture slices only, not as whole IDs. A13 has a later isolated routing PASS slice but remains PARTIAL; A14/A17 remain BLOCKED. The frozen m1a-17 ledger classifies A01–A09/A18–A21 and MVP 1A as BLOCKED **at that observation time**; m1b-18 later closes the A01 three-target ELF/shell/nested-exec gap only, without changing the historical ledger. A10 has a real aggregate BLOCKED matrix observation (m1b-19), not full acceptance; MVP 1A, MVP 1B, MVP 1C and MVP 1 are not complete.
 
 ## Cleanup and retained state
 

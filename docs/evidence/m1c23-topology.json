@@ -1,0 +1,61 @@
+{
+  "cleanup": "owner-verified absent; foreign IDs unchanged",
+  "http_response": "keemu-web-demo\nstate=routed",
+  "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "networks": {
+    "lan": {
+      "id": "c5eed8ae12ed95f46e4d9006b80dc2bed410082a74ae5a9346062218ea9237ea",
+      "internal": true,
+      "ipam": [
+        {
+          "Gateway": "10.224.0.1",
+          "Subnet": "10.224.0.0/24"
+        }
+      ]
+    },
+    "wan": {
+      "id": "0be67924d3717170e73fdd4f2ead7d208cefa6d8614fe894ec291192cbfc46b0",
+      "internal": true,
+      "ipam": [
+        {
+          "Gateway": "10.224.1.1",
+          "Subnet": "10.224.1.0/24"
+        }
+      ]
+    }
+  },
+  "nodes": {
+    "client": {
+      "endpoints": {
+        "keemu-top-3908d759aed0d41c06bf-lan": "10.224.0.3"
+      },
+      "id": "5f9508076b09663d8c5b1698d0a9701df04c8c3d09b5615d218c38294c09e471",
+      "routes": "default via 10.224.0.2 dev eth0 \n10.224.0.0/24 dev eth0 scope link  src 10.224.0.3 \n"
+    },
+    "router": {
+      "endpoints": {
+        "keemu-top-3908d759aed0d41c06bf-lan": "10.224.0.2",
+        "keemu-top-3908d759aed0d41c06bf-wan": "10.224.1.2"
+      },
+      "id": "ed09ac3d9c5e0dca193f4774ac0f5b3ebb12c8178948aa3e1f6a08100e2a9be1",
+      "routes": "10.224.0.0/24 dev br0 scope link  src 10.224.0.2 \n10.224.1.0/24 dev wan0 scope link  src 10.224.1.2 \n"
+    },
+    "server": {
+      "endpoints": {
+        "keemu-top-3908d759aed0d41c06bf-wan": "10.224.1.3"
+      },
+      "id": "4f4a635840f7a81b41343d5dc4e84af8086c1c56fc92e9b043a768c09c33196a",
+      "routes": "10.224.0.0/24 via 10.224.1.2 dev eth0 \n10.224.1.0/24 dev eth0 scope link  src 10.224.1.3 \n"
+    }
+  },
+  "router_forwarded_before_after": [
+    0,
+    10
+  ],
+  "router_links": "1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1000\n    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00\n2: wan0@if335: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue \n    link/ether 3a:fa:47:da:6c:6f brd ff:ff:ff:ff:ff:ff\n3: eth0@if336: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue master br0 \n    link/ether 82:c4:34:e5:17:67 brd ff:ff:ff:ff:ff:ff\n4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue qlen 1000\n    link/ether 82:c4:34:e5:17:67 brd ff:ff:ff:ff:ff:ff\n",
+  "run_id": "m1c23-16b32791503d",
+  "subnets": {
+    "lan": "10.224.0.0/24",
+    "wan": "10.224.1.0/24"
+  }
+}
