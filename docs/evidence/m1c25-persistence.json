@@ -1,0 +1,29 @@
+{
+  "cleanup": "owner-verified absent; foreign IDs unchanged",
+  "fixture_sha256": "360289633e24822fd1f6be298a4deef6fa790188392106bfd44433297c65e617",
+  "mode": "api-only",
+  "network_backend": "BLOCKED: mode survives restarts, but queue cannot apply it",
+  "observations": {
+    "container_id_unchanged": "3da9d4d2a185f211c003461216f84dbd85aa906e79df175be23b48578ad15e32",
+    "environment_restart": {
+      "body": "{\"mode\":\"drop\",\"queue_ready\":false,\"accepted\":0,\"dropped\":0}\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "mode_file": "drop\n",
+    "service_restart": {
+      "body": "{\"mode\":\"drop\",\"queue_ready\":false,\"accepted\":0,\"dropped\":0}\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "service_stop_refused": {
+      "body": "",
+      "exit_code": 1,
+      "stderr": "wget: can't connect to remote host (10.224.0.2): Connection refused\n"
+    }
+  },
+  "run_id": "m1c25-fba9b9cd5426",
+  "scope": "same Docker container stopped/started; API-only service relaunched; br0 routing not reconfigured or asserted after restart",
+  "slice_result": "PASS",
+  "whole_id": "PARTIAL"
+}

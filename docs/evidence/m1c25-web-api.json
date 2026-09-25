@@ -1,0 +1,53 @@
+{
+  "cleanup": "owner-verified absent; foreign IDs unchanged",
+  "fixture_sha256": "360289633e24822fd1f6be298a4deef6fa790188392106bfd44433297c65e617",
+  "mode": "api-only",
+  "network_backend": "BLOCKED: target queue not ready; no packet path",
+  "observations": {
+    "change_back_to_drop": {
+      "body": "{\"mode\":\"drop\",\"queue_ready\":false,\"accepted\":0,\"dropped\":0}\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "change_to_accept": {
+      "body": "{\"mode\":\"accept\",\"queue_ready\":false,\"accepted\":0,\"dropped\":0}\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "change_to_drop": {
+      "body": "{\"mode\":\"drop\",\"queue_ready\":false,\"accepted\":0,\"dropped\":0}\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "changed": {
+      "body": "{\"mode\":\"drop\",\"queue_ready\":false,\"accepted\":0,\"dropped\":0}\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "health": {
+      "body": "",
+      "exit_code": 1,
+      "stderr": "wget: server returned error: HTTP/1.1 503 Unavailable\n"
+    },
+    "initial": {
+      "body": "{\"mode\":\"accept\",\"queue_ready\":false,\"accepted\":0,\"dropped\":0}\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "invalid": {
+      "body": "",
+      "exit_code": 1,
+      "stderr": "wget: server returned error: HTTP/1.1 400 Bad Request\n"
+    },
+    "mode_file": "drop\n",
+    "page": {
+      "body": "<!doctype html><title>KEEMU network-demo</title><h1>Network-demo</h1><p>GET /api/state: mode, queue_ready, counters</p><form action='/api/mode' method='post'><button name='mode' value='accept'>ACCEPT</button><button name='mode' value='drop'>DROP</button></form>\n",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    "rule_install": "refused: target queue not ready"
+  },
+  "run_id": "m1c25-fba9b9cd5426",
+  "slice_result": "PASS",
+  "whole_id": "PARTIAL"
+}
