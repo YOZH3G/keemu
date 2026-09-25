@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "WAITING_QUOTA",
+  "status": "RESUMING",
   "session_id": "20260925_021217_b58cec",
-  "pause_reason": "openai_usage_limit",
+  "pause_reason": null,
   "quota": {
     "kind": "primary_window",
     "detected_at": "2026-09-25T08:36:19+00:00",
@@ -11,8 +11,8 @@
     "resets_in_seconds": 9873,
     "wake_at": "2026-09-25T11:22:52+00:00",
     "plan_type": null,
-    "raw_excerpt": "Fresh OAuth primary-window observation: 100% used; resume requires a new observation after reset plus safety margin.",
-    "resume_job_id": "e459a5e52c9d"
+    "raw_excerpt": "Fresh OAuth primary-window observation was 100% used; user explicitly authorized immediate m1c-26 launch without another quota check.",
+    "bypass_launched_at": "2026-09-25T08:42:50+00:00"
   },
   "routing": {
     "mode": "auto",
@@ -961,10 +961,10 @@
     "task_intent": "Verify target packet processing end to end with routed flow, consumer and kernel counters, ACCEPT, DROP, restored ACCEPT, and bounded packet evidence",
     "subtask_id": "m1c-26",
     "subtask_digest": "be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
-    "action": "user_authorized_one_time_bypass_after_known_reset",
+    "action": "user_authorized_immediate_one_time_bypass",
     "remaining_percent": 0.0,
     "reset_at": "2026-09-25T11:20:52+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota was at 0%; user authorized omitting the next live check for m1c-26 only; resume remains scheduled after exact reset plus 120-second safety margin"
+    "message": "5-hour OAuth quota was at 0%; user explicitly authorized immediate launch without another check for m1c-26 only"
   }
 }
