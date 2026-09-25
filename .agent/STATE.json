@@ -15,16 +15,16 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T11:44:07+00:00",
+    "last_evaluated_at": "2026-09-25T11:53:16+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
       "reasoning": "high"
     },
     "applied": {
-      "tier": "C4",
+      "tier": "C5",
       "model": "gpt-6-sol",
-      "reasoning": "high"
+      "reasoning": "xhigh"
     },
     "signals": {
       "score": 14,
@@ -32,7 +32,7 @@
       "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1668828,
+      "graphify_bytes": 1682599,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -796,7 +796,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_0593495ee5f4cddd23ea0b15",
+      "last_event_id": "evt_30d48e0fed8492ca16ec7573",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -952,23 +952,23 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T11:44:07+00:00",
+    "last_run_started_at": "2026-09-25T11:53:16+00:00",
     "last_run_finished_at": "2026-09-25T11:53:08+00:00",
     "last_log": ".agent/runs/20260925T114407Z.log",
     "last_checkpoint_at": "2026-09-25T11:53:10+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-25T11:44:05+00:00",
+    "checked_at": "2026-09-25T12:03:21+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:final-28:4b07abc045c2786287d81708319e52eb406e8896660788cbba2a45d302e67b50",
+    "admission_key": "subtask:final-29:297e8098a2b66c1ea68e1f8bc48b8c61bb83af8c1a5d3f5ba4aa3fef9219ce47",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
-    "task_intent": "Generate and validate the final A01-A21 acceptance ledger against existing immutable reports, tests, targets, statuses, and contradictions",
-    "subtask_id": "final-28",
-    "subtask_digest": "4b07abc045c2786287d81708319e52eb406e8896660788cbba2a45d302e67b50",
+    "task_intent": "Run release verification once across portable, three-target, applicable network, schema, static, offline-repeat, and clean-host checks",
+    "subtask_id": "final-29",
+    "subtask_digest": "297e8098a2b66c1ea68e1f8bc48b8c61bb83af8c1a5d3f5ba4aa3fef9219ce47",
     "action": "admit",
-    "remaining_percent": 67.0,
-    "reset_at": "2026-09-25T16:22:17+00:00",
+    "remaining_percent": 38.0,
+    "reset_at": "2026-09-25T16:22:16+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota admits new task"
+    "message": "Fresh manual-resume observation admits final-29; supervisor restart loads configured pause after final-30"
   }
 }
