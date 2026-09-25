@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "WAITING_QUOTA",
+  "status": "RESUMING",
   "session_id": "20260925_021217_b58cec",
-  "pause_reason": "openai_usage_limit",
+  "pause_reason": null,
   "quota": {
-    "kind": "unknown",
-    "detected_at": "2026-09-25T02:54:32+00:00",
-    "resets_at": null,
-    "resets_in_seconds": null,
-    "wake_at": "2026-09-25T07:59:32+00:00",
-    "plan_type": null,
-    "raw_excerpt": "↻ Resumed session 20260925_021217_b58cec \"Verify routed packet processing end to end\" (1 user message, 93 total messages) ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~4h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260925_021217_b58cec Provider said: HTTP 429: The usage limit has been reached Limit resets at 06:18 (in 3h 25m)."
+    "kind": "primary_window",
+    "detected_at": "2026-09-25T06:20:52+00:00",
+    "resets_at": "2026-09-25T11:20:52+00:00",
+    "resets_in_seconds": 18000,
+    "wake_at": null,
+    "plan_type": "plus",
+    "raw_excerpt": "5-hour OAuth quota has 99.0% remaining; resume active subtask"
   },
   "routing": {
     "mode": "auto",
@@ -953,17 +953,17 @@
     "last_checkpoint_at": "2026-09-25T02:54:32+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-25T02:50:54+00:00",
+    "checked_at": "2026-09-25T06:20:52+00:00",
     "scope": "subtask_resume",
     "admission_key": "subtask:m1c-26:be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
     "task_intent": "Verify target packet processing end to end with routed flow, consumer and kernel counters, ACCEPT, DROP, restored ACCEPT, and bounded packet evidence",
     "subtask_id": "m1c-26",
     "subtask_digest": "be21a0163a213373a854b308a3fa1938d0d7991238ca0ebbe5ec4550d7e11e94",
-    "action": "admit_warning",
-    "remaining_percent": 6.0,
-    "reset_at": "2026-09-25T06:18:47+00:00",
+    "action": "admit",
+    "remaining_percent": 99.0,
+    "reset_at": "2026-09-25T11:20:52+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota admits existing-session resume above configured 5% pause threshold"
+    "message": "5-hour OAuth quota admits existing-session resume"
   }
 }
