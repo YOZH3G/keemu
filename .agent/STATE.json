@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1",
-  "status": "WAITING_QUOTA",
+  "status": "RESUMING",
   "session_id": null,
-  "pause_reason": "pre_subtask_oauth_quota_admission",
+  "pause_reason": null,
   "quota": {
     "kind": "primary_window",
     "detected_at": "2026-09-25T09:11:41+00:00",
@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "auto",
-    "last_evaluated_at": "2026-09-25T08:43:50+00:00",
+    "last_evaluated_at": "2026-09-25T11:22:55+00:00",
     "recommended": {
       "tier": "C6",
       "model": "gpt-6-astra",
@@ -29,10 +29,10 @@
     "signals": {
       "score": 14,
       "task_chars": 24002,
-      "changed_files": 0,
+      "changed_files": 1,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 1645530,
+      "graphify_bytes": 1648802,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -62,7 +62,7 @@
     "subtask_plan": {
       "parent_task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
       "plan_digest": "58db97bf002eb3b570a714f972ed5473f93bcd4e4ada3cb86acb733087a73767",
-      "active_index": 27,
+      "active_index": 28,
       "items": [
         {
           "id": "preflight",
@@ -714,8 +714,15 @@
             "model": "gpt-6-sol",
             "reasoning": "xhigh"
           },
-          "status": "active",
-          "digest": "f3dd647dbf09070820245c2836359da34dc99db9f2c9d01befdc98a09a6db5ab"
+          "status": "complete",
+          "digest": "f3dd647dbf09070820245c2836359da34dc99db9f2c9d01befdc98a09a6db5ab",
+          "outcome": {
+            "event_id": "evt_d412e02379bae2cc52e7e559",
+            "route_event_id": "evt_6059b6bd9dbb4dd5cb8fb475",
+            "completed_at": "2026-09-25T11:43:59+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "final-28",
@@ -729,7 +736,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "4b07abc045c2786287d81708319e52eb406e8896660788cbba2a45d302e67b50"
         },
         {
@@ -782,7 +789,7 @@
     "learning": {
       "active_policy_version": "v2",
       "candidate_policy_version": null,
-      "last_event_id": "evt_0ca7b808b2398226eee4dde6",
+      "last_event_id": "evt_d412e02379bae2cc52e7e559",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -938,23 +945,23 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-25T08:43:50+00:00",
-    "last_run_finished_at": "2026-09-25T09:11:35+00:00",
-    "last_log": ".agent/runs/20260925T084350Z.log",
-    "last_checkpoint_at": "2026-09-25T09:11:41+00:00"
+    "last_run_started_at": "2026-09-25T11:22:55+00:00",
+    "last_run_finished_at": "2026-09-25T11:43:57+00:00",
+    "last_log": ".agent/runs/20260925T112255Z.log",
+    "last_checkpoint_at": "2026-09-25T11:43:59+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-25T09:11:41+00:00",
+    "checked_at": "2026-09-25T11:22:53+00:00",
     "scope": "subtask",
     "admission_key": "subtask:m1c-27:f3dd647dbf09070820245c2836359da34dc99db9f2c9d01befdc98a09a6db5ab",
     "task_digest": "27dcb8a3b0b9326962456eb539dea9377043802914ac0ad6bb1f09939a87c3c7",
     "task_intent": "Run controlled interruption and isolation regressions for network resources while proving foreign containers, networks, and rules remain untouched",
     "subtask_id": "m1c-27",
     "subtask_digest": "f3dd647dbf09070820245c2836359da34dc99db9f2c9d01befdc98a09a6db5ab",
-    "action": "pause",
-    "remaining_percent": 0.0,
-    "reset_at": "2026-09-25T11:20:52+00:00",
+    "action": "admit",
+    "remaining_percent": 99.0,
+    "reset_at": "2026-09-25T16:22:16+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota has 0.0% remaining; defer new task until reset"
+    "message": "5-hour OAuth quota admits new task"
   }
 }

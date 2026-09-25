@@ -1,0 +1,237 @@
+{
+  "baseline": {
+    "container": {
+      "0318fe186f68f053b60bc63d158bbbce896fd8cd3540091ead11641a6eed7a65": {
+        "image": "sha256:f86a2cab1b5c649070c49f883c743dd32d8485a56e3368c5f93b9e91f1e91259",
+        "name": "/traefik-traefik-1",
+        "network_mode": "host",
+        "owner": null,
+        "running": true
+      },
+      "a362dc49f04375b24edfa1ed5e9b81c2f6db48d73d75d40c0161c67c265fa2a9": {
+        "image": "sha256:7956ad1f365ad2ce4454673cb3f3ab31798703b2a3ea1d1329c509250f974bee",
+        "name": "/hermes-agent-tcn5-hermes-agent-1",
+        "network_mode": "hermes-agent-tcn5_default",
+        "owner": null,
+        "running": true
+      }
+    },
+    "network": {
+      "291d3a49ec422e3a4850fa55cba1cfdddbb3d2f1f9f77fc6ec784520e7d6e642": {
+        "driver": "bridge",
+        "internal": false,
+        "ipam": [
+          {
+            "Gateway": "172.17.0.1",
+            "Subnet": "172.17.0.0/16"
+          }
+        ],
+        "name": "bridge",
+        "owner": null
+      },
+      "90e918c82521de48547fc47262e7a02c4f79f89a84012ce4b358c539699f898d": {
+        "driver": "null",
+        "internal": false,
+        "ipam": null,
+        "name": "none",
+        "owner": null
+      },
+      "91ae9c89ea9961437bc1e563aeed5f77a190cb47d78446e9760dadfad72d755a": {
+        "driver": "host",
+        "internal": false,
+        "ipam": null,
+        "name": "host",
+        "owner": null
+      },
+      "ce3ba0521b37ce75da69eb7230473e3fd333e574c47ddfc533acb9feefb4c839": {
+        "driver": "bridge",
+        "internal": false,
+        "ipam": [
+          {
+            "Gateway": "172.16.0.1",
+            "Subnet": "172.16.0.0/24"
+          }
+        ],
+        "name": "hermes-agent-tcn5_default",
+        "owner": null
+      }
+    }
+  },
+  "cases": [
+    {
+      "foreign_policy_rules_after_kill": [
+        "02000000fd0000010000000008000f00fd00000008000e00ffffffff050015000200000008000600ff7f0000",
+        "02000000fe0000010000000008000f00fe00000008000e00ffffffff050015000200000008000600fe7f0000",
+        "02000000ff0000010000000008000f00ff00000008000e00ffffffff0500150002000000",
+        "02200000fe0000010000000008000f00fe00000008000e00ffffffff05001500000000000800060077430000080001000ae00103"
+      ],
+      "foreign_policy_rules_after_recovery": [
+        "02000000fd0000010000000008000f00fd00000008000e00ffffffff050015000200000008000600ff7f0000",
+        "02000000fe0000010000000008000f00fe00000008000e00ffffffff050015000200000008000600fe7f0000",
+        "02000000ff0000010000000008000f00ff00000008000e00ffffffff0500150002000000",
+        "02200000fe0000010000000008000f00fe00000008000e00ffffffff05001500000000000800060077430000080001000ae00103"
+      ],
+      "foreign_resources_unchanged": true,
+      "interrupted_id": "86a38eeff399098f442965693eb90386d8cb59e5e73c2667f32b87afffff62da",
+      "observed_before_recovery": {
+        "container_missing": [],
+        "container_owned": [],
+        "container_unexpected": [],
+        "network_missing": [],
+        "network_owned": [
+          "86a38eeff399098f442965693eb90386d8cb59e5e73c2667f32b87afffff62da"
+        ],
+        "network_unexpected": [
+          "86a38eeff399098f442965693eb90386d8cb59e5e73c2667f32b87afffff62da"
+        ]
+      },
+      "point": "network",
+      "recovery": "explicit owner-only, idempotent; owned IDs absent"
+    },
+    {
+      "foreign_policy_rules_after_kill": [
+        "02000000fd0000010000000008000f00fd00000008000e00ffffffff050015000200000008000600ff7f0000",
+        "02000000fe0000010000000008000f00fe00000008000e00ffffffff050015000200000008000600fe7f0000",
+        "02000000ff0000010000000008000f00ff00000008000e00ffffffff0500150002000000",
+        "02200000fe0000010000000008000f00fe00000008000e00ffffffff05001500000000000800060077430000080001000ae00103"
+      ],
+      "foreign_policy_rules_after_recovery": [
+        "02000000fd0000010000000008000f00fd00000008000e00ffffffff050015000200000008000600ff7f0000",
+        "02000000fe0000010000000008000f00fe00000008000e00ffffffff050015000200000008000600fe7f0000",
+        "02000000ff0000010000000008000f00ff00000008000e00ffffffff0500150002000000",
+        "02200000fe0000010000000008000f00fe00000008000e00ffffffff05001500000000000800060077430000080001000ae00103"
+      ],
+      "foreign_resources_unchanged": true,
+      "interrupted_id": "b087c36192040262e8b989c8b7999132983d11520546b1e3f075aa6403b52ae4",
+      "observed_before_recovery": {
+        "container_missing": [],
+        "container_owned": [
+          "b087c36192040262e8b989c8b7999132983d11520546b1e3f075aa6403b52ae4"
+        ],
+        "container_unexpected": [
+          "b087c36192040262e8b989c8b7999132983d11520546b1e3f075aa6403b52ae4"
+        ],
+        "network_missing": [],
+        "network_owned": [
+          "181a241ef750b15820e347e3ccef097238312faaad866725d7158e7fecb4cfca",
+          "b97e2827a69829ad77c83f562215c5c879d3414c27820e7f67cf1324baa92da4"
+        ],
+        "network_unexpected": [
+          "181a241ef750b15820e347e3ccef097238312faaad866725d7158e7fecb4cfca",
+          "b97e2827a69829ad77c83f562215c5c879d3414c27820e7f67cf1324baa92da4"
+        ]
+      },
+      "point": "container",
+      "recovery": "explicit owner-only, idempotent; owned IDs absent"
+    },
+    {
+      "foreign_policy_rules_after_kill": [
+        "02000000fd0000010000000008000f00fd00000008000e00ffffffff050015000200000008000600ff7f0000",
+        "02000000fe0000010000000008000f00fe00000008000e00ffffffff050015000200000008000600fe7f0000",
+        "02000000ff0000010000000008000f00ff00000008000e00ffffffff0500150002000000",
+        "02200000fe0000010000000008000f00fe00000008000e00ffffffff05001500000000000800060077430000080001000ae00103"
+      ],
+      "foreign_policy_rules_after_recovery": [
+        "02000000fd0000010000000008000f00fd00000008000e00ffffffff050015000200000008000600ff7f0000",
+        "02000000fe0000010000000008000f00fe00000008000e00ffffffff050015000200000008000600fe7f0000",
+        "02000000ff0000010000000008000f00ff00000008000e00ffffffff0500150002000000",
+        "02200000fe0000010000000008000f00fe00000008000e00ffffffff05001500000000000800060077430000080001000ae00103"
+      ],
+      "foreign_resources_unchanged": true,
+      "interrupted_id": "380445fb3c00192d22252ab1235d5e929274601670639dcba29ae83dccf73a16",
+      "observed_before_recovery": {
+        "container_missing": [],
+        "container_owned": [
+          "14405e520cfa8b2b4383b56a0dd3948bdeac4e53cc374d546343843e6ce0331a",
+          "380445fb3c00192d22252ab1235d5e929274601670639dcba29ae83dccf73a16",
+          "8b19287a8667a8cae2ff50b21d7a613e794a64aaceb1f957b2d0f4e8c11db925"
+        ],
+        "container_unexpected": [
+          "14405e520cfa8b2b4383b56a0dd3948bdeac4e53cc374d546343843e6ce0331a",
+          "380445fb3c00192d22252ab1235d5e929274601670639dcba29ae83dccf73a16",
+          "8b19287a8667a8cae2ff50b21d7a613e794a64aaceb1f957b2d0f4e8c11db925"
+        ],
+        "network_missing": [],
+        "network_owned": [
+          "393adcf65dde051fd8efbaf8bcaf85209986de3135e1fd06320857983efd3927",
+          "5898b260d6f0836085621324d319c5cd8590ce872f053fb3810276e33e8e14b8"
+        ],
+        "network_unexpected": [
+          "393adcf65dde051fd8efbaf8bcaf85209986de3135e1fd06320857983efd3927",
+          "5898b260d6f0836085621324d319c5cd8590ce872f053fb3810276e33e8e14b8"
+        ]
+      },
+      "point": "ready",
+      "recovery": "explicit owner-only, idempotent; owned IDs absent"
+    }
+  ],
+  "foreign_rules": [
+    "02000000fd0000010000000008000f00fd00000008000e00ffffffff050015000200000008000600ff7f0000",
+    "02000000fe0000010000000008000f00fe00000008000e00ffffffff050015000200000008000600fe7f0000",
+    "02000000ff0000010000000008000f00ff00000008000e00ffffffff0500150002000000",
+    "02200000fe0000010000000008000f00fe00000008000e00ffffffff05001500000000000800060077430000080001000ae00103"
+  ],
+  "host_firewall_rules": "NOT RUN: no host namespace firewall mutation or host-module load",
+  "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "interrupted_report": "NOT IMPLEMENTED: explicit topology recovery only",
+  "native_observer_image_id": "sha256:7956ad1f365ad2ce4454673cb3f3ab31798703b2a3ea1d1329c509250f974bee",
+  "postflight": {
+    "container": {
+      "0318fe186f68f053b60bc63d158bbbce896fd8cd3540091ead11641a6eed7a65": {
+        "image": "sha256:f86a2cab1b5c649070c49f883c743dd32d8485a56e3368c5f93b9e91f1e91259",
+        "name": "/traefik-traefik-1",
+        "network_mode": "host",
+        "owner": null,
+        "running": true
+      },
+      "a362dc49f04375b24edfa1ed5e9b81c2f6db48d73d75d40c0161c67c265fa2a9": {
+        "image": "sha256:7956ad1f365ad2ce4454673cb3f3ab31798703b2a3ea1d1329c509250f974bee",
+        "name": "/hermes-agent-tcn5-hermes-agent-1",
+        "network_mode": "hermes-agent-tcn5_default",
+        "owner": null,
+        "running": true
+      }
+    },
+    "network": {
+      "291d3a49ec422e3a4850fa55cba1cfdddbb3d2f1f9f77fc6ec784520e7d6e642": {
+        "driver": "bridge",
+        "internal": false,
+        "ipam": [
+          {
+            "Gateway": "172.17.0.1",
+            "Subnet": "172.17.0.0/16"
+          }
+        ],
+        "name": "bridge",
+        "owner": null
+      },
+      "90e918c82521de48547fc47262e7a02c4f79f89a84012ce4b358c539699f898d": {
+        "driver": "null",
+        "internal": false,
+        "ipam": null,
+        "name": "none",
+        "owner": null
+      },
+      "91ae9c89ea9961437bc1e563aeed5f77a190cb47d78446e9760dadfad72d755a": {
+        "driver": "host",
+        "internal": false,
+        "ipam": null,
+        "name": "host",
+        "owner": null
+      },
+      "ce3ba0521b37ce75da69eb7230473e3fd333e574c47ddfc533acb9feefb4c839": {
+        "driver": "bridge",
+        "internal": false,
+        "ipam": [
+          {
+            "Gateway": "172.16.0.1",
+            "Subnet": "172.16.0.0/24"
+          }
+        ],
+        "name": "hermes-agent-tcn5_default",
+        "owner": null
+      }
+    }
+  },
+  "scope": "owned AArch64 Docker topologies; foreign routing rules, not firewall rules"
+}
