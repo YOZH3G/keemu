@@ -13,6 +13,16 @@
     "plan_type": null,
     "raw_excerpt": "5-hour OAuth quota has 0.0% remaining; defer new task until reset"
   },
+  "scheduled_resume": {
+    "job_id": "cbf7a478f426",
+    "subtask_id": "final-31",
+    "run_at": "2026-09-25T16:24:16+00:00",
+    "requires_fresh_quota": true,
+    "expected_provider": "openai-codex",
+    "expected_model": "gpt-6-sol",
+    "expected_reasoning": "xhigh",
+    "future_addendum_verdict": "/opt/data/attachments/KEEMU_MVP_addendum_script_execution_verdict.md"
+  },
   "routing": {
     "mode": "auto",
     "last_evaluated_at": "2026-09-25T12:16:11+00:00",
