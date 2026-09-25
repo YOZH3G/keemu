@@ -1,0 +1,80 @@
+{
+  "accept_drop_restore": "BLOCKED: no target queue bind ACK",
+  "baseline_only": {
+    "client_http_body": "keemu-web-demo\nstate=routed\n",
+    "queue_rule_installed": false,
+    "router_forwarded_datagrams": [
+      0,
+      10
+    ]
+  },
+  "cleanup": "owner-verified absent; foreign Docker IDs unchanged",
+  "consumer_counters": "NOT RUN: target queue never ready",
+  "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+  "kernel": "6.8.0-138-generic",
+  "kernel_queue_counters": "NOT RUN: no queue or rule installed",
+  "module_after": {
+    "nfnetlink_queue": {
+      "proc_modules": false,
+      "sys_module": false
+    },
+    "nft_queue": {
+      "proc_modules": false,
+      "sys_module": false
+    },
+    "xt_NFQUEUE": {
+      "proc_modules": false,
+      "sys_module": false
+    }
+  },
+  "module_before": {
+    "nfnetlink_queue": {
+      "proc_modules": false,
+      "sys_module": false
+    },
+    "nft_queue": {
+      "proc_modules": false,
+      "sys_module": false
+    },
+    "xt_NFQUEUE": {
+      "proc_modules": false,
+      "sys_module": false
+    }
+  },
+  "native_socket": {
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "NETLINK_NETFILTER socket opened; NFQUEUE bind and verdict NOT attempted\n"
+  },
+  "network_demo_sha256": "360289633e24822fd1f6be298a4deef6fa790188392106bfd44433297c65e617",
+  "result": "BLOCKED",
+  "rule_install": "refused: target queue not ready",
+  "run_id": "m1c26-af50764df804",
+  "scope": "routed baseline and same-router native/target socket differential; no queue bind, rule, verdict or pcap",
+  "socket_probe_sha256": {
+    "native": "378db5054cec52bc8422845c3bef0fe7dec032188a7c35a3adf32b8113e28167",
+    "target": "c82cf028a2eceb93e45b54e3bb883ca3a6edde2b0949b73884d3ed1f96857655"
+  },
+  "target_queue_start": "network-demo NFQUEUE: Protocol not supported\n",
+  "target_socket": {
+    "exit_code": 1,
+    "stderr": "NETLINK_NETFILTER socket: Protocol not supported\n",
+    "stdout": ""
+  },
+  "topology": {
+    "client_routes": "default via 10.224.0.2 dev eth0 \n10.224.0.0/24 dev eth0 scope link  src 10.224.0.3 \n",
+    "container_ids": {
+      "client": "ca1571eabb5e0a84be63770e18a076afcdc6f48469ee7d54b5c6c4b617e0841b",
+      "router": "4b9354eecc28005fc49436d335103db9d4cd9e29e8a391a2a76c0121757bbeb9",
+      "server": "7e53b93e258ac8b585dab8898ba1e1b955e5fb830fb378fa82930a21457f8dbd"
+    },
+    "lan": "10.224.0.0/24",
+    "network_ids": {
+      "lan": "7c45f4d5e1f81d7a568bdd5c846effbeced66bc094f167f938630a731d768744",
+      "wan": "347135eaec117782e98d52f276998ab9089cff0f0402244cf35a6a8c9edfc26a"
+    },
+    "router_routes": "10.224.0.0/24 dev br0 scope link  src 10.224.0.2 \n10.224.1.0/24 dev wan0 scope link  src 10.224.1.2 \n",
+    "server_routes": "10.224.0.0/24 via 10.224.1.2 dev eth0 \n10.224.1.0/24 dev eth0 scope link  src 10.224.1.3 \n",
+    "wan": "10.224.1.0/24"
+  }
+}
