@@ -133,7 +133,7 @@ Live opt-in suite: 22 passed, 0 failed, 0 skipped. Pre-ledger portable: 130 pass
 
 ## Next operation
 
-MVP 1D `m1d-00` local review and evidence are verified at the current-status entry above. Emit only the exact `m1d-00` marker after final scoped checks; supervisor owns runtime attestation, coherent commit/push and session deletion. Config must pause after `m1d-00`; do not launch `m1d-01` or change routing bounds without explicit human continuation. Original A01–A21 history remains frozen, D01–D08 product gates NOT_RUN.
+MVP 1D `m1d-00` is attested complete, committed and published. The user accepted its review and authorized all remaining frozen subtasks. Active item is `m1d-01`; state is explicitly `RESUMING`, old quota admission is cleared, no session/worker lock is retained, and no pause target remains. Launch through the supervisor only after fresh `m1d-01` quota admission. Apply the approved C5 `openai-codex/gpt-6-sol/xhigh` row through `routing.apply_approved_subtask_routes=true` while router learning remains shadow-only. Continue in frozen order only after each exact marker, attestation, session deletion, commit and `origin/staging` push. Original A01–A21 history remains frozen.
 
 Historical final-28 next-operation snapshot (superseded): emit exact frozen final-28 completion marker only after its scoped verification. Supervisor owned that attestation/commit/push and subsequent boundary. Its A02–A21 release blockers and historical fixture-level PASS remain retained; do not replay its earlier instructions.
 
@@ -147,4 +147,4 @@ Revalidate all three approved binfmt handlers, `nfnetlink_queue`, `iptable_filte
 
 Autorouting auto-mode promotion is additionally blocked pending independent adversarial semantic review and reviewed real shadow telemetry. Final verification observed 4% remaining in the five-hour OAuth window, so no new reviewer worker was launched below the configured 5% threshold. Local runtime suite passed 92 tests; compileall, config/plan validation and read-only shadow replay passed. Prospective plan routing is C0=1, C2=2, C3=3, C4=15, C5=11; historical C0=1, C2=2, C3=3, C4=11, C5=15 remains unchanged.
 
-Remote branch cleanup is incomplete only for `origin/agent/keemu`: GitHub rejected deletion because it is still the default branch. `main`, `post-mvp`, and `staging` all point to `a6f2a3cd580e483674775b1cc5959d277c74e798`; changing the remote default requires repository-admin authentication. This does not block work on `staging`.
+GitHub default branch is verified as `main`; obsolete `origin/agent/keemu` was deleted on 2026-09-26. Published branches are `main`, `post-mvp`, and active `staging`.

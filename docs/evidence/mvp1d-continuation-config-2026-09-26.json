@@ -1,0 +1,321 @@
+{
+  "task_id": "keemu-mvp1d",
+  "project_dir": "/opt/data/workspace/keemu",
+  "state_path": ".agent/STATE_MVP1D.json",
+  "hermes_bin": "/usr/local/bin/hermes",
+  "provider": "openai-codex",
+  "model": "gpt-6-sol",
+  "reasoning": "high",
+  "enable_yolo": true,
+  "enable_hermes_checkpoints": true,
+  "git_auto_pull": false,
+  "git_auto_push": true,
+  "git_checkpoint_mode": "all",
+  "graphify_enabled": true,
+  "graphify_bin": "/opt/data/.local/bin/graphify",
+  "graphify_update_after_sync": true,
+  "graphify_timeout_seconds": 300,
+  "quota_safety_margin_seconds": 120,
+  "quota_fallback_wait_seconds": 18300,
+  "quota_admission_enabled": true,
+  "quota_admission_scope": "every_subtask",
+  "quota_warning_threshold_percent": 11,
+  "quota_pause_threshold_percent": 5,
+  "idle_task_poll_seconds": 60,
+  "continuation_delay_seconds": 15,
+  "run_timeout_seconds": 21600,
+  "max_continuations": 50,
+  "max_consecutive_failures": 6,
+  "max_same_error": 4,
+  "pause_after_subtask_ids": [],
+  "log_level": "INFO",
+  "router_policy_path": "/opt/data/hermes-durable-vps-hostinger-router-v1/router/models.json",
+  "routing": {
+    "mode": "shadow",
+    "minimum_tier": "C0",
+    "maximum_tier": "C5",
+    "apply_approved_subtask_routes": true,
+    "astra_experimental": false,
+    "astra_fallback_tier": "C5",
+    "learning": {
+      "enabled": true,
+      "mode": "shadow",
+      "min_samples": 30,
+      "canary_enabled": false
+    },
+    "model_lock": {
+      "enabled": true,
+      "disposable_workers": true
+    },
+    "require_c5_justification": true
+  },
+  "subtask_plan": [
+    {
+      "id": "m1d-00",
+      "objective": "Freeze and independently review the MVP 1D threat model, D01-D08 acceptance ledger, architecture boundary, fixtures, and proposed model routes without implementing product code",
+      "acceptance_refs": [
+        "D01-D08",
+        "scope-freeze",
+        "routing-review"
+      ],
+      "planned_change_count": 4,
+      "component_count": 3,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-01",
+      "objective": "Implement ScriptInput with project containment, regular-file and size bounds, no-follow secure open, SHA-256 identity, and validation-to-stage mutation detection",
+      "acceptance_refs": [
+        "D01"
+      ],
+      "planned_change_count": 5,
+      "component_count": 3,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "high",
+      "recommended": {
+        "tier": "C5",
+        "model": "gpt-6-sol",
+        "reasoning": "xhigh"
+      },
+      "c5_factors": [
+        "complex_security_boundary"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m1d-02",
+      "objective": "Implement typed script staging under /opt/tmp with KEEMU-generated digest paths, no overwrite, container identity checks, target-copy integrity, and exact cleanup",
+      "acceptance_refs": [
+        "D02"
+      ],
+      "planned_change_count": 6,
+      "component_count": 4,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "high",
+      "recommended": {
+        "tier": "C5",
+        "model": "gpt-6-sol",
+        "reasoning": "xhigh"
+      },
+      "c5_factors": [
+        "complex_security_boundary"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m1d-03",
+      "objective": "Add typed script execution, result, assertion, cleanup, and report metadata models with deterministic PASS FAIL BLOCKED ERROR mapping",
+      "acceptance_refs": [
+        "D04"
+      ],
+      "planned_change_count": 6,
+      "component_count": 4,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-04",
+      "objective": "Implement bounded target process-tree timeout with exact ownership, TERM KILL escalation, reaping, survivor proof, and unrelated-process preservation",
+      "acceptance_refs": [
+        "D03"
+      ],
+      "planned_change_count": 7,
+      "component_count": 4,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "high",
+      "recommended": {
+        "tier": "C5",
+        "model": "gpt-6-sol",
+        "reasoning": "xhigh"
+      },
+      "c5_factors": [
+        "concurrency_control",
+        "crash_recovery"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m1d-05",
+      "objective": "Implement and verify the one-shot generic-aarch64 script lifecycle through the existing locked Docker binfmt runtime with owned cleanup",
+      "acceptance_refs": [
+        "D03",
+        "D05",
+        "D07"
+      ],
+      "planned_change_count": 7,
+      "component_count": 4,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "high",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-06",
+      "objective": "Add the keemu script CLI with profile, timeout, cwd, expected exit code, repository, and bounded argv contracts",
+      "acceptance_refs": [
+        "D05"
+      ],
+      "planned_change_count": 4,
+      "component_count": 2,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "recommended": {
+        "tier": "C3",
+        "model": "gpt-5.6-terra",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-07",
+      "objective": "Add persistent keemu exec NAME --script using the common contract while preserving unrelated environment state services and foreign resources",
+      "acceptance_refs": [
+        "D05",
+        "D07"
+      ],
+      "planned_change_count": 7,
+      "component_count": 5,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "high",
+      "recommended": {
+        "tier": "C5",
+        "model": "gpt-6-sol",
+        "reasoning": "xhigh"
+      },
+      "c5_factors": [
+        "foreign_resource_preservation"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m1d-08",
+      "objective": "Add exit stdout stderr and filesystem assertions plus exact PASS FAIL BLOCKED ERROR regression coverage",
+      "acceptance_refs": [
+        "D04",
+        "D05"
+      ],
+      "planned_change_count": 5,
+      "component_count": 3,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-09",
+      "objective": "Add backward-compatible scenario kind script, immutable input locking, committed JSON schema parity, and common lifecycle dispatch",
+      "acceptance_refs": [
+        "D06"
+      ],
+      "planned_change_count": 7,
+      "component_count": 5,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-10",
+      "objective": "Exercise generic-mips and generic-mipsel through the same script runtime contract and record real PASS or truthful BLOCKED without architecture-specific bypasses",
+      "acceptance_refs": [
+        "D07"
+      ],
+      "planned_change_count": 4,
+      "component_count": 3,
+      "gate_closure_probability": "medium",
+      "diagnostic_risk": "high",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-11",
+      "objective": "Verify TOCTOU races, interruption, timeout survivors, cleanup retry, collision, host isolation, and foreign-resource preservation with real bounded evidence",
+      "acceptance_refs": [
+        "D01",
+        "D02",
+        "D03",
+        "D07"
+      ],
+      "planned_change_count": 8,
+      "component_count": 5,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "high",
+      "recommended": {
+        "tier": "C5",
+        "model": "gpt-6-sol",
+        "reasoning": "xhigh"
+      },
+      "c5_factors": [
+        "concurrency_control",
+        "crash_recovery",
+        "foreign_resource_preservation"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m1d-12",
+      "objective": "Reconcile D01-D08 evidence and update README architecture limitations progress traceability ADRs and durable state without changing MVP 1 history",
+      "acceptance_refs": [
+        "D01-D08",
+        "documentation"
+      ],
+      "planned_change_count": 8,
+      "component_count": 3,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "m1d-13",
+      "objective": "Perform an independent final MVP 1D audit and publish exact PASS FAIL BLOCKED ERROR release status without product mutation",
+      "acceptance_refs": [
+        "D08",
+        "release"
+      ],
+      "planned_change_count": 4,
+      "component_count": 2,
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "recommended": {
+        "tier": "C4",
+        "model": "gpt-6-sol",
+        "reasoning": "high"
+      },
+      "status": "pending"
+    }
+  ]
+}

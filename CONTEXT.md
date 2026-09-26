@@ -25,12 +25,12 @@
 
 ## Execution policy
 
-- MVP 1D supervised work follows `docs/model-routing-plan-mvp1d.md`. Only `m1d-00` is authorized initially: fixed C4 (`gpt-6-sol/high`) in shadow mode, with a mandatory pause after its attested boundary.
+- MVP 1D supervised work follows the user-approved frozen table in `docs/model-routing-plan-mvp1d.md`. Router learning remains shadow-only, while `routing.apply_approved_subtask_routes=true` applies each frozen plan row as the explicit worker lock.
 - Each subtask receives an explicit disposable-worker lock for provider, model and reasoning. Switching is permitted only after an exact completion marker, runtime attestation, durable outcome, and verified session deletion.
 - Astra is disabled for `m1d-00`; later use requires explicit evidenced C5 failure or a separately approved read-only shadow review.
 - Quota pauses retain the same subtask, session, provider, model and reasoning; they are not escalation signals.
 - Before launching every new frozen subtask, the supervisor must fetch live OAuth account usage and persist a subtask-bound admission record. Below 11% remaining it warns; below 5% it checkpoints and waits until the stored absolute reset-plus-margin time. Same-subtask session continuations do not repeat the preflight.
-- `pause_after_subtask_ids=["m1d-00"]`; no implementation subtask may launch until the route table and threat/acceptance ledger are reviewed and approved.
+- `m1d-00` is attested complete and its route/threat review was explicitly accepted on 2026-09-26. `pause_after_subtask_ids=[]`; subtasks `m1d-01` through `m1d-13` are authorized in frozen order, subject to fresh per-subtask quota admission and runtime attestation.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
 - Git auto-pull remains disabled to avoid hidden remote integration. Git checkpoints stage the complete task result (excluding secret-like paths) and auto-push `staging` after each verified subtask boundary.
 

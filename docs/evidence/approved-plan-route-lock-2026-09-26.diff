@@ -1,0 +1,88 @@
+# Approved frozen-plan route-lock runtime patch
+
+Generated 2026-09-26. Shared runtime/config patch; repository stores evidence only.
+
+--- a/supervisor/subtasks.py
++++ b/supervisor/subtasks.py
+@@ -132,7 +132,10 @@
+         return existing
+
+     mode = str(_route_value(route, "mode"))
+-    if mode == "auto":
++    apply_approved_route = bool(
++        cfg.get("routing", {}).get("apply_approved_subtask_routes", False)
++    )
++    if mode == "auto" or apply_approved_route:
+         recommendation = dict(active["recommended"])
+         tiers = tiers_by_id(dict(policy))
+         tier = tiers.get(str(recommendation["tier"]))
+
+--- a/tests/test_subtasks.py
++++ b/tests/test_subtasks.py
+@@ -296,6 +296,42 @@
+         self.assertEqual((lock["tier"], lock["model"], lock["reasoning"]),
+                          ("CURRENT", "configured-model", "low"))
+
++    def test_shadow_can_apply_explicitly_approved_frozen_subtask_route(self):
++        state = {"routing": {}}
++        plan_items = copy.deepcopy(PLAN)
++        plan_items[0]["recommended"] = {
++            "tier": "C4", "model": "gpt-6-sol", "reasoning": "high"
++        }
++        plan = initialize_subtask_plan(
++            {"subtask_plan": plan_items}, state, parent_task_digest="a" * 64
++        )
++        policy = {
++            "provider": "openai-codex",
++            "tiers": [
++                {"id": "C1", "rank": 1, "model": "gpt-6-luna", "reasoning": "medium"},
++                {"id": "C4", "rank": 4, "model": "gpt-6-sol", "reasoning": "high"},
++            ],
++        }
++        lock = lock_for_active_subtask(
++            {
++                "provider": "openai-codex",
++                "routing": {"apply_approved_subtask_routes": True},
++            },
++            state,
++            plan,
++            policy,
++            {
++                "mode": "shadow", "signals": {}, "tier": "CURRENT",
++                "model": "configured-model", "reasoning": "low",
++            },
++            policy_version="v1",
++            route_event_id="evt_approved_shadow",
++        )
++        self.assertEqual(
++            (lock["tier"], lock["model"], lock["reasoning"]),
++            ("C4", "gpt-6-sol", "high"),
++        )
++
+     def test_attested_deleted_completion_advances_and_finalizes_only_last(self):
+         state = {"routing": {}, "session_id": "worker-1"}
+         plan = initialize_subtask_plan(
+
+--- a/hermes-supervisor-configs/keemu.json
++++ b/hermes-supervisor-configs/keemu.json
+@@ -27,15 +27,14 @@
+   "max_continuations": 50,
+   "max_consecutive_failures": 6,
+   "max_same_error": 4,
+-  "pause_after_subtask_ids": [
+-    "m1d-00"
+-  ],
++  "pause_after_subtask_ids": [],
+   "log_level": "INFO",
+   "router_policy_path": "/opt/data/hermes-durable-vps-hostinger-router-v1/router/models.json",
+   "routing": {
+     "mode": "shadow",
+-    "minimum_tier": "C4",
+-    "maximum_tier": "C4",
++    "minimum_tier": "C0",
++    "maximum_tier": "C5",
++    "apply_approved_subtask_routes": true,
+     "astra_experimental": false,
+     "astra_fallback_tier": "C5",
+     "learning": {
+
