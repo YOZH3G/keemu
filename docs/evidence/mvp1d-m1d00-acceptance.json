@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "milestone": "KEEMU MVP 1D",
+  "subtask": "m1d-00",
+  "status": "SCOPE_FROZEN_PRODUCT_NOT_RUN",
+  "authoritative_task": "TASK.md",
+  "specification": "docs/specifications/KEEMU_MVP1D_script_execution.md",
+  "review": "docs/evidence/mvp1d-m1d00-scope-review.md",
+  "historical_boundary": "Original MVP 1 A01-A21/final-28/final-29/final-31 evidence and release status unchanged",
+  "entries": [
+    {
+      "id": "D01",
+      "status": "NOT_RUN",
+      "required_proof": ["project-contained regular-file-only bounded no-follow open", "source identity and SHA-256 byte snapshot", "symlink/FIFO/device/traversal/oversize and validation-to-stage mutation refusal"],
+      "fixture_or_test": ["fixtures/scripts/mvp1d/success.sh", "generated hostile-file and concurrent-mutation tests"],
+      "planned_subtasks": ["m1d-01", "m1d-11"]
+    },
+    {
+      "id": "D02",
+      "status": "NOT_RUN",
+      "required_proof": ["KEEMU-generated digest-derived unique /opt/tmp target path", "target collision and symlink refusal without overwrite", "pre/post full-ID/label ownership and target SHA-256 byte readback", "exact staged-object cleanup and honest failure"],
+      "fixture_or_test": ["fixtures/scripts/mvp1d/success.sh", "generated target-collision and cleanup-race tests"],
+      "planned_subtasks": ["m1d-02", "m1d-11"]
+    },
+    {
+      "id": "D03",
+      "status": "NOT_RUN",
+      "required_proof": ["target /bin/sh argv execution with explicit validated cwd and no arbitrary host env", "1..runtime-maximum timeout, default 60 seconds", "owned target descendant TERM/KILL and absence proof without foreign process kill"],
+      "fixture_or_test": ["fixtures/scripts/mvp1d/argv.sh", "fixtures/scripts/mvp1d/timeout-child.sh", "generated daemonization and unrelated-process tests"],
+      "planned_subtasks": ["m1d-04", "m1d-05", "m1d-11"]
+    },
+    {
+      "id": "D04",
+      "status": "NOT_RUN",
+      "required_proof": ["typed source/runtime/execution/assertion/cleanup metadata and schema parity", "actual exit/timeout/duration and separate bounded stdout/stderr/truncation", "deterministic PASS/FAIL/BLOCKED/ERROR including incomplete output and cleanup failures"],
+      "fixture_or_test": ["fixtures/scripts/mvp1d/exit-7.sh", "fixtures/scripts/mvp1d/streams.sh", "generated output-flood and assertion-mismatch tests"],
+      "planned_subtasks": ["m1d-03", "m1d-08"]
+    },
+    {
+      "id": "D05",
+      "status": "NOT_RUN",
+      "required_proof": ["AArch64 real one-shot success/exit-7/timeout/argv/filesystem/mutation/cleanup", "running owner-verified persistent --script and unrelated service preservation", "one-shot container/resource absence and persistent exact-artifact-only cleanup"],
+      "fixture_or_test": ["fixtures/scripts/mvp1d/success.sh", "fixtures/scripts/mvp1d/exit-7.sh", "fixtures/scripts/mvp1d/timeout-child.sh", "fixtures/scripts/mvp1d/argv.sh", "fixtures/scripts/mvp1d/filesystem.sh"],
+      "planned_subtasks": ["m1d-05", "m1d-06", "m1d-07", "m1d-08"]
+    },
+    {
+      "id": "D06",
+      "status": "NOT_RUN",
+      "required_proof": ["backward-compatible kind: script discriminated check and JSON schema parity", "scenario production lock binds script source and immutable bytes", "same secure staging/execution path, never file-content /bin/sh -c"],
+      "fixture_or_test": ["fixtures/scripts/mvp1d/success.sh", "generated legacy-scenario and changed-lock tests"],
+      "planned_subtasks": ["m1d-09"]
+    },
+    {
+      "id": "D07",
+      "status": "NOT_RUN",
+      "required_proof": ["real AArch64 Docker/binfmt execution", "same MIPS/MIPSEL contract with real PASS or honest BLOCKED", "no direct host mutation, Docker socket, target privilege, secret inheritance or foreign mutation", "race/interruption/retry/collision/isolation tests"],
+      "fixture_or_test": ["fixtures/scripts/mvp1d/success.sh", "generated multi-target, isolation and foreign-resource tests"],
+      "planned_subtasks": ["m1d-05", "m1d-07", "m1d-10", "m1d-11"]
+    },
+    {
+      "id": "D08",
+      "status": "NOT_RUN",
+      "required_proof": ["portable plus applicable Docker/binfmt tests and lint/format/diff evidence or exact blockers", "dedicated hash-bound MVP 1D ledger and aligned documentation/durable records", "independent final D01-D08 evidence audit without changing original MVP 1 release"],
+      "fixture_or_test": ["all frozen fixtures, hostile-input generators and retained raw execution records"],
+      "planned_subtasks": ["m1d-12", "m1d-13"]
+    }
+  ]
+}
