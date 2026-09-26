@@ -1,66 +1,86 @@
-# Autonomous Task: KEEMU MVP 1
+# Autonomous Task: KEEMU MVP 1D — Script Execution
 
 ## Objective
 
-Implement and experimentally verify KEEMU MVP 1 according to `KEEMU_MVP1_updated.md` revision 2.2. Work in the prescribed order: P0, MVP 1A, MVP 1B, then MVP 1C. Do not claim a phase or acceptance ID complete without real evidence.
+Implement and experimentally verify a reproducible, bounded, ownership-safe shell-script runner inside KEEMU target Entware environments. This is a new milestone. It must not alter the frozen MVP 1 evidence, acceptance ledger, or release result.
 
 ## Authoritative specification
 
-- `KEEMU_MVP1_updated.md` is the source of product scope, architecture constraints, acceptance IDs A01–A21, and truthfulness requirements.
-- If implementation evidence conflicts with an assumption in the specification, record the evidence and update an ADR/limitations document; never fabricate compatibility.
+- `docs/specifications/KEEMU_MVP1D_script_execution.md` is the product specification.
+- `docs/specifications/KEEMU_MVP1D_script_execution_verdict.md` defines the approved implementation strategy and risk boundaries.
+- `docs/milestones/KEEMU_MVP1_TASK_FROZEN.md` and all final-28/final-29/final-31 evidence remain immutable historical inputs.
 
-## Scope
+## Frozen scope
 
-- May create and modify files only inside this repository and its test-owned runtime/report directories.
-- May fetch public source artifacts needed for P0 only when provenance and SHA-256 are recorded.
-- May create project-owned containers, networks, images and temporary resources when a usable Docker host is available.
-- Must begin with the smallest vertical P0 slice: AArch64 target shell/opkg, web-demo through localhost publishing, persistence, then NFQUEUE capability experiments.
-- Must continue through 1A, 1B and 1C only after each preceding gate has real evidence.
+- Primary mandatory architecture: `generic-aarch64` through the existing verified Docker/binfmt runtime.
+- `generic-mips` and `generic-mipsel` must use the same script execution contract. If their general lifecycle remains unavailable, return truthful `BLOCKED`; do not create architecture-specific bypasses.
+- Implement one-shot `keemu script SCRIPT --profile PROFILE` and persistent `keemu exec NAME --script SCRIPT -- ARGS...`.
+- Add secure host input validation, SHA-256 identity, target staging under `/opt/tmp`, target-copy integrity, no-overwrite behavior, argv/cwd/timeout handling, bounded separate stdout/stderr, typed reporting, assertions, scenario `kind: script`, cleanup, interruption and isolation evidence.
+- Do not inherit arbitrary host environment or execute script content through a host shell.
 
 ## Constraints
 
-- Work only on branch `agent/keemu`; never merge or force-push automatically.
-- Preserve `KEEMU_MVP1_updated.md` as the accepted specification unless an explicit, evidence-backed correction is required.
-- Never store credentials, OAuth data, deploy keys, `.env` files or private keys in Git or durable agent files.
-- Never use `docker system prune`, clear the host firewall, expose services publicly, mount the Docker socket inside a target container, or use `--privileged` for target packages.
-- Do not alter host binfmt, firewall, kernel modules, public ports, DNS, physical routers or cloud infrastructure without explicit human approval.
-- Keep real execution, shim behavior, static analysis, SKIP, BLOCKED and untested claims distinct in every report.
-- Use pinned versions and hashes obtained from real artifacts; do not invent versions, API commands, fixtures or successful results.
-- Revalidate the environment after every resume, crash, reboot or quota pause.
+- Work only on branch `staging`; push every coherent verified subtask to `origin/staging`.
+- `main` and `post-mvp` are frozen baselines for this milestone. Never merge or force-push automatically.
+- Preserve all original MVP 1 evidence and historical route/model attestations; do not reclassify A01–A21.
+- Never store credentials, OAuth data, deploy keys, `.env` files, private keys, or raw secret-like input in Git or reports.
+- Never use `docker system prune`, host PID/network namespaces for script execution, public exposure, target `--privileged`, Docker socket mounts, unrestricted host mounts, or arbitrary host environment inheritance.
+- Do not modify host binfmt, firewall, kernel modules, DNS, physical routers, cloud/billing resources, credentials, OAuth, or deploy keys without explicit human approval.
+- Cleanup may mutate only exact project/run-owned resources and exact staged paths. Ambiguous ownership must fail closed.
+- Every worker launch requires a fresh quota admission. Quota waits resume the same subtask/session/model lock and never create a new routing decision.
+- Runtime provider/model/reasoning metadata is authoritative; mismatch is `MODEL_ATTESTATION_FAILED`.
+- Routing remains fixed/shadow for `m1d-00`. No implementation subtask may start until its visible route table and threat/acceptance ledger are independently reviewed and approved.
 
 ## Acceptance criteria
 
-### P0 gate
+### D01 — Secure input
 
-- [ ] A minimal AArch64 Entware rootfs runs the target shell, opkg and nested child execution with recorded provenance.
-- [ ] A target web-demo is reachable through an explicit `127.0.0.1` publish and persistence survives down/up.
-- [ ] NFQUEUE ACCEPT/DROP and native-control experiments produce evidence, or MVP 1C is explicitly BLOCKED with a reproducible capability diagnosis.
-- [ ] First real lock data and ADRs for runtime/network decisions are committed.
+- [ ] Regular-file-only, project-contained, bounded, no-follow script input is opened safely and hash-identified.
+- [ ] Symlink, FIFO, device, traversal, oversized input, inode/metadata/byte replacement, and validation-to-stage mutation fail closed.
 
-### MVP 1A gate
+### D02 — Typed staging and integrity
 
-- [ ] Schemas, `doctor`, `init`, `inspect`, scenario lifecycle and persistent-environment commands are implemented and tested.
-- [ ] AArch64 acceptance evidence covers applicable A01–A09, A18–A21 requirements.
-- [ ] JSON is the report source and Markdown is generated from the same object.
+- [ ] Target path is KEEMU-generated from SHA-256 and confined to `/opt/tmp`.
+- [ ] Existing target objects are never overwritten.
+- [ ] Container identity is checked before and after mutation; target bytes match the source digest.
+- [ ] Cleanup removes only the exact staged object and records failure honestly.
 
-### MVP 1B gate
+### D03 — Execution and process cleanup
 
-- [ ] MIPS and MIPSEL rootfs/fixtures, matrix validation, strict NDM shim and required event contracts are implemented.
-- [ ] Required cross-target checks A01–A06, A10 and A11 have real results with correct PASS/FAIL/BLOCKED semantics.
+- [ ] `/bin/sh TARGET_SCRIPT` receives bounded argv without host-side shell reparse.
+- [ ] CWD is explicit and target-path validated; arbitrary host environment is absent.
+- [ ] Timeout is 1..runtime maximum, default 60 seconds, with bounded TERM/KILL of only the target process tree.
+- [ ] Timeout evidence proves no script descendants remain and does not kill unrelated persistent-environment processes.
 
-### MVP 1C gate
+### D04 — Results and status semantics
 
-- [ ] Network-demo verifies web/API behavior, persistence and packet processing on AArch64.
-- [ ] A13–A17 produce real network evidence, or each unmet capability is reported as BLOCKED without false PASS.
-- [ ] Cleanup/isolation requirements A18–A20 are verified against project-owned resources only.
+- [ ] Typed result/report records source/digest, target path/profile/architecture/runtime identity, interpreter, argv, cwd, timeout, duration, exit code, timeout, separate bounded stdout/stderr and truncation, assertions, and cleanup.
+- [ ] Unexpected script/assertion results are `FAIL`; unavailable capability or changed locked input is `BLOCKED`; harness contract failure is `ERROR`; verified execution plus assertions and cleanup is `PASS`.
 
-### Completion gate
+### D05 — One-shot and persistent lifecycle
 
-- [ ] All A01–A21 results are mapped in `docs/traceability.md` to tests and evidence.
-- [ ] Portable tests, required integration tests and applicable network tests pass; every unrun test is labeled accurately.
-- [ ] README, architecture, progress, decisions and limitations match verified behavior.
-- [ ] `.agent/CHECKPOINT.md`, `.agent/MEMORY.md`, `.agent/DECISIONS.md` and `.agent/JOURNAL.md` are current.
+- [ ] `keemu script` passes successful, exit-7, timeout, argv, filesystem-effect, input-mutation, and cleanup cases on AArch64.
+- [ ] `keemu exec NAME --script` works only for owner-verified `running` environments and preserves unrelated environment state/services.
+- [ ] One-shot removes its owned container/resources; persistent mode removes only exact temporary script artifacts.
+
+### D06 — Scenario and schema
+
+- [ ] `kind: script` is a backward-compatible discriminated check with committed JSON schema parity and immutable-input locking.
+- [ ] Scenario execution uses the same secure input/staging/execution path; it never converts file content to `/bin/sh -c`.
+
+### D07 — Architecture and isolation
+
+- [ ] AArch64 real execution is mandatory.
+- [ ] MIPS/MIPSEL use the same contract and produce real PASS or truthful BLOCKED evidence.
+- [ ] Script execution cannot directly mutate host OS, access Docker socket, gain host privileges, inherit secrets, or alter foreign resources.
+- [ ] Race, interruption, cleanup retry, collision, and foreign-resource preservation tests are recorded.
+
+### D08 — Completion evidence
+
+- [ ] Portable tests, applicable Docker/binfmt integration tests, lint/format/diff checks, and a dedicated MVP 1D evidence ledger pass or preserve exact blockers.
+- [ ] README, architecture, limitations, progress, traceability, ADRs, and durable `.agent/` files match verified behavior.
+- [ ] Independent final audit maps D01–D08 to tests/evidence without changing the original MVP 1 status.
 
 ## Human approval boundaries
 
-Explicit approval is required before modifying host binfmt registration, firewall rules outside disposable project namespaces, kernel modules, public network exposure, DNS, physical Keenetic devices, billing/cloud resources, credentials, OAuth state, deploy keys, or any non-project repository. Destructive operations may target only resources carrying verified KEEMU ownership labels.
+Explicit approval is required before any host binfmt, firewall, kernel-module, public-network, DNS, physical-device, cloud/billing, credential/OAuth, deploy-key, or non-project repository mutation. Script execution itself must remain inside project-owned target environments.
