@@ -1,0 +1,1316 @@
+--- a/runtime/router/capabilities.py
++++ b/runtime/router/capabilities.py
+@@ -23,6 +23,13 @@
+     routing = cfg.get("routing", {})
+     if not bool(routing.get("astra_experimental", True)):
+         return False
+-    recorded = state.get("routing", {}).get("capabilities", {}).get("gpt-6-astra")
+-    # False is authoritative for the rest of this task; None/True allow one runtime attempt.
+-    return recorded is not False
++    routing_state = state.get("routing", {})
++    recorded = routing_state.get("capabilities", {}).get("gpt-6-astra")
++    if recorded is False:
++        return False
++    escalation = routing_state.get("astra_escalation", {})
++    return bool(
++        isinstance(escalation, dict)
++        and escalation.get("approved") is True
++        and escalation.get("basis") in {"evidenced_c5_failure", "shadow_review"}
++    )
+--- a/runtime/router/event_store.py
++++ b/runtime/router/event_store.py
+@@ -42,3 +42,8 @@
+     def events(self):
+         if not self.path.exists(): return []
+         return [validate_event_mapping(json.loads(x)) for x in self.path.read_text(encoding='utf-8').splitlines() if x.strip()]
++    def event(self, event_id: str) -> RouteEvent | None:
++        matches = [event for event in self.events() if event.event_id == event_id]
++        if len(matches) > 1:
++            raise ValueError('duplicate event_id')
++        return matches[0] if matches else None
+--- a/runtime/router/learning.py
++++ b/runtime/router/learning.py
+@@ -89,18 +89,50 @@
+         self.max_failure_rate = max_failure_rate
+ 
+     def evaluate(self, events: Iterable[RouteEvent]) -> dict[str, Any]:
+-        outcomes = [
+-            event.outcome for event in events
+-            if event.outcome is not None and event.outcome.learning_accepted
+-        ]
++        rows = list(events)
++        event_ids = [event.event_id for event in rows]
++        duplicate_ids = {event_id for event_id in event_ids if event_ids.count(event_id) > 1}
++        parents = {
++            event.event_id: event
++            for event in rows
++            if event.source == "supervisor"
++            and event.outcome is None
++            and event.event_id not in duplicate_ids
++        }
++        parent_uses: dict[str, int] = {}
++        for event in rows:
++            if event.source == "supervisor_outcome" and event.parent_event_id:
++                parent_uses[event.parent_event_id] = parent_uses.get(event.parent_event_id, 0) + 1
++
++        outcomes = []
++        rejected = 0
++        for event in rows:
++            if event.source != "supervisor_outcome" or event.outcome is None:
++                continue
++            parent = parents.get(str(event.parent_event_id or ""))
++            outcome = event.outcome
++            route_matches = bool(
++                parent is not None
++                and parent_uses.get(parent.event_id) == 1
++                and event.event_id not in duplicate_ids
++                and event.task_digest == parent.task_digest
++                and event.policy_version == parent.policy_version
++                and dict(event.route) == dict(parent.route)
++                and outcome.expected_model == parent.route.get("model")
++                and outcome.expected_reasoning == parent.route.get("reasoning")
++            )
++            if route_matches and outcome.learning_accepted:
++                outcomes.append(outcome)
++            else:
++                rejected += 1
+         samples = len(outcomes)
+         failures = sum(1 for outcome in outcomes if not outcome.completed_verified)
+         failure_rate = failures / samples if samples else 1.0
+         if samples < self.min_samples:
+-            return {"eligible": False, "reason": "insufficient_samples", "samples": samples, "failures": failures, "failure_rate": failure_rate}
++            return {"eligible": False, "reason": "insufficient_samples", "samples": samples, "failures": failures, "failure_rate": failure_rate, "rejected": rejected}
+         if failure_rate > self.max_failure_rate:
+-            return {"eligible": False, "reason": "failure_rate_exceeds_limit", "samples": samples, "failures": failures, "failure_rate": failure_rate}
+-        return {"eligible": True, "reason": "eligible", "samples": samples, "failures": failures, "failure_rate": failure_rate}
++            return {"eligible": False, "reason": "failure_rate_exceeds_limit", "samples": samples, "failures": failures, "failure_rate": failure_rate, "rejected": rejected}
++        return {"eligible": True, "reason": "eligible", "samples": samples, "failures": failures, "failure_rate": failure_rate, "rejected": rejected}
+ 
+ 
+ def canary_eligible(candidate: Mapping[str, Any], evaluation: Mapping[str, Any], *, min_samples: int = 20) -> bool:
+--- a/runtime/router/learning_schema.py
++++ b/runtime/router/learning_schema.py
+@@ -36,7 +36,18 @@
+ 
+     @property
+     def learning_accepted(self) -> bool:
+-        return self.model_attested is not False
++        return bool(
++            self.model_attested is True
++            and self.model_attestation_status == "ATTESTED"
++            and self.expected_model
++            and self.expected_reasoning
++            and self.session_deleted is True
++            and self.exit_code is not None
++            and self.verification_evidence
++            and not self.needed_human
++            and not self.timed_out
++            and not self.quota_pause
++        )
+ 
+     def to_dict(self) -> dict[str, Any]:
+         return {
+--- a/runtime/router/router.py
++++ b/runtime/router/router.py
+@@ -50,6 +50,20 @@
+         if safety_floor:
+             tier = clamp_tier(self.policy, tier, safety_floor, None)
+ 
++        # A validated active-subtask C5 factor is explicit bounded planning
++        # evidence, not a lexical hint. Preserve the approved Sol/xhigh floor
++        # even when the short objective text alone carries few score tokens.
++        if signals.c5_explicit:
++            tier = clamp_tier(self.policy, tier, "C5", None)
++            signals.reasons.append("explicit bounded C5 factor")
++
++        # Preserve C5 = Sol/xhigh. Reaching it requires an explicit cross-layer,
++        # recovery, concurrency, kernel, or repeated-failure factor; additive
++        # generic risk and long specifications alone stop at C4.
++        if int(tier["rank"]) > 4 and not signals.c5_justified:
++            tier = clamp_tier(self.policy, tier, None, "C4")
++            signals.reasons.append("no explicit C5 factor; capped at C4")
++
+         if "astra" in tier["model"] and not astra_allowed(self.cfg, self.state):
+             tier = tiers_by_id(self.policy)[str(self.routing_cfg.get("astra_fallback_tier", "C5"))]
+ 
+--- a/runtime/router/signals.py
++++ b/runtime/router/signals.py
+@@ -11,8 +11,12 @@
+ @dataclass
+ class RoutingSignals:
+     score: int = 0
++    signal_source: str = "task"
++    active_subtask_id: str | None = None
+     task_chars: int = 0
+     changed_files: int = 0
++    planned_change_count: int = 0
++    component_count: int = 0
+     repo_files_sampled: int = 0
+     graphify_present: bool = False
+     graphify_bytes: int = 0
+@@ -25,6 +29,12 @@
+     debugging_scope: bool = False
+     cross_component_scope: bool = False
+     read_only_scope: bool = False
++    c5_justified: bool = False
++    c5_explicit: bool = False
++    c5_factors: list[str] | None = None
++    gate_closure_probability: str = "unknown"
++    diagnostic_risk: str = "unknown"
++    safety_context: list[str] | None = None
+     reasons: list[str] | None = None
+ 
+     def to_dict(self) -> Dict[str, Any]:
+@@ -43,6 +53,121 @@
+     "read_only": re.compile(r"\b(read[- ]only|inspect|analy[sz]e|explain|status|list|show|find|search|проверь|проанализ|объясни|найди|покажи|статус)\b", re.I),
+ }
+ 
++_C5_PATTERNS = {
++    "concurrency_control": re.compile(
++        r"\b(concurren\w*|race\s+condition|deadlock|atomic(?:ity)?|locking)\b", re.I
++    ),
++    "crash_recovery": re.compile(
++        r"\b(crash|interruption|recovery|rollback|reconciliation|stale\s+state)\b", re.I
++    ),
++    "kernel_network_namespace": re.compile(
++        r"\b(kernel|nfqueue|netlink|network\s+namespace|netns|iptables|nftables)\b", re.I
++    ),
++    "foreign_resource_preservation": re.compile(
++        r"\b(foreign|unrelated|other\s+tenant|preserv(?:e|ation)).{0,60}"
++        r"\b(resource|container|network|rule)\b",
++        re.I,
++    ),
++    "cross_component_invariant": re.compile(
++        r"\b(cross[- ]component\s+invariant|multi[- ](?:system|component|service)|"
++        r"distributed\s+invariant)\b",
++        re.I,
++    ),
++}
++
++ALLOWED_C5_FACTORS = frozenset({
++    *tuple(_C5_PATTERNS),
++    "repeated_ambiguous_failure",
++    "complex_security_architecture",
++    "complex_security_boundary",
++    "high_side_effect_risk",
++})
++
++_CONSTRAINT_HEADING = re.compile(
++    r"\b(constraints?|prohibitions?|limitations?|safety|ограничен|запрещ)\b", re.I
++)
++_NEGATION = re.compile(r"\b(do\s+not|don't|never|must\s+not|prohibit(?:ed)?|не|нельзя)\b", re.I)
++_DOUBLE_NEGATION = re.compile(
++    r"\b(do\s+not|don't|never)\s+(skip|avoid|refrain\s+from|fail\s+to)\b", re.I
++)
++_ACTION = re.compile(
++    r"\b(write|document|inspect|analy[sz]e|explain|show|list|find|search|design|"
++    r"implement(?!ation)\w*|build|create|set|configure|apply|deploy|connect|restart|stop|remove|"
++    r"delete|drop|truncate|migrate|rotate|open|enable|expose|grant|revoke|wipe|alter|"
++    r"debug|verify|run|test|update|modify|bounce|roll\s+out|fail\s+over|"
++    r"напис|документ|проверь|проанализ|созда|настро|примен|развер|подключ|перезапуст|"
++    r"останов|удал|мигрир|измен|отлад|запуст)\w*\b",
++    re.I,
++)
++_SAFE_OBJECT = re.compile(
++    r"\b(documentation|docs?|mock|fixture|unit[- ]test|temporary|local\s+(?:development|dev)|"
++    r"документац|макет|фикстур|юнит[- ]тест|временн|локальн)\b",
++    re.I,
++)
++_REAL_PROTECTED_OBJECT = re.compile(
++    r"\b(production|prod|live|customer[- ]facing|remote|vps|real|primary\s+database|"
++    r"internet|public|credential|signing\s+key|encryption\s+key|admin|root|"
++    r"боев|продакш|удален|реальн|публичн|учетн)\b",
++    re.I,
++)
++_MUTATING_ACTION = re.compile(
++    r"\b(implement(?!ation)\w*|build|create|set|configure|apply|deploy|connect|restart|stop|remove|"
++    r"delete|drop|truncate|migrate|rotate|open|enable|expose|grant|revoke|wipe|alter|"
++    r"update|modify|bounce|roll\s+out|fail\s+over|"
++    r"созда|настро|примен|развер|подключ|перезапуст|останов|удал|мигрир|измен)\w*\b",
++    re.I,
++)
++_STRUCTURED_CONTEXT = re.compile(
++    r"\b(target|environment|deployment|host|surface|runtime|контур|среда|хост|цель)\b",
++    re.I,
++)
++_SAFETY_CONTEXT_PATTERNS = {
++    "production": re.compile(
++        r"\b(production|prod|live|customer[- ]facing|vps|remote|боев|продакш|удален)\b", re.I
++    ),
++    "ssh": re.compile(r"\bssh\b", re.I),
++    "credentials": re.compile(
++        r"\b(oauth|credential|secret|token|signing\s+key|encryption\s+key|учетн|секрет|токен)\b",
++        re.I,
++    ),
++    "firewall": re.compile(r"\b(firewall|iptables|nftables|nfqueue|межсетев)\b", re.I),
++    "kernel": re.compile(r"\b(kernel|netlink|network\s+namespace|netns|ядр)\b", re.I),
++    "public_exposure": re.compile(r"\b(public|internet|0\.0\.0\.0|публичн|интернет)\b", re.I),
++    "privilege": re.compile(r"\b(root|sudo|admin|privilege|cap_sys|привилег)\b", re.I),
++}
++
++
++def _actionable_clauses(text: str) -> tuple[list[str], list[str]]:
++    """Return positive action clauses and their risk-bearing subset."""
++    clauses: list[str] = []
++    in_constraint_section = False
++    for raw_line in text.splitlines() or [text]:
++        line = raw_line.strip()
++        heading = re.match(r"^#{1,6}\s+(.*)$", line)
++        if heading:
++            in_constraint_section = bool(_CONSTRAINT_HEADING.search(heading.group(1)))
++            continue
++        line = re.sub(r"^[-*+]\s+(?:\[[ xX]\]\s*)?", "", line)
++        if not line:
++            continue
++        parts = re.split(r"\s*(?:[.;]|\s+[—–-]\s+|\bbut\b|\bwhile\b|\bthen\b)\s*", line, flags=re.I)
++        for part in parts:
++            clause = part.strip(" ,:")
++            if not clause or not _ACTION.search(clause):
++                continue
++            negated = bool(_NEGATION.search(clause)) and not bool(_DOUBLE_NEGATION.search(clause))
++            if negated:
++                continue
++            # Constraint sections still contribute affirmative requirements, but
++            # pure safety mentions without an action have already been removed.
++            if in_constraint_section or not in_constraint_section:
++                clauses.append(clause)
++    risk_clauses = [
++        clause for clause in clauses
++        if not _SAFE_OBJECT.search(clause) or _REAL_PROTECTED_OBJECT.search(clause)
++    ]
++    return clauses, risk_clauses
++
+
+ def _read_text(paths: Iterable[Path], max_chars: int = 24_000) -> str:
+     chunks: list[str] = []
+@@ -59,14 +184,49 @@
+     return "\n".join(chunks)
+ 
+ 
++def _normalized_safety_context(project: Path) -> list[str]:
++    text = _read_text([
++        project / "CONTEXT.md",
++        project / ".agent" / "CHECKPOINT.md",
++    ], max_chars=12_000)
++    labels: set[str] = set()
++    for raw_line in text.splitlines():
++        line = raw_line.strip()
++        if not line or not _STRUCTURED_CONTEXT.search(line):
++            continue
++        if _NEGATION.search(line) and not _DOUBLE_NEGATION.search(line):
++            continue
++        for label, pattern in _SAFETY_CONTEXT_PATTERNS.items():
++            if pattern.search(line):
++                labels.add(label)
++    return sorted(labels)
++
++
+ def _git_changed_files(project: Path) -> int:
+     try:
+         p = subprocess.run(
+-            ["git", "status", "--porcelain=v1"], cwd=project,
++            ["git", "status", "--porcelain=v1", "-uall"], cwd=project,
+             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+             text=True, timeout=10, check=False,
+         )
+-        return sum(1 for line in p.stdout.splitlines() if line.strip())
++        source_suffixes = {
++            ".py", ".pyi", ".js", ".jsx", ".ts", ".tsx", ".go", ".rs", ".c", ".h",
++            ".cc", ".cpp", ".java", ".kt", ".sh", ".bash", ".yaml", ".yml", ".json",
++            ".toml", ".ini", ".cfg", ".conf", ".sql",
++        }
++        special_names = {"Dockerfile", "Containerfile", "Makefile", "Justfile"}
++        excluded_roots = {".agent", "graphify-out", "backups", ".git", "docs"}
++        changed = 0
++        for line in p.stdout.splitlines():
++            if len(line) < 4:
++                continue
++            raw_path = line[3:].split(" -> ")[-1].strip().strip('"')
++            path = Path(raw_path)
++            if path.parts and path.parts[0] in excluded_roots:
++                continue
++            if path.name in special_names or path.suffix.lower() in source_suffixes:
++                changed += 1
++        return changed
+     except (OSError, subprocess.TimeoutExpired):
+         return 0
+ 
+@@ -88,13 +248,39 @@
+ 
+ 
+ def collect_signals(project: Path, state: Dict[str, Any]) -> RoutingSignals:
+-    text = _read_text([
+-        project / "TASK.md",
+-        project / "CONTEXT.md",
+-        project / ".agent" / "CHECKPOINT.md",
+-    ])
++    text = ""
++    source = "task"
++    active_subtask_id = None
++    active_metadata: dict[str, Any] = {}
++    plan = state.get("routing", {}).get("subtask_plan")
++    if isinstance(plan, dict):
++        items = plan.get("items")
++        active_index = plan.get("active_index")
++        if isinstance(items, list) and isinstance(active_index, int) and 0 <= active_index < len(items):
++            active = items[active_index]
++            if isinstance(active, dict):
++                text = str(active.get("objective") or "")
++                active_subtask_id = str(active.get("id") or "") or None
++                active_metadata = active
++                source = "active_subtask"
++    if not text:
++        text = _read_text([project / "TASK.md"])
++    action_clauses, risk_clauses = _actionable_clauses(text)
++    action_text = "\n".join(action_clauses)
++    risk_text = "\n".join(risk_clauses)
++    safety_context = (
++        _normalized_safety_context(project)
++        if _MUTATING_ACTION.search(action_text)
++        else []
++    )
+     reasons: list[str] = []
+-    s = RoutingSignals(task_chars=len(text), reasons=reasons)
++    s = RoutingSignals(
++        signal_source=source,
++        active_subtask_id=active_subtask_id,
++        task_chars=len(action_text),
++        safety_context=safety_context,
++        reasons=reasons,
++    )
+ 
+     s.changed_files = _git_changed_files(project)
+     s.repo_files_sampled = _repo_file_sample(project)
+@@ -109,28 +295,66 @@
+     runtime = state.get("runtime", {})
+     s.previous_failures = int(runtime.get("consecutive_failures") or 0)
+     s.same_error_count = int(runtime.get("same_error_count") or 0)
+-
+-    s.production_risk = bool(_KEYWORDS["production"].search(text))
+-    s.security_risk = bool(_KEYWORDS["security"].search(text))
+-    s.destructive_risk = bool(_KEYWORDS["destructive"].search(text))
+-    s.architecture_scope = bool(_KEYWORDS["architecture"].search(text))
+-    s.debugging_scope = bool(_KEYWORDS["debugging"].search(text))
+-    s.cross_component_scope = bool(_KEYWORDS["cross"].search(text))
+-    s.read_only_scope = bool(_KEYWORDS["read_only"].search(text))
++    s.planned_change_count = max(0, min(100, int(active_metadata.get("planned_change_count") or 0)))
++    s.component_count = max(0, min(100, int(active_metadata.get("component_count") or 0)))
++
++    gate_closure = str(active_metadata.get("gate_closure_probability") or "unknown").lower()
++    diagnostic_risk = str(active_metadata.get("diagnostic_risk") or "unknown").lower()
++    s.gate_closure_probability = (
++        gate_closure if gate_closure in {"low", "medium", "high", "unknown"} else "unknown"
++    )
++    s.diagnostic_risk = (
++        diagnostic_risk if diagnostic_risk in {"low", "high", "unknown"} else "unknown"
++    )
++
++    s.production_risk = bool(_KEYWORDS["production"].search(risk_text))
++    s.security_risk = bool(_KEYWORDS["security"].search(risk_text))
++    s.destructive_risk = bool(_KEYWORDS["destructive"].search(risk_text))
++    s.architecture_scope = bool(_KEYWORDS["architecture"].search(risk_text))
++    s.debugging_scope = bool(_KEYWORDS["debugging"].search(risk_text))
++    s.cross_component_scope = bool(_KEYWORDS["cross"].search(risk_text))
++    s.read_only_scope = bool(_KEYWORDS["read_only"].search(action_text))
++    if "production" in safety_context:
++        s.production_risk = True
++    if any(label in safety_context for label in {
++        "ssh", "credentials", "firewall", "kernel", "public_exposure", "privilege"
++    }):
++        s.security_risk = True
++
++    explicit_factors = active_metadata.get("c5_factors", [])
++    factors = {
++        str(value)
++        for value in explicit_factors
++        if isinstance(value, str) and value in ALLOWED_C5_FACTORS
++    } if isinstance(explicit_factors, list) else set()
++    s.c5_explicit = bool(factors)
++    for label, pattern in _C5_PATTERNS.items():
++        if pattern.search(risk_text):
++            factors.add(label)
++    if any(label in safety_context for label in {"firewall", "kernel"}):
++        factors.add("kernel_network_namespace")
++    if s.previous_failures >= 2 and s.same_error_count >= 2:
++        factors.add("repeated_ambiguous_failure")
++    if s.architecture_scope and s.security_risk and (
++        s.production_risk or s.destructive_risk or s.cross_component_scope
++    ):
++        factors.add("complex_security_architecture")
++    s.c5_factors = sorted(factors)
++    s.c5_justified = bool(factors)
+ 
+     score = 0
+-    if s.task_chars > 2500:
+-        score += 1; reasons.append("long task/context")
+     if s.changed_files >= 4:
+         score += 1; reasons.append("multiple changed files")
+     if s.changed_files >= 10:
+         score += 2; reasons.append("large working-tree blast radius")
+-    if s.repo_files_sampled >= 500:
+-        score += 1; reasons.append("large repository")
+-    if s.graphify_bytes >= 5_000_000:
+-        score += 1; reasons.append("large Graphify index")
+-    if s.graphify_bytes >= 20_000_000:
+-        score += 1; reasons.append("very large Graphify index")
++    if s.planned_change_count >= 2:
++        score += 1; reasons.append("multiple planned changes")
++    if s.planned_change_count >= 5:
++        score += 1; reasons.append("large planned change set")
++    if s.component_count >= 2:
++        score += 2; reasons.append("multi-component implementation")
++    if s.component_count >= 4:
++        score += 1; reasons.append("broad component span")
+     if s.production_risk:
+         score += 3; reasons.append("production/remote-system risk")
+     if s.security_risk:
+@@ -149,6 +373,14 @@
+     if s.same_error_count >= 2:
+         score += 2; reasons.append("same error repeated")
+ 
++    if (
++        s.gate_closure_probability == "low"
++        and s.diagnostic_risk == "low"
++        and not (s.security_risk or s.destructive_risk or s.production_risk)
++    ):
++        score = max(0, score - 1)
++        reasons.append("low gate-closure value")
++
+     # Read-only is a weak downward signal, never enough to override explicit risk.
+     if s.read_only_scope and not (s.security_risk or s.destructive_risk or s.production_risk):
+         score = max(0, score - 1)
+--- a/runtime/supervisor/main.py
++++ b/runtime/supervisor/main.py
+@@ -260,6 +260,12 @@
+     """Persist a redacted route decision before a worker invocation."""
+     digest, _ = task_identity(project)
+     worker_lock = state.get("routing", {}).get("worker_lock", {})
++    existing_route_event_id = worker_lock.get("route_event_id")
++    if worker_lock.get("subtask_id") and existing_route_event_id not in {None, "PENDING"}:
++        existing = EventStore(project).event(str(existing_route_event_id))
++        if existing is None:
++            raise ValueError("persisted subtask route_event_id is missing from the event store")
++        return existing
+     if worker_lock.get("subtask_id"):
+         recorded_route = {
+             "provider": worker_lock.get("provider"),
+--- a/runtime/supervisor/subtasks.py
++++ b/runtime/supervisor/subtasks.py
+@@ -10,7 +10,7 @@
+ 
+ from router.learning import protected_floor
+ from router.policy import clamp_tier, tiers_by_id
+-from router.signals import _KEYWORDS
++from router.signals import ALLOWED_C5_FACTORS, _KEYWORDS
+ 
+ 
+ def stable_digest(value: Any) -> str:
+@@ -182,7 +182,7 @@
+     return lock
+ 
+ 
+-def _validated_items(raw: Any) -> list[dict[str, Any]]:
++def _validated_items(raw: Any, *, require_c5_justification: bool = False) -> list[dict[str, Any]]:
+     if not isinstance(raw, Sequence) or isinstance(raw, (str, bytes)) or not raw:
+         raise ValueError("subtask_plan must be a non-empty ordered list")
+     items: list[dict[str, Any]] = []
+@@ -212,6 +212,14 @@
+             raise ValueError("subtask acceptance_refs must be a non-empty string list")
+         if not isinstance(recommended, Mapping) or any(not recommended.get(key) for key in ("tier", "model", "reasoning")):
+             raise ValueError("subtask recommended tier/model/reasoning are required")
++        factors = item.get("c5_factors", [])
++        if factors is not None and (
++            not isinstance(factors, list)
++            or not all(isinstance(value, str) and value in ALLOWED_C5_FACTORS for value in factors)
++        ):
++            raise ValueError("subtask c5_factors must contain only recognized fixed labels")
++        if require_c5_justification and recommended.get("tier") == "C5" and not factors:
++            raise ValueError("C5 subtask requires at least one explicit c5_factors label")
+         if item.get("status", "pending") not in {"pending", "active"}:
+             raise ValueError("configured subtask status must be pending or active")
+         ids.add(subtask_id)
+@@ -234,7 +242,8 @@
+     raw = cfg.get("subtask_plan")
+     if raw is None:
+         return None
+-    items = _validated_items(raw)
++    require_c5 = bool(cfg.get("routing", {}).get("require_c5_justification", False))
++    items = _validated_items(raw, require_c5_justification=require_c5)
+     frozen = {
+         "parent_task_digest": parent_task_digest,
+         "plan_digest": stable_digest(raw),
+--- a/runtime/tests/test_intent_calibration.py
++++ b/runtime/tests/test_intent_calibration.py
+@@ -0,0 +1,76 @@
++import tempfile
++import unittest
++from pathlib import Path
++
++from router.router import ModelRouter
++
++
++ROOT = Path(__file__).resolve().parents[1]
++POLICY = ROOT / "router" / "models.json"
++
++
++class IntentCalibrationTests(unittest.TestCase):
++    def classify(self, task: str):
++        with tempfile.TemporaryDirectory() as td:
++            project = Path(td)
++            (project / ".agent").mkdir()
++            (project / "TASK.md").write_text(task, encoding="utf-8")
++            (project / "CONTEXT.md").write_text("", encoding="utf-8")
++            (project / ".agent" / "CHECKPOINT.md").write_text("", encoding="utf-8")
++            state = {
++                "runtime": {"consecutive_failures": 0, "same_error_count": 0},
++                "routing": {"capabilities": {"gpt-6-astra": False}},
++            }
++            return ModelRouter(
++                project=project,
++                cfg={"routing": {"mode": "shadow"}},
++                state=state,
++                policy_path=POLICY,
++            ).decide()
++
++    def test_safe_and_protected_intent_pairs_keep_c4_floor_without_false_positives(self):
++        pairs = [
++            (
++                "Create local JSON. Do not touch SSH, OAuth, or services.",
++                "Connect by SSH and restart the production service.",
++            ),
++            (
++                "Write rollback documentation; do not apply policy.",
++                "Apply policy on the production VPS.",
++            ),
++            (
++                "Update a mock OAuth fixture.",
++                "Rotate a real OAuth credential.",
++            ),
++            (
++                "Unit-test session deletion with a temporary database.",
++                "Delete real runtime sessions.",
++            ),
++            (
++                "Restart a local development service.",
++                "Restart the production service.",
++            ),
++        ]
++        for safe, protected in pairs:
++            with self.subTest(safe=safe):
++                safe_result = self.classify(safe)
++                protected_result = self.classify(protected)
++                self.assertLessEqual(int(safe_result.recommended_tier[1:]), 2)
++                self.assertGreaterEqual(int(protected_result.recommended_tier[1:]), 4)
++
++    def test_mixed_and_double_negation_preserve_real_protected_actions(self):
++        protected_tasks = [
++            "Never restart staging, but deploy production.",
++            "Do not skip deploying production.",
++            "Deploy production without downtime.",
++            "Deploy without downtime to production.",
++            "Update a mock dashboard by rotating a real OAuth credential.",
++        ]
++        for task in protected_tasks:
++            with self.subTest(task=task):
++                result = self.classify(task)
++                self.assertGreaterEqual(int(result.recommended_tier[1:]), 4)
++
++
++if __name__ == "__main__":
++    unittest.main()
+--- a/runtime/tests/test_policy_cli.py
++++ b/runtime/tests/test_policy_cli.py
+@@ -11,7 +11,7 @@
+ 
+ 
+ class PolicyCliTests(unittest.TestCase):
+-    def test_evaluate_promote_and_rollback_require_explicit_artifacts(self):
++    def test_fixture_events_cannot_authorize_policy_promotion(self):
+         with tempfile.TemporaryDirectory() as td:
+             root = Path(td)
+             project = root / "project"
+@@ -23,11 +23,17 @@
+             evaluation = root / "evaluation.json"
+             self._run("scripts/router-policy-evaluate.py", "--project", str(project), "--candidate", str(candidate), "--min-samples", "2", "--output", str(evaluation))
+             report = json.loads(evaluation.read_text())
+-            self.assertTrue(report["eligible"])
++            self.assertFalse(report["eligible"])
++            self.assertEqual(report["samples"], 0)
+             state = root / "STATE.json"
+             state.write_text(json.dumps({"routing": {"learning": {"active_policy_version": "v1"}}}), encoding="utf-8")
+-            self._run("scripts/router-policy-promote.py", "--state", str(state), "--candidate", str(candidate), "--evaluation", str(evaluation), "--approve")
+-            self.assertEqual(json.loads(state.read_text())["routing"]["learning"]["active_policy_version"], "candidate-1")
++            failed = subprocess.run(
++                ["python3", "scripts/router-policy-promote.py", "--state", str(state),
++                 "--candidate", str(candidate), "--evaluation", str(evaluation), "--approve"],
++                cwd=ROOT, text=True, capture_output=True,
++            )
++            self.assertNotEqual(failed.returncode, 0)
++            self.assertEqual(json.loads(state.read_text())["routing"]["learning"]["active_policy_version"], "v1")
+             self._run("scripts/router-policy-rollback.py", "--state", str(state), "--to-version", "v1", "--approve")
+             self.assertEqual(json.loads(state.read_text())["routing"]["learning"]["active_policy_version"], "v1")
+ 
+--- a/runtime/tests/test_policy_learning.py
++++ b/runtime/tests/test_policy_learning.py
+@@ -51,8 +51,8 @@
+         insufficient = evaluator.evaluate([])
+         self.assertFalse(insufficient["eligible"])
+         events = [
+-            self._outcome_event("a" * 64, True),
+-            self._outcome_event("b" * 64, False),
++            *self._outcome_pair("a" * 64, True),
++            *self._outcome_pair("b" * 64, False),
+         ]
+         result = evaluator.evaluate(events)
+         self.assertFalse(result["eligible"])
+@@ -70,6 +70,52 @@
+         result = evaluator.evaluate([rejected])
+         self.assertEqual(result["samples"], 0)
+ 
++    def test_evaluator_counts_only_unique_linked_attested_route_pairs(self):
++        parent = RouteEvent.create(
++            task_digest="e" * 64,
++            policy_version="candidate-1",
++            signals={"score": 4},
++            route={"tier": "C4", "model": "gpt-6-sol", "reasoning": "high"},
++            source="supervisor",
++        )
++        accepted_outcome = RouteOutcome(
++            completed_marker=True,
++            verification_evidence=("tests: passed",),
++            exit_code=0,
++            model_attested=True,
++            model_attestation_status="ATTESTED",
++            expected_model="gpt-6-sol",
++            expected_reasoning="high",
++            session_deleted=True,
++        )
++        linked = RouteEvent(
++            event_id="evt_linked_unique",
++            task_digest=parent.task_digest,
++            policy_version=parent.policy_version,
++            created_at=parent.created_at,
++            signals=parent.signals,
++            route=parent.route,
++            outcome=accepted_outcome,
++            source="supervisor_outcome",
++            parent_event_id=parent.event_id,
++        )
++        unlinked = RouteEvent(
++            event_id="evt_unlinked",
++            task_digest=parent.task_digest,
++            policy_version=parent.policy_version,
++            created_at=parent.created_at,
++            signals=parent.signals,
++            route=parent.route,
++            outcome=accepted_outcome,
++            source="supervisor_outcome",
++            parent_event_id=None,
++        )
++
++        result = PolicyEvaluator(min_samples=1).evaluate([parent, linked, unlinked])
++
++        self.assertTrue(result["eligible"])
++        self.assertEqual(result["samples"], 1)
++
+     def test_canary_requires_hash_samples_and_no_protected_downshift(self):
+         candidate = make_policy_envelope(load_policy(POLICY), version="candidate-1", parent_version="v1")
+         evaluation = {"eligible": True, "samples": 3, "failure_rate": 0.0}
+@@ -114,7 +160,7 @@
+                 "provider": "openai-codex", "tier": "C4",
+                 "expected_model": "gpt-6-sol", "expected_reasoning": "high",
+                 "subtask_id": "build", "subtask_digest": "b" * 64,
+-                "parent_task_digest": "a" * 64, "route_event_id": "evt_boundary",
++                "parent_task_digest": "a" * 64, "route_event_id": "PENDING",
+                 "model_attested": True, "attestation_status": "ATTESTED", "session_deleted": True,
+             }}}
+             event = capture_pre_run_event(
+@@ -137,14 +183,65 @@
+             self.assertEqual(payload["expected_model"], "gpt-6-sol")
+             self.assertNotIn("metadata", payload)
+ 
++    def test_continuation_reuses_one_route_decision_event_per_subtask(self):
++        with tempfile.TemporaryDirectory() as td:
++            project = Path(td)
++            (project / "TASK.md").write_text("small task", encoding="utf-8")
++            state = {"routing": {"learning": {}, "worker_lock": {
++                "provider": "openai-codex", "tier": "C4",
++                "expected_model": "gpt-6-sol", "expected_reasoning": "high",
++                "subtask_id": "build", "subtask_digest": "b" * 64,
++                "parent_task_digest": "a" * 64, "route_event_id": "PENDING",
++                "session_id": None,
++            }}}
++            route = {
++                "recommended_tier": "C4", "recommended_model": "gpt-6-sol",
++                "recommended_reasoning": "high", "signals": {"score": 8},
++            }
++
++            first = capture_pre_run_event(
++                project=project, state=state, route=route, policy_version="v1"
++            )
++            state["routing"]["worker_lock"]["session_id"] = "worker-1"
++            second = capture_pre_run_event(
++                project=project, state=state, route=route, policy_version="v1"
++            )
++
++            self.assertEqual(second.event_id, first.event_id)
++            self.assertEqual(len(EventStore(project).events()), 1)
++
+     @staticmethod
+-    def _outcome_event(digest, complete):
+-        event = RouteEvent.create(task_digest=digest, policy_version="candidate-1", signals={}, route={"tier": "C1"})
+-        return event.with_outcome(RouteOutcome(
++    def _outcome_pair(digest, complete):
++        route = {"tier": "C1", "model": "gpt-6-luna", "reasoning": "medium"}
++        parent = RouteEvent.create(
++            task_digest=digest,
++            policy_version="candidate-1",
++            signals={},
++            route=route,
++            source="supervisor",
++        )
++        outcome = RouteOutcome(
+             completed_marker=complete,
+-            verification_evidence=("tests: passed",) if complete else (),
++            verification_evidence=("tests: passed",) if complete else ("tests: failed",),
+             exit_code=0 if complete else 1,
+-        ))
++            model_attested=True,
++            model_attestation_status="ATTESTED",
++            expected_model="gpt-6-luna",
++            expected_reasoning="medium",
++            session_deleted=True,
++        )
++        child = RouteEvent(
++            event_id=f"evt_outcome_{digest[:8]}",
++            task_digest=digest,
++            policy_version="candidate-1",
++            created_at=parent.created_at,
++            signals=parent.signals,
++            route=parent.route,
++            outcome=outcome,
++            source="supervisor_outcome",
++            parent_event_id=parent.event_id,
++        )
++        return parent, child
+ 
+ 
+ if __name__ == "__main__":
+--- a/runtime/tests/test_router.py
++++ b/runtime/tests/test_router.py
+@@ -1,4 +1,5 @@
+ import json
++import subprocess
+ import tempfile
+ import unittest
+ from pathlib import Path
+@@ -63,6 +64,30 @@
+         self.assertEqual(r.model, "gpt-6-sol")
+         self.assertEqual(r.reasoning, "xhigh")
+ 
++    def test_astra_requires_explicit_evidenced_escalation(self):
++        task = (
++            "Debug repeated production security architecture failures across multiple services "
++            "with rollback, recovery, OAuth, firewall, and root access."
++        )
++        td, p = self.make_project(task)
++        self.addCleanup(td.cleanup)
++        state = self.base_state()
++        state["runtime"] = {"consecutive_failures": 3, "same_error_count": 3}
++        state["routing"]["capabilities"]["gpt-6-astra"] = True
++        cfg = {"routing": {"mode": "auto", "astra_experimental": True}}
++
++        blocked = ModelRouter(project=p, cfg=cfg, state=state, policy_path=POLICY).decide()
++        self.assertEqual((blocked.recommended_tier, blocked.model, blocked.reasoning),
++                         ("C5", "gpt-6-sol", "xhigh"))
++
++        state["routing"]["astra_escalation"] = {
++            "approved": True,
++            "basis": "evidenced_c5_failure",
++        }
++        approved = ModelRouter(project=p, cfg=cfg, state=state, policy_path=POLICY).decide()
++        self.assertIn(approved.recommended_tier, {"C6", "C7"})
++        self.assertEqual(approved.model, "gpt-6-astra")
++
+     def test_astra_model_unavailable_detection(self):
+         self.assertTrue(astra_runtime_unavailable("Error: unsupported_model gpt-6-astra", "gpt-6-astra"))
+         self.assertFalse(astra_runtime_unavailable("usage_limit_reached", "gpt-6-astra"))
+@@ -75,6 +100,236 @@
+         result = ModelRouter(project=p, cfg=cfg, state=self.base_state(), policy_path=POLICY).decide()
+         self.assertGreaterEqual(int(result.recommended_tier[1:]), 4)
+ 
++    def test_active_subtask_excludes_parent_context_from_complexity_score(self):
++        td, p = self.make_project(
++            "Design production VPS security architecture with OAuth, SSH, firewall, "
++            "destructive migration, rollback, and multiple services."
++        )
++        self.addCleanup(td.cleanup)
++        (p / "CONTEXT.md").write_text(
++            "Host kernel, NFQUEUE, credentials, public exposure, and recovery constraints.",
++            encoding="utf-8",
++        )
++        state = self.base_state()
++        state["routing"]["subtask_plan"] = {
++            "active_index": 0,
++            "items": [{
++                "id": "docs",
++                "objective": "Generate the documentation index from verified reports",
++                "acceptance_refs": ["A21"],
++                "recommended": {
++                    "tier": "C2", "model": "gpt-5.6-terra", "reasoning": "medium"
++                },
++            }],
++        }
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=state, policy_path=POLICY
++        ).decide()
++
++        self.assertEqual(result.signals["signal_source"], "active_subtask")
++        self.assertEqual(result.signals["active_subtask_id"], "docs")
++        self.assertLessEqual(int(result.recommended_tier[1:]), 2)
++        self.assertFalse(result.signals["production_risk"])
++        self.assertFalse(result.signals["security_risk"])
++
++    def test_bounded_protected_task_without_c5_factor_is_capped_at_c4(self):
++        task = (
++            "Apply a bounded production OAuth firewall migration using an existing verified "
++            "pattern and debug one deterministic validation failure. "
++            + ("Detailed acceptance wording. " * 140)
++        )
++        td, p = self.make_project(task)
++        self.addCleanup(td.cleanup)
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "auto"}}, state=self.base_state(), policy_path=POLICY
++        ).decide()
++
++        self.assertEqual(result.recommended_tier, "C4")
++        self.assertFalse(result.signals["c5_justified"])
++
++    def test_explicit_bounded_c5_factor_is_a_c5_floor(self):
++        td, p = self.make_project("Aggregate project text must not decide this route.")
++        self.addCleanup(td.cleanup)
++        state = self.base_state()
++        state["routing"]["subtask_plan"] = {
++            "active_index": 0,
++            "items": [{
++                "id": "atomic-recovery",
++                "objective": "Implement bounded state recovery.",
++                "c5_factors": ["concurrency_control", "crash_recovery"],
++            }],
++        }
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=state, policy_path=POLICY
++        ).decide()
++
++        self.assertEqual(result.recommended_tier, "C5")
++        self.assertEqual(result.recommended_reasoning, "xhigh")
++
++    def test_lexical_c5_factor_does_not_create_a_c5_floor(self):
++        td, p = self.make_project(
++            "Read-only inspect kernel capability metadata and document the result."
++        )
++        self.addCleanup(td.cleanup)
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=self.base_state(), policy_path=POLICY
++        ).decide()
++
++        self.assertTrue(result.signals["c5_justified"])
++        self.assertFalse(result.signals["c5_explicit"])
++        self.assertLessEqual(int(result.recommended_tier[1:]), 4)
++
++    def test_constraint_mentions_do_not_raise_safe_documentation_task(self):
++        task = (
++            "# Objective\nWrite local rollback documentation.\n\n"
++            "# Constraints\nDo not connect by SSH, rotate OAuth credentials, or restart "
++            "the production service."
++        )
++        td, p = self.make_project(task)
++        self.addCleanup(td.cleanup)
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "auto"}}, state=self.base_state(), policy_path=POLICY
++        ).decide()
++
++        self.assertLessEqual(int(result.recommended_tier[1:]), 2)
++        self.assertFalse(result.signals["production_risk"])
++        self.assertFalse(result.signals["security_risk"])
++        self.assertFalse(result.signals["destructive_risk"])
++
++    def test_operational_action_binds_normalized_protected_context_target(self):
++        td, p = self.make_project("# Objective\nRestart the service and verify health.")
++        self.addCleanup(td.cleanup)
++        (p / "CONTEXT.md").write_text(
++            "# Environment\nTarget environment: production VPS over SSH.\n",
++            encoding="utf-8",
++        )
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "auto"}}, state=self.base_state(), policy_path=POLICY
++        ).decide()
++
++        self.assertGreaterEqual(int(result.recommended_tier[1:]), 4)
++        self.assertTrue(result.signals["production_risk"])
++        self.assertTrue(result.signals["security_risk"])
++        self.assertEqual(result.signals["safety_context"], ["production", "ssh"])
++
++    def test_active_subtask_binds_normalized_protected_context_target(self):
++        td, p = self.make_project("Aggregate parent text must not decide the route.")
++        self.addCleanup(td.cleanup)
++        (p / "CONTEXT.md").write_text(
++            "# Environment\nTarget environment: production VPS over SSH.\n",
++            encoding="utf-8",
++        )
++        state = self.base_state()
++        state["routing"]["subtask_plan"] = {
++            "active_index": 0,
++            "items": [{"id": "restart", "objective": "Restart the service and verify health."}],
++        }
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=state, policy_path=POLICY
++        ).decide()
++
++        self.assertEqual(result.signals["signal_source"], "active_subtask")
++        self.assertEqual(result.signals["safety_context"], ["production", "ssh"])
++        self.assertGreaterEqual(int(result.recommended_tier[1:]), 4)
++
++    def test_implementation_noun_does_not_bind_protected_context(self):
++        td, p = self.make_project("Aggregate parent text must not decide the route.")
++        self.addCleanup(td.cleanup)
++        (p / "CONTEXT.md").write_text(
++            "# Environment\nTarget environment: production VPS over SSH.\n",
++            encoding="utf-8",
++        )
++        state = self.base_state()
++        state["routing"]["subtask_plan"] = {
++            "active_index": 0,
++            "items": [{
++                "id": "preflight",
++                "objective": "Read-only revalidate the checkpoint before implementation.",
++            }],
++        }
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=state, policy_path=POLICY
++        ).decide()
++
++        self.assertEqual(result.signals["safety_context"], [])
++        self.assertLessEqual(int(result.recommended_tier[1:]), 2)
++
++    def test_durable_bookkeeping_does_not_count_as_change_blast_radius(self):
++        td, p = self.make_project("Update one local JSON value.")
++        self.addCleanup(td.cleanup)
++        subprocess.run(["git", "init", "-q"], cwd=p, check=True)
++        for index in range(12):
++            (p / ".agent" / f"event-{index}.json").write_text("{}", encoding="utf-8")
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=self.base_state(), policy_path=POLICY
++        ).decide()
++
++        self.assertEqual(result.signals["changed_files"], 0)
++
++    def test_explicit_structural_complexity_raises_local_integration_above_lookup(self):
++        td, p = self.make_project("Parent task text is ignored while a subtask is active.")
++        self.addCleanup(td.cleanup)
++        state = self.base_state()
++        state["routing"]["subtask_plan"] = {
++            "active_index": 0,
++            "items": [{
++                "id": "adapter",
++                "objective": "Implement the bounded local adapter",
++                "acceptance_refs": ["AC-1"],
++                "planned_change_count": 6,
++                "component_count": 3,
++                "recommended": {
++                    "tier": "C3", "model": "gpt-5.6-terra", "reasoning": "high"
++                },
++            }],
++        }
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=state, policy_path=POLICY
++        ).decide()
++
++        self.assertGreaterEqual(int(result.recommended_tier[1:]), 2)
++        self.assertLessEqual(int(result.recommended_tier[1:]), 4)
++        self.assertEqual(result.signals["planned_change_count"], 6)
++        self.assertEqual(result.signals["component_count"], 3)
++
++    def test_low_gate_closure_and_low_diagnostic_risk_reduce_only_unprotected_work(self):
++        td, p = self.make_project("Parent task text is ignored while a subtask is active.")
++        self.addCleanup(td.cleanup)
++        state = self.base_state()
++        state["routing"]["subtask_plan"] = {
++            "active_index": 0,
++            "items": [{
++                "id": "ledger",
++                "objective": "Generate the bounded local evidence ledger",
++                "acceptance_refs": ["AC-1"],
++                "planned_change_count": 6,
++                "component_count": 3,
++                "gate_closure_probability": "low",
++                "diagnostic_risk": "low",
++                "recommended": {
++                    "tier": "C2", "model": "gpt-5.6-terra", "reasoning": "medium"
++                },
++            }],
++        }
++
++        result = ModelRouter(
++            project=p, cfg={"routing": {"mode": "shadow"}}, state=state, policy_path=POLICY
++        ).decide()
++
++        self.assertEqual(result.signals["score"], 3)
++        self.assertEqual(result.recommended_tier, "C1")
++        self.assertIn("low gate-closure value", result.signals["reasons"])
++
+
+ if __name__ == "__main__":
+     unittest.main()
+--- a/runtime/tests/test_subtasks.py
++++ b/runtime/tests/test_subtasks.py
+@@ -80,6 +80,26 @@
+             "tier": "C1", "model": "gpt-6-luna", "reasoning": "medium"
+         })
+ 
++    def test_c5_plan_item_requires_a_bounded_justification_factor(self):
++        item = copy.deepcopy(PLAN[0])
++        item["recommended"] = {
++            "tier": "C5", "model": "gpt-6-sol", "reasoning": "xhigh"
++        }
++        with self.assertRaisesRegex(ValueError, "C5 subtask requires"):
++            initialize_subtask_plan(
++                {"routing": {"require_c5_justification": True}, "subtask_plan": [item]},
++                {"routing": {}},
++                parent_task_digest="a" * 64,
++            )
++
++        item["c5_factors"] = ["crash_recovery"]
++        plan = initialize_subtask_plan(
++            {"routing": {"require_c5_justification": True}, "subtask_plan": [item]},
++            {"routing": {}},
++            parent_task_digest="a" * 64,
++        )
++        self.assertEqual(plan["items"][0]["c5_factors"], ["crash_recovery"])
++
+     def test_session_binding_is_persisted_in_state_and_active_lock(self):
+         state = {"session_id": None, "routing": {"worker_lock": {
+             "subtask_id": "inspect", "subtask_digest": "a" * 64, "session_id": None,
+--- a/config/keemu.json
++++ b/config/keemu.json
+@@ -30,7 +30,7 @@
+   "log_level": "INFO",
+   "router_policy_path": "/opt/data/hermes-durable-vps-hostinger-router-v1/router/models.json",
+   "routing": {
+-    "mode": "auto",
++    "mode": "shadow",
+     "minimum_tier": "C0",
+     "maximum_tier": "C7",
+     "astra_experimental": true,
+@@ -44,7 +44,8 @@
+     "model_lock": {
+       "enabled": true,
+       "disposable_workers": true
+-    }
++    },
++    "require_c5_justification": true
+   },
+   "subtask_plan": [
+     {
+@@ -165,7 +166,10 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "kernel_network_namespace"
++      ]
+     },
+     {
+       "id": "p0-08",
+@@ -210,7 +214,10 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "complex_security_boundary"
++      ]
+     },
+     {
+       "id": "m1a-11",
+@@ -240,7 +247,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "complex_security_boundary",
++        "foreign_resource_preservation"
++      ]
+     },
+     {
+       "id": "m1a-13",
+@@ -260,7 +271,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "crash_recovery",
++        "high_side_effect_risk"
++      ]
+     },
+     {
+       "id": "m1a-14",
+@@ -278,7 +293,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "concurrency_control",
++        "crash_recovery"
++      ]
+     },
+     {
+       "id": "m1a-15",
+@@ -315,7 +334,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "crash_recovery",
++        "foreign_resource_preservation"
++      ]
+     },
+     {
+       "id": "m1a-17",
+@@ -345,7 +368,10 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "cross_component_invariant"
++      ]
+     },
+     {
+       "id": "m1b-19",
+@@ -383,9 +409,9 @@
+         "A12"
+       ],
+       "recommended": {
+-        "tier": "C5",
+-        "model": "gpt-6-sol",
+-        "reasoning": "xhigh"
++        "tier": "C4",
++        "model": "gpt-6-sol",
++        "reasoning": "high"
+       },
+       "status": "pending"
+     },
+@@ -399,9 +425,9 @@
+         "A11"
+       ],
+       "recommended": {
+-        "tier": "C5",
+-        "model": "gpt-6-sol",
+-        "reasoning": "xhigh"
++        "tier": "C4",
++        "model": "gpt-6-sol",
++        "reasoning": "high"
+       },
+       "status": "pending"
+     },
+@@ -419,7 +445,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "kernel_network_namespace",
++        "foreign_resource_preservation"
++      ]
+     },
+     {
+       "id": "m1c-24",
+@@ -436,7 +466,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "kernel_network_namespace",
++        "cross_component_invariant"
++      ]
+     },
+     {
+       "id": "m1c-25",
+@@ -466,7 +500,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "kernel_network_namespace",
++        "high_side_effect_risk"
++      ]
+     },
+     {
+       "id": "m1c-27",
+@@ -481,7 +519,11 @@
+         "model": "gpt-6-sol",
+         "reasoning": "xhigh"
+       },
+-      "status": "pending"
++      "status": "pending",
++      "c5_factors": [
++        "crash_recovery",
++        "foreign_resource_preservation"
++      ]
+     },
+     {
+       "id": "final-28",
+@@ -505,9 +547,9 @@
+         "A01-A21"
+       ],
+       "recommended": {
+-        "tier": "C5",
+-        "model": "gpt-6-sol",
+-        "reasoning": "xhigh"
++        "tier": "C4",
++        "model": "gpt-6-sol",
++        "reasoning": "high"
+       },
+       "status": "pending"
+     },
+@@ -533,9 +575,9 @@
+         "A01-A21"
+       ],
+       "recommended": {
+-        "tier": "C5",
+-        "model": "gpt-6-sol",
+-        "reasoning": "xhigh"
++        "tier": "C4",
++        "model": "gpt-6-sol",
++        "reasoning": "high"
+       },
+       "status": "pending"
+     }

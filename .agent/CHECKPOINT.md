@@ -131,7 +131,7 @@ Live opt-in suite: 22 passed, 0 failed, 0 skipped. Pre-ledger portable: 130 pass
 
 ## Next operation
 
-Frozen final-31 audit and scoped verification are complete locally; emit only the exact final-31 marker. The supervisor owns runtime attestation, coherent commit/push and terminal state. No later frozen subtask or addendum work is authorized here. MVP 1 remains BLOCKED with the exact A02–A21 list in `docs/evidence/final31-independent-audit.md`.
+Autorouting audit correction is implemented and locally verified in the shared runtime. Project config remains shadow-only; no live automatic routing activation is authorized. Publish this durable evidence checkpoint on `agent/keemu`, then retain the frozen 32/32 historical routes and acceptance ledger unchanged. Any later move from shadow to auto requires fresh quota admission, independent adversarial fixture review, representative real shadow telemetry and explicit user approval. MVP 1 remains BLOCKED with the exact A02–A21 list in `docs/evidence/final31-independent-audit.md`.
 
 Historical final-28 next-operation snapshot (superseded): emit exact frozen final-28 completion marker only after its scoped verification. Supervisor owned that attestation/commit/push and subsequent boundary. Its A02–A21 release blockers and historical fixture-level PASS remain retained; do not replay its earlier instructions.
 
@@ -142,3 +142,5 @@ Kanban reconciliation remains external to this evidence package.
 ## Blockers
 
 Revalidate all three approved binfmt handlers, `nfnetlink_queue`, `iptable_filter`, `xt_NFQUEUE` and the pinned native backend after reboot or runner change. Prior direct-target, missing-backend and missing-filter-module BLOCKED results remain immutable historical evidence. The workaround may prove AArch64 verdict participation only through declared native transport and firewall-tool substitutions; it must not be reported as direct target Netlink or target iptables compatibility. Approval excludes nftables, `nft_queue`, arbitrary modules, host-namespace/persistent rules, sysctls, QEMU/seccomp changes and public exposure.
+
+Autorouting auto-mode promotion is additionally blocked pending independent adversarial semantic review and reviewed real shadow telemetry. Final verification observed 4% remaining in the five-hour OAuth window, so no new reviewer worker was launched below the configured 5% threshold. Local runtime suite passed 92 tests; compileall, config/plan validation and read-only shadow replay passed. Prospective plan routing is C0=1, C2=2, C3=3, C4=15, C5=11; historical C0=1, C2=2, C3=3, C4=11, C5=15 remains unchanged.
