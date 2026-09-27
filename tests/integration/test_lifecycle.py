@@ -6,8 +6,11 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import signal
 import subprocess
+import sys
 import tempfile
+import time
 import uuid
 from pathlib import Path
 
@@ -997,3 +1000,136 @@ def test_persistent_script_preserves_service_and_foreign_resources(monkeypatch):
             assert not runtime.reconcile()["container_owned"]
         foreign.remove_container(foreign_id)
         assert not foreign.reconcile()["container_owned"]
+
+
+@pytest.mark.docker
+def test_persistent_script_sigkill_retains_environment_and_exact_artifact():
+    if os.getenv("KEEMU_TEST_SCRIPT_ADVERSARIAL") != "1":
+        pytest.skip("opt in to persistent SIGKILL Docker/binfmt probe")
+    from keemu.docker_runtime import DockerRuntime
+    from keemu.script_input import ScriptInput
+    from keemu.script_stage import _SCRIPT_PATH
+
+    image = json.loads((ROOT / "locks/m1a-init-aarch64.json").read_text())["oci_digest"]
+    before_containers = DockerRuntime.listed_ids("container")
+    before_networks = DockerRuntime.listed_ids("network")
+    (ROOT / ".runtime").mkdir(exist_ok=True)
+    name = "m1d11-persist-" + uuid.uuid4().hex[:12]
+    created = None
+    worker = None
+    with tempfile.TemporaryDirectory(
+        dir=ROOT / ".runtime", prefix="m1d11-p-"
+    ) as folder:
+        directory = Path(folder)
+        try:
+            scenario, lock = inputs(directory)
+            created = create_persistent(ROOT, name, scenario, lock)
+            assert created.resource is not None
+            container = created.resource.container_id
+            runtime = DockerRuntime(created.run_id, image)
+            baseline = runtime.inspect("container", container)
+            count = runtime.exec(
+                container, ["/opt/bin/busybox", "cat", "/opt/etc/keemu-count"]
+            ).stdout
+            marker = directory / "stage.json"
+            report_root = directory / "reports"
+            code = """import json, time
+from pathlib import Path
+from keemu.script_persistent import run_persistent_script
+from keemu.script_process import ScriptProcessRunner
+import sys
+name, root, marker, reports = sys.argv[1:]
+original = ScriptProcessRunner.run
+def gate(self, staged, **kwargs):
+    Path(marker).write_text(json.dumps({'path': staged.path,
+                                        'container': staged.container_id}))
+    time.sleep(30)
+    return original(self, staged, **kwargs)
+ScriptProcessRunner.run = gate
+run_persistent_script(name, 'fixtures/scripts/mvp1d/success.sh',
+                      project_root=Path(root), report_root=Path(reports))
+"""
+            worker = subprocess.Popen(  # noqa: S603 -- Python API, no host shell
+                [
+                    sys.executable,
+                    "-c",
+                    code,
+                    name,
+                    str(ROOT),
+                    str(marker),
+                    str(report_root),
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+            deadline = time.monotonic() + 45
+            while not marker.exists() and time.monotonic() < deadline:
+                assert worker.poll() is None, (
+                    "worker exited before persistent stage barrier"
+                )
+                time.sleep(0.1)
+            assert marker.exists()
+            artifact = json.loads(marker.read_text())
+            path = artifact["path"]
+            assert artifact["container"] == container
+            assert _SCRIPT_PATH.fullmatch(path)
+            source = ScriptInput.validate(
+                "fixtures/scripts/mvp1d/success.sh", project_root=ROOT
+            )
+            assert source.sha256 in path
+            os.kill(worker.pid, signal.SIGKILL)
+            assert worker.wait(timeout=5) == -signal.SIGKILL
+            assert not report_root.exists() or not any(report_root.iterdir())
+            assert runtime.inspect("container", container)["State"] == baseline["State"]
+            assert operate(ROOT, name, "status")["consistent"]
+            assert (
+                runtime.exec(
+                    container, ["/opt/bin/busybox", "cat", "/opt/etc/keemu-count"]
+                ).stdout
+                == count
+            )
+            assert (
+                runtime.exec(container, ["/opt/bin/busybox", "cat", path]).stdout
+                == source.recheck_for_staging()
+            )
+            # SIGKILL cannot run finally: artifact remains, no automatic recovery
+            # claim. Test owner removes only identified bytes in its own container.
+            parent = path.rsplit("/", 1)[0]
+            assert (
+                runtime.exec(container, ["/opt/bin/busybox", "ls", "-A", parent]).stdout
+                == b"script.sh\n"
+            )
+            runtime.exec(container, ["/opt/bin/busybox", "rm", path])
+            runtime.exec(container, ["/opt/bin/busybox", "rmdir", parent])
+            assert runtime.inspect("container", container)["State"] == baseline["State"]
+            assert operate(ROOT, name, "status")["consistent"]
+            evidence = ROOT / "reports/m1d11-persistent-interruption.json"
+            evidence.write_text(
+                json.dumps(
+                    {
+                        "worker": "SIGKILL after verified target staging before execution",
+                        "report": "absent; no false PASS",
+                        "persistent_container_id_unchanged": True,
+                        "persistent_state_running": True,
+                        "postinst_counter_unchanged": True,
+                        "staged_bytes_sha256_verified": source.sha256,
+                        "artifact_after_crash": "present; explicit test-owned teardown only",
+                        "automatic_persistent_crash_artifact_recovery": "NOT_IMPLEMENTED",
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+                + "\n"
+            )
+        finally:
+            if worker is not None and worker.poll() is None:
+                os.kill(worker.pid, signal.SIGKILL)
+                worker.wait(timeout=5)
+            if created is not None:
+                runtime = DockerRuntime(created.run_id, image)
+                for owned in runtime.reconcile()["container_owned"]:
+                    runtime.remove_container(owned)
+                assert not runtime.reconcile()["container_owned"]
+    assert DockerRuntime.listed_ids("container") == before_containers
+    assert DockerRuntime.listed_ids("network") == before_networks

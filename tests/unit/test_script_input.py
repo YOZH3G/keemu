@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import threading
 from pathlib import Path
 
 import pytest
@@ -241,6 +242,47 @@ def test_stage_detects_mutation_during_its_own_read(
     with pytest.raises(ScriptInputChanged):
         script.recheck_for_staging()
     assert called
+
+
+def test_concurrent_inode_replacement_during_recheck_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import keemu.script_input as module
+
+    source = tmp_path / "input.sh"
+    source.write_bytes(b"original")
+    pinned = ScriptInput.validate("input.sh", project_root=tmp_path)
+    reached = threading.Event()
+    replaced = threading.Event()
+    original = module._read_once
+    calls = 0
+
+    def pause_after_first(*args):
+        nonlocal calls
+        result = original(*args)
+        calls += 1
+        if calls == 1:
+            reached.set()
+            assert replaced.wait(5), "concurrent writer did not reach barrier"
+        return result
+
+    def writer() -> None:
+        if reached.wait(5):
+            other = tmp_path / "replacement.sh"
+            other.write_bytes(b"original")
+            os.replace(other, source)
+            replaced.set()
+
+    worker = threading.Thread(target=writer)
+    monkeypatch.setattr(module, "_read_once", pause_after_first)
+    worker.start()
+    try:
+        with pytest.raises(ScriptInputChanged):
+            pinned.recheck_for_staging()
+        assert replaced.is_set() and calls == 2
+    finally:
+        worker.join(timeout=5)
+        assert not worker.is_alive()
 
 
 def test_parent_metadata_change_is_refused(tmp_path: Path) -> None:
