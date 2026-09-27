@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "subtask": "m1d-11",
+  "scope": "Adversarial verification of the existing MVP 1D script contracts on the locked AArch64 Docker/binfmt runtime; not a final D01-D08 acceptance ledger",
+  "runtime": {
+    "docker_engine": "29.7.2",
+    "architecture": "aarch64-3.10",
+    "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224"
+  },
+  "raw_evidence": [
+    {
+      "path": "reports/m1d11-live.xml",
+      "sha256": "4964fa55efd703a985c8faa58ba161f43bcdd36d02591e502ebd0c3dd41ada9f",
+      "tests": 39,
+      "passed": 39,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "path": "reports/m1d11-portable.xml",
+      "sha256": "a71b376ed45148f383fded38c48e9f50e2aa128bdf43a3fdd57e94658fda0da0",
+      "tests": 383,
+      "passed": 339,
+      "failed": 0,
+      "skipped": 44
+    },
+    {
+      "path": "reports/m1d11-observations.json",
+      "sha256": "1a1cedb4677076cc2050e5b07479a4de795800e2bda50a6cdf4a097557aac78e"
+    },
+    {
+      "path": "reports/m1d11-persistent-interruption.json",
+      "sha256": "28738f2a6e1f74d662751bf83ad864e44745c922cb5ab68ef4218557c34503b5"
+    }
+  ],
+  "test_sources": [
+    {
+      "path": "tests/integration/test_script_adversarial.py",
+      "sha256": "503b7f5fe270b37ef26dc02eb76a2465943bc7a228595059a635b7718b9a6e1e"
+    },
+    {
+      "path": "tests/integration/test_lifecycle.py",
+      "sha256": "d8e45e995abcb597b1fbff2a2d2fefad9398ec46c193b803ef63d948152e8b8f"
+    },
+    {
+      "path": "tests/unit/test_script_input.py",
+      "sha256": "8789c423fa45a5a04e4194059a8a484aad1451c98952b4b64107dd6901f3ef0d"
+    }
+  ],
+  "observations": {
+    "D01": "Concurrent same-byte inode replacement between secure recheck reads is refused; validation-to-stage same-byte inode swap is BLOCKED. Mutation after secure recheck cannot alter the transferred frozen target bytes; target SHA-256 readback matched the original.",
+    "D02": "Digest/nonce directory collision left the existing target intact; an injected cleanup refusal retained the issued object and exact retry removed it. Replacing the target inode before cleanup refused deletion and preserved foreign test bytes.",
+    "D03": "Real target timeout tests reaped child, TERM-resistant and orphaned descendants without killing unrelated target process. Following SIGKILL of the host worker during active execution, independently observed shell PID was absent within a bounded 12-second wait; no report or inferred PASS.",
+    "D07": "One-shot SIGKILL after allocation, after staging, and during target execution retained only run-owned resources for explicit full-ID/name/label-verified container recovery. Persistent SIGKILL after staging retained the same running container and postinst counter, but left the script artifact; test-owned teardown removed only that observed artifact. Docker network-none, dropped caps, absent host mounts/socket/secret environment, unchanged foreign container state and pre/post Docker container/network ID sets were verified."
+  },
+  "limitations": [
+    "Persistent SIGKILL after stage has no automatic artifact recovery or interrupted report; the object remains until explicit owner-scoped intervention. Do not claim automatic cleanup or PASS.",
+    "One-shot SIGKILL recovery was explicit test-owned full-ID container removal; no automatic one-shot crash journal/report exists.",
+    "Target same-UID concurrent pathname swap in the gap between stat and unlink was not proved atomically safe; pre-cleanup inode replacement refusal is a narrower result. D02 whole-gate atomic conditional unlink is not claimed.",
+    "The shared Docker/binfmt host is not a fresh isolated host or physical Keenetic. Original MVP 1 evidence and A01-A21 release status remain unchanged."
+  ],
+  "verification": {
+    "ruff_lint": "PASS",
+    "touched_new_test_format": "PASS",
+    "touched_existing_test_added_range_format": "PASS",
+    "diff_whitespace": "PASS",
+    "owner_labeled_containers_after": 0,
+    "owner_labeled_networks_after": 0
+  }
+}

@@ -87,7 +87,8 @@ def test_real_stage_race_collision_retry_and_foreign_preservation(monkeypatch):
                     "/bin/sh",
                     "-c",
                     'test -z "${KEEMU_HOST_SECRET_SENTINEL+x}" && '
-                    "test ! -e /var/run/docker.sock && test ! -e /opt/data/workspace/keemu",
+                    "test ! -e /var/run/docker.sock && "
+                    "test ! -e /opt/data/workspace/keemu",
                 ],
             ).exit_code
             == 0
@@ -188,8 +189,8 @@ def test_real_stage_race_collision_retry_and_foreign_preservation(monkeypatch):
                     "post_recheck_source_mutation": "frozen_target_digest_verified",
                     "collision": "existing_target_preserved",
                     "injected_cleanup": "refused_then_exact_retry_passed",
-                    "target_inode_replacement": "cleanup_refused_foreign_bytes_preserved",
-                    "host_isolation": "network_none_cap_drop_no_mount_socket_or_host_env",
+                    "target_inode_replacement": "refused; foreign_bytes_preserved",
+                    "host_isolation": "network_none; cap_drop; no_mount_socket_or_env",
                 },
             )
         assert foreign.inspect("container", foreign_id)["State"] == foreign_state
@@ -245,7 +246,9 @@ if phase == 'after-create':
 if phase == 'after-stage':
     original = ScriptProcessRunner.run
     def gate(self, staged, **kwargs):
-        Path(marker).write_text(json.dumps({'container':staged.container_id, 'path':staged.path}))
+        Path(marker).write_text(json.dumps({
+            'container': staged.container_id, 'path': staged.path
+        }))
         time.sleep(30)
         return original(self, staged, **kwargs)
     ScriptProcessRunner.run = gate
@@ -306,7 +309,7 @@ run_one_shot_script(source, project_root=Path(root), run_id=run_id,
                                 break
                         if worker.poll() is not None:
                             pytest.fail(
-                                f"worker exited before {phase} barrier: {worker.returncode}"
+                                f"worker exited before {phase}: {worker.returncode}"
                             )
                         time.sleep(0.1)
                     assert marker.exists() and identifier is not None, phase
