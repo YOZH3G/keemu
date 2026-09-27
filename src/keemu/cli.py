@@ -22,6 +22,8 @@ from keemu.persistent import recover as recover_environment
 from keemu.profiles import ProfileError, load_profile
 from keemu.registry import RegistryError
 from keemu.reports import exit_code_for_status
+from keemu.script_input import ScriptInputError
+from keemu.script_lifecycle import run_one_shot_script
 
 
 class InputError(click.ClickException):
@@ -172,6 +174,66 @@ def test_scenario(
         context.exit(2)
     if strict and result.report.overall == "WARN":
         context.exit(5)
+    context.exit(exit_code_for_status(result.report.overall))
+
+
+@cli.command("script")
+@click.argument("script", type=click.Path(path_type=Path))
+@click.argument("argv", nargs=-1, type=click.UNPROCESSED)
+@click.option("profile_id", "--profile", required=True)
+@click.option(
+    "timeout_seconds",
+    "--timeout",
+    type=click.IntRange(1, 600),
+    default=60,
+    show_default=True,
+)
+@click.option("cwd", "--cwd", default="/opt", show_default=True)
+@click.option(
+    "expected_exit_code",
+    "--expect-exit-code",
+    type=click.IntRange(0, 255),
+    default=0,
+    show_default=True,
+)
+@click.option(
+    "repo",
+    "--repo",
+    type=click.Path(exists=True, file_okay=False, path_type=Path),
+    default=Path("."),
+    show_default=True,
+)
+@click.pass_context
+def script(
+    context: click.Context,
+    script: Path,
+    argv: tuple[str, ...],
+    profile_id: str,
+    timeout_seconds: int,
+    cwd: str,
+    expected_exit_code: int,
+    repo: Path,
+) -> None:
+    """Run one project-contained .sh file in a fresh locked target container.
+
+    Use `--` before literal script argv. Execution, target-path, and aggregate
+    argv bounds are revalidated by the common script lifecycle before allocation.
+    """
+    try:
+        result = run_one_shot_script(
+            script,
+            project_root=repo,
+            profile_id=profile_id,
+            argv=argv,
+            cwd=cwd,
+            timeout_seconds=timeout_seconds,
+            expected_exit_code=expected_exit_code,
+        )
+    except (ScriptInputError, ValueError) as exc:
+        raise InputError(str(exc)) from exc
+    except OSError as exc:
+        raise RuntimeFailure(str(exc)) from exc
+    click.echo(json.dumps(result.report.model_dump(mode="json"), sort_keys=True))
     context.exit(exit_code_for_status(result.report.overall))
 
 

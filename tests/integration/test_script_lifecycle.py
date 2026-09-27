@@ -8,7 +8,9 @@ import uuid
 from pathlib import Path
 
 import pytest
+from click.testing import CliRunner
 
+from keemu.cli import cli
 from keemu.docker_runtime import DockerRuntime
 from keemu.script_lifecycle import run_one_shot_script
 from keemu.script_stage import ScriptStager
@@ -230,3 +232,60 @@ def test_one_shot_collision_and_cleanup_retry(tmp_path: Path, monkeypatch):
         for identifier in retry.reconcile()["container_owned"]:
             retry.remove_container(identifier)
     assert retry.reconcile()["container_owned"] == []
+
+
+@pytest.mark.docker
+def test_script_cli_runs_locked_one_shot_contract(tmp_path: Path) -> None:
+    if os.getenv("KEEMU_TEST_SCRIPT_LIFECYCLE") != "1":
+        pytest.skip("opt in to locked AArch64 script one-shot Docker/binfmt probe")
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "script",
+            "fixtures/scripts/mvp1d/argv.sh",
+            "--profile",
+            "generic-aarch64",
+            "--repo",
+            str(ROOT),
+            "--cwd",
+            "/opt/etc",
+            "--expect-exit-code",
+            "0",
+            "--",
+            "literal;$(false)",
+            "two words",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    report = json.loads(result.output)
+    assert report["overall"] == "PASS"
+    assert report["script"]["execution"] == {
+        "architecture": "aarch64-3.10",
+        "argv": [
+            {
+                "byte_count": len(b"literal;$(false)"),
+                "sha256": hashlib.sha256(b"literal;$(false)").hexdigest(),
+            },
+            {
+                "byte_count": len(b"two words"),
+                "sha256": hashlib.sha256(b"two words").hexdigest(),
+            },
+        ],
+        "container_id": report["script"]["execution"]["container_id"],
+        "cwd": "/opt/etc",
+        "image_id": IMAGE,
+        "interpreter": "/bin/sh",
+        "mode": "one-shot",
+        "profile_id": "generic-aarch64",
+        "profile_revision": report["profile"]["revision"],
+        "sha256": hashlib.sha256(
+            (ROOT / "fixtures/scripts/mvp1d/argv.sh").read_bytes()
+        ).hexdigest(),
+        "source": "fixtures/scripts/mvp1d/argv.sh",
+        "target_path": report["script"]["execution"]["target_path"],
+        "timeout_seconds": 60,
+    }
+    assert "literal;$(false)" not in result.output
+    assert DockerRuntime(report["run_id"], IMAGE).reconcile()["container_owned"] == []
