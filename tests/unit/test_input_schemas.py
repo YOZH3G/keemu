@@ -17,7 +17,8 @@ from keemu.input_locks import (
 )
 from keemu.input_paths import UnsafePath, resolve_input_path
 from keemu.profiles import ProfileError, load_profile, load_yaml_unique
-from keemu.scenarios import Scenario, load_scenario
+from keemu.scenarios import Scenario, ScriptCheck, load_scenario
+from keemu.script_input import ScriptInputError
 
 SCENARIO = """schema_version: 1
 id: web-demo
@@ -380,6 +381,110 @@ def test_committed_input_schemas_match_models() -> None:
         assert json.loads((root / filename).read_text(encoding="utf-8")) == (
             model.model_json_schema()
         )
+
+
+def test_script_check_and_exact_source_lock(tmp_path: Path) -> None:
+    scenario_path = scenario_files(tmp_path)
+    script_path = tmp_path / "packages/probe.sh"
+    script_path.write_bytes(b"#!/bin/sh\nexit 7\n")
+    text = SCENARIO.replace(
+        "  - id: health\n    kind: http\n    vantage: host_publish\n"
+        "    url: http://127.0.0.1:18080/health\n"
+        "    expected_status: [200]\n    body_contains: healthy",
+        "  - id: probe\n    kind: script\n"
+        "    path: ../packages/probe.sh\n    timeout_seconds: 15\n"
+        "    expected_exit_code: 7\n    stdout_contains: [ready]",
+    )
+    scenario_path.write_text(text, encoding="utf-8")
+    scenario = load_scenario(scenario_path, project_root=tmp_path)
+    check = scenario.checks[0]
+    assert isinstance(check, ScriptCheck)
+    assert check.expected_exit_code == 7
+    lock = lock_data()
+    lock["scenario_sha256"] = hashlib.sha256(text.encode()).hexdigest()
+    lock_path = scenario_path.with_name("lock.json")
+    lock_path.write_text(json.dumps(lock), encoding="utf-8")
+    with pytest.raises(LockError, match="script check source absent"):
+        load_scenario_lock(
+            lock_path,
+            project_root=tmp_path,
+            scenario=scenario,
+            scenario_path=scenario_path,
+        )
+    script_entry = {
+        "id": "probe",
+        "kind": "script",
+        "path": "../packages/probe.sh",
+        "sha256": hashlib.sha256(script_path.read_bytes()).hexdigest(),
+        "origin": "project-test-fixture",
+        "release": "1.0",
+        "architecture": "aarch64",
+    }
+    lock["sources"].append(script_entry)
+    lock_path.write_text(json.dumps(lock), encoding="utf-8")
+    assert (
+        load_scenario_lock(
+            lock_path,
+            project_root=tmp_path,
+            scenario=scenario,
+            scenario_path=scenario_path,
+        )
+        .sources[-1]
+        .kind
+        == "script"
+    )
+    for kind, digest in (("ipk", script_entry["sha256"]), ("script", DIGEST)):
+        lock["sources"][-1] = {**script_entry, "kind": kind, "sha256": digest}
+        lock_path.write_text(json.dumps(lock), encoding="utf-8")
+        with pytest.raises(LockError):
+            load_scenario_lock(
+                lock_path,
+                project_root=tmp_path,
+                scenario=scenario,
+                scenario_path=scenario_path,
+            )
+    lock["sources"][-1] = script_entry
+    lock_path.write_text(json.dumps(lock), encoding="utf-8")
+    script_path.write_bytes(b"changed")
+    with pytest.raises(LockError, match="source hash mismatch"):
+        load_scenario_lock(lock_path, project_root=tmp_path)
+    script_path.write_bytes(b"#!/bin/sh\nexit 7\n")
+    (tmp_path / "packages/link").symlink_to(
+        tmp_path / "packages", target_is_directory=True
+    )
+    scenario_path.write_text(
+        text.replace("../packages/probe.sh", "../packages/link/../probe.sh")
+    )
+    lock["scenario_sha256"] = hashlib.sha256(scenario_path.read_bytes()).hexdigest()
+    lock["sources"][-1] = {**script_entry, "path": "../packages/link/../probe.sh"}
+    lock_path.write_text(json.dumps(lock), encoding="utf-8")
+    with pytest.raises(ScriptInputError):
+        load_scenario_lock(
+            lock_path,
+            project_root=tmp_path,
+            scenario=load_scenario(scenario_path, project_root=tmp_path),
+            scenario_path=scenario_path,
+        )
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("timeout_seconds", 601),
+        ("expected_exit_code", -1),
+        ("path", "/etc/passwd"),
+        ("argv", ["x" * 4097]),
+        ("files_exist", ["/etc/passwd"]),
+        ("files_absent", ["/opt/test"]),
+    ],
+)
+def test_script_check_rejects_bad_fields(field: str, value: object) -> None:
+    data: dict[str, object] = {"id": "probe", "kind": "script", "path": "probe.sh"}
+    data[field] = value
+    if field == "files_absent":
+        data["files_exist"] = ["/opt/test"]
+    with pytest.raises(ValidationError):
+        ScriptCheck.model_validate(data)
 
 
 def environment_data() -> dict:

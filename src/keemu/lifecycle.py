@@ -47,9 +47,12 @@ from keemu.scenarios import (
     HTTPCheck,
     IPKInstall,
     Scenario,
+    ScriptCheck,
     UDPCheck,
     load_scenario,
 )
+from keemu.script_input import ScriptInput
+from keemu.script_scenario import ScenarioScriptError, run_script_check
 
 BASE_LOCK = "locks/m1a-init-aarch64.json"
 
@@ -222,6 +225,7 @@ def run_scenario(
     cleanup_errors: list[str] = []
     substitutions: list[SubstitutionMetadata] = []
     cleanup_authorized = False
+    script_inputs: dict[str, ScriptInput] = {}
 
     def step(
         name: str,
@@ -369,6 +373,28 @@ def run_scenario(
                 raise StageFailure(
                     "BLOCKED", "environment", "scenario/profile lock mismatch"
                 )
+            for check in scenario.checks:
+                if not isinstance(check, ScriptCheck):
+                    continue
+                source_path = resolve_input_path(
+                    check.path, scenario_dir=scenario_path.parent, project_root=root
+                )
+                source_input = ScriptInput.validate(
+                    scenario_path.parent / check.path, project_root=root
+                )
+                if not any(
+                    entry.kind == "script"
+                    and entry.sha256 == source_input.sha256
+                    and resolve_input_path(
+                        entry.path, scenario_dir=lock_path.parent, project_root=root
+                    )
+                    == source_path
+                    for entry in lock.sources
+                ):
+                    raise StageFailure(
+                        "BLOCKED", "environment", "script source lock changed"
+                    )
+                script_inputs[check.id] = source_input
             scenario_meta = ScenarioMetadata(
                 id=scenario.id,
                 schema_version=1,
@@ -786,8 +812,30 @@ def run_scenario(
         for check in scenario.checks:
 
             def verify(check=check):
-                if container is None:
+                if container is None or runtime is None:
                     raise StageFailure("ERROR", "harness", "target container not ready")
+                if isinstance(check, ScriptCheck):
+                    try:
+                        result = run_script_check(
+                            check, script_inputs[check.id], runtime, container
+                        )
+                    except ScenarioScriptError as exc:
+                        raise StageFailure(
+                            exc.status,
+                            "environment" if exc.status == "BLOCKED" else "harness",
+                            str(exc),
+                        ) from exc
+                    if result.status != "PASS":
+                        raise StageFailure(
+                            result.status,
+                            "package"
+                            if result.status == "FAIL"
+                            else "environment"
+                            if result.status == "BLOCKED"
+                            else "harness",
+                            result.evidence,
+                        )
+                    return result.evidence
                 if isinstance(check, CommandCheck):
                     output = runtime.exec(
                         container,
@@ -1028,7 +1076,11 @@ def run_scenario(
         network_fidelity=None,
         native_tools=(),
     )
-    if scenario_blob is not None and lock_blob is not None:
+    if (
+        scenario_blob is not None
+        and lock_blob is not None
+        and not (scenario and any(isinstance(c, ScriptCheck) for c in scenario.checks))
+    ):
         evidence["resolved-scenario.yaml"] = scenario_blob
         evidence["lock.json"] = lock_blob
     if final_diff is not None:

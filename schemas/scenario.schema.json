@@ -455,6 +455,95 @@
       "title": "Runtime",
       "type": "object"
     },
+    "ScriptCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "script",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "default": 60,
+          "maximum": 600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        },
+        "expected_exit_code": {
+          "default": 0,
+          "maximum": 255,
+          "minimum": 0,
+          "title": "Expected Exit Code",
+          "type": "integer"
+        },
+        "argv": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 126,
+          "title": "Argv",
+          "type": "array"
+        },
+        "cwd": {
+          "default": "/opt",
+          "title": "Cwd",
+          "type": "string"
+        },
+        "stdout_contains": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Stdout Contains",
+          "type": "array"
+        },
+        "stderr_not_contains": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Stderr Not Contains",
+          "type": "array"
+        },
+        "files_exist": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Files Exist",
+          "type": "array"
+        },
+        "files_absent": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Files Absent",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "path"
+      ],
+      "title": "ScriptCheck",
+      "type": "object"
+    },
     "Service": {
       "additionalProperties": false,
       "properties": {
@@ -681,6 +770,7 @@
             "file": "#/$defs/FileCheck",
             "http": "#/$defs/HTTPCheck",
             "https": "#/$defs/HTTPCheck",
+            "script": "#/$defs/ScriptCheck",
             "udp": "#/$defs/UDPCheck"
           },
           "propertyName": "kind"
@@ -697,6 +787,9 @@
           },
           {
             "$ref": "#/$defs/FileCheck"
+          },
+          {
+            "$ref": "#/$defs/ScriptCheck"
           }
         ]
       },

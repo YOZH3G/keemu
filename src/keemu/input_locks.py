@@ -14,7 +14,8 @@ from typing import Literal, Self
 from pydantic import Field, field_validator, model_validator
 
 from keemu.input_paths import HostInputPath, SafeName, UnsafePath, resolve_input_path
-from keemu.scenarios import InputModel, Scenario, Sha256
+from keemu.scenarios import InputModel, Scenario, ScriptCheck, Sha256
+from keemu.script_input import ScriptInput
 
 
 class LockError(ValueError):
@@ -49,7 +50,7 @@ def read_json_unique(path: Path) -> object:
 
 class SourceLock(InputModel):
     id: SafeName
-    kind: Literal["ipk", "pinned-bundle"]
+    kind: Literal["ipk", "pinned-bundle", "script"]
     path: HostInputPath
     sha256: Sha256
     origin: str = Field(min_length=1, max_length=2048)
@@ -124,7 +125,14 @@ def load_scenario_lock(
         if resolved in paths.values():
             raise LockError("duplicate resolved source path")
         paths[item.id] = resolved
-        if _file_digest(resolved) != item.sha256:
+        digest = (
+            ScriptInput.validate(
+                source.parent / item.path, project_root=project_root
+            ).sha256
+            if item.kind == "script"
+            else _file_digest(resolved)
+        )
+        if digest != item.sha256:
             raise LockError(f"source hash mismatch: {item.id}")
     if scenario is not None:
         if scenario_path is None:
@@ -157,6 +165,19 @@ def load_scenario_lock(
             )
         ):
             raise LockError("install kind or source reference mismatch")
+        for check in scenario.checks:
+            if not isinstance(check, ScriptCheck):
+                continue
+            script_path = resolve_input_path(
+                check.path,
+                scenario_dir=scenario_source.parent,
+                project_root=project_root,
+            )
+            if not any(
+                item.kind == "script" and paths[item.id] == script_path
+                for item in lock.sources
+            ):
+                raise LockError("script check source absent from lock")
     return lock
 
 

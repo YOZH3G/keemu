@@ -177,8 +177,47 @@ class FileCheck(InputModel):
     exists: bool
 
 
+class ScriptCheck(InputModel):
+    id: SafeName
+    kind: Literal["script"]
+    path: HostInputPath
+    timeout_seconds: int = Field(default=60, ge=1, le=600)
+    expected_exit_code: int = Field(default=0, ge=0, le=255)
+    argv: tuple[str, ...] = Field(default=(), max_length=126, strict=False)
+    cwd: TargetDirectory = "/opt"
+    stdout_contains: tuple[str, ...] = Field(default=(), max_length=16, strict=False)
+    stderr_not_contains: tuple[str, ...] = Field(
+        default=(), max_length=16, strict=False
+    )
+    files_exist: tuple[TargetPath, ...] = Field(default=(), max_length=16, strict=False)
+    files_absent: tuple[TargetPath, ...] = Field(
+        default=(), max_length=16, strict=False
+    )
+
+    @model_validator(mode="after")
+    def validate_script_contract(self) -> Self:
+        from keemu.script_assertions import ScriptExpectations
+
+        ScriptExpectations(
+            self.stdout_contains,
+            self.stderr_not_contains,
+            self.files_exist,
+            self.files_absent,
+        )
+        if (
+            any(
+                not isinstance(arg, str) or not arg or "\0" in arg or len(arg) > 4096
+                for arg in self.argv
+            )
+            or sum(len(arg.encode("utf-8")) for arg in self.argv) > 65536
+        ):
+            raise ValueError("invalid bounded script arguments")
+        return self
+
+
 Check = Annotated[
-    HTTPCheck | UDPCheck | CommandCheck | FileCheck, Field(discriminator="kind")
+    HTTPCheck | UDPCheck | CommandCheck | FileCheck | ScriptCheck,
+    Field(discriminator="kind"),
 ]
 
 
@@ -312,4 +351,8 @@ def _validate_scenario_paths(
         if isinstance(check, HTTPProbe) and check.ca_cert:
             resolve_input_path(
                 check.ca_cert, scenario_dir=scenario_dir, project_root=project_root
+            )
+        if isinstance(check, ScriptCheck):
+            resolve_input_path(
+                check.path, scenario_dir=scenario_dir, project_root=project_root
             )

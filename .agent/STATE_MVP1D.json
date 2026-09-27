@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "shadow",
-    "last_evaluated_at": "2026-09-27T08:21:27+00:00",
+    "last_evaluated_at": "2026-09-27T08:51:11+00:00",
     "recommended": {
       "tier": "C2",
       "model": "gpt-5.6-terra",
@@ -27,16 +27,16 @@
       "reasoning": "high"
     },
     "signals": {
-      "score": 4,
+      "score": 5,
       "signal_source": "active_subtask",
-      "active_subtask_id": "m1d-08",
+      "active_subtask_id": "m1d-09",
       "task_chars": 0,
       "changed_files": 0,
-      "planned_change_count": 5,
-      "component_count": 3,
+      "planned_change_count": 7,
+      "component_count": 5,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 2194448,
+      "graphify_bytes": 2238014,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": false,
@@ -55,10 +55,11 @@
       "reasons": [
         "multiple planned changes",
         "large planned change set",
-        "multi-component implementation"
+        "multi-component implementation",
+        "broad component span"
       ]
     },
-    "reason": "multiple planned changes; large planned change set; multi-component implementation",
+    "reason": "multiple planned changes; large planned change set; multi-component implementation; broad component span",
     "force_min_tier": null,
     "capabilities": {
       "gpt-6-astra": null
@@ -69,7 +70,7 @@
     "subtask_plan": {
       "parent_task_digest": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
       "plan_digest": "1c3c5932c754cb4ec1a76d0c36ec84b213c3a4f29f0a7484e07d85e011ec0677",
-      "active_index": 9,
+      "active_index": 10,
       "items": [
         {
           "id": "m1d-00",
@@ -330,8 +331,15 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "7b634dd42af3f1c60b708c545dda50cda68e8b37a2835d96e6747bad0e30859b"
+          "status": "complete",
+          "digest": "7b634dd42af3f1c60b708c545dda50cda68e8b37a2835d96e6747bad0e30859b",
+          "outcome": {
+            "event_id": "evt_e41132fe4807ea8f6a02e42a",
+            "route_event_id": "evt_0d48c9244570e2dcad037125",
+            "completed_at": "2026-09-27T09:06:28+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1d-10",
@@ -348,7 +356,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "d8ba99a9266f61b8bcda569083b3bc8f4cd8785bd8da988b7c3fea0d515de24b"
         },
         {
@@ -420,7 +428,7 @@
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_98df006c287ecf0758b37ac7",
+      "last_event_id": "evt_e41132fe4807ea8f6a02e42a",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -435,21 +443,21 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-27T08:21:27+00:00",
-    "last_run_finished_at": "2026-09-27T08:51:03+00:00",
-    "last_log": ".agent/runs/20260927T082127Z.log",
-    "last_checkpoint_at": "2026-09-27T08:51:05+00:00"
+    "last_run_started_at": "2026-09-27T08:51:11+00:00",
+    "last_run_finished_at": "2026-09-27T09:06:26+00:00",
+    "last_log": ".agent/runs/20260927T085111Z.log",
+    "last_checkpoint_at": "2026-09-27T09:06:28+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-27T08:21:24+00:00",
+    "checked_at": "2026-09-27T08:51:08+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1d-08:5c6d74e21b7635effa37956ea2841e65f450d6487ca7e70a2ff807168d3f1fd7",
+    "admission_key": "subtask:m1d-09:7b634dd42af3f1c60b708c545dda50cda68e8b37a2835d96e6747bad0e30859b",
     "task_digest": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
-    "task_intent": "Add exit stdout stderr and filesystem assertions plus exact PASS FAIL BLOCKED ERROR regression coverage",
-    "subtask_id": "m1d-08",
-    "subtask_digest": "5c6d74e21b7635effa37956ea2841e65f450d6487ca7e70a2ff807168d3f1fd7",
+    "task_intent": "Add backward-compatible scenario kind script, immutable input locking, committed JSON schema parity, and common lifecycle dispatch",
+    "subtask_id": "m1d-09",
+    "subtask_digest": "7b634dd42af3f1c60b708c545dda50cda68e8b37a2835d96e6747bad0e30859b",
     "action": "admit",
-    "remaining_percent": 60.0,
+    "remaining_percent": 38.0,
     "reset_at": "2026-09-27T12:51:55+00:00",
     "source": "hermes_oauth_usage_api",
     "message": "5-hour OAuth quota admits new task"

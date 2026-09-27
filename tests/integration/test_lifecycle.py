@@ -169,6 +169,77 @@ def bind_scenario(lock: Path, scenario: Path) -> None:
     lock.write_text(json.dumps(data))
 
 
+@pytest.mark.docker
+def test_real_scenario_script_uses_locked_common_runner(monkeypatch):
+    if os.getenv("KEEMU_TEST_SCRIPT_SCENARIO") != "1":
+        pytest.skip("opt in to owned Docker script scenario")
+    from keemu.script_stage import ScriptStager
+
+    (ROOT / ".runtime").mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=ROOT / ".runtime", prefix="m1d09-") as folder:
+        directory = Path(folder)
+        scenario, lock = inputs(directory)
+        source = directory / "probe.sh"
+        source.write_bytes(
+            b"#!/bin/sh\nprintf 'private-scenario-output\\n'\n"
+            b"printf ready > /opt/tmp/keemu-scenario-marker\nexit 7\n"
+        )
+        text = scenario.read_text().replace(
+            "persistence: {paths: []}",
+            "  - id: script-probe\n    kind: script\n    path: probe.sh\n"
+            "    argv: ['literal;$(id)']\n    expected_exit_code: 7\n"
+            "    stdout_contains: [private-scenario-output]\n"
+            "    stderr_not_contains: [fatal]\n"
+            "    files_exist: [/opt/tmp/keemu-scenario-marker]\n"
+            "    files_absent: [/opt/tmp/keemu-scenario-missing]\n"
+            "persistence: {paths: []}",
+        ).replace(
+            "cleanup: {allowed_residual_paths: [/opt/etc/keemu-count]}",
+            "cleanup: {allowed_residual_paths: "
+            "[/opt/etc/keemu-count, /opt/tmp/keemu-scenario-marker]}",
+        )
+        scenario.write_text(text)
+        data = json.loads(lock.read_text())
+        data["sources"].append({
+            "id": "script-probe", "kind": "script", "path": "probe.sh",
+            "sha256": digest(source.read_bytes()), "origin": "project-test-fixture",
+            "release": "1.0", "architecture": "aarch64",
+        })
+        lock.write_text(json.dumps(data))
+        bind_scenario(lock, scenario)
+        result = run_scenario(scenario, lock, project_root=ROOT)
+        assert result.report.overall == "PASS", result.paths.json
+        assert any(c.id == "check-script-probe" and c.status == "PASS"
+                   and data["sources"][-1]["sha256"] in c.evidence[0]
+                   for c in result.report.checks)
+        bundle = (
+            result.paths.json.read_text()
+            + result.paths.markdown.read_text()
+            + result.paths.operation_log.read_text()
+        )
+        assert "private-scenario-output" not in bundle
+        assert "literal;$(id)" not in bundle
+        assert not (result.paths.json.parent / "resolved-scenario.yaml").exists()
+        assert not (result.paths.json.parent / "lock.json").exists()
+
+        scenario.write_text(text.replace("expected_exit_code: 7", "expected_exit_code: 0"))
+        bind_scenario(lock, scenario)
+        mismatch = run_scenario(scenario, lock, project_root=ROOT)
+        assert_failed_run(mismatch, stage="check-script-probe", status="FAIL")
+
+        scenario.write_text(text)
+        bind_scenario(lock, scenario)
+        original = ScriptStager.stage
+
+        def mutate_before_stage(stager, script_input, container):
+            source.write_bytes(b"#!/bin/sh\necho replaced\n")
+            return original(stager, script_input, container)
+
+        monkeypatch.setattr(ScriptStager, "stage", mutate_before_stage)
+        changed = run_scenario(scenario, lock, project_root=ROOT)
+        assert_failed_run(changed, stage="check-script-probe", status="BLOCKED")
+
+
 def assert_failed_run(result, *, stage: str, status: str) -> None:
     report = result.report
     assert report.overall == status, result.paths.json
