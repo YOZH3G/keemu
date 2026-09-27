@@ -1,0 +1,357 @@
+{
+  "$defs": {
+    "ScriptArgumentMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "byte_count": {
+          "maximum": 16384,
+          "minimum": 1,
+          "title": "Byte Count",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "byte_count",
+        "sha256"
+      ],
+      "title": "ScriptArgumentMetadata",
+      "type": "object"
+    },
+    "ScriptAssertionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_exit_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Exit Code"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "exit-code",
+            "stdout-contains",
+            "stderr-not-contains",
+            "file-exists"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reason_code": {
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "BLOCKED",
+            "ERROR"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "status",
+        "reason_code"
+      ],
+      "title": "ScriptAssertionResult",
+      "type": "object"
+    },
+    "ScriptCleanupResult": {
+      "additionalProperties": false,
+      "properties": {
+        "attempted": {
+          "title": "Attempted",
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "target-script",
+            "container"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z0-9][a-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason Code"
+        },
+        "verified": {
+          "title": "Verified",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "attempted",
+        "verified"
+      ],
+      "title": "ScriptCleanupResult",
+      "type": "object"
+    },
+    "ScriptExecutionMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "enum": [
+            "aarch64-3.10",
+            "mips-3.4",
+            "mipsel-3.4"
+          ],
+          "title": "Architecture",
+          "type": "string"
+        },
+        "argv": {
+          "items": {
+            "$ref": "#/$defs/ScriptArgumentMetadata"
+          },
+          "maxItems": 126,
+          "title": "Argv",
+          "type": "array"
+        },
+        "container_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Container Id"
+        },
+        "cwd": {
+          "title": "Cwd",
+          "type": "string"
+        },
+        "image_id": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Image Id",
+          "type": "string"
+        },
+        "interpreter": {
+          "const": "/bin/sh",
+          "title": "Interpreter",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "one-shot",
+            "persistent"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "profile_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "profile_revision": {
+          "minimum": 1,
+          "title": "Profile Revision",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "target_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Target Path"
+        },
+        "timeout_seconds": {
+          "maximum": 600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "source",
+        "sha256",
+        "target_path",
+        "profile_id",
+        "profile_revision",
+        "architecture",
+        "image_id",
+        "container_id",
+        "mode",
+        "interpreter",
+        "argv",
+        "cwd",
+        "timeout_seconds"
+      ],
+      "title": "ScriptExecutionMetadata",
+      "type": "object"
+    },
+    "ScriptOutcomeMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "maximum": 660,
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "exit_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exit Code"
+        },
+        "process_tree_clean": {
+          "title": "Process Tree Clean",
+          "type": "boolean"
+        },
+        "state": {
+          "enum": [
+            "executed",
+            "blocked",
+            "error"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "stderr": {
+          "$ref": "#/$defs/ScriptStreamMetadata"
+        },
+        "stdout": {
+          "$ref": "#/$defs/ScriptStreamMetadata"
+        },
+        "timed_out": {
+          "title": "Timed Out",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "exit_code",
+        "timed_out",
+        "process_tree_clean",
+        "duration_seconds",
+        "stdout",
+        "stderr"
+      ],
+      "title": "ScriptOutcomeMetadata",
+      "type": "object"
+    },
+    "ScriptStreamMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "byte_count": {
+          "maximum": 1048576,
+          "minimum": 0,
+          "title": "Byte Count",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "truncated": {
+          "title": "Truncated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "byte_count",
+        "sha256",
+        "truncated"
+      ],
+      "title": "ScriptStreamMetadata",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assertions": {
+      "items": {
+        "$ref": "#/$defs/ScriptAssertionResult"
+      },
+      "title": "Assertions",
+      "type": "array"
+    },
+    "cleanup": {
+      "items": {
+        "$ref": "#/$defs/ScriptCleanupResult"
+      },
+      "title": "Cleanup",
+      "type": "array"
+    },
+    "execution": {
+      "$ref": "#/$defs/ScriptExecutionMetadata"
+    },
+    "outcome": {
+      "$ref": "#/$defs/ScriptOutcomeMetadata"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED",
+        "ERROR"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "execution",
+    "outcome",
+    "assertions",
+    "cleanup",
+    "status"
+  ],
+  "title": "ScriptReportMetadata",
+  "type": "object"
+}

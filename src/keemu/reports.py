@@ -27,6 +27,7 @@ from keemu.models import (
     aggregate_status,
     coverage_for,
 )
+from keemu.script_results import ScriptReportMetadata
 
 _AT_FDCWD = -100
 _RENAME_NOREPLACE = 1
@@ -75,6 +76,7 @@ def build_report(
     checks: Sequence[CheckResult],
     artifact: ArtifactMetadata | None = None,
     scenario: ScenarioMetadata | None = None,
+    script: ScriptReportMetadata | None = None,
     capabilities: Sequence[CapabilityResult] = (),
     substitutions: Sequence[SubstitutionMetadata] = (),
     operation_log: Sequence[OperationLogEntry] = (),
@@ -89,6 +91,7 @@ def build_report(
         operation=operation,
         artifact=artifact,
         scenario=scenario,
+        script=script,
         profile=profile,
         runtime=runtime,
         capabilities=tuple(capabilities),
@@ -137,6 +140,29 @@ def render_markdown(report: RunReport) -> str:
         lines.append(
             f"| {_markdown_cell(check.id)} | {check.status} | {check.mode} | "
             f"{requirement} | {evidence} |"
+        )
+    if report.script is not None:
+        script = report.script
+        lines.extend(
+            (
+                "",
+                "## Script",
+                "",
+                f"- Source: `{_markdown_cell(script.execution.source)}`",
+                f"- SHA-256: `{script.execution.sha256}`",
+                f"- Target: `{script.execution.target_path or 'not-staged'}`",
+                f"- Status: **{script.status}**",
+                f"- Exit code: `{script.outcome.exit_code}`",
+                f"- Timed out: `{str(script.outcome.timed_out).lower()}`",
+                f"- Stdout: {script.outcome.stdout.byte_count} bytes, "
+                f"SHA-256 `{script.outcome.stdout.sha256}`, "
+                f"truncated `{str(script.outcome.stdout.truncated).lower()}`",
+                f"- Stderr: {script.outcome.stderr.byte_count} bytes, "
+                f"SHA-256 `{script.outcome.stderr.sha256}`, "
+                f"truncated `{str(script.outcome.stderr.truncated).lower()}`",
+                "- Output and argv contents withheld "
+                "(untrusted/possibly secret-bearing).",
+            )
         )
     if report.partial_failure is not None:
         failure = report.partial_failure

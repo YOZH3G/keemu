@@ -5,6 +5,8 @@ from typing import Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from keemu.script_results import ScriptReportMetadata
+
 Status = Literal["PASS", "WARN", "FAIL", "SKIP", "BLOCKED", "ERROR"]
 CauseClass = Literal["package", "environment", "harness", "unknown"]
 EvidenceMode = Literal["real", "shim", "static"]
@@ -172,6 +174,7 @@ class RunReport(StrictModel):
     operation: str
     artifact: ArtifactMetadata | None
     scenario: ScenarioMetadata | None
+    script: ScriptReportMetadata | None = None
     profile: ProfileMetadata
     runtime: RuntimeMetadata
     capabilities: tuple[CapabilityResult, ...] = Field(strict=False)
@@ -185,6 +188,24 @@ class RunReport(StrictModel):
 
     @model_validator(mode="after")
     def validate_derived_metadata(self) -> Self:
+        if self.script is not None:
+            script = self.script
+            if (
+                self.overall != script.status
+                or self.profile.id != script.execution.profile_id
+                or self.profile.revision != script.execution.profile_revision
+                or self.runtime.entware_target != script.execution.architecture
+                or self.runtime.oci_digest != script.execution.image_id
+                or not any(
+                    check.id == "script"
+                    and check.required
+                    and check.status == script.status
+                    for check in self.checks
+                )
+            ):
+                raise ValueError(
+                    "script report metadata disagrees with required check or runtime"
+                )
         expected_coverage = coverage_for(self.checks)
         if self.coverage != expected_coverage:
             raise ValueError("coverage does not match required checks")
