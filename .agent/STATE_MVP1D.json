@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "keemu-mvp1d",
   "status": "RESUMING",
-  "session_id": "20260927_035229_e5c82b",
+  "session_id": null,
   "pause_reason": null,
   "quota": {
     "kind": null,
@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "shadow",
-    "last_evaluated_at": "2026-09-27T03:52:27+00:00",
+    "last_evaluated_at": "2026-09-27T07:55:15+00:00",
     "recommended": {
       "tier": "C1",
       "model": "gpt-6-luna",
@@ -36,7 +36,7 @@
       "component_count": 2,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 2092352,
+      "graphify_bytes": 2111978,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": false,
@@ -64,27 +64,11 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {
-      "provider": "openai-codex",
-      "tier": "C3",
-      "model": "gpt-5.6-terra",
-      "reasoning": "high",
-      "expected_model": "gpt-5.6-terra",
-      "expected_reasoning": "high",
-      "policy_version": "v1",
-      "parent_task_digest": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
-      "subtask_id": "m1d-06",
-      "subtask_digest": "f3f5e0a8793b3ac9775ce1b214889f4abd3482d5b22272a74fded2e646c4b6cb",
-      "route_event_id": "evt_295ecfb4f07b3e7bf3fe502c",
-      "session_id": "20260927_035229_e5c82b",
-      "model_attested": null,
-      "attestation_status": "PENDING",
-      "session_deleted": null
-    },
+    "worker_lock": {},
     "subtask_plan": {
       "parent_task_digest": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
       "plan_digest": "1c3c5932c754cb4ec1a76d0c36ec84b213c3a4f29f0a7484e07d85e011ec0677",
-      "active_index": 6,
+      "active_index": 7,
       "items": [
         {
           "id": "m1d-00",
@@ -265,8 +249,15 @@
             "model": "gpt-5.6-terra",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "f3f5e0a8793b3ac9775ce1b214889f4abd3482d5b22272a74fded2e646c4b6cb"
+          "status": "complete",
+          "digest": "f3f5e0a8793b3ac9775ce1b214889f4abd3482d5b22272a74fded2e646c4b6cb",
+          "outcome": {
+            "event_id": "evt_c018c5e1e4a78ef76b8b7425",
+            "route_event_id": "evt_295ecfb4f07b3e7bf3fe502c",
+            "completed_at": "2026-09-27T07:58:35+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1d-07",
@@ -287,7 +278,7 @@
           "c5_factors": [
             "foreign_resource_preservation"
           ],
-          "status": "pending",
+          "status": "active",
           "digest": "c648b7914f4e1eeac75e23bd0c1fbde56fa186439c8d96ee08dbe9290f4c3eda"
         },
         {
@@ -414,7 +405,7 @@
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_d7f6a6ea6e8d9cedc800dfe6",
+      "last_event_id": "evt_c018c5e1e4a78ef76b8b7425",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -428,11 +419,11 @@
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 1,
-    "last_run_started_at": "2026-09-27T03:52:27+00:00",
-    "last_run_finished_at": "2026-09-27T03:58:02+00:00",
-    "last_log": ".agent/runs/20260927T035227Z.log",
-    "last_checkpoint_at": "2026-09-27T03:58:02+00:00"
+    "last_exit_code": 0,
+    "last_run_started_at": "2026-09-27T07:55:15+00:00",
+    "last_run_finished_at": "2026-09-27T07:58:33+00:00",
+    "last_log": ".agent/runs/20260927T075515Z.log",
+    "last_checkpoint_at": "2026-09-27T07:58:35+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-27T07:54:15.364432+00:00",
