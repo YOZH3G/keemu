@@ -59,6 +59,7 @@ def _exec(
     limit: int = COMMAND_LIMIT,
     truncate: bool = False,
     allow_failure: bool = False,
+    input_data: bytes | None = None,
 ) -> Output:
     """Read both pipes concurrently with a deadline and per-stream byte cap."""
     if (
@@ -69,9 +70,19 @@ def _exec(
         raise DockerBoundaryError("invalid Docker argv")
     if timeout <= 0 or timeout > 600 or limit <= 0:
         raise DockerBoundaryError("invalid command bounds")
+    if input_data is not None and (
+        not isinstance(input_data, bytes)
+        or len(input_data) > COMMAND_LIMIT
+        or argv[1:4] != ["container", "exec", "-i"]
+    ):
+        raise DockerBoundaryError("invalid bounded Docker stdin")
     try:
         process = subprocess.Popen(  # noqa: S603 -- fixed executable, argv only
-            argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True
+            argv,
+            stdin=subprocess.PIPE if input_data is not None else None,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            start_new_session=True,
         )
     except OSError as exc:
         raise DockerBoundaryError(f"Docker launch failed: {exc}") from exc
@@ -84,12 +95,32 @@ def _exec(
         for name, stream in (("stdout", process.stdout), ("stderr", process.stderr)):
             os.set_blocking(stream.fileno(), False)
             selector.register(stream, selectors.EVENT_READ, name)
+        sent = 0
+        if process.stdin is not None:
+            if not input_data:
+                process.stdin.close()
+            else:
+                os.set_blocking(process.stdin.fileno(), False)
+                selector.register(process.stdin, selectors.EVENT_WRITE, "stdin")
         deadline = time.monotonic() + timeout
         while selector.get_map():
             left = deadline - time.monotonic()
             if left <= 0:
                 raise DockerBoundaryError(f"Docker command timed out: {argv[1]}")
             for key, _ in selector.select(min(left, 0.5)):
+                if key.data == "stdin":
+                    if input_data is None or process.stdin is None:
+                        raise DockerBoundaryError("Docker stdin contract changed")
+                    try:
+                        sent += os.write(key.fd, input_data[sent : sent + 65536])
+                    except BrokenPipeError:
+                        raise DockerBoundaryError(
+                            "Docker stdin closed before transfer"
+                        ) from None
+                    if sent == len(input_data):
+                        selector.unregister(key.fileobj)
+                        process.stdin.close()
+                    continue
                 data = os.read(key.fd, 65536)
                 if not data:
                     selector.unregister(key.fileobj)
@@ -126,6 +157,8 @@ def _exec(
             process.stdout.close()
         if process.stderr:
             process.stderr.close()
+        if process.stdin:
+            process.stdin.close()
 
 
 def _json(argv: list[str]) -> object:
@@ -453,6 +486,7 @@ class DockerRuntime:
         timeout: float = 30,
         allow_failure: bool = False,
         cwd: str | None = None,
+        input_data: bytes | None = None,
     ) -> Output:
         if (
             not argv
@@ -469,18 +503,24 @@ class DockerRuntime:
             cwd != "/opt" and (not cwd.startswith("/opt/") or ".." in cwd.split("/"))
         ):
             raise DockerBoundaryError("invalid target cwd")
+        if input_data is not None and (
+            not isinstance(input_data, bytes) or len(input_data) > COMMAND_LIMIT
+        ):
+            raise DockerBoundaryError("invalid bounded target stdin")
         try:
             return _exec(
                 [
                     "docker",
                     "container",
                     "exec",
+                    *(["-i"] if input_data is not None else []),
                     *(["--workdir", cwd] if cwd else []),
                     identifier,
                     *argv,
                 ],
                 timeout=timeout,
                 allow_failure=allow_failure,
+                input_data=input_data,
             )
         finally:
             self.check_writable_layer(identifier)

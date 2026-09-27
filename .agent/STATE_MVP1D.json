@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "shadow",
-    "last_evaluated_at": "2026-09-27T02:23:09+00:00",
+    "last_evaluated_at": "2026-09-27T02:24:30+00:00",
     "recommended": {
       "tier": "C5",
       "model": "gpt-6-sol",
@@ -27,13 +27,13 @@
       "reasoning": "xhigh"
     },
     "signals": {
-      "score": 10,
+      "score": 11,
       "signal_source": "active_subtask",
-      "active_subtask_id": "m1d-01",
-      "task_chars": 161,
+      "active_subtask_id": "m1d-02",
+      "task_chars": 162,
       "changed_files": 0,
-      "planned_change_count": 5,
-      "component_count": 3,
+      "planned_change_count": 6,
+      "component_count": 4,
       "repo_files_sampled": 2000,
       "graphify_present": true,
       "graphify_bytes": 1832458,
@@ -64,12 +64,13 @@
         "multiple planned changes",
         "large planned change set",
         "multi-component implementation",
+        "broad component span",
         "production/remote-system risk",
         "security/auth/network privilege risk",
         "explicit bounded C5 factor"
       ]
     },
-    "reason": "multiple planned changes; large planned change set; multi-component implementation; production/remote-system risk; security/auth/network privilege risk; explicit bounded C5 factor",
+    "reason": "multiple planned changes; large planned change set; multi-component implementation; broad component span; production/remote-system risk; security/auth/network privilege risk; explicit bounded C5 factor",
     "force_min_tier": null,
     "capabilities": {
       "gpt-6-astra": null
@@ -80,7 +81,7 @@
     "subtask_plan": {
       "parent_task_digest": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
       "plan_digest": "1c3c5932c754cb4ec1a76d0c36ec84b213c3a4f29f0a7484e07d85e011ec0677",
-      "active_index": 2,
+      "active_index": 3,
       "items": [
         {
           "id": "m1d-00",
@@ -155,8 +156,15 @@
           "c5_factors": [
             "complex_security_boundary"
           ],
-          "status": "active",
-          "digest": "e8783e1162c50c69e9befc8e377d96b603688934554c33b1bd39ea1b0a4f7e75"
+          "status": "complete",
+          "digest": "e8783e1162c50c69e9befc8e377d96b603688934554c33b1bd39ea1b0a4f7e75",
+          "outcome": {
+            "event_id": "evt_1402aac387398d1c8c205de5",
+            "route_event_id": "evt_a0fadacc91d35c247046867b",
+            "completed_at": "2026-09-27T02:49:37+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1d-03",
@@ -173,7 +181,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "a14560a4aa77fb19b6c663ed022edcb2174bd0c180f5b49b496d87f02d5d67b8"
         },
         {
@@ -382,7 +390,7 @@
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_97e27d5890c68cc11d196360",
+      "last_event_id": "evt_1402aac387398d1c8c205de5",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -397,22 +405,22 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-27T02:23:09+00:00",
-    "last_run_finished_at": "2026-09-27T02:24:23+00:00",
-    "last_log": ".agent/runs/20260927T022309Z.log",
-    "last_checkpoint_at": "2026-09-27T02:24:24+00:00"
+    "last_run_started_at": "2026-09-27T02:24:30+00:00",
+    "last_run_finished_at": "2026-09-27T02:49:35+00:00",
+    "last_log": ".agent/runs/20260927T022430Z.log",
+    "last_checkpoint_at": "2026-09-27T02:49:37+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-26T21:05:36+00:00",
+    "checked_at": "2026-09-27T02:24:27+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1d-01:86e07a7e01dd22fcc8766c2ef6969c6dba17494a1d6ee20c3b623d36da32e418",
+    "admission_key": "subtask:m1d-02:e8783e1162c50c69e9befc8e377d96b603688934554c33b1bd39ea1b0a4f7e75",
     "task_digest": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
-    "task_intent": "Implement ScriptInput with project containment, regular-file and size bounds, no-follow secure open, SHA-256 identity, and validation-to-stage mutation detection",
-    "subtask_id": "m1d-01",
-    "subtask_digest": "86e07a7e01dd22fcc8766c2ef6969c6dba17494a1d6ee20c3b623d36da32e418",
+    "task_intent": "Implement typed script staging under /opt/tmp with KEEMU-generated digest paths, no overwrite, container identity checks, target-copy integrity, and exact cleanup",
+    "subtask_id": "m1d-02",
+    "subtask_digest": "e8783e1162c50c69e9befc8e377d96b603688934554c33b1bd39ea1b0a4f7e75",
     "action": "admit",
-    "remaining_percent": 31.0,
-    "reset_at": "2026-09-26T22:33:53+00:00",
+    "remaining_percent": 99.0,
+    "reset_at": "2026-09-27T07:23:28+00:00",
     "source": "hermes_oauth_usage_api",
     "message": "5-hour OAuth quota admits new task"
   }
