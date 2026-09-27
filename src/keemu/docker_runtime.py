@@ -487,6 +487,7 @@ class DockerRuntime:
         allow_failure: bool = False,
         cwd: str | None = None,
         input_data: bytes | None = None,
+        capture_limit: int = COMMAND_LIMIT,
     ) -> Output:
         if (
             not argv
@@ -507,6 +508,8 @@ class DockerRuntime:
             not isinstance(input_data, bytes) or len(input_data) > COMMAND_LIMIT
         ):
             raise DockerBoundaryError("invalid bounded target stdin")
+        if not COMMAND_LIMIT <= capture_limit <= 2 * COMMAND_LIMIT + 256:
+            raise DockerBoundaryError("invalid target capture limit")
         try:
             return _exec(
                 [
@@ -519,6 +522,7 @@ class DockerRuntime:
                     *argv,
                 ],
                 timeout=timeout,
+                limit=capture_limit,
                 allow_failure=allow_failure,
                 input_data=input_data,
             )
