@@ -12,6 +12,7 @@ from click.testing import CliRunner
 
 from keemu.cli import cli
 from keemu.docker_runtime import DockerRuntime
+from keemu.script_assertions import ScriptExpectations
 from keemu.script_lifecycle import run_one_shot_script
 from keemu.script_stage import ScriptStager
 
@@ -289,3 +290,93 @@ def test_script_cli_runs_locked_one_shot_contract(tmp_path: Path) -> None:
     }
     assert "literal;$(false)" not in result.output
     assert DockerRuntime(report["run_id"], IMAGE).reconcile()["container_owned"] == []
+
+
+@pytest.mark.docker
+def test_one_shot_assertions_statuses_and_exact_cleanup(tmp_path: Path) -> None:
+    if os.getenv("KEEMU_TEST_SCRIPT_LIFECYCLE") != "1":
+        pytest.skip("opt in to locked AArch64 script assertion Docker/binfmt probe")
+    cases = (
+        ("streams.sh", ScriptExpectations(("stdout-token",), ("fatal",)), "PASS"),
+        ("streams.sh", ScriptExpectations(stdout_contains=("missing",)), "FAIL"),
+        (
+            "streams.sh",
+            ScriptExpectations(stderr_not_contains=("stderr-token",)),
+            "FAIL",
+        ),
+        (
+            "filesystem.sh",
+            ScriptExpectations(files_exist=("/opt/tmp/keemu-script-test-result",)),
+            "PASS",
+        ),
+        (
+            "success.sh",
+            ScriptExpectations(files_exist=("/opt/tmp/keemu-script-test-result",)),
+            "FAIL",
+        ),
+        (
+            "success.sh",
+            ScriptExpectations(files_absent=("/opt/tmp/keemu-script-test-result",)),
+            "PASS",
+        ),
+    )
+    for filename, expectations, status in cases:
+        run_id = "m1d08-" + uuid.uuid4().hex[:12]
+        result = run_one_shot_script(
+            f"fixtures/scripts/mvp1d/{filename}",
+            project_root=ROOT,
+            run_id=run_id,
+            report_root=tmp_path,
+            expectations=expectations,
+        )
+        assert result.report.overall == result.script.status == status
+        assert result.script.outcome.process_tree_clean
+        assert all(item.verified for item in result.script.cleanup)
+        assert all(item.status in ("PASS", "FAIL") for item in result.script.assertions)
+        assert DockerRuntime(run_id, IMAGE).reconcile()["container_owned"] == []
+    response = CliRunner().invoke(
+        cli,
+        [
+            "script",
+            "fixtures/scripts/mvp1d/streams.sh",
+            "--profile",
+            "generic-aarch64",
+            "--repo",
+            str(ROOT),
+            "--stdout-contains",
+            "stdout-token",
+            "--stderr-not-contains",
+            "fatal",
+            "--expect-file-absent",
+            "/opt/tmp/keemu-script-test-result",
+        ],
+    )
+    assert response.exit_code == 0, response.output
+    report = json.loads(response.output)
+    assert report["overall"] == "PASS"
+    assert len(report["script"]["assertions"]) == 4
+    assert DockerRuntime(report["run_id"], IMAGE).reconcile()["container_owned"] == []
+    # A target symlink ancestor is not an absent file or a successful proof.
+    source_dir = ROOT / ".runtime" / ("m1d08-" + uuid.uuid4().hex)
+    source_dir.mkdir(mode=0o700, parents=True)
+    try:
+        source = source_dir / "link.sh"
+        source.write_bytes(
+            b"/opt/bin/busybox ln -s /opt/etc /opt/tmp/keemu-assert-link\n"
+        )
+        run_id = "m1d08-" + uuid.uuid4().hex[:12]
+        unsafe = run_one_shot_script(
+            source.relative_to(ROOT),
+            project_root=ROOT,
+            run_id=run_id,
+            report_root=tmp_path,
+            expectations=ScriptExpectations(
+                files_absent=("/opt/tmp/keemu-assert-link/file",)
+            ),
+        )
+        assert unsafe.report.overall == "ERROR"
+        assert unsafe.report.partial_failure.operation == "assert"
+        assert all(item.verified for item in unsafe.script.cleanup)
+        assert DockerRuntime(run_id, IMAGE).reconcile()["container_owned"] == []
+    finally:
+        shutil.rmtree(source_dir)

@@ -22,6 +22,7 @@ from keemu.persistent import recover as recover_environment
 from keemu.profiles import ProfileError, load_profile
 from keemu.registry import RegistryError
 from keemu.reports import exit_code_for_status
+from keemu.script_assertions import ScriptExpectations
 from keemu.script_input import ScriptInputError
 from keemu.script_lifecycle import run_one_shot_script
 from keemu.script_persistent import run_persistent_script
@@ -197,6 +198,10 @@ def test_scenario(
     default=0,
     show_default=True,
 )
+@click.option("stdout_contains", "--stdout-contains", multiple=True)
+@click.option("stderr_not_contains", "--stderr-not-contains", multiple=True)
+@click.option("files_exist", "--expect-file", multiple=True)
+@click.option("files_absent", "--expect-file-absent", multiple=True)
 @click.option(
     "repo",
     "--repo",
@@ -214,6 +219,10 @@ def script(
     cwd: str,
     expected_exit_code: int,
     repo: Path,
+    stdout_contains: tuple[str, ...],
+    stderr_not_contains: tuple[str, ...],
+    files_exist: tuple[str, ...],
+    files_absent: tuple[str, ...],
 ) -> None:
     """Run one project-contained .sh file in a fresh locked target container.
 
@@ -221,6 +230,11 @@ def script(
     argv bounds are revalidated by the common script lifecycle before allocation.
     """
     try:
+        extras = {}
+        if stdout_contains or stderr_not_contains or files_exist or files_absent:
+            extras["expectations"] = ScriptExpectations(
+                stdout_contains, stderr_not_contains, files_exist, files_absent
+            )
         result = run_one_shot_script(
             script,
             project_root=repo,
@@ -229,6 +243,7 @@ def script(
             cwd=cwd,
             timeout_seconds=timeout_seconds,
             expected_exit_code=expected_exit_code,
+            **extras,
         )
     except (ScriptInputError, ValueError) as exc:
         raise InputError(str(exc)) from exc
@@ -357,6 +372,10 @@ def logs(name: str, repo: Path) -> None:
 @click.option(
     "expected_exit_code", "--expect-exit-code", type=click.IntRange(0, 255), default=0
 )
+@click.option("stdout_contains", "--stdout-contains", multiple=True)
+@click.option("stderr_not_contains", "--stderr-not-contains", multiple=True)
+@click.option("files_exist", "--expect-file", multiple=True)
+@click.option("files_absent", "--expect-file-absent", multiple=True)
 @click.pass_context
 def exec_environment(
     context: click.Context,
@@ -367,14 +386,31 @@ def exec_environment(
     timeout_seconds: int,
     cwd: str,
     expected_exit_code: int,
+    stdout_contains: tuple[str, ...],
+    stderr_not_contains: tuple[str, ...],
+    files_exist: tuple[str, ...],
+    files_absent: tuple[str, ...],
 ) -> None:
     """Run argv, or a checked script in an owner-verified running environment."""
     if script_path is None:
-        if timeout_seconds != 60 or cwd != "/opt" or expected_exit_code != 0:
+        if (
+            timeout_seconds != 60
+            or cwd != "/opt"
+            or expected_exit_code != 0
+            or stdout_contains
+            or stderr_not_contains
+            or files_exist
+            or files_absent
+        ):
             raise InputError("script options require --script")
         _environment_command("exec", name, repo, argv)
         return
     try:
+        extras = {}
+        if stdout_contains or stderr_not_contains or files_exist or files_absent:
+            extras["expectations"] = ScriptExpectations(
+                stdout_contains, stderr_not_contains, files_exist, files_absent
+            )
         result = run_persistent_script(
             name,
             script_path,
@@ -383,6 +419,7 @@ def exec_environment(
             cwd=cwd,
             timeout_seconds=timeout_seconds,
             expected_exit_code=expected_exit_code,
+            **extras,
         )
     except (ScriptInputError, ValueError, RegistryError) as exc:
         raise InputError(str(exc)) from exc

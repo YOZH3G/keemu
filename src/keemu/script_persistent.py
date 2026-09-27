@@ -31,11 +31,11 @@ from keemu.persistent import _runtime
 from keemu.profiles import load_profile_bytes
 from keemu.registry import Registry, RegistryError
 from keemu.reports import ReportPaths, build_report, write_report_bundle
+from keemu.script_assertions import ScriptExpectations, check_script_assertions
 from keemu.script_input import ScriptInput, ScriptInputChanged
 from keemu.script_lifecycle import BASE_LOCK, _empty, _now
 from keemu.script_process import ScriptProcessRunner
 from keemu.script_results import (
-    ScriptAssertionResult,
     ScriptCleanupResult,
     ScriptExecutionSpec,
     ScriptResult,
@@ -59,6 +59,7 @@ def run_persistent_script(
     cwd: str = "/opt",
     timeout_seconds: int = 60,
     expected_exit_code: int = 0,
+    expectations: ScriptExpectations | None = None,
     report_root: Path | None = None,
 ) -> PersistentScriptResult:
     """Use the shared input/stager/process/result contract, not container cleanup."""
@@ -66,6 +67,9 @@ def run_persistent_script(
     root = project_root.resolve()
     if type(expected_exit_code) is not int or not 0 <= expected_exit_code <= 255:
         raise ValueError("invalid expected exit code")
+    if expectations is not None and not isinstance(expectations, ScriptExpectations):
+        raise ValueError("invalid script assertions")
+    expectations = expectations or ScriptExpectations()
     if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= 600:
         raise ValueError("invalid script timeout")
     if cwd != "/opt" and (
@@ -134,7 +138,7 @@ def run_persistent_script(
         staged: StagedScript | None = None
         target_path: str | None = None
         outcome = _empty("error")
-        assertions: tuple[ScriptAssertionResult, ...] = ()
+        assertions = ()
         cleanup: list[ScriptCleanupResult] = []
         operations: list[OperationLogEntry] = []
         failure: tuple[int, str, str, str] | None = None
@@ -206,18 +210,16 @@ def run_persistent_script(
                 ),
                 failed_status="ERROR",
             )
-            assertions = (
-                ScriptAssertionResult(
-                    id="exit-code",
-                    kind="exit-code",
-                    status="PASS"
-                    if not outcome.timed_out and outcome.exit_code == expected_exit_code
-                    else "FAIL",
-                    reason_code=(
-                        "exit-code-check" if not outcome.timed_out else "timed-out"
-                    ),
-                    expected_exit_code=expected_exit_code,
+            assertions = operation(
+                "assert",
+                lambda: check_script_assertions(
+                    outcome,
+                    expected_exit_code,
+                    expectations,
+                    stager=stager,
+                    staged=staged,
                 ),
+                failed_status="ERROR",
             )
         except ScriptInputChanged:
             outcome = _empty("blocked")

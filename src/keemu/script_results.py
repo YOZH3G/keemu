@@ -109,15 +109,29 @@ class ScriptExecutionResult(StrictModel):
 
 class ScriptAssertionResult(StrictModel):
     id: str = Field(pattern=CHECK_ID_PATTERN)
-    kind: Literal["exit-code", "stdout-contains", "stderr-not-contains", "file-exists"]
+    kind: Literal[
+        "exit-code",
+        "stdout-contains",
+        "stderr-not-contains",
+        "file-exists",
+        "file-absent",
+    ]
     status: ScriptStatus
     reason_code: str = Field(pattern=CHECK_ID_PATTERN)
     expected_exit_code: int | None = None
+    expected_sha256: str | None = Field(default=None, pattern=SHA256_PATTERN)
 
     @model_validator(mode="after")
     def validate_expectation(self) -> Self:
         if (self.kind == "exit-code") != (self.expected_exit_code is not None):
             raise ValueError("exit-code assertion needs an explicit expected code")
+        if (self.kind != "exit-code") != (self.expected_sha256 is not None):
+            raise ValueError("content/file assertion needs expected digest")
+        if (
+            self.expected_exit_code is not None
+            and not 0 <= self.expected_exit_code <= 255
+        ):
+            raise ValueError("invalid expected exit code")
         return self
 
 
@@ -271,7 +285,6 @@ def script_status(
         return "ERROR"
     if outcome.state == "executed" and not outcome.process_tree_clean:
         return "ERROR"
-
     if outcome.timed_out or any(item.status == "FAIL" for item in assertions):
         return "FAIL"
     if outcome.state == "executed" and any(

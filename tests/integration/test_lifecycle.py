@@ -784,6 +784,33 @@ def test_persistent_script_preserves_service_and_foreign_resources(monkeypatch):
                     foreign.inspect("container", foreign_id)["State"]
                     == foreign_before["State"]
                 )
+            for expected_status, options in (
+                (
+                    "PASS",
+                    [
+                        "--stdout-contains",
+                        "stdout-token",
+                        "--stderr-not-contains",
+                        "fatal",
+                    ],
+                ),
+                ("FAIL", ["--stderr-not-contains", "stderr-token"]),
+            ):
+                checked = CliRunner().invoke(
+                    cli,
+                    [
+                        "exec",
+                        name,
+                        "--script",
+                        "fixtures/scripts/mvp1d/streams.sh",
+                        "--repo",
+                        str(ROOT),
+                        *options,
+                    ],
+                )
+                assert checked.exit_code == (0 if expected_status == "PASS" else 1)
+                assert json.loads(checked.output)["overall"] == expected_status
+                assert health() == before
             assert (
                 runtime.exec(
                     identifier,
