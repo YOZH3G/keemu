@@ -18,12 +18,15 @@ on six unchanged committed files.
 
 ## MVP 1D script execution limits (separate milestone)
 
-`docs/evidence/mvp1d-m1d12-reconciliation.json` reconciles D01–D08 before the
-independent `m1d-13` audit. Real locked AArch64 Docker/binfmt tests cover
+`docs/evidence/mvp1d-m1d13-final-audit.json` and its `.md` companion
+independently audit D01–D08 from the pre-final
+`docs/evidence/mvp1d-m1d12-reconciliation.json`. D01/D03/D04/
+D05/D06/D08 PASS at their bounded scope; D02/D07 and release remain BLOCKED.
+Real locked AArch64 Docker/binfmt tests cover
 ordinary one-shot/persistent execution, source mutation, no-clobber staging,
 timeout descendant cleanup, assertions, scenario checks and isolation. The
 retained m1d-11 live JUnit has 39 PASS; portable JUnit has 339 PASS and 44
-intentional opt-in SKIP. These are bounded slices, not a release verdict.
+intentional opt-in SKIP. These bounded slices do not turn release into PASS.
 
 - D02 and D07 remain BLOCKED at a malicious concurrent same-UID target process:
   shell `stat` then `rm` cannot atomically guarantee that the unlinked inode is

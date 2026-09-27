@@ -1,6 +1,12 @@
 # Acceptance traceability
 
-## Separate MVP 1D D01–D08 (pre-final m1d-12)
+## Separate MVP 1D D01–D08 (final m1d-13; pre-final rows below historical)
+
+Independent final mapping and exact PASS/FAIL/BLOCKED/ERROR semantics:
+`docs/evidence/mvp1d-m1d13-final-audit.json` and `.md`. D01/D03/D04/D05/
+D06/D08 are PASS at the named bounded acceptance scope; D02/D07 and MVP 1D
+release are BLOCKED. D08 PASS means evidence audit complete with exact blockers,
+not product completion. Original MVP 1 release remains BLOCKED.
 
 `docs/evidence/mvp1d-m1d12-reconciliation.json` binds retained m1d-00,
 m1d-10, m1d-11 and local raw/JUnit SHA-256 evidence. `SCOPED_PASS` below is
@@ -16,7 +22,7 @@ at its scope-freeze timestamp; its statuses are not the current observation.
 | D05 | SCOPED_PASS | AArch64 `keemu script` and running owner-verified `keemu exec --script` normal lifecycle; `tests/integration/test_script_lifecycle.py`, `tests/integration/test_lifecycle.py` | Crash cleanup is test-only, not automatic production recovery |
 | D06 | SCOPED_PASS | Backward-compatible `kind: script` with exact source lock/schema parity and shared runner; `tests/unit/test_input_schemas.py`, `tests/integration/test_lifecycle.py` | One-shot IPK scenario check only, not a script-only/persistent/MIPS scenario |
 | D07 | BLOCKED | AArch64 live Docker/binfmt/isolation/SIGKILL tests and MIPS/MIPSEL honest BLOCKED/CLI 4 (`docs/evidence/mvp1d-m1d10-architectures.json`) | No MIPS general lifecycle, hostile same-UID race proof, automatic persistent crash cleanup or interrupted report |
-| D08 | PENDING_FINAL_AUDIT | m1d-11 retained 39 live PASS/339 portable PASS/44 intentional SKIP; m1d-12 documentation/ADR/durable reconciliation | m1d-13 must independently audit all eight IDs and publish honest release result |
+| D08 | PENDING_FINAL_AUDIT (m1d-12 snapshot) | m1d-11 retained 39 live PASS/339 portable PASS/44 intentional SKIP; m1d-12 documentation/ADR/durable reconciliation | Completed in m1d-13 independent audit above; release remains BLOCKED |
 
 No D gate changes frozen original MVP 1 A01–A21/final-28/final-29/final-31
 evidence or release result. See ADR-0019 and `docs/limitations.md` for

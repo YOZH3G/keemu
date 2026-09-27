@@ -6,9 +6,10 @@ This document describes verified P0 foundations and bounded MVP 1A, MVP 1B and
 MVP 1C slices. It is not a production-complete architecture: final-28 marks
 only the specified A01 three-target execution check PASS; A02–A21 whole release
 IDs remain BLOCKED, and final-29 release verification is BLOCKED.
-MVP 1D is separate on `staging`; its m1d-12 pre-final D01–D08 evidence is in
-`docs/evidence/mvp1d-m1d12-reconciliation.json`. D02/D07 remain BLOCKED and
-D08 awaits independent m1d-13 audit; none alters the original release.
+MVP 1D is separate on `staging`. Its independent final D01–D08 verdict is in
+`docs/evidence/mvp1d-m1d13-final-audit.json`: D01/D03/D04/D05/D06/D08
+PASS at bounded scope; D02/D07 and MVP 1D release BLOCKED. No original MVP 1
+release result changes.
 
 ## Implemented components
 

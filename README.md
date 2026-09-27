@@ -3,12 +3,12 @@
 KEEMU is a reproducible verification harness for Entware applications. The authoritative scope and acceptance criteria are in `KEEMU_MVP1_updated.md` revision 2.2.
 
 MVP 1D script execution is a separate milestone on `staging` (`TASK.md`), not a
-retroactive change to the original MVP 1 release. Its pre-final D01–D08
-reconciliation is `docs/evidence/mvp1d-m1d12-reconciliation.json`; the
-independent final audit is reserved for `m1d-13`. D02/D07 remain BLOCKED at
-the hostile same-UID target cleanup race and interrupted persistent artifact
-boundary. D08 has no final release verdict yet. Original A01–A21 and final-28/
-29/31 evidence below is historical and unchanged.
+retroactive change to the original MVP 1 release. Its independent final audit
+is `docs/evidence/mvp1d-m1d13-final-audit.md` with exact machine-readable
+verdict in `docs/evidence/mvp1d-m1d13-final-audit.json`: D01/D03/D04/D05/D06/
+D08 PASS at their stated scope; D02/D07 and MVP 1D release BLOCKED by the
+hostile same-UID target cleanup race and interrupted persistent artifact gap.
+Original A01–A21 and final-28/29/31 evidence below is historical and unchanged.
 
 ## Current status
 

@@ -11,7 +11,16 @@ is also BLOCKED. The final-31 independent audit records the exact outstanding
 requirements in `docs/evidence/final31-independent-audit.md`; no MVP or release
 completion is claimed.
 
-## MVP 1D m1d-12 pre-final documentation reconciliation
+## MVP 1D m1d-13 independent final audit
+
+`docs/evidence/mvp1d-m1d13-final-audit.json` and its `.md` companion record
+the exact D01/D03/D04/D05/D06/D08 scoped PASS, D02/D07 BLOCKED and MVP 1D
+release BLOCKED decisions. Fresh portable tests: 339 PASS/44 intentional SKIP;
+retained real AArch64 live JUnit: 39 PASS. Original final-29 remains BLOCKED
+(233 PASS/2 prerequisite FAIL/3 SKIP). Repository-wide Ruff format check FAILs
+on seven untouched files; no product or historical MVP 1 status was changed.
+
+## MVP 1D m1d-12 pre-final documentation reconciliation (historical)
 
 `docs/evidence/mvp1d-m1d12-reconciliation.json` maps D01–D08 to actual
 source/tests/retained raw evidence, leaving the m1d-00 NOT_RUN ledger as its
@@ -21,9 +30,9 @@ one-shot/persistent lifecycle and D06 locked scenario checks have scoped PASS
 evidence. D02 and D07 remain BLOCKED at the hostile same-UID target
 stat-to-unlink race and persistent post-SIGKILL artifact/recovery/report gap.
 MIPS/MIPSEL use the common script contract and truthfully BLOCK before Docker
-allocation without a general locked lifecycle. D08 independent final audit
-and release decision remain `m1d-13` work, not a result of this documentation
-subtask. m1d-11 raw JUnit: 39 real AArch64 Docker/binfmt PASS, 339 portable
+allocation without a general locked lifecycle. At this pre-final snapshot D08
+was reserved for `m1d-13`; the independent result is recorded above. m1d-11
+raw JUnit: 39 real AArch64 Docker/binfmt PASS, 339 portable
 PASS/44 intentional SKIP; one-shot SIGKILL recovery was test-only, persistent
 SIGKILL preserved the service but left an exact staged object. No MVP 1
 historical acceptance/evidence/status changed. ADR-0019 records the boundary.

@@ -33,7 +33,7 @@
 - `m1d-00` is attested complete and its route/threat review was explicitly accepted on 2026-09-26. `pause_after_subtask_ids=[]`; subtasks `m1d-01` through `m1d-13` are authorized in frozen order, subject to fresh per-subtask quota admission and runtime attestation.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
 - Git auto-pull remains disabled to avoid hidden remote integration. Git checkpoints stage the complete task result (excluding secret-like paths) and auto-push `staging` after each verified subtask boundary.
-- `m1d-11` was attested complete at its supervisor boundary. Active `m1d-12` reconciles only pre-final D01–D08 documentation at `docs/evidence/mvp1d-m1d12-reconciliation.json` (ADR-0019); D02/D07 have explicit race/recovery gaps and D08 independent final audit belongs only to pending `m1d-13`. Preserve the original MVP 1 ledgers and release state.
+- `m1d-12` was committed at its supervisor boundary. Active `m1d-13` publishes the independent MVP 1D audit in `docs/evidence/mvp1d-m1d13-final-audit.json` and `.md`; D02/D07 race/recovery gaps block MVP 1D release. Preserve the original MVP 1 ledgers and release state. Supervisor alone attests and publishes the final boundary.
 
 ## Verification commands
 
