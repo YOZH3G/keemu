@@ -6,6 +6,9 @@ This document describes verified P0 foundations and bounded MVP 1A, MVP 1B and
 MVP 1C slices. It is not a production-complete architecture: final-28 marks
 only the specified A01 three-target execution check PASS; A02–A21 whole release
 IDs remain BLOCKED, and final-29 release verification is BLOCKED.
+MVP 1D is separate on `staging`; its m1d-12 pre-final D01–D08 evidence is in
+`docs/evidence/mvp1d-m1d12-reconciliation.json`. D02/D07 remain BLOCKED and
+D08 awaits independent m1d-13 audit; none alters the original release.
 
 ## Implemented components
 
@@ -27,6 +30,40 @@ IDs remain BLOCKED, and final-29 release verification is BLOCKED.
 - `src/keemu/registry.py`, `src/keemu/persistent.py`, and CLI `up/down/restart/destroy/status/ports/logs/exec/recover` provide a limited persistent AArch64 IPK environment without host publication. Owner-only per-name flock serializes transitions; no-replace creation, fsynced atomic JSON replacement, frozen scenario snapshot, immutable identity checks, and permanent tombstones reject replacement. Every ordinary operation rechecks Docker full ID, run/base/target labels and actual state. Explicit `recover --yes` reconciles a failed/interrupted record, admits at most one unrecorded container only with the exact deterministic name and matching run ownership, rejects foreign/extra resources, verifies absence and tombstones; it never retries uncertain install/service actions. The one-shot report pipeline is not reused for persistent commands. See ADR-0008 and ADR-0010.
 - `src/keemu/ndm.py` and `src/keemu/events.py` provide strict host-local synthetic process/event contracts only. They do not establish target `ndmc`, physical-device behavior, a kernel firewall hook, or A11/A12 acceptance.
 - `src/keemu/topology.py` creates owner-labeled internal LAN/WAN Docker bridges and an AArch64 client/router/server topology with target `br0`, endpoint-named `wan0`, namespace forwarding and explicit full-ID cleanup. `src/keemu/network_demo.py` stages the locked AArch64 network-demo fixture and its diagnostic API. The m1c-26 packet slice uses declared native NFQUEUE transport and native `iptables-legacy` substitutions inside the owned router; direct target `NETLINK_NETFILTER` and target iptables remain unsupported.
+
+## Separate MVP 1D script path
+
+`ScriptInput` in `src/keemu/script_input.py` confines `.sh` files to the
+project root with descriptor-relative no-follow opens, regular-file/single-link
+and 1 MiB bounds, SHA-256 identity and a use-time inode/metadata/byte recheck.
+`ScriptStager` transfers only its frozen bytes via bounded Docker stdin into a
+new `/opt/tmp/keemu-script-<sha256>-<nonce>/script.sh`; private directory and
+shell noclobber prohibit ordinary overwrite. Full-ID/label, target inode and
+byte-readback checks surround target operations. It does not broaden the
+IPK-only `docker cp` path.
+
+`ScriptProcessRunner` stages a SHA-256-pinned static native helper next to the
+issued script. Inside the owned container PID namespace it starts target
+`/bin/sh` with explicit cwd, minimal environment and separate bounded streams;
+subreaper, process ancestry, pidfds, TERM/KILL and reaping prove normal timeout
+descendants absent without signaling unrelated processes. `script_results.py`
+and `script_assertions.py` keep raw output, argv and expected needles only in
+memory; `RunReport.script` serializes identities/counts/hashes/truncation,
+typed assertions and cleanup, not secret-bearing plaintext. Filesystem checks
+use constant target shell code with a separate validated `/opt` path argument.
+
+`script_lifecycle.py` owns a fresh locked AArch64 container for `keemu script`;
+`script_persistent.py` holds a registry name lock and verifies the running
+environment before/after `keemu exec NAME --script`, removing no container or
+service. `script_scenario.py` dispatches version-1 SHA-256-locked `kind: script`
+checks via the same stager/runner/assertions inside the one-shot IPK scenario;
+schemas retain parity. MIPS/MIPSEL enter the same host input/typed report path
+but stop at a truthful capability BLOCKED before allocation, not a separate
+target-probe executor. Host-worker SIGKILL is distinct from target timeout:
+one-shot recovery was explicit in tests, while persistent SIGKILL retains an
+artifact with no automatic recovery or interrupted report. Target shell
+stat-to-unlink cannot atomically exclude a hostile concurrent same-UID swap.
+See ADR-0019 and the m1d-12 ledger; m1d-13 final audit remains separate.
 
 ## P0 diagnostic data flow
 
@@ -50,7 +87,7 @@ recovery, or full MVP 1C acceptance.
 ## Trust boundaries
 
 - Package input is untrusted. The inspector rejects oversized and malformed wrappers, files, special members, path escapes, symlink traversal/cycles, bad control fields and ELF structures without extracting to the project or executing anything. One-shot `test` reopens and rehashes the pinned IPK, statically inspects a private copy, and hashes a target copy-back before opkg install. These in-process bounds are not an OS sandbox for package execution; other consumers must independently revalidate at use.
-- Commands are argv arrays. Shell execution is limited to explicit trusted diagnostic smoke scripts inside the target environment. Target opkg may execute maintainer scripts from the pinned base IPKs while installing them into a project-local staging rootfs; untrusted application/fixture installation is not part of `init`.
+- Commands are argv arrays. In MVP 1D, user script bytes execute only as a staged target file through `/bin/sh` in an owned environment, not through the host shell or a content-derived `-c` command. Existing trusted diagnostic shell commands and target opkg maintainer scripts retain their separate scope; untrusted application/fixture installation is not part of `init`.
 - The PRoot path is diagnostic only and is not a container isolation boundary.
 - Reports and runtime state are generated outside Git; lock files, recipes, schemas, and tests belong in Git.
 - Published report directories are write-once evidence: atomic no-replace publication preserves any existing destination entry and fails closed when the required Linux primitive is unavailable.

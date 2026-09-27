@@ -2,6 +2,14 @@
 
 KEEMU is a reproducible verification harness for Entware applications. The authoritative scope and acceptance criteria are in `KEEMU_MVP1_updated.md` revision 2.2.
 
+MVP 1D script execution is a separate milestone on `staging` (`TASK.md`), not a
+retroactive change to the original MVP 1 release. Its pre-final D01–D08
+reconciliation is `docs/evidence/mvp1d-m1d12-reconciliation.json`; the
+independent final audit is reserved for `m1d-13`. D02/D07 remain BLOCKED at
+the hostile same-UID target cleanup race and interrupted persistent artifact
+boundary. D08 has no final release verdict yet. Original A01–A21 and final-28/
+29/31 evidence below is historical and unchanged.
+
 ## Current status
 
 P0 technical-risk experiments are complete. Bounded MVP 1A, MVP 1B and MVP 1C
@@ -55,6 +63,38 @@ The general `keemu init`/single-scenario `test` CLI still accepts only AArch64;
 `test --matrix` aggregates the other targets as BLOCKED. The binfmt approval
 changed only `qemu-mipsel` and
 `qemu-mips` host handlers; the project-owned probes made no host change.
+
+## MVP 1D script execution (bounded)
+
+The locked `generic-aarch64` Docker/binfmt base supports a disposable script
+run and execution inside an already-running, owner-verified persistent IPK
+environment. Script paths must name project-contained regular `.sh` files.
+The file is opened without following symlinks, hash-pinned, rechecked before
+staging and transferred as checked bytes into a private, no-clobber digest/nonce
+directory below target `/opt/tmp`. A pinned native helper runs `/bin/sh` in
+the target PID namespace with literal argv, explicit `/opt` cwd (or validated
+`--cwd`), minimal environment, 60-second default timeout (1–600), separate
+bounded output and target descendant TERM/KILL/reaping. No script content runs
+through a host shell. One-shot cleanup removes its verified container; normal
+persistent cleanup removes only issued target artifacts. Reports under
+`reports/` include typed exit/assertion/cleanup status and stream byte counts,
+hashes and truncation, but never raw output, arguments or assertion needles.
+
+```text
+uv run keemu script fixtures/scripts/mvp1d/success.sh --profile generic-aarch64 --repo . -- arg1
+uv run keemu exec demo --script fixtures/scripts/mvp1d/success.sh --repo . -- arg1
+```
+
+Both modes accept `--timeout`, `--cwd`, `--expect-exit-code`, repeatable
+`--stdout-contains`, `--stderr-not-contains`, `--expect-file` and
+`--expect-file-absent`. The second form requires a previously created running
+persistent environment. A version-1 scenario can also declare a `kind: script`
+check with a SHA-256-locked script source; it shares the same target runner and
+does not convert file content into `/bin/sh -c`. MIPS/MIPSEL use the common
+secure input/report contract but return actual BLOCKED (CLI 4) before Docker
+allocation because their general locked lifecycle is unavailable; earlier
+target-ELF probes are not script execution. Real AArch64 tests and exact gaps
+are in the MVP 1D reconciliation and `docs/limitations.md`.
 
 ## Development
 

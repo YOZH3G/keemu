@@ -16,6 +16,41 @@ containers/networks are 0/0; `nfnetlink_queue` remains loaded while
 new packet-verdict job are NOT RUN. Repository-wide formatter check still fails
 on six unchanged committed files.
 
+## MVP 1D script execution limits (separate milestone)
+
+`docs/evidence/mvp1d-m1d12-reconciliation.json` reconciles D01–D08 before the
+independent `m1d-13` audit. Real locked AArch64 Docker/binfmt tests cover
+ordinary one-shot/persistent execution, source mutation, no-clobber staging,
+timeout descendant cleanup, assertions, scenario checks and isolation. The
+retained m1d-11 live JUnit has 39 PASS; portable JUnit has 339 PASS and 44
+intentional opt-in SKIP. These are bounded slices, not a release verdict.
+
+- D02 and D07 remain BLOCKED at a malicious concurrent same-UID target process:
+  shell `stat` then `rm` cannot atomically guarantee that the unlinked inode is
+  the checked inode. A pre-cleanup replacement is refused, but that is narrower
+  than an adversarial stat-to-unlink race proof. Do not interpret in-memory
+  issued-object authority or test-owned cleanup as an atomic target primitive.
+- An actual SIGKILL after persistent staging leaves the environment running
+  and postinst counter unchanged but retains the staged object. There is no
+  automatic production crash-artifact recovery or interrupted report. The
+  one-shot SIGKILL cases were explicitly recovered by full-ID/name/label in
+  tests, not automatically by the CLI. No PASS or complete cleanup is inferred
+  from a killed worker; an active target shell was separately observed absent
+  within 12 seconds. Normal timeout cleanup has a narrower process-tree proof.
+- MIPS/MIPSEL script requests return BLOCKED/CLI 4 before Docker allocation
+  because locked general init/test bases are absent. Their real target-exec
+  probes are not proof of script lifecycle or persistent mode. Scenario
+  `kind: script` is a locked one-shot IPK check on AArch64, not script-only,
+  cross-target or persistent scenario support.
+- Bounded separate stdout/stderr and argv are processed in memory, but only
+  lengths/SHA-256/truncation are published: raw output, args and assertion
+  needles may contain secrets. This sacrifices plaintext diagnostics by
+  design. Shared Docker/binfmt runner is not a fresh Ubuntu or physical
+  Keenetic. D08 independent final audit and release decision are NOT RUN here.
+
+Original MVP 1 A01–A21/final-28/final-29/final-31 ledgers and blocked release
+status are unchanged; this section does not reopen their acceptance criteria.
+
 ## Known limitations
 
 - Docker Engine 29.7.2 is reachable through a privileged host socket. The separately approved `qemu-aarch64` binfmt registration must be revalidated after reboot or runner change. No privileged target container or public port was used.

@@ -1,5 +1,27 @@
 # Acceptance traceability
 
+## Separate MVP 1D D01–D08 (pre-final m1d-12)
+
+`docs/evidence/mvp1d-m1d12-reconciliation.json` binds retained m1d-00,
+m1d-10, m1d-11 and local raw/JUnit SHA-256 evidence. `SCOPED_PASS` below is
+not a final release verdict. The original m1d-00 NOT_RUN ledger is immutable
+at its scope-freeze timestamp; its statuses are not the current observation.
+
+| ID | Pre-final assessment | Verified path | Remaining boundary |
+|---|---|---|---|
+| D01 | SCOPED_PASS | No-follow SHA-256 input, inode/metadata/byte mutation refusal, immutable transfer; `tests/unit/test_script_input.py`, `tests/integration/test_script_adversarial.py` | Final independent audit reserved for m1d-13 |
+| D02 | BLOCKED | AArch64 private digest/nonce `/opt/tmp` no-clobber, target readback, owner checks, collision and failed-cleanup retry; `tests/integration/test_script_stage.py`, `tests/integration/test_script_adversarial.py` | Hostile concurrent same-UID target stat-to-unlink is not atomic; persistent SIGKILL leaves staged artifact |
+| D03 | SCOPED_PASS | Real target `/bin/sh`, literal bounded argv, explicit cwd/minimal env, subreaper/pidfd timeout TERM/KILL and unrelated-process preservation; `tests/integration/test_script_process.py` | Interrupted host-worker execution has no partial report; absence observation is not a PASS report |
+| D04 | SCOPED_PASS | Typed script/report schema parity and PASS/FAIL/BLOCKED/ERROR; `tests/unit/test_script_results.py`, `tests/unit/test_script_assertions.py` | Raw output/argv/needles withheld from published evidence for safety; only bounded stream identities/truncation |
+| D05 | SCOPED_PASS | AArch64 `keemu script` and running owner-verified `keemu exec --script` normal lifecycle; `tests/integration/test_script_lifecycle.py`, `tests/integration/test_lifecycle.py` | Crash cleanup is test-only, not automatic production recovery |
+| D06 | SCOPED_PASS | Backward-compatible `kind: script` with exact source lock/schema parity and shared runner; `tests/unit/test_input_schemas.py`, `tests/integration/test_lifecycle.py` | One-shot IPK scenario check only, not a script-only/persistent/MIPS scenario |
+| D07 | BLOCKED | AArch64 live Docker/binfmt/isolation/SIGKILL tests and MIPS/MIPSEL honest BLOCKED/CLI 4 (`docs/evidence/mvp1d-m1d10-architectures.json`) | No MIPS general lifecycle, hostile same-UID race proof, automatic persistent crash cleanup or interrupted report |
+| D08 | PENDING_FINAL_AUDIT | m1d-11 retained 39 live PASS/339 portable PASS/44 intentional SKIP; m1d-12 documentation/ADR/durable reconciliation | m1d-13 must independently audit all eight IDs and publish honest release result |
+
+No D gate changes frozen original MVP 1 A01–A21/final-28/final-29/final-31
+evidence or release result. See ADR-0019 and `docs/limitations.md` for
+failure/recovery scope.
+
 ## Final release state (final-28/final-29)
 
 `docs/evidence/final28-acceptance.json` is the authoritative A01–A21 whole-ID

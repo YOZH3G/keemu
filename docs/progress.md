@@ -2,13 +2,31 @@
 
 ## Current phase
 
-P0 technical-risk experiments are complete on branch `agent/keemu`. MVP 1A,
+P0 technical-risk experiments are complete on historical branch `agent/keemu`.
+New MVP 1D script work runs on `staging`, without rewriting that baseline. MVP 1A,
 MVP 1B and MVP 1C each have verified bounded slices, but no phase or MVP 1 gate
 is complete. Final-28 reconciled whole IDs: the specified A01 three-target
 execution check is PASS; A02–A21 remain BLOCKED. Final-29 release verification
 is also BLOCKED. The final-31 independent audit records the exact outstanding
 requirements in `docs/evidence/final31-independent-audit.md`; no MVP or release
 completion is claimed.
+
+## MVP 1D m1d-12 pre-final documentation reconciliation
+
+`docs/evidence/mvp1d-m1d12-reconciliation.json` maps D01–D08 to actual
+source/tests/retained raw evidence, leaving the m1d-00 NOT_RUN ledger as its
+original scope snapshot. D01 secure input, D03 normal target execution and
+descendant timeout cleanup, D04 redacted typed results, D05 ordinary AArch64
+one-shot/persistent lifecycle and D06 locked scenario checks have scoped PASS
+evidence. D02 and D07 remain BLOCKED at the hostile same-UID target
+stat-to-unlink race and persistent post-SIGKILL artifact/recovery/report gap.
+MIPS/MIPSEL use the common script contract and truthfully BLOCK before Docker
+allocation without a general locked lifecycle. D08 independent final audit
+and release decision remain `m1d-13` work, not a result of this documentation
+subtask. m1d-11 raw JUnit: 39 real AArch64 Docker/binfmt PASS, 339 portable
+PASS/44 intentional SKIP; one-shot SIGKILL recovery was test-only, persistent
+SIGKILL preserved the service but left an exact staged object. No MVP 1
+historical acceptance/evidence/status changed. ADR-0019 records the boundary.
 
 ## P0 verified results
 
