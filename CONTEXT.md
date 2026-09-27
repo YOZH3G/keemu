@@ -6,7 +6,7 @@
 - Root: `/opt/data/workspace/keemu`
 - Durable compatibility path: `/opt/data/hermes-projects/keemu` (symlink to the project root)
 - Active branch: `staging`
-- Frozen baselines: `main` and `post-mvp`
+- Frozen pre-MVP-1D baseline: `post-mvp`. `main` is authorized to receive the completed, audited MVP 1D branch state; this promotion does not change its truthful `BLOCKED` release verdict.
 - Active specification: `docs/specifications/KEEMU_MVP1D_script_execution.md`
 - Frozen original specification: `KEEMU_MVP1_updated.md`, revision 2.2
 - Git remote: `git@github.com:YOZH3G/keemu.git`; repository-local SSH configuration isolates the KEEMU deploy key from unrelated GitHub keys.
@@ -33,7 +33,7 @@
 - `m1d-00` is attested complete and its route/threat review was explicitly accepted on 2026-09-26. `pause_after_subtask_ids=[]`; subtasks `m1d-01` through `m1d-13` are authorized in frozen order, subject to fresh per-subtask quota admission and runtime attestation.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
 - Git auto-pull remains disabled to avoid hidden remote integration. Git checkpoints stage the complete task result (excluding secret-like paths) and auto-push `staging` after each verified subtask boundary.
-- `m1d-12` was committed at its supervisor boundary. Active `m1d-13` publishes the independent MVP 1D audit in `docs/evidence/mvp1d-m1d13-final-audit.json` and `.md`; D02/D07 race/recovery gaps block MVP 1D release. Preserve the original MVP 1 ledgers and release state. Supervisor alone attests and publishes the final boundary.
+- All 14 MVP 1D subtasks are attested complete and published on `staging`; no supervisor or worker remains. The independent audit is in `docs/evidence/mvp1d-m1d13-final-audit.json` and `.md`; D02/D07 race/recovery gaps block MVP 1D release. The English `README.md` is primary and links `README_RU.md`. User-authorized promotion publishes this exact audited branch state to `main` without changing the original MVP 1 ledgers or either milestone's blocked release verdict.
 
 ## Verification commands
 

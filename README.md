@@ -1,244 +1,496 @@
 # KEEMU
 
-KEEMU is a reproducible verification harness for Entware applications. The authoritative scope and acceptance criteria are in `KEEMU_MVP1_updated.md` revision 2.2.
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/runtime-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+![AArch64](https://img.shields.io/badge/AArch64-supported-success)
+![MIPSEL](https://img.shields.io/badge/MIPSEL-partial-yellow)
+![MIPS](https://img.shields.io/badge/MIPS-partial-yellow)
+![Status](https://img.shields.io/badge/status-MVP%20in%20progress-orange)
 
-MVP 1D script execution is a separate milestone on `staging` (`TASK.md`), not a
-retroactive change to the original MVP 1 release. Its independent final audit
-is `docs/evidence/mvp1d-m1d13-final-audit.md` with exact machine-readable
-verdict in `docs/evidence/mvp1d-m1d13-final-audit.json`: D01/D03/D04/D05/D06/
-D08 PASS at their stated scope; D02/D07 and MVP 1D release BLOCKED by the
-hostile same-UID target cleanup race and interrupted persistent artifact gap.
-Original A01–A21 and final-28/29/31 evidence below is historical and unchanged.
+**Reproducible verification harness for Entware applications — without requiring a physical Keenetic router.**
 
-## Current status
+KEEMU runs locked target environments through Docker and QEMU, installs and exercises Entware packages, executes declared checks, and preserves evidence tied to exact input hashes.
 
-P0 technical-risk experiments are complete. Bounded MVP 1A, MVP 1B and MVP 1C
-slices are implemented and hash-bound evidence is retained; this is not MVP 1
-completion. The final-28 whole-ID ledger marks A01 PASS for the specified
-three-generic-target execution check and A02–A21 BLOCKED. Final-29 release
-verification remains BLOCKED: the retained 238-case sweep has 233 PASS, 2
-missing-locked-image prerequisite FAILs and 3 intentional SKIPs. The default
-portable run has 208 PASS and 30 opt-in SKIPs. See
-`docs/evidence/final28-acceptance.json`, `docs/evidence/final29-release.json`,
-`docs/evidence/final31-independent-audit.md` (exact remaining-BLOCKED list),
-and `docs/traceability.md`.
+> KEEMU is **not** a full Keenetic firmware emulator. A successful KEEMU run is evidence for the tested scenario, not proof of complete compatibility with a physical router.
 
-Verified in the current Debian/Docker environment:
+[Русская версия](README_RU.md) · [MVP specification](KEEMU_MVP1_updated.md) · [Traceability](docs/traceability.md) · [Evidence](docs/evidence/)
 
-- the AArch64 Entware package index and 20-package bootstrap closure were downloaded and SHA-256 verified;
-- the real AArch64 Entware `opkg` and BusyBox shell execute through QEMU user-mode;
-- an unprivileged PRoot diagnostic executes shell → child AArch64 ELF → shell script with a target shebang;
-- the committed lock records exact Entware artifacts and the diagnostic QEMU/PRoot inputs;
-- current `RunReport` schema version 2 uses immutable metadata models for artifacts, scenarios, profiles, runtimes, capabilities, substitutions, checks, operation logs, coverage, and partial failures; each partial failure references one operation-log sequence whose operation name and failure status must match;
-- report bundles use Linux `renameat2(..., RENAME_NOREPLACE)` to atomically publish `report.json`, `report.md`, and `operation-log.jsonl`; existing destination entries are preserved, and publication fails closed if the no-replace primitive is unavailable.
-- on a Docker Engine 29.7.2 host with an explicitly approved AArch64 binfmt registration, the separately locked mixed image executes the target shell, opkg, nested AArch64 ELF and direct shebang; a bounded P0-05 probe also verifies daemon survival, native init signal forwarding/reaping and clean owner-checked shutdown. The original P0-04 image is retained unchanged.
+---
 
-Not yet verified:
+## Why KEEMU?
 
-- general scenario-driven localhost publication, complete isolation and automatic/one-shot interruption recovery; the persistent runner supports target-loopback HTTP service probes and explicit owner-checked interrupted-state cleanup only, while the P0 web-demo separately proved exact localhost publish and stop/start persistence;
-- direct target NFQUEUE remains BLOCKED (`Protocol not supported`); a separate
-  bounded AArch64 packet fixture passed only through declared native transport
-  and firewall-installer substitutions, not as generic target compatibility;
-- general MIPS/MIPSEL `keemu init`/single-scenario `test` lifecycle, full A10
-  matrix PASS and strict NDM/event contracts (locked target probes pass, but
-  the new matrix correctly records required MIPS cases BLOCKED);
-- MVP 1A, MVP 1B, MVP 1C, MVP 1 and release acceptance gates.
+Testing Entware software on real routers is slow, hardware-dependent, and difficult to reproduce. KEEMU moves most package-level verification into a controlled environment while keeping unsupported behavior explicit.
 
-The PRoot result is diagnostic evidence only. P0 Docker/binfmt and web-demo
-experiments close the technical-risk gate, not full A01/A19 or compatibility
-with a physical Keenetic device.
+It is designed around five principles:
 
-MIPS/MIPSEL m1b-18 scope: `profiles/generic/generic-mipsel.yaml` and
-`generic-mips.yaml`, per-target Entware rootfs/SDK/fixture/image locks, real
-ELF32 endian/o32/MIPS32r2/soft-float audit and 20-package opkg inventory are
-available. `uv run python -m scripts.verify_m1b18` rechecks cached bytes,
-saved single-layer images and local image identity offline. The direct
-QEMU/PRoot shell, nested ELF/shebang, opkg, hello and fixture argument probes
-pass. After separately approved MIPS binfmt registration, bounded Docker/binfmt
-probes also pass target shell, opkg, nested fixture and argument checks for
-both profiles. `docs/evidence/m1b18-targets-pass.json` binds the raw probe and
-both architecture locks; the earlier BLOCKED ledger remains immutable.
-`docs/evidence/m1b18-targets.md` has digests, repeat commands and exact scope.
-The general `keemu init`/single-scenario `test` CLI still accepts only AArch64;
-`test --matrix` aggregates the other targets as BLOCKED. The binfmt approval
-changed only `qemu-mipsel` and
-`qemu-mips` host handlers; the project-owned probes made no host change.
+- **Locked inputs** — packages, profiles, images, and important artifacts are hash-bound.
+- **Real target execution** — target `opkg`, BusyBox, ELF binaries, and scripts execute through QEMU/binfmt where supported.
+- **Disposable and persistent environments** — use one-shot test runs or keep an owned environment alive for investigation.
+- **Evidence first** — reports record what actually ran and what could not be verified.
+- **Fail closed** — a skipped, unavailable, or unsupported check never silently becomes `PASS`.
 
-## MVP 1D script execution (bounded)
+---
 
-The locked `generic-aarch64` Docker/binfmt base supports a disposable script
-run and execution inside an already-running, owner-verified persistent IPK
-environment. Script paths must name project-contained regular `.sh` files.
-The file is opened without following symlinks, hash-pinned, rechecked before
-staging and transferred as checked bytes into a private, no-clobber digest/nonce
-directory below target `/opt/tmp`. A pinned native helper runs `/bin/sh` in
-the target PID namespace with literal argv, explicit `/opt` cwd (or validated
-`--cwd`), minimal environment, 60-second default timeout (1–600), separate
-bounded output and target descendant TERM/KILL/reaping. No script content runs
-through a host shell. One-shot cleanup removes its verified container; normal
-persistent cleanup removes only issued target artifacts. Reports under
-`reports/` include typed exit/assertion/cleanup status and stream byte counts,
-hashes and truncation, but never raw output, arguments or assertion needles.
+## Architecture status
 
-```text
-uv run keemu script fixtures/scripts/mvp1d/success.sh --profile generic-aarch64 --repo . -- arg1
-uv run keemu exec demo --script fixtures/scripts/mvp1d/success.sh --repo . -- arg1
+| Target | Current status | General `init` / single `test` | Target execution |
+| --- | --- | --- | --- |
+| **AArch64** | Supported MVP path | ✅ Yes | ✅ QEMU/binfmt verified |
+| **MIPSEL** | Partial | ⛔ `BLOCKED` in general lifecycle | ✅ bounded QEMU/PRoot and Docker/binfmt probes |
+| **MIPS** | Partial | ⛔ `BLOCKED` in general lifecycle | ✅ bounded QEMU/PRoot and Docker/binfmt probes |
+
+MIPSEL/MIPS already have generic profiles, rootfs/SDK/fixture/image locks, ELF32 audits, and verified target probes. Their general `keemu init` and single-scenario `keemu test` path is not enabled yet.
+
+---
+
+## What KEEMU can do
+
+### Run bounded shell scripts
+
+MVP 1D adds a common, ownership-checked script runner for one-shot AArch64 environments and already-running persistent environments.
+
+One-shot execution:
+
+```bash
+uv run keemu script fixtures/scripts/mvp1d/success.sh \
+  --profile generic-aarch64 \
+  --repo . \
+  -- arg1
 ```
 
-Both modes accept `--timeout`, `--cwd`, `--expect-exit-code`, repeatable
-`--stdout-contains`, `--stderr-not-contains`, `--expect-file` and
-`--expect-file-absent`. The second form requires a previously created running
-persistent environment. A version-1 scenario can also declare a `kind: script`
-check with a SHA-256-locked script source; it shares the same target runner and
-does not convert file content into `/bin/sh -c`. MIPS/MIPSEL use the common
-secure input/report contract but return actual BLOCKED (CLI 4) before Docker
-allocation because their general locked lifecycle is unavailable; earlier
-target-ELF probes are not script execution. Real AArch64 tests and exact gaps
-are in the MVP 1D reconciliation and `docs/limitations.md`.
+Execution inside an owner-verified persistent environment:
 
-## Development
+```bash
+uv run keemu exec demo \
+  --script fixtures/scripts/mvp1d/success.sh \
+  --repo . \
+  -- arg1
+```
 
-Requirements: Python 3.12 and `uv`.
+Both forms support `--timeout`, `--cwd`, `--expect-exit-code`, repeatable `--stdout-contains`, `--stderr-not-contains`, `--expect-file`, and `--expect-file-absent` options.
+
+The script path must reference a project-contained regular `.sh` file. KEEMU opens it without following symlinks, binds it to SHA-256, rechecks it before staging, and transfers only the checked bytes into a private no-clobber path below target `/opt/tmp`. Target `/bin/sh` receives literal argv and a minimal environment; script content is never passed through a host shell. Reports retain typed status, byte counts, hashes, truncation, assertions, and cleanup results without storing raw argv or output.
+
+Version-1 scenarios may also declare a SHA-256-locked `kind: script` check. AArch64 has real Docker/binfmt evidence. MIPS/MIPSEL enter the same secure input and report contract but currently return truthful `BLOCKED` before Docker allocation because their general locked lifecycle is unavailable.
+
+The independent MVP 1D audit records D01/D03/D04/D05/D06/D08 `PASS` at bounded scope. D02/D07 and the MVP 1D release remain `BLOCKED` by two explicit gaps: atomic cleanup safety against a hostile concurrent same-UID target process, and production recovery/reporting for persistent script artifacts left by `SIGKILL`.
+
+See:
+
+- `docs/specifications/KEEMU_MVP1D_script_execution.md`
+- `docs/evidence/mvp1d-m1d13-final-audit.md`
+- `docs/limitations.md`
+
+### Static IPK inspection
+
+Inspect package metadata, archive contents, ELF objects, dependencies, findings, and limitations without installing or executing the package:
+
+```bash
+uv run keemu inspect path/to/package.ipk --profile generic-aarch64
+```
+
+With a dependency-complete rootfs:
+
+```bash
+uv run keemu inspect path/to/package.ipk \
+  --profile generic-aarch64 \
+  --rootfs path/to/dependency-complete-rootfs
+```
+
+A static `PASS` is **not** runtime acceptance and does not authorize installation by itself.
+
+### Prepare a locked AArch64 base
+
+```bash
+uv run keemu init --profile generic-aarch64 --locked
+uv run keemu init --profile generic-aarch64 --locked --offline
+```
+
+The locked path uses the pre-verified local Entware bootstrap set. It does not update the live feed and does not install packages on the host.
+
+### Run a one-shot package scenario
+
+```bash
+uv run keemu test \
+  --scenario path/to/scenario.yaml \
+  --lock path/to/scenario-lock.json \
+  --repo .
+```
+
+A one-shot run can:
+
+1. validate and rehash locked inputs;
+2. statically inspect the IPK;
+3. create a fresh owned target container;
+4. install the package through target `opkg`;
+5. execute declared checks;
+6. stop the service when required;
+7. remove the package;
+8. inspect residual filesystem changes;
+9. perform owner-checked cleanup even after failure.
+
+Reports are written under:
 
 ```text
+reports/<run-id>/
+├── report.json
+├── report.md
+└── operation-log.jsonl
+```
+
+### Keep a target environment alive
+
+```bash
+uv run keemu up \
+  --name demo \
+  --scenario path/to/scenario.yaml \
+  --lock path/to/scenario-lock.json \
+  --repo .
+
+uv run keemu status demo --repo .
+uv run keemu exec demo --repo . -- /opt/bin/example
+uv run keemu logs demo --repo .
+uv run keemu restart demo --repo .
+uv run keemu down demo --repo .
+```
+
+Destroy a stopped environment:
+
+```bash
+uv run keemu destroy demo --repo .
+```
+
+Explicitly recover an interrupted/failed owned environment:
+
+```bash
+uv run keemu recover demo --repo . --yes
+```
+
+KEEMU refuses foreign/replaced containers and ambiguous ownership instead of attempting unsafe cleanup.
+
+### Run an architecture matrix
+
+```bash
+uv run keemu test \
+  --matrix path/to/matrix.yaml \
+  --strict \
+  --repo .
+```
+
+Matrix v1 expects one `profile`, `scenario`, and explicit `lock` per case.
+
+For complete target coverage, include:
+
+- `generic-aarch64`
+- `generic-mipsel`
+- `generic-mips`
+
+Unsupported required cases remain `BLOCKED`; they are never converted to success.
+
+---
+
+## Scenario checks
+
+The current scenario model supports checks such as:
+
+- target commands with expected exit codes;
+- file existence;
+- HTTP/HTTPS probes;
+- UDP probes;
+- service readiness and stop verification.
+
+Example command check:
+
+```yaml
+checks:
+  - id: version
+    kind: command
+    command:
+      argv:
+        - /opt/bin/example
+        - --version
+      timeout_seconds: 30
+    expected_exit_code: 0
+```
+
+Shell interpretation is intentionally explicit. Reviewed scenarios may use:
+
+```yaml
+argv:
+  - /bin/sh
+  - -c
+  - 'test -f /opt/etc/example.conf'
+```
+
+The persistent runner also exposes explicit argv execution through `keemu exec`.
+
+---
+
+## Result model
+
+KEEMU distinguishes different kinds of incomplete or failed verification:
+
+| Status | Meaning |
+| --- | --- |
+| `PASS` | The declared check ran and matched its expectation |
+| `WARN` | The check completed but produced a non-fatal concern |
+| `BLOCKED` | Required verification could not be performed with the available capability/input |
+| `FAIL` | The target/package behavior contradicted the expected result |
+| `ERROR` | The harness or execution path failed unexpectedly |
+
+Aggregate precedence is:
+
+```text
+ERROR → FAIL → BLOCKED → WARN → PASS
+```
+
+Typical matrix exits include:
+
+- wrong-architecture IPK → `FAIL`, exit `1`;
+- unsupported required MIPS/MIPSEL lifecycle → `BLOCKED`, exit `4`;
+- WARN-only strict run → exit `5`.
+
+---
+
+## Quick start for development
+
+Requirements:
+
+- Python 3.12
+- `uv`
+- Docker Engine
+- target binfmt registration for workflows that execute foreign-architecture binaries
+
+Install the development environment:
+
+```bash
 uv sync --python 3.12
+```
+
+Run the portable test suite:
+
+```bash
 uv run pytest -q
+```
+
+Run linting:
+
+```bash
 uv run ruff check .
 ```
 
-Static IPK inspection (no installation or package execution):
+Some integration suites are opt-in because they require locked local artifacts, Docker images, binfmt handlers, or other prepared prerequisites.
 
-```text
-uv run keemu inspect path/to/package.ipk --profile generic-aarch64
-uv run keemu inspect path/to/package.ipk --profile generic-aarch64 --rootfs path/to/dependency-complete-rootfs
+---
+
+## Current verification snapshot
+
+The P0 technical-risk experiments are complete, and bounded MVP 1A/1B/1C slices are implemented. **MVP 1 as a whole is not complete.**
+
+The retained acceptance snapshot currently records:
+
+- A01 `PASS` for the specified three-generic-target execution check;
+- A02–A21 `BLOCKED` in the final-28 whole-ID ledger;
+- final-29 overall `BLOCKED`;
+- 238 retained final-29 cases:
+  - 233 `PASS`
+  - 2 `FAIL` because required locked images were missing
+  - 3 intentional `SKIP`
+- original MVP 1 default portable run:
+  - 208 `PASS`
+  - 30 opt-in `SKIP`
+- MVP 1D portable run:
+  - 339 `PASS`
+  - 44 intentional opt-in `SKIP`
+- MVP 1D real AArch64 retained suite:
+  - 39 `PASS`
+  - 0 `FAIL`
+  - 0 `SKIP`
+- MVP 1D release: `BLOCKED`, while its bounded evidence audit is complete.
+
+Authoritative details:
+
+- `docs/evidence/final28-acceptance.json`
+- `docs/evidence/final29-release.json`
+- `docs/traceability.md`
+
+---
+
+## Verified target behavior
+
+In the current Debian/Docker verification environment, KEEMU has evidence for:
+
+- SHA-256-verified AArch64 Entware package index and 20-package bootstrap closure;
+- real AArch64 Entware `opkg` and BusyBox execution through QEMU user-mode;
+- an unprivileged PRoot chain of `shell → child AArch64 ELF → target-shebang shell script`;
+- locked QEMU/PRoot inputs and Entware artifacts;
+- AArch64 Docker/binfmt execution of target shell, `opkg`, nested ELF, and direct shebang;
+- native-init signal forwarding/reaping and controlled owner-checked shutdown in the bounded P0-05 probe;
+- MIPSEL/MIPS target shell, `opkg`, nested ELF/shebang, hello, and fixture-argument probes;
+- MIPSEL/MIPS bounded Docker/binfmt probes after separately approved host binfmt registration.
+
+Recheck the MIPS/MIPSEL target assets offline:
+
+```bash
+uv run python -m scripts.verify_m1b18
 ```
 
-The command emits JSON with `mode=static`, SHA-256, metadata, archive entries, ELF details, findings, status and limitations. A rootfs must include the package's resolved dependencies; unresolved or postinst-created paths remain BLOCKED until a later installation check. Static PASS is not A01 or A02 acceptance. Input must be reopened and rehashed before installing; `inspect` is not an install authorization.
+See:
 
-Locked AArch64 base preparation (requires the exact staged P0 package/index,
-bootstrap opkg, QEMU and native-init inputs, Docker Engine and AArch64 binfmt):
+- `docs/evidence/m1b18-targets-pass.json`
+- `docs/evidence/m1b18-targets.md`
 
-```text
-uv run keemu init --profile generic-aarch64 --locked
-uv run keemu init --profile generic-aarch64 --locked --offline
-KEEMU_RUN_INIT_CACHE=1 uv run pytest -q tests/integration/test_init_cache.py
+---
+
+## Network verification
+
+KEEMU has bounded evidence for localhost HTTP/HTTPS/UDP behavior through dedicated fixtures.
+
+Example AArch64 fixture test:
+
+```bash
+make -f fixtures/recipes/aarch64/https-frontend-m1a15.mk \
+  KEEMU_TOOLCHAIN_ROOT="$PWD/.runtime/p0/cross-toolchain/root"
+
+KEEMU_M1A15_LIVE=1 \
+  uv run pytest -q tests/integration/test_m1a15_https.py
 ```
 
-`init` only uses the pre-verified 20 local IPKs; it never updates the live
-Entware feed or installs host packages. It canonicalizes opkg's volatile
-`Installed-Time`, records the exact target `list-installed` inventory and
-default `/opt/etc/opkg.conf`, audits the rootfs and saved scratch-image layer,
-and writes a no-replace, lock-bound cache under `.runtime/init-cache/` after a
-bounded labeled Docker smoke. `--offline` rechecks all inputs, the saved image,
-live image identity and metadata without a network probe or build. The frozen
-Docker-local image ID is `sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224`
-in `locks/m1a-init-aarch64.json`; it is not a registry manifest digest.
-Target shell, opkg inventory, nested ELF and DNS passed in Docker bridge;
-HTTPS passed using the Hermes process CA/hostname verification, **not** in
-the target container, whose locked BusyBox wget lacks TLS. Neither fixture
-installation nor the complete A01/A19 acceptance is claimed.
+The fixture:
 
-One-shot locked IPK lifecycle (requires the prepared offline base image, Docker
-and AArch64 binfmt):
+- does not fetch during the recipe;
+- uses pinned SDK artifacts and a static AArch64 TLS binary;
+- creates an ephemeral local CA/certificate;
+- publishes only to localhost;
+- checks trusted TLS;
+- rejects wrong hostnames and untrusted CAs;
+- repeats HTTP/HTTPS/UDP after service/container restart;
+- repeats locked one-shot package execution against the offline-verified base.
+
+This does **not** mean generic `test`/`up` HTTPS, UDP, or host publication is complete.
+
+Direct target NFQUEUE remains:
 
 ```text
-uv run keemu test --scenario path/to/scenario.yaml --lock path/to/scenario-lock.json --repo .
-KEEMU_TEST_LIFECYCLE=1 uv run pytest -q tests/integration/test_lifecycle.py
+BLOCKED: Protocol not supported
 ```
 
-`test` validates and rehashes locked inputs, statically inspects the IPK,
-installs through target opkg in a fresh owned container, runs declared checks,
-stops/removes, compares metadata-only residual paths, and attempts owner-checked
-cleanup even on failures. Its write-once report is under `reports/<run-id>/` and
-keeps failed-run stage and cleanup results. No host-publish vantage, HTTPS/UDP,
-cross-target acceptance, or interruption recovery is claimed.
+A separate AArch64 packet fixture passes only through declared transport/firewall substitutions and is not evidence of generic target NFQUEUE compatibility.
 
-Matrix v1 requires `schema_version: 1`, a unique `id`, and `cases` with one
-`profile`, `scenario` and explicit `lock` path per case (relative to the matrix
-file). For complete coverage include `generic-aarch64`, `generic-mipsel` and
-`generic-mips`, each naming its own locked IPK for the same logical package.
-The extra `lock` path is mandatory because unlocked scenarios cannot run.
+---
 
-```text
-uv run keemu test --matrix path/to/matrix.yaml --strict --repo .
-KEEMU_TEST_MATRIX=1 uv run pytest -q tests/integration/test_matrix.py
+## P0 diagnostics
+
+PRoot diagnostic:
+
+```bash
+KEEMU_RUN_P0_DIAGNOSTIC=1 \
+  uv run pytest -q tests/integration/test_p0_diagnostic.py
 ```
 
-The parser rejects duplicate/unsafe/malformed cases before Docker. Missing
-targets and unsupported MIPS/MIPSEL lifecycle are required BLOCKED/exit 4;
-verified wrong-architecture IPKs FAIL/exit 1; an ERROR takes precedence over
-FAIL, then BLOCKED, WARN and PASS. Child and parent reports are write-once.
-`--strict` maps a WARN-only report to exit 5, not an incomplete matrix to PASS.
-The real m1b-19 observation had AArch64 PASS, MIPSEL/MIPS BLOCKED and overall
-BLOCKED; see `docs/evidence/m1b19-matrix.md`. No A10 whole-ID PASS is claimed.
+P0-04 image audit:
 
-Bounded persistent AArch64 IPK lifecycle (same prepared base and Docker/binfmt
-prerequisites; no host port publishing):
-
-```text
-uv run keemu up --name demo --scenario path/to/scenario.yaml --lock path/to/scenario-lock.json --repo .
-uv run keemu status demo --repo .
-uv run keemu exec demo --repo . -- /opt/bin/example
-uv run keemu restart demo --repo .
-uv run keemu down demo --repo .
-uv run keemu up --name demo --repo .
-uv run keemu destroy demo --repo .  # only after down; name remains reserved
-uv run keemu recover demo --repo . --yes  # only failed/interrupted state; discard owned container
-KEEMU_TEST_PERSISTENT=1 uv run pytest -q tests/integration/test_lifecycle.py
-KEEMU_TEST_RECOVERY=1 uv run pytest -q tests/integration/test_m1a16_recovery.py
+```bash
+KEEMU_RUN_P0_IMAGE_AUDIT=1 \
+  uv run pytest -q tests/integration/test_p0_image.py
 ```
 
-`ports` and `logs` also require a name. State is atomically written under
-`.runtime/registry/` with per-name locking and an immutable scenario snapshot.
-Each mutation re-inspects the exact owner-labeled Docker ID. Existing names,
-foreign/replaced containers, and uncertain state are refused; destroyed names
-remain tombstones. This slice does not install extra packages into an existing
-environment or execute scenario checks as a `test` run. Persistent CLI failures
-do not yet produce write-once JSON/Markdown/JSONL report bundles; use `keemu
-test` when a full failure report is required. `recover --yes` is explicit,
-refuses healthy or ambiguous/foreign resources, and removes only exact
-run-owned containers after a failed or interrupted create/start/stop. It never
-replays an uncertain postinst; it retains a name tombstone. See ADR-0008 and
-ADR-0010.
+P0-05 runtime probe:
 
-AArch64 fixture-only HTTP/HTTPS/UDP and offline locked repeat (requires the
-prepared local SDK and immutable images; opt-in Docker/binfmt):
-
-```text
-make -f fixtures/recipes/aarch64/https-frontend-m1a15.mk KEEMU_TOOLCHAIN_ROOT="$PWD/.runtime/p0/cross-toolchain/root"
-KEEMU_M1A15_LIVE=1 uv run pytest -q tests/integration/test_m1a15_https.py
-```
-
-The recipe never fetches; `locks/m1a15-https-frontend-aarch64.json` pins the
-three staged SDK artifacts and static AArch64 TLS binary. The test generates
-an ephemeral local CA/certificate (private keys remain under ignored `.runtime/`
-until test cleanup), observes the localhost-only Docker publishes from a
-separate bounded host-vantage observer, checks trusted TLS and rejects wrong
-hostnames/untrusted CAs, repeats HTTP/HTTPS/UDP after service and same-container
-restart, and runs two identical locked hello IPK one-shot tests against the
-offline-verified base. It does not enable generic `test` or `up` publication,
-TLS or UDP; see ADR-0009 and `docs/traceability.md`.
-
-The P0 diagnostic integration test additionally needs the locked artifacts in `.runtime/p0`:
-
-```text
-KEEMU_RUN_P0_DIAGNOSTIC=1 uv run pytest -q tests/integration/test_p0_diagnostic.py
-```
-
-The p0-04 image audit requires the already-built project image and the saved archive:
-
-```text
-KEEMU_RUN_P0_IMAGE_AUDIT=1 uv run pytest -q tests/integration/test_p0_image.py
-```
-
-The P0-05 probe requires the locked derived image and a separately authorized Docker/binfmt runner; it creates and cleans only labeled KEEMU containers:
-
-```text
+```bash
 uv run python tests/integration/p0_runtime_probe.py
 ```
 
-Generated reports, downloaded IPK files, root filesystems, saved images, and runtime state are excluded from Git. Committed source and image metadata lives in `locks/` (including `locks/m1a-init-aarch64.json`). The original P0 image lock records a static create template, not runtime behavior; the P0-05 derived-image lock and ignored report record its bounded real probe.
+The P0-05 probe requires the locked derived image and a separately authorized Docker/binfmt runner. It creates and cleans only KEEMU-owned labeled resources.
 
-## Safety
+---
 
-KEEMU never treats a skipped check or missing capability as PASS. Targets must not use privileged/host network/PID namespaces, Docker-socket mounts, `SYS_MODULE`, global firewall resets, or `docker system prune`. Only bounded, owner-labeled evidence observers use host networking for Docker-host loopback checks; no package runs there.
+## Reproducibility and reports
+
+KEEMU binds runtime evidence to exact inputs wherever the current slice supports it.
+
+`RunReport` schema v2 records immutable metadata for:
+
+- artifacts;
+- scenarios;
+- profiles;
+- runtimes;
+- capabilities;
+- substitutions;
+- checks;
+- operation logs;
+- coverage;
+- partial failures.
+
+Report bundles use Linux `renameat2(..., RENAME_NOREPLACE)` for atomic no-replace publication. Existing report entries are preserved, and publication fails closed if the required no-replace primitive is unavailable.
+
+Generated reports, downloaded IPKs, root filesystems, saved images, and runtime state are excluded from Git. Committed locks and image metadata live under `locks/`.
+
+---
+
+## Safety boundary
+
+KEEMU deliberately constrains target execution.
+
+Target environments must not use:
+
+- privileged containers;
+- host network namespace;
+- host PID namespace;
+- Docker socket mounts;
+- `SYS_MODULE`;
+- global firewall resets;
+- `docker system prune`.
+
+Host networking is reserved for bounded owner-labeled evidence observers that verify Docker-host loopback behavior. The package under test does not run there.
+
+KEEMU also refuses to treat missing capability as successful compatibility evidence.
+
+---
+
+## Known limitations
+
+The following are still incomplete or intentionally out of scope for the current MVP:
+
+- full Keenetic firmware emulation;
+- proof of compatibility with every physical Keenetic model;
+- generic MIPS/MIPSEL `init` and single-scenario `test`;
+- complete scenario-driven localhost publication;
+- complete isolation guarantees;
+- automatic one-shot interruption recovery;
+- atomic script-artifact cleanup against a hostile concurrent same-UID target process;
+- automatic recovery and interrupted reporting for persistent script artifacts after `SIGKILL`;
+- general MIPS/MIPSEL script execution beyond truthful pre-allocation `BLOCKED`;
+- generic target NFQUEUE;
+- complete A10 matrix acceptance;
+- strict final NDM/event contracts;
+- final MVP 1 / release acceptance.
+
+---
+
+## Repository map
+
+```text
+profiles/generic/        Generic target profiles
+locks/                   Locked artifacts and image metadata
+docs/evidence/           Retained verification evidence
+docs/traceability.md     Requirement → test → evidence mapping
+src/keemu/               KEEMU implementation
+tests/                   Unit and integration tests
+fixtures/                Bounded target/network fixtures
+reports/                 Generated write-once reports (not committed)
+.runtime/                Local runtime state and locked working assets
+```
+
+---
+
+## Source of truth
+
+The authoritative MVP scope and acceptance criteria are defined in:
+
+```text
+KEEMU_MVP1_updated.md
+docs/specifications/KEEMU_MVP1D_script_execution.md
+```
+
+`KEEMU_MVP1_updated.md` governs the original MVP 1 acceptance history. The MVP 1D specification governs bounded script execution. If this README disagrees with the applicable specification, the specification takes precedence.
