@@ -220,6 +220,22 @@ class Entry:
         finally:
             os.close(fd)
 
+    def verify_unchanged(self, record: PersistentEnvironment) -> None:
+        """Refuse even a same-byte replacement while a locked operation is active."""
+        fd = self._open()
+        try:
+            raw, info = _read(fd, "environment.json")
+            if (
+                self._last_read is None
+                or raw != self._encode(record)
+                or raw != self._last_read[0]
+                or (info.st_dev, info.st_ino)
+                != (self._last_read[1].st_dev, self._last_read[1].st_ino)
+            ):
+                raise RegistryError("registry entry replaced or modified")
+        finally:
+            os.close(fd)
+
     def scenario(self, digest: str) -> bytes:
         fd = self._open()
         try:

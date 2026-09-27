@@ -649,3 +649,253 @@ def test_persistent_service_readiness_after_same_container_restart():
                     for owned in runtime.reconcile()["container_owned"]:
                         runtime.remove_container(owned)
                     assert not runtime.reconcile()["container_owned"]
+
+
+@pytest.mark.docker
+def test_persistent_script_preserves_service_and_foreign_resources(monkeypatch):
+    if os.getenv("KEEMU_TEST_SCRIPT_PERSISTENT") != "1":
+        pytest.skip("opt in to locked AArch64 persistent script Docker/binfmt probe")
+    from keemu.docker_runtime import DockerRuntime
+    from keemu.script_input import ScriptInput
+    from keemu.script_persistent import run_persistent_script
+    from keemu.script_stage import ScriptCleanup, ScriptStager
+
+    image = json.loads((ROOT / "locks/m1a-init-aarch64.json").read_text())["oci_digest"]
+    runtime_root = ROOT / ".runtime"
+    runtime_root.mkdir(exist_ok=True)
+    name = "persist-script-" + uuid.uuid4().hex[:12]
+    foreign_run = "script-foreign-" + uuid.uuid4().hex[:12]
+    foreign = DockerRuntime(foreign_run, image)
+    foreign_id = foreign.create("keemu-" + foreign_run)
+    created = None
+    try:
+        foreign.start(foreign_id)
+        foreign_before = foreign.inspect("container", foreign_id)
+        with tempfile.TemporaryDirectory(dir=runtime_root, prefix="m1d07-") as folder:
+            directory = Path(folder)
+            scenario, lock = inputs(directory, web_demo=True)
+            scenario.write_text(
+                scenario.read_text().replace(
+                    "service: null",
+                    "service:\n"
+                    "  start: [/bin/sh, -c, "
+                    "'/opt/bin/web-demo 18765 18766 /opt/etc/keemu-count "
+                    ">/dev/null 2>&1 & echo $! > /opt/tmp/web-demo.pid']\n"
+                    "  stop: [/bin/sh, -c, "
+                    '\'read pid < /opt/tmp/web-demo.pid; kill -TERM "$pid"; '
+                    "/opt/bin/busybox rm -f /opt/tmp/web-demo.pid']\n"
+                    "  readiness: {kind: http, vantage: target_loopback, "
+                    "url: 'http://127.0.0.1:18765/health', "
+                    "expected_status: [200], body_contains: 'state=1', "
+                    "timeout_seconds: 5}",
+                )
+            )
+            bind_scenario(lock, scenario)
+            created = create_persistent(ROOT, name, scenario, lock)
+            assert created.resource is not None
+            identifier = created.resource.container_id
+            runtime = DockerRuntime(created.run_id, image)
+            host = runtime.inspect("container", identifier)["HostConfig"]
+            assert host["Privileged"] is False
+            assert host["NetworkMode"] == "none" and not host["PidMode"]
+            assert not host.get("Binds") and not host.get("Mounts")
+            assert "ALL" in host["CapDrop"] and not host.get("CapAdd")
+
+            def health():
+                return runtime.exec(
+                    identifier,
+                    [
+                        "/opt/bin/busybox",
+                        "wget",
+                        "-qO-",
+                        "http://127.0.0.1:18765/health",
+                    ],
+                ).stdout
+
+            before = health()
+            assert b"state=1" in before
+            service_pid = runtime.exec(
+                identifier, ["/opt/bin/busybox", "cat", "/opt/tmp/web-demo.pid"]
+            ).stdout
+            for script, args, expected, seconds, status, exit_code in (
+                ("success.sh", (), 0, 60, "PASS", 0),
+                ("argv.sh", ("a;$(false)", "two words"), 0, 60, "PASS", 0),
+                ("exit-7.sh", (), 0, 60, "FAIL", 1),
+                ("exit-7.sh", (), 7, 60, "PASS", 0),
+                ("timeout-process.sh", (), 0, 1, "FAIL", 1),
+            ):
+                response = CliRunner().invoke(
+                    cli,
+                    [
+                        "exec",
+                        name,
+                        "--script",
+                        f"fixtures/scripts/mvp1d/{script}",
+                        "--repo",
+                        str(ROOT),
+                        "--timeout",
+                        str(seconds),
+                        "--expect-exit-code",
+                        str(expected),
+                        "--",
+                        *args,
+                    ],
+                )
+                assert response.exit_code == exit_code, response.output
+                payload = json.loads(response.output)
+                assert payload["overall"] == status
+                spec = payload["script"]["execution"]
+                assert spec["mode"] == "persistent"
+                assert spec["container_id"] == identifier
+                assert payload["script"]["outcome"]["process_tree_clean"]
+                assert "a;$(false)" not in response.output
+                assert "two words" not in response.output
+                assert payload["script"]["cleanup"] == [
+                    {
+                        "kind": "target-script",
+                        "attempted": True,
+                        "verified": True,
+                        "reason_code": None,
+                    }
+                ]
+                assert (
+                    runtime.exec(
+                        identifier,
+                        [
+                            "/bin/sh",
+                            "-c",
+                            'test ! -e "$1" && test ! -L "$1" && test ! -e "$2"',
+                            "sh",
+                            spec["target_path"],
+                            spec["target_path"].rsplit("/", 1)[0],
+                        ],
+                    ).exit_code
+                    == 0
+                )
+                assert health() == before
+                assert (
+                    runtime.exec(
+                        identifier, ["/opt/bin/busybox", "cat", "/opt/tmp/web-demo.pid"]
+                    ).stdout
+                    == service_pid
+                )
+                assert operate(ROOT, name, "status")["consistent"]
+                assert (
+                    foreign.inspect("container", foreign_id)["State"]
+                    == foreign_before["State"]
+                )
+            assert (
+                runtime.exec(
+                    identifier,
+                    ["/bin/sh", "-c", 'read n < /opt/etc/keemu-count; test "$n" = 1'],
+                ).exit_code
+                == 0
+            )
+            # Validation-to-stage replacement is BLOCKED; no altered script runs.
+            mutation = directory / "mutation.sh"
+            mutation.write_bytes(b"exit 0\n")
+            original_stage = ScriptStager.stage
+            with monkeypatch.context() as patch:
+
+                def mutate(self, source, container):
+                    mutation.write_bytes(b"exit 99\n")
+                    return original_stage(self, source, container)
+
+                patch.setattr(ScriptStager, "stage", mutate)
+                blocked = run_persistent_script(
+                    name,
+                    mutation.relative_to(ROOT),
+                    project_root=ROOT,
+                )
+            assert blocked.report.overall == "BLOCKED"
+            assert blocked.script.outcome.state == "blocked"
+            isolation = directory / "isolation.sh"
+            isolation.write_bytes(
+                b'test -z "${KEEMU_HOST_SECRET_SENTINEL+x}" || exit 91\n'
+                b"test ! -e /var/run/docker.sock || exit 92\npwd\n"
+            )
+            monkeypatch.setenv("KEEMU_HOST_SECRET_SENTINEL", "host-only-value")
+            isolated = run_persistent_script(
+                name, isolation.relative_to(ROOT), project_root=ROOT, cwd="/opt/etc"
+            )
+            assert isolated.report.overall == "PASS"
+            assert isolated.script.outcome.stdout == b"/opt/etc\n"
+            assert "host-only-value" not in isolated.paths.json.read_text()
+            # Same-run directory collision cannot be adopted or overwritten.
+            source = ScriptInput.validate(
+                "fixtures/scripts/mvp1d/success.sh",
+                project_root=ROOT,
+            )
+            collision = f"/opt/tmp/keemu-script-{source.sha256}-{'a' * 24}"
+            runtime.exec(
+                identifier, ["/opt/bin/busybox", "mkdir", "-m", "700", collision]
+            )
+            try:
+                with monkeypatch.context() as patch:
+                    patch.setattr(
+                        "keemu.script_stage.secrets.token_hex", lambda _: "a" * 24
+                    )
+                    refused = run_persistent_script(
+                        name,
+                        "fixtures/scripts/mvp1d/success.sh",
+                        project_root=ROOT,
+                    )
+                assert refused.report.overall == "ERROR"
+                assert (
+                    runtime.exec(
+                        identifier, ["/opt/bin/busybox", "stat", "-t", collision]
+                    ).exit_code
+                    == 0
+                )
+            finally:
+                runtime.exec(identifier, ["/opt/bin/busybox", "rmdir", collision])
+            # Cleanup refusal records ERROR; retry only issued object, never container.
+            saved = {}
+            original_cleanup = ScriptStager.cleanup
+            with monkeypatch.context() as patch:
+
+                def keep(self, staged):
+                    saved.update(stager=self, staged=staged)
+                    return ScriptCleanup(False, "injected cleanup refusal")
+
+                patch.setattr(ScriptStager, "cleanup", keep)
+                unclean = run_persistent_script(
+                    name,
+                    "fixtures/scripts/mvp1d/success.sh",
+                    project_root=ROOT,
+                )
+            assert unclean.report.overall == "ERROR"
+            assert not unclean.script.cleanup[0].verified
+            assert original_cleanup(saved["stager"], saved["staged"]).success
+            assert health() == before
+            assert runtime.inspect("container", identifier)["State"]["Running"]
+            assert foreign.inspect("container", foreign_id)["Id"] == foreign_id
+            operate(ROOT, name, "down")
+            stopped = CliRunner().invoke(
+                cli,
+                [
+                    "exec",
+                    name,
+                    "--script",
+                    "fixtures/scripts/mvp1d/success.sh",
+                    "--repo",
+                    str(ROOT),
+                ],
+            )
+            assert stopped.exit_code == 2
+            assert "running environment" in stopped.output
+            assert operate(ROOT, name, "up")["environment"]["state"] == "running"
+            assert health() == before
+            print(
+                json.dumps(
+                    {"name": name, "status": "preserved", "container_id": identifier}
+                )
+            )
+    finally:
+        if created is not None:
+            runtime = DockerRuntime(created.run_id, image)
+            for owned in runtime.reconcile()["container_owned"]:
+                runtime.remove_container(owned)
+            assert not runtime.reconcile()["container_owned"]
+        foreign.remove_container(foreign_id)
+        assert not foreign.reconcile()["container_owned"]

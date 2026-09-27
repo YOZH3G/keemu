@@ -24,6 +24,7 @@ from keemu.registry import RegistryError
 from keemu.reports import exit_code_for_status
 from keemu.script_input import ScriptInputError
 from keemu.script_lifecycle import run_one_shot_script
+from keemu.script_persistent import run_persistent_script
 
 
 class InputError(click.ClickException):
@@ -350,9 +351,45 @@ def logs(name: str, repo: Path) -> None:
 @click.argument("name")
 @click.argument("argv", nargs=-1, type=click.UNPROCESSED)
 @click.option("--repo", type=click.Path(path_type=Path), default=Path("."))
-def exec_environment(name: str, argv: tuple[str, ...], repo: Path) -> None:
-    """Run explicit argv inside a running owned target; use -- before COMMAND."""
-    _environment_command("exec", name, repo, argv)
+@click.option("script_path", "--script", type=click.Path(path_type=Path))
+@click.option("timeout_seconds", "--timeout", type=click.IntRange(1, 600), default=60)
+@click.option("cwd", "--cwd", default="/opt")
+@click.option(
+    "expected_exit_code", "--expect-exit-code", type=click.IntRange(0, 255), default=0
+)
+@click.pass_context
+def exec_environment(
+    context: click.Context,
+    name: str,
+    argv: tuple[str, ...],
+    repo: Path,
+    script_path: Path | None,
+    timeout_seconds: int,
+    cwd: str,
+    expected_exit_code: int,
+) -> None:
+    """Run argv, or a checked script in an owner-verified running environment."""
+    if script_path is None:
+        if timeout_seconds != 60 or cwd != "/opt" or expected_exit_code != 0:
+            raise InputError("script options require --script")
+        _environment_command("exec", name, repo, argv)
+        return
+    try:
+        result = run_persistent_script(
+            name,
+            script_path,
+            project_root=repo,
+            argv=argv,
+            cwd=cwd,
+            timeout_seconds=timeout_seconds,
+            expected_exit_code=expected_exit_code,
+        )
+    except (ScriptInputError, ValueError, RegistryError) as exc:
+        raise InputError(str(exc)) from exc
+    except (OSError, RuntimeError) as exc:
+        raise RuntimeFailure(str(exc)) from exc
+    click.echo(json.dumps(result.report.model_dump(mode="json"), sort_keys=True))
+    context.exit(exit_code_for_status(result.report.overall))
 
 
 @cli.command("init")
