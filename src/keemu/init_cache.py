@@ -1,4 +1,4 @@
-"""Offline-locked AArch64 base preparation; no scenario or persistent lifecycle.
+"""Offline-locked generic base preparation; no scenario or persistent lifecycle.
 
 A cache is ready only after verified inputs, target opkg inventory, an audited
 mixed image, and an owned Docker/binfmt smoke. The metadata is published last.
@@ -28,6 +28,7 @@ from keemu.reports import _publish_directory_noreplace
 
 SCHEMA_VERSION = 4
 TARGET = "aarch64-3.10"
+MIPS = "mips-3.4"
 HEX = re.compile(r"[0-9a-f]{64}\Z")
 
 
@@ -54,15 +55,72 @@ def _regular_hash(path: Path, expected: str) -> None:
         raise InitError(f"missing, linked or mismatched locked input: {path.name}")
 
 
-def _inputs(repo: Path) -> tuple[dict, dict, str]:
-    lock_path = repo / "locks/p0-aarch64.json"
+def _image_lock_path(repo: Path, target: str) -> Path:
+    if target == TARGET:
+        return repo / "locks/m1a-init-aarch64.json"
+    if target == MIPS:
+        return repo / "locks/m1e-init-mips.json"
+    raise InitError("unsupported locked init target")
+
+
+def _paths(repo: Path, target: str) -> tuple[Path, Path, Path, Path]:
+    if target == TARGET:
+        return (
+            repo / "locks/p0-aarch64.json",
+            repo / ".runtime/p0/aarch64-k3.10",
+            repo / ".runtime/p0/qemu-user-root/usr/bin/qemu-aarch64",
+            repo / "profiles/generic/generic-aarch64.yaml",
+        )
+    if target == MIPS:
+        return (
+            repo / "locks/m1b18-mips-3.4.json",
+            repo / ".runtime/m1b18/mips-3.4",
+            repo / ".runtime/p0/qemu-user-root/usr/bin/qemu-mips",
+            repo / "profiles/generic/generic-mips.yaml",
+        )
+    raise InitError("unsupported locked init target")
+
+
+def _preflight_mips_binfmt(
+    repo: Path, *, proc: Path = Path("/proc/sys/fs/binfmt_misc")
+) -> None:
+    """Require current exact readback, not historical registration evidence."""
+    expected = json.loads(_image_lock_path(repo, MIPS).read_text())["binfmt"]
+    try:
+        status = (proc / "status").read_text(encoding="ascii")
+        entry = (proc / "qemu-mips").read_text(encoding="ascii")
+    except (OSError, UnicodeError) as error:
+        raise InitError("current host qemu-mips binfmt readback unavailable") from error
+    lines = entry.splitlines()
+    actual = {
+        line.split(" ", 1)[0]: line.split(" ", 1)[1]
+        for line in lines[1:]
+        if " " in line
+    }
+    if (
+        status.strip() != "enabled"
+        or not lines
+        or lines[0] != "enabled"
+        or actual.get("interpreter") != expected["interpreter"]
+        or actual.get("flags:") != expected["flags"]
+        or actual.get("offset") != "0"
+        or actual.get("magic") != expected["magic"]
+        or actual.get("mask") != expected["mask"]
+        or len(lines) != 6
+        or len(actual) != 5
+    ):
+        raise InitError("current host qemu-mips binfmt differs from locked handler")
+
+
+def _inputs(repo: Path, *, target: str = TARGET) -> tuple[dict, dict, str]:
+    lock_path, base, qemu, profile = _paths(repo, target)
     native_path = repo / "locks/p0-mixed-image-aarch64-p005.json"
     lock = json.loads(lock_path.read_text(encoding="utf-8"))
     native = json.loads(native_path.read_text(encoding="utf-8"))
     if (lock.get("schema_version"), lock.get("kind"), lock.get("target")) != (
         1,
         "entware-rootfs-lock",
-        TARGET,
+        target,
     ):
         raise InitError("wrong rootfs lock schema or target")
     if (
@@ -70,33 +128,52 @@ def _inputs(repo: Path) -> tuple[dict, dict, str]:
         or native.get("platform") != "linux/amd64"
     ):
         raise InitError("wrong native init lock")
-    if native.get("labels", {}).get("org.keemu.package-lock-sha256") != _sha256_file(
-        lock_path
-    ):
+    if target == TARGET and native.get("labels", {}).get(
+        "org.keemu.package-lock-sha256"
+    ) != _sha256_file(lock_path):
         raise InitError("native init base does not bind this package lock")
     _regular_hash(repo / native["source_path"], native["source_sha256"])
-    base = repo / ".runtime/p0/aarch64-k3.10"
+    if profile.is_symlink() or not profile.is_file():
+        raise InitError("missing or linked profile")
     bootstrap = next(
         (a for a in lock["bootstrap_artifacts"] if a["filename"] == "opkg"), None
     )
     if bootstrap is None:
         raise InitError("bootstrap opkg absent from lock")
     _regular_hash(base / "opkg", bootstrap["sha256"])
-    qemu_deb = next(
-        (
-            a
-            for a in lock["diagnostic_tooling"]
-            if a["filename"].startswith("qemu-user_")
-        ),
-        None,
-    )
-    if qemu_deb is None:
-        raise InitError("locked QEMU package missing")
-    _regular_hash(repo / ".runtime/p0" / qemu_deb["filename"], qemu_deb["sha256"])
-    qemu = repo / ".runtime/p0/qemu-user-root/usr/bin/qemu-aarch64"
-    image_lock = json.loads(
-        (repo / "locks/m1a-init-aarch64.json").read_text(encoding="utf-8")
-    )
+    image_lock = json.loads(_image_lock_path(repo, target).read_text(encoding="utf-8"))
+    if target == TARGET:
+        qemu_deb = next(
+            (
+                a
+                for a in lock["diagnostic_tooling"]
+                if a["filename"].startswith("qemu-user_")
+            ),
+            None,
+        )
+        if qemu_deb is None:
+            raise InitError("locked QEMU package missing")
+        _regular_hash(repo / ".runtime/p0" / qemu_deb["filename"], qemu_deb["sha256"])
+    else:
+        fixtures_path = repo / "locks/m1b18-fixtures-mips-3.4.json"
+        fixtures = json.loads(fixtures_path.read_text(encoding="utf-8"))
+        prior = json.loads(
+            (repo / "locks/m1b18-image-mips-3.4.json").read_text(encoding="utf-8")
+        )
+        if (
+            fixtures.get("target") != target
+            or prior.get("target") != target
+            or prior.get("labels", {}).get("org.keemu.init-binary-sha256")
+            != native["binary_sha256"]
+            or image_lock.get("fixture_lock_sha256") != _sha256_file(fixtures_path)
+            or image_lock.get("profile_sha256") != _sha256_file(profile)
+            or fixtures.get("qemu_sha256") != image_lock.get("qemu_binary_sha256")
+        ):
+            raise InitError("MIPS prerequisite lock binding mismatch")
+        sdk = repo / "locks/m1b18-sdk-mips-3.4.json"
+        _regular_hash(sdk, fixtures["sdk_lock_sha256"])
+        for artifact in lock["bootstrap_artifacts"]:
+            _regular_hash(base / artifact["filename"], artifact["sha256"])
     _regular_hash(qemu, image_lock["qemu_binary_sha256"])
     index = base / "Packages.gz"
     _regular_hash(index, lock["source"]["index_compressed_sha256"])
@@ -110,7 +187,7 @@ def _inputs(repo: Path) -> tuple[dict, dict, str]:
             not isinstance(name, str)
             or not re.fullmatch(r"[A-Za-z0-9_.+%~-]+\.ipk", name)
             or name in names
-            or item["architecture"] not in (TARGET, "all")
+            or item["architecture"] not in (target, "all")
         ):
             raise InitError("unsafe or duplicate locked package")
         names.add(name)
@@ -139,6 +216,61 @@ def _inventory(text: str, lock: dict) -> list[dict[str, str]]:
             f"missing={missing}, extra={extra}, versions={versions}"
         )
     return [{"name": name, "version": found[name]} for name in sorted(found)]
+
+
+def _audit_rootfs(root: Path, target: str) -> dict:
+    if target == TARGET:
+        return audit_tree(root)
+    if target != MIPS:
+        raise InitError("unsupported locked init target")
+    digest = hashlib.sha256()
+    target_elfs = 0
+    native_elfs = 0
+    for path in sorted(root.rglob("*")):
+        name = path.relative_to(root).as_posix()
+        mode = path.lstat().st_mode
+        if stat.S_ISDIR(mode):
+            continue
+        if stat.S_ISLNK(mode):
+            link = str(path.readlink())
+            if link.startswith(("/proc/", "/sys/")):
+                raise InitError("unsafe rootfs link")
+            record = f"L {name} {stat.S_IMODE(mode):o} {link}\n"
+        elif stat.S_ISREG(mode):
+            record = f"F {name} {stat.S_IMODE(mode):o} {_sha256_file(path)}\n"
+            with path.open("rb") as stream:
+                header = stream.read(40)
+            if header.startswith(b"\x7fELF"):
+                if name == "__keemu/init":
+                    if (
+                        header[4:6] != b"\x02\x01"
+                        or int.from_bytes(header[18:20], "little") != 62
+                    ):
+                        raise InitError("native init ELF mismatch")
+                    native_elfs += 1
+                else:
+                    flags = int.from_bytes(header[36:40], "big")
+                    if (
+                        header[4:6] != b"\x01\x02"
+                        or int.from_bytes(header[18:20], "big") != 8
+                        or flags & 0x0000F000 != 0x1000
+                        or flags & 0xF0000000 != 0x70000000
+                    ):
+                        raise InitError(f"MIPS ELF class/endian/ABI mismatch: {name}")
+                    target_elfs += 1
+        else:
+            raise InitError("unsupported rootfs member")
+        digest.update(record.encode())
+    for required in ("bin/sh", "opt/bin/opkg", "opt/bin/busybox", "__keemu/init"):
+        if not ((root / required).is_file() or (root / required).is_symlink()):
+            raise InitError(f"required target path absent: {required}")
+    if (
+        (root / "bin/sh").readlink() != Path("/opt/bin/busybox")
+        or not target_elfs
+        or native_elfs != 1
+    ):
+        raise InitError("native/target ELF inventory incomplete")
+    return {"tree_sha256": digest.hexdigest(), "elf_count": target_elfs}
 
 
 def _image_archive(archive: Path, expected_labels: dict) -> dict:
@@ -233,16 +365,15 @@ def _verify_image_files(root: Path, saved: dict) -> None:
 def _verify_frozen_metadata(
     metadata: dict, cache: Path, lock: dict, native: dict, lock_sha: str, repo: Path
 ) -> None:
+    target = lock["target"]
     if (
         metadata.get("schema_version") != SCHEMA_VERSION
-        or metadata.get("target") != TARGET
+        or metadata.get("target") != target
         or metadata.get("lock_sha256") != lock_sha
         or metadata.get("native_image_id") != native["image_id"]
     ):
         raise InitError("cache identity mismatch")
-    image_lock = json.loads(
-        (repo / "locks/m1a-init-aarch64.json").read_text(encoding="utf-8")
-    )
+    image_lock = json.loads(_image_lock_path(repo, target).read_text(encoding="utf-8"))
     bindings = {
         "schema_version": (image_lock.get("cache_schema_version"), SCHEMA_VERSION),
         "cache_key": (image_lock.get("cache_key"), cache.name),
@@ -287,12 +418,16 @@ def _verify_frozen_metadata(
         ),
         "labels": (image_lock.get("labels"), metadata.get("labels")),
         "smoke": (image_lock.get("smoke"), metadata.get("smoke")),
+        "target": (image_lock.get("target"), target),
     }
+    expected_kind = (
+        "mvp1a-locked-base-image" if target == TARGET else "mvp1e-locked-base-image"
+    )
     if (
         metadata.get("package_count") != len(lock["packages"])
         or metadata.get("feed_index_sha256")
         != lock["source"]["index_compressed_sha256"]
-        or image_lock.get("kind") != "mvp1a-locked-base-image"
+        or image_lock.get("kind") != expected_kind
     ):
         raise InitError("committed image lock differs from cache manifest")
     if any(expected != actual for expected, actual in bindings.values()):
@@ -312,7 +447,7 @@ def _verify_cache(
     root = cache / "rootfs"
     if root.is_symlink():
         raise InitError("cached rootfs is a symlink")
-    audit = audit_tree(root)
+    audit = _audit_rootfs(root, lock["target"])
     if audit["tree_sha256"] != metadata.get("tree_sha256"):
         raise InitError("cached rootfs hash mismatch")
     if _sha256_file(root / "__keemu/init") != native["binary_sha256"]:
@@ -353,7 +488,9 @@ def _verify_cache(
     return metadata
 
 
-def _smoke(image_id: str, lock: dict) -> dict[str, str]:
+def _smoke(image_id: str, lock: dict, *, repo: Path | None = None) -> dict[str, str]:
+    if lock["target"] == MIPS:
+        _preflight_mips_binfmt(repo or Path(__file__).resolve().parents[2])
     name = "keemu-init-" + uuid.uuid4().hex[:12]
     run_id = uuid.uuid4().hex
     labels = [
@@ -398,7 +535,8 @@ def _smoke(image_id: str, lock: dict) -> dict[str, str]:
                 "/opt/bin/busybox uname -m; /opt/bin/busybox true; echo nested-ok",
             ]
         )
-        if "nested-ok" not in target or "aarch64" not in target:
+        architecture = "aarch64" if lock["target"] == TARGET else "mips"
+        if "nested-ok" not in target or architecture not in target:
             raise InitError("target shell/opkg/nested smoke mismatch")
         installed = _run(
             [
@@ -427,9 +565,10 @@ def _smoke(image_id: str, lock: dict) -> dict[str, str]:
         # target-namespace TLS proof from a different vantage.
         import urllib.request
 
-        with urllib.request.urlopen(
-            "https://bin.entware.net/aarch64-k3.10/Packages.gz", timeout=30
-        ) as response:
+        index_url = lock["source"]["index_url"]
+        if not index_url.startswith("https://bin.entware.net/"):
+            raise InitError("locked HTTPS smoke URL is not the Entware feed")
+        with urllib.request.urlopen(index_url, timeout=30) as response:  # noqa: S310
             if response.status != 200 or not response.read(1):
                 raise InitError("host-vantage HTTPS smoke mismatch")
         return {
@@ -457,13 +596,17 @@ def _smoke(image_id: str, lock: dict) -> dict[str, str]:
 
 
 def init_locked(
-    repo: Path, *, cache_root: Path | None = None, offline: bool = False
+    repo: Path,
+    *,
+    cache_root: Path | None = None,
+    offline: bool = False,
+    target: str = TARGET,
 ) -> dict:
     """Prepare once; offline repeat validates inputs and cache without network."""
     repo = repo.resolve()
-    lock, native, lock_sha = _inputs(repo)
+    lock, native, lock_sha = _inputs(repo, target=target)
     key = hashlib.sha256(
-        f"{SCHEMA_VERSION}:{TARGET}:{lock_sha}:{native['image_id']}".encode()
+        f"{SCHEMA_VERSION}:{target}:{lock_sha}:{native['image_id']}".encode()
     ).hexdigest()
     cache_root = cache_root or repo / ".runtime/init-cache"
     cache_root.mkdir(parents=True, exist_ok=True)
@@ -475,16 +618,21 @@ def init_locked(
             return {**metadata, "cache_state": "verified", "offline_repeat": offline}
         if offline:
             raise InitError("locked offline cache not prepared")
-        verify_native_image(repo)
+        if target == TARGET:
+            verify_native_image(repo)
+        else:
+            _preflight_mips_binfmt(repo)
+        lock_path, base, qemu, _ = _paths(repo, target)
         temporary = Path(tempfile.mkdtemp(prefix=f".{key}.", dir=cache_root))
         try:
             root = temporary / "rootfs"
             result = build_diagnostic_rootfs(
-                lock_path=repo / "locks/p0-aarch64.json",
-                package_cache=repo / ".runtime/p0/aarch64-k3.10/packages",
+                lock_path=lock_path,
+                package_cache=base / "packages",
                 destination=root,
-                qemu=repo / ".runtime/p0/qemu-user-root/usr/bin/qemu-aarch64",
-                bootstrap_opkg=repo / ".runtime/p0/aarch64-k3.10/opkg",
+                qemu=qemu,
+                bootstrap_opkg=base / "opkg",
+                timeout=600 if target == MIPS else 300,
             )
             inventory = _inventory(result.installed_packages, lock)
             # opkg writes wall-clock Installed-Time on each run. Freeze only
@@ -510,7 +658,7 @@ def init_locked(
                 "lists_dir ext /opt/var/opkg-lists\n"
                 "option tmp_dir /opt/tmp\n"
                 "arch all 100\n"
-                f"arch {TARGET} 160\n",
+                f"arch {target} 160\n",
                 encoding="utf-8",
             )
             native_binary = root / "__keemu/init"
@@ -535,11 +683,11 @@ def init_locked(
             inv_path.write_text(
                 json.dumps(inventory, indent=2) + "\n", encoding="utf-8"
             )
-            audit = audit_tree(root)
+            audit = _audit_rootfs(root, target)
             labels = {
                 "org.keemu.owner": "keemu",
-                "org.keemu.phase": "m1a-11",
-                "org.keemu.target": TARGET,
+                "org.keemu.phase": "m1a-11" if target == TARGET else "m1e-01",
+                "org.keemu.target": target,
                 "org.keemu.native": "linux/amd64",
                 "org.keemu.rootfs-sha256": audit["tree_sha256"],
                 "org.keemu.package-lock-sha256": lock_sha,
@@ -582,14 +730,14 @@ def init_locked(
                 or inspected["Config"]["Entrypoint"] != ["/__keemu/init"]
             ):
                 raise InitError("built image does not match audited rootfs")
-            smoke = _smoke(image_id, lock)
+            smoke = _smoke(image_id, lock, repo=repo)
             archive = temporary / "image.tar"
             _run(["docker", "save", "-o", str(archive), image_id], timeout=300)
             saved = _image_archive(archive, labels)
             _verify_image_files(root, saved)
             metadata = {
                 "schema_version": SCHEMA_VERSION,
-                "target": TARGET,
+                "target": target,
                 "lock_sha256": lock_sha,
                 "native_image_id": native["image_id"],
                 "oci_digest": image_id,

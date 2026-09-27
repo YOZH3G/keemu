@@ -449,14 +449,17 @@ def exec_environment(
     help="Verify an existing cache without any build or network probe.",
 )
 def init(profile_id: str, repo: Path, locked: bool, offline: bool) -> None:
-    """Prepare the immutable AArch64 base cache from the P0 pinned closure."""
-    if profile_id != "generic-aarch64":
-        raise InputError("only the verified generic-aarch64 bootstrap is available")
+    """Prepare a locked generic base cache from pinned package bytes."""
+    targets = {"generic-aarch64": "aarch64-3.10", "generic-mips": "mips-3.4"}
+    if profile_id not in targets:
+        raise InputError(
+            "only verified generic-aarch64/generic-mips bases are available"
+        )
     try:
-        profile = load_profile(repo / "profiles/generic/generic-aarch64.yaml")
-        if profile.id != profile_id:
+        profile = load_profile(repo / "profiles/generic" / f"{profile_id}.yaml")
+        if profile.id != profile_id or profile.entware_target != targets[profile_id]:
             raise InitError("profile identity mismatch")
-        result = init_locked(repo, offline=offline)
+        result = init_locked(repo, offline=offline, target=targets[profile_id])
     except (OSError, ValueError, ValidationError, YAMLError, TimeoutError) as error:
         raise InputError(str(error)) from error
     click.echo(json.dumps(result, sort_keys=True))
