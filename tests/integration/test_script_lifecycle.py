@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 import uuid
 from pathlib import Path
 
@@ -380,3 +381,57 @@ def test_one_shot_assertions_statuses_and_exact_cleanup(tmp_path: Path) -> None:
         assert DockerRuntime(run_id, IMAGE).reconcile()["container_owned"] == []
     finally:
         shutil.rmtree(source_dir)
+
+
+@pytest.mark.docker
+@pytest.mark.parametrize(
+    ("profile", "target"),
+    (("generic-mips", "mips-3.4"), ("generic-mipsel", "mipsel-3.4")),
+)
+def test_mips_script_contract_truthfully_blocked_without_docker_mutation(
+    tmp_path: Path, profile: str, target: str
+) -> None:
+    if os.getenv("KEEMU_TEST_SCRIPT_ARCHITECTURES") != "1":
+        pytest.skip(
+            "opt in to MIPS/MIPSEL script capability and Docker isolation readback"
+        )
+
+    def snapshot(kind: str) -> set[str]:
+        command = (
+            ["docker", "ps", "-aq"]
+            if kind == "container"
+            else ["docker", "network", "ls", "-q"]
+        )
+        output = subprocess.run(  # noqa: S603
+            command, capture_output=True, check=True, timeout=30
+        ).stdout
+        return set(output.decode().splitlines())
+
+    before = (snapshot("container"), snapshot("network"))
+    run_id = "m1d10-" + uuid.uuid4().hex[:12]
+    result = run_one_shot_script(
+        "fixtures/scripts/mvp1d/success.sh",
+        project_root=ROOT,
+        profile_id=profile,
+        run_id=run_id,
+        report_root=tmp_path,
+    )
+    assert result.script.status == result.report.overall == "BLOCKED"
+    assert result.report.script is not None
+    assert result.report.script.execution.architecture == target
+    assert result.report.script.outcome.state == "blocked"
+    assert result.report.script.execution.container_id is None
+    assert result.report.partial_failure is not None
+    assert result.report.partial_failure.message == "ScriptCapabilityUnavailable"
+    assert result.report == result.report.model_validate_json(
+        result.paths.json.read_text()
+    )
+    assert DockerRuntime(run_id, result.script.spec.image_id).reconcile() == {
+        "container_owned": [],
+        "container_unexpected": [],
+        "container_missing": [],
+        "network_owned": [],
+        "network_unexpected": [],
+        "network_missing": [],
+    }
+    assert (snapshot("container"), snapshot("network")) == before

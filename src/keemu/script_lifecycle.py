@@ -1,4 +1,4 @@
-"""Disposable script lifecycle on the existing locked AArch64 Docker/binfmt base.
+"""Disposable script lifecycle on the existing locked Docker/binfmt base.
 
 No CLI, persistent registry, scenario checks or host-side script execution here.
 Only exact run-owned containers are eligible for cleanup; raw argv and output
@@ -43,6 +43,15 @@ from keemu.script_results import (
 from keemu.script_stage import ScriptStager, StagedScript
 
 BASE_LOCK = "locks/m1a-init-aarch64.json"
+SCRIPT_IMAGE_LOCKS = {
+    "generic-aarch64": BASE_LOCK,
+    "generic-mips": "locks/m1b18-image-mips-3.4.json",
+    "generic-mipsel": "locks/m1b18-image-mipsel-3.4.json",
+}
+
+
+class ScriptCapabilityUnavailable(RuntimeError):
+    """A target has no verified general script lifecycle; never run a probe instead."""
 
 
 @dataclass(frozen=True)
@@ -92,8 +101,8 @@ def run_one_shot_script(
     run_id = run_id or "script-" + uuid4().hex
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{2,127}", run_id):
         raise ValueError("invalid run ID")
-    if profile_id != "generic-aarch64":
-        raise ValueError("one-shot script lifecycle requires generic-aarch64")
+    if profile_id not in SCRIPT_IMAGE_LOCKS:
+        raise ValueError("unsupported script profile")
     if type(expected_exit_code) is not int or not 0 <= expected_exit_code <= 255:
         raise ValueError("invalid expected exit code")
     if expectations is not None and not isinstance(expectations, ScriptExpectations):
@@ -118,13 +127,22 @@ def run_one_shot_script(
     source = ScriptInput.validate(script_path, project_root=root)
     relative = source.source_path.relative_to(root).as_posix()
     # Validate the report intent before provisioning a resource.
-    base = json.loads(_secure_bytes(root / BASE_LOCK, root, 2 * 1024 * 1024))
-    image_id = base["oci_digest"]
-    profile_path = root / "profiles/generic/generic-aarch64.yaml"
+    base = json.loads(
+        _secure_bytes(root / SCRIPT_IMAGE_LOCKS[profile_id], root, 2 * 1024 * 1024)
+    )
+    image_id = (
+        base["oci_digest"] if profile_id == "generic-aarch64" else base["image_id"]
+    )
+    profile_path = root / "profiles/generic" / f"{profile_id}.yaml"
     profile_bytes = _secure_bytes(profile_path, root, 1024 * 1024)
     profile = load_profile_bytes(profile_bytes)
     if profile.id != profile_id or profile.entware_target != base["target"]:
         raise ValueError("profile and locked target disagree")
+    if profile_id != "generic-aarch64" and (
+        base.get("kind") != "m1b18-locked-target-image"
+        or base.get("schema_version") != 1
+    ):
+        raise ValueError("unsupported target image lock")
     profile_hash = hashlib.sha256(profile_bytes).hexdigest()
     runtime = DockerRuntime(run_id, image_id, target=profile.entware_target)
     ScriptExecutionSpec(
@@ -190,6 +208,10 @@ def run_one_shot_script(
     try:
 
         def capability() -> None:
+            if profile_id != "generic-aarch64":
+                # The m1b18 image is target-exec evidence, not a general
+                # offline-verified init/test base. Do not allocate or run it.
+                raise ScriptCapabilityUnavailable("general lifecycle unavailable")
             cache = init_locked(root, offline=True)
             if cache.get("oci_digest") != image_id:
                 raise DockerBoundaryError("locked AArch64 image mismatch")
@@ -428,6 +450,14 @@ def run_one_shot_script(
         partial_failure=partial,
         limitations=(
             "Userspace execution does not establish physical Keenetic compatibility",
+            *(
+                (
+                    "General MIPS script lifecycle unavailable; "
+                    "target-exec image is not an init/test base",
+                )
+                if profile_id != "generic-aarch64"
+                else ()
+            ),
         ),
     )
     paths = write_report_bundle(report, reports / run_id)

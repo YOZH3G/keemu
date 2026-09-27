@@ -1,0 +1,47 @@
+{
+  "subtask": "m1d-10",
+  "product_outcome": "BLOCKED",
+  "reason": "MIPS/MIPSEL target-exec images exist, but neither has a verified general init/test script lifecycle; no architecture-specific execution bypass",
+  "cli_cases": [
+    {
+      "profile": "generic-mips",
+      "architecture": "mips-3.4",
+      "status": "BLOCKED",
+      "exit_code": 4,
+      "run_id": "script-8f28410920814808aa39fa08cd127996",
+      "report_sha256": "254313004ac7da16fc01fe7fbf40d98c4c351e5807d7bf5a4337e807965d678b",
+      "image_id": "sha256:1767195564c09eeb7e0eb7eccb31b3fd4fe0aa8725e2005677a07abad99d09c1",
+      "script_sha256": "65d5b25df7afed318a7e6e45f3c44999567308d0e80199782c0e54d8ff8b09aa",
+      "operation": "capability",
+      "reason": "ScriptCapabilityUnavailable",
+      "container_id": null,
+      "target_path": null
+    },
+    {
+      "profile": "generic-mipsel",
+      "architecture": "mipsel-3.4",
+      "status": "BLOCKED",
+      "exit_code": 4,
+      "run_id": "script-7b536f392e7244b89a0610c396271ff0",
+      "report_sha256": "5fc0e1f086e3a958a37f08fb1f56c9f216d8b4bf126fb32d6bf25d22f4101c34",
+      "image_id": "sha256:9822813438c56f173491a7b205b0c536e632582493282f77e0049da8d5276e2c",
+      "script_sha256": "65d5b25df7afed318a7e6e45f3c44999567308d0e80199782c0e54d8ff8b09aa",
+      "operation": "capability",
+      "reason": "ScriptCapabilityUnavailable",
+      "container_id": null,
+      "target_path": null
+    }
+  ],
+  "integration": {
+    "junit": "reports/m1d10-architecture.xml",
+    "sha256": "878dcfc76b81e14d1e5de27d5904c9700f15914c4f05828ed3355cb0f2c1aaa7",
+    "tests": 3,
+    "passed": 3,
+    "cases": "MIPS and MIPSEL BLOCKED no-allocation plus AArch64 real script PASS"
+  },
+  "docker_snapshot": {
+    "containers_before_after_equal": true,
+    "networks_before_after_equal": true,
+    "keemu_owner_resources_absent": true
+  }
+}
