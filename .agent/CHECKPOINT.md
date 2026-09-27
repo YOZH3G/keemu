@@ -143,7 +143,7 @@ Live opt-in suite: 22 passed, 0 failed, 0 skipped. Pre-ledger portable: 130 pass
 
 ## Next operation
 
-MVP 1D `m1d-05` one-shot AArch64 script lifecycle slice is locally verified. Emit only its exact completion marker and stop. Supervisor must attest actual runtime metadata, checkpoint, commit/push `staging` and delete this worker session before launching `m1d-06` under a fresh quota admission and frozen lock. Next product operation, only in `m1d-06`: add CLI `keemu script` over the verified core, including argv/cwd/timeout/expected-exit contracts. D03/D05/D07 full release acceptance, original A01–A21 history and the m1d-00 ledger remain frozen/not promoted.
+MVP 1D subtasks `m1d-00` through `m1d-05` are attested complete and published. Active `m1d-06` retains session `20260927_035229_e5c82b` and frozen `openai-codex/gpt-5.6-terra/high` lock after a provider 429. The conservative sleeping supervisor was stopped after proving it had no worker child. Fresh live usage at `2026-09-27T07:54:15.364432+00:00` showed 95% five-hour quota remaining with reset `2026-09-27T12:51:55+00:00`; state is `RESUMING`, stale wake cleared, and the same session/lock must resume immediately. Do not create a new route decision or session. Next operation remains only `m1d-06`: add CLI `keemu script` over the verified core, including argv/cwd/timeout/expected-exit contracts.
 
 Historical final-28 next-operation snapshot (superseded): emit exact frozen final-28 completion marker only after its scoped verification. Supervisor owned that attestation/commit/push and subsequent boundary. Its A02–A21 release blockers and historical fixture-level PASS remain retained; do not replay its earlier instructions.
 
