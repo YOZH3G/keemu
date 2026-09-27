@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "task_id": "keemu-mvp1e",
+  "status": "RESUMING",
+  "session_id": null,
+  "pause_reason": null,
+  "quota": {
+    "kind": null,
+    "detected_at": null,
+    "resets_at": null,
+    "resets_in_seconds": null,
+    "wake_at": null,
+    "plan_type": null,
+    "raw_excerpt": null
+  },
+  "routing": {
+    "mode": "shadow",
+    "last_evaluated_at": "2026-09-27T19:24:41+00:00",
+    "recommended": {
+      "tier": "C1",
+      "model": "gpt-6-luna",
+      "reasoning": "medium"
+    },
+    "applied": {
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high"
+    },
+    "signals": {
+      "score": 3,
+      "signal_source": "active_subtask",
+      "active_subtask_id": "m1e-00",
+      "task_chars": 0,
+      "changed_files": 0,
+      "planned_change_count": 4,
+      "component_count": 3,
+      "repo_files_sampled": 2000,
+      "graphify_present": true,
+      "graphify_bytes": 2389557,
+      "previous_failures": 0,
+      "same_error_count": 0,
+      "production_risk": false,
+      "security_risk": false,
+      "destructive_risk": false,
+      "architecture_scope": false,
+      "debugging_scope": false,
+      "cross_component_scope": false,
+      "read_only_scope": false,
+      "c5_justified": false,
+      "c5_explicit": false,
+      "c5_factors": [],
+      "gate_closure_probability": "high",
+      "diagnostic_risk": "low",
+      "safety_context": [],
+      "reasons": [
+        "multiple planned changes",
+        "multi-component implementation"
+      ]
+    },
+    "reason": "multiple planned changes; multi-component implementation",
+    "force_min_tier": null,
+    "capabilities": {
+      "gpt-6-astra": null
+    },
+    "astra_disabled_reason": null,
+    "last_router_error": null,
+    "worker_lock": {},
+    "subtask_plan": {
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "plan_digest": "c5f8029160882b3cd1addf1c1034a7f467380e7ba1fadc290eeba5f921a388b2",
+      "active_index": 1,
+      "items": [
+        {
+          "id": "m1e-00",
+          "objective": "Perform a strictly read-only review of MIPS and MIPSEL locks, lifecycle capability seams, acceptance gates, frozen routes, file limits and current prerequisites; publish review evidence only",
+          "acceptance_refs": [
+            "E01",
+            "scope-freeze",
+            "routing-review",
+            "c3-telemetry"
+          ],
+          "planned_change_count": 4,
+          "component_count": 3,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "low",
+          "recommended": {
+            "tier": "C3",
+            "model": "gpt-5.6-terra",
+            "reasoning": "high"
+          },
+          "status": "complete",
+          "digest": "21a2965fac518ce0efadb46e0569c88ed9a7aa8035e8862cafba926eca01ac8b",
+          "outcome": {
+            "event_id": "evt_866be0a0bd8704f80b85bf30",
+            "route_event_id": "evt_9a4719c18ac1b919673596ed",
+            "completed_at": "2026-09-27T19:30:48+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
+        },
+        {
+          "id": "m1e-01",
+          "objective": "Implement a deterministic atomically published offline-verifiable locked init cache for generic-mips by extending the verified common cache pattern and preserving AArch64 behavior",
+          "acceptance_refs": [
+            "E02"
+          ],
+          "planned_change_count": 7,
+          "component_count": 4,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "high",
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-6-sol",
+            "reasoning": "high"
+          },
+          "status": "active",
+          "digest": "a2b1557aef9759f0893cf75cf16925086e3d45f50b3c2386cfc0c26bf98315a6"
+        },
+        {
+          "id": "m1e-02",
+          "objective": "Implement the same deterministic atomically published offline-verifiable locked init cache contract for generic-mipsel with independent target evidence and no target-specific bypass",
+          "acceptance_refs": [
+            "E03"
+          ],
+          "planned_change_count": 6,
+          "component_count": 4,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "high",
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "4522388c988af77240821910ee2b71f24e8efd8d3bb1a69cb45cd1dd73071947"
+        },
+        {
+          "id": "m1e-03",
+          "objective": "Generalize the common one-shot locked IPK lifecycle to generic-mips and generic-mipsel with real target execution, typed reports and exact owned cleanup while preserving AArch64 behavior",
+          "acceptance_refs": [
+            "E04"
+          ],
+          "planned_change_count": 8,
+          "component_count": 5,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "high",
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "1e02a3582f9fa24dd6c24b4f1a02550c9696a24e81d8d093a4a23ba0c581d344"
+        },
+        {
+          "id": "m1e-04",
+          "objective": "Generalize registry-backed persistent lifecycle and explicit interruption recovery to generic-mips and generic-mipsel with per-name locking, atomic transitions, full identity checks, tombstones and foreign-resource refusal",
+          "acceptance_refs": [
+            "E05"
+          ],
+          "planned_change_count": 9,
+          "component_count": 6,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "high",
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-6-sol",
+            "reasoning": "xhigh"
+          },
+          "c5_factors": [
+            "crash_recovery",
+            "foreign_resource_preservation"
+          ],
+          "status": "pending",
+          "digest": "0254172b495111b2533d27af3d8ad902b2c5330607d37feef0362fa3a2edf715"
+        },
+        {
+          "id": "m1e-05",
+          "objective": "Integrate generic-mips and generic-mipsel one-shot and persistent script paths through the existing common script primitives, changing at most five source or test files and stopping if any primitive or boundary redesign is required",
+          "acceptance_refs": [
+            "E06",
+            "c3-engineering-trial"
+          ],
+          "planned_change_count": 5,
+          "component_count": 3,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "medium",
+          "recommended": {
+            "tier": "C3",
+            "model": "gpt-5.6-terra",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8"
+        },
+        {
+          "id": "m1e-05r",
+          "objective": "Independently review the m1e-05 C3 engineering result without product mutation; verify frozen file limits, common-path parity, tests, runtime evidence, scope compliance and any blocking finding",
+          "acceptance_refs": [
+            "E06",
+            "c3-independent-review"
+          ],
+          "planned_change_count": 4,
+          "component_count": 3,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "low",
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f"
+        },
+        {
+          "id": "m1e-06",
+          "objective": "Verify three-target interruption, timeout, collision, recovery, exact cleanup, concurrency isolation and preservation of unrelated resources with real bounded evidence",
+          "acceptance_refs": [
+            "E07"
+          ],
+          "planned_change_count": 9,
+          "component_count": 6,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "high",
+          "recommended": {
+            "tier": "C5",
+            "model": "gpt-6-sol",
+            "reasoning": "xhigh"
+          },
+          "c5_factors": [
+            "concurrency_control",
+            "crash_recovery",
+            "foreign_resource_preservation"
+          ],
+          "status": "pending",
+          "digest": "50a98923e1bf4d597db0c2926162ba3f3a8eae4f44d80d011663b23dab24559d"
+        },
+        {
+          "id": "m1e-07",
+          "objective": "Reconcile E01-E08 evidence hashes, architecture matrix, C3 telemetry, documentation, ADRs, traceability and durable records without product or runtime mutation",
+          "acceptance_refs": [
+            "E08",
+            "documentation",
+            "c3-telemetry"
+          ],
+          "planned_change_count": 8,
+          "component_count": 3,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "low",
+          "recommended": {
+            "tier": "C3",
+            "model": "gpt-5.6-terra",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "004bcbb4e25dc16465e96d14f8ebf408a211ff1e9adce8c238739f2e19dfd5ba"
+        },
+        {
+          "id": "m1e-08",
+          "objective": "Perform an independent final MVP 1E audit and publish exact E01-E08 and milestone PASS FAIL BLOCKED ERROR status without product mutation or predecessor-history changes",
+          "acceptance_refs": [
+            "E08",
+            "release"
+          ],
+          "planned_change_count": 4,
+          "component_count": 2,
+          "gate_closure_probability": "high",
+          "diagnostic_risk": "low",
+          "recommended": {
+            "tier": "C4",
+            "model": "gpt-6-sol",
+            "reasoning": "high"
+          },
+          "status": "pending",
+          "digest": "514b58fd33b58ffad970ae270ece73293932ce96517eb0573bc87ca8f0d0c236"
+        }
+      ]
+    },
+    "learning": {
+      "active_policy_version": "v1",
+      "candidate_policy_version": null,
+      "last_event_id": "evt_866be0a0bd8704f80b85bf30",
+      "last_evaluated_at": null,
+      "canary": {
+        "enabled": false,
+        "candidate_hash": null,
+        "samples_used": 0
+      }
+    }
+  },
+  "runtime": {
+    "continuations": 0,
+    "consecutive_failures": 0,
+    "same_error_count": 0,
+    "last_error_fingerprint": null,
+    "last_exit_code": 0,
+    "last_run_started_at": "2026-09-27T19:24:41+00:00",
+    "last_run_finished_at": "2026-09-27T19:30:46+00:00",
+    "last_log": ".agent/runs/20260927T192441Z.log",
+    "last_checkpoint_at": "2026-09-27T19:30:48+00:00"
+  },
+  "quota_admission": {
+    "checked_at": "2026-09-27T19:24:37+00:00",
+    "scope": "subtask",
+    "admission_key": "subtask:m1e-00:21a2965fac518ce0efadb46e0569c88ed9a7aa8035e8862cafba926eca01ac8b",
+    "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+    "task_intent": "Perform a strictly read-only review of MIPS and MIPSEL locks, lifecycle capability seams, acceptance gates, frozen routes, file limits and current prerequisites; publish review evidence only",
+    "subtask_id": "m1e-00",
+    "subtask_digest": "21a2965fac518ce0efadb46e0569c88ed9a7aa8035e8862cafba926eca01ac8b",
+    "action": "admit",
+    "remaining_percent": 32.0,
+    "reset_at": "2026-09-27T19:33:34+00:00",
+    "source": "hermes_oauth_usage_api",
+    "message": "5-hour OAuth quota admits new task"
+  }
+}

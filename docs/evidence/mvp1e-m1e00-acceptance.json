@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "milestone": "KEEMU MVP 1E",
+  "subtask": "m1e-00",
+  "status": "SCOPE_FROZEN_WITH_PREREQUISITE_BLOCKERS",
+  "authoritative_task": "TASK.md",
+  "specification": "docs/specifications/KEEMU_MVP1E_mips_lifecycle.md",
+  "review": "docs/evidence/mvp1e-m1e00-scope-review.md",
+  "historical_boundary": "MVP 1 and MVP 1D evidence remain immutable; MVP 1D D02/D07 remain separate BLOCKED release blockers.",
+  "entries": [
+    {
+      "id": "E01",
+      "status": "PASS",
+      "scope": "Review only",
+      "verified": [
+        "MIPS/MIPSEL profile identities and SHA-256 values",
+        "eight m1b18 root/SDK/fixture/image lock SHA-256 values",
+        "offline package/rootfs/fixture/saved-image verification to the live-image boundary for both targets",
+        "AArch64-only init, one-shot, persistent, and script capability seams",
+        "frozen C3/C4/C5 routes, file limits, shadow-only telemetry, and PENDING runtime-attestation boundary"
+      ],
+      "current_prerequisite_blockers": [
+        "MIPSEL Docker-local image sha256:9822813438c56f173491a7b205b0c536e632582493282f77e0049da8d5276e2c is absent",
+        "MIPS Docker-local image sha256:1767195564c09eeb7e0eb7eccb31b3fd4fe0aa8725e2005677a07abad99d09c1 is absent",
+        "Current worker namespace cannot observe /proc/sys/fs/binfmt_misc status, qemu-mips, or qemu-mipsel; this does not assert host-handler absence"
+      ],
+      "prohibited_actions_not_taken": [
+        "host binfmt mutation",
+        "Docker image import/build/run or owned-resource mutation",
+        "kernel/firewall/network/credential/config mutation",
+        "architecture-specific lifecycle bypass"
+      ]
+    },
+    {
+      "id": "E02",
+      "status": "NOT_RUN",
+      "required_proof": [
+        "deterministic atomically published generic-mips cache",
+        "offline verification of exact inputs/cache/image",
+        "MIPS target shell/opkg/inventory smoke",
+        "AArch64 regression preservation"
+      ],
+      "planned_subtask": "m1e-01"
+    },
+    {
+      "id": "E03",
+      "status": "NOT_RUN",
+      "required_proof": [
+        "deterministic atomically published generic-mipsel cache",
+        "offline verification of exact inputs/cache/image",
+        "MIPSEL target shell/opkg/inventory smoke",
+        "no target-specific bypass"
+      ],
+      "planned_subtask": "m1e-02"
+    },
+    {
+      "id": "E04",
+      "status": "NOT_RUN",
+      "required_proof": [
+        "single common three-target one-shot dispatch",
+        "real MIPS/MIPSEL success, negative, and exact-cleanup cases",
+        "typed report and static/use-time verification preservation"
+      ],
+      "planned_subtask": "m1e-03"
+    },
+    {
+      "id": "E05",
+      "status": "NOT_RUN",
+      "required_proof": [
+        "three-target persistent lifecycle and explicit recovery",
+        "per-name locking, atomic state, full-ID/label validation, tombstones, and foreign-resource refusal",
+        "interruption and idempotent recovery evidence"
+      ],
+      "planned_subtask": "m1e-04"
+    },
+    {
+      "id": "E06",
+      "status": "NOT_RUN",
+      "required_proof": [
+        "MIPS/MIPSEL one-shot and persistent script execution through existing common primitives",
+        "C3 change at no more than five source/test files",
+        "no ScriptInput/ScriptStager/ScriptProcessRunner/ownership/cleanup/recovery/process-tree/report-status redesign",
+        "separate C4 m1e-05r review"
+      ],
+      "planned_subtasks": ["m1e-05", "m1e-05r"]
+    },
+    {
+      "id": "E07",
+      "status": "NOT_RUN",
+      "required_proof": [
+        "real three-target interruption, timeout, collision, recovery, cleanup, concurrency-isolation, and foreign-resource preservation matrix",
+        "MVP 1D D02/D07 remain BLOCKED unless separately closed by approved hardening"
+      ],
+      "planned_subtask": "m1e-06"
+    },
+    {
+      "id": "E08",
+      "status": "NOT_RUN",
+      "required_proof": [
+        "hash-bound E01-E08 reconciliation and documentation",
+        "independent final audit with exact PASS/FAIL/BLOCKED/ERROR milestone truth",
+        "preserved predecessor histories and C3 telemetry"
+      ],
+      "planned_subtasks": ["m1e-07", "m1e-08"]
+    }
+  ],
+  "routing": {
+    "distribution": {"C3": 3, "C4": 5, "C5": 2, "Astra": 0},
+    "mode": "shadow",
+    "approved_route_application": true,
+    "automatic_promotion": false,
+    "active_lock": {
+      "subtask_id": "m1e-00",
+      "subtask_digest": "21a2965fac518ce0efadb46e0569c88ed9a7aa8035e8862cafba926eca01ac8b",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "attestation_status": "PENDING"
+    }
+  },
+  "verification": {
+    "relevant_unit_tests": {"passed": 13, "failed": 0, "skipped": 2},
+    "docker": {"engine": "29.7.2/linux/amd64", "owned_containers": 0, "owned_networks": 0},
+    "binfmt_worker_visibility": "BLOCKED_UNOBSERVABLE",
+    "offline_locked_inputs": {"mips-3.4": "PASS_TO_LIVE_IMAGE_BOUNDARY", "mipsel-3.4": "PASS_TO_LIVE_IMAGE_BOUNDARY"},
+    "live_locked_images": {"mips-3.4": "ABSENT", "mipsel-3.4": "ABSENT"},
+    "runtime_attestation": "PENDING_SUPERVISOR_BOUNDARY"
+  }
+}
