@@ -325,7 +325,7 @@
     "last_checkpoint_at": "2026-09-27T19:48:27+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-29T11:04:02+00:00",
+    "checked_at": "2026-09-29T11:51:14+00:00",
     "scope": "subtask",
     "admission_key": "subtask:m1e-01:a2b1557aef9759f0893cf75cf16925086e3d45f50b3c2386cfc0c26bf98315a6",
     "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
@@ -333,9 +333,9 @@
     "subtask_id": "m1e-01",
     "subtask_digest": "a2b1557aef9759f0893cf75cf16925086e3d45f50b3c2386cfc0c26bf98315a6",
     "action": "admit",
-    "remaining_percent": 96.0,
+    "remaining_percent": 83.0,
     "reset_at": "2026-09-29T15:55:00+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "Fresh manual same-subtask OAuth observation admits resume; 96% primary-window quota remains"
+    "message": "Fresh manual same-subtask OAuth observation admits resume; 83% primary-window quota remains"
   }
 }
