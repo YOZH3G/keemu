@@ -23,7 +23,7 @@ from yaml import YAMLError
 
 from keemu import __version__
 from keemu.docker_runtime import DockerRuntime, Output
-from keemu.init_cache import init_locked
+from keemu.init_cache import _image_lock_path, _paths, init_locked
 from keemu.input_locks import load_scenario_lock
 from keemu.input_paths import resolve_input_path
 from keemu.ipk_inspect import IPKError, inspect_ipk
@@ -54,7 +54,7 @@ from keemu.scenarios import (
 from keemu.script_input import ScriptInput
 from keemu.script_scenario import ScenarioScriptError, run_script_check
 
-BASE_LOCK = "locks/m1a-init-aarch64.json"
+BASE_LOCK = "locks/m1a-init-aarch64.json"  # Persistent lifecycle still imports this.
 
 
 @dataclass(frozen=True)
@@ -408,7 +408,7 @@ def run_scenario(
                 sha256=lock.profile_sha256,
             )
             if (
-                profile.entware_target != "aarch64-3.10"
+                profile.id not in {"generic-aarch64", "generic-mips", "generic-mipsel"}
                 or scenario.requirements.capabilities
                 or scenario.requirements.ndm_fixtures
                 or scenario.runtime.env
@@ -459,10 +459,12 @@ def run_scenario(
                 sha256=entry.sha256,
                 architecture=entry.architecture,
             )
-            base_path = root / BASE_LOCK
+            base_path = _image_lock_path(root, profile.entware_target)
             base = json.loads(_secure_bytes(base_path, root, 2 * 1024 * 1024))
+            feed_path, _, _, _ = _paths(root, profile.entware_target)
             if (
-                base.get("oci_digest") != lock.oci_digest
+                base.get("target") != profile.entware_target
+                or base.get("oci_digest") != lock.oci_digest
                 or base.get("input_lock_sha256") != lock.feed_lock_sha256
                 or base.get("target") != lock.entware_target
             ):
@@ -470,10 +472,8 @@ def run_scenario(
                     "BLOCKED", "environment", "base image/feed lock mismatch"
                 )
             if (
-                not (root / "locks/p0-aarch64.json").is_file()
-                or _hash(
-                    _secure_bytes(root / "locks/p0-aarch64.json", root, 2 * 1024 * 1024)
-                )
+                not feed_path.is_file()
+                or _hash(_secure_bytes(feed_path, root, 2 * 1024 * 1024))
                 != lock.feed_lock_sha256
             ):
                 raise StageFailure("BLOCKED", "environment", "feed input lock changed")
@@ -567,7 +567,7 @@ def run_scenario(
         )
 
         def capability():
-            result = init_locked(root, offline=True)
+            result = init_locked(root, offline=True, target=profile.entware_target)
             if result.get("oci_digest") != lock.oci_digest:
                 raise StageFailure("BLOCKED", "environment", "prepared image mismatch")
             return runtime.image()
@@ -980,24 +980,21 @@ def run_scenario(
                                 )
                     except Exception as exc:
                         cleanup_errors.append(f"best-effort package removal: {exc}")
-                try:
-                    runtime.remove_container(container)
-                except Exception as exc:
-                    cleanup_errors.append(f"owned container {container}: {exc}")
-            if cleanup_authorized and network:
-                try:
-                    runtime.remove_network(network)
-                except Exception as exc:
-                    cleanup_errors.append(f"owned network {network}: {exc}")
             if cleanup_authorized:
                 try:
                     state = runtime.reconcile()
-                    # A create can allocate an ID before the boundary returns it.
-                    # Only exact run-owned IDs may be removed.
-                    for identifier in state["container_owned"]:
-                        runtime.remove_container(identifier)
-                    for identifier in state["network_owned"]:
-                        runtime.remove_network(identifier)
+                    # Create may allocate before returning. Reconcile exactly one
+                    # intended name and ID, never sweep other run-labelled objects.
+                    if state["network_owned"] or len(state["container_owned"]) > 1:
+                        raise ValueError("ambiguous run-owned resources")
+                    ids = state["container_owned"]
+                    if container is not None and ids != [container]:
+                        raise ValueError("created container identity changed")
+                    if ids:
+                        item = runtime.inspect("container", ids[0])
+                        if item.get("Name") != "/keemu-" + run_id:
+                            raise ValueError("owned container name changed")
+                        runtime.remove_container(ids[0])
                     state = runtime.reconcile()
                     if state["container_owned"] or state["network_owned"]:
                         cleanup_errors.append("owned resources remain: " + str(state))

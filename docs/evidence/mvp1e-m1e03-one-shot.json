@@ -1,0 +1,59 @@
+{
+  "subtask": "m1e-03",
+  "gate": "E04",
+  "status": "PASS",
+  "scope": "common locked one-shot IPK lifecycle on generic-aarch64, generic-mips and generic-mipsel; persistent/script gates are separate",
+  "verified_at_utc": "2026-09-29T12:51:39Z",
+  "implementation": {
+    "src/keemu/lifecycle.py": "9f080539ae5e8e34fbac0dd210856ea58e449793e71497e70d9f49450914882e",
+    "tests/integration/test_m1e03_lifecycle.py": "511d7e110ac56d9507520d19f24f8c0a92d62a9c483ee43dfa01b4966c3da7ec"
+  },
+  "base_locks": {
+    "locks/m1a-init-aarch64.json": "1d8acdfb3bb17383f8a4c2dcb28bf71d472e003bcbd841e5e48f48e75ac1089e",
+    "locks/m1e-init-mips.json": "5f8a19011a30032502a9f54a6c6354d1ec985b3b6372a1a0a420c4c297284b29",
+    "locks/m1e-init-mipsel.json": "22502ba3675da8c96de67b89f35ef6a50e350d73e8b32aac8a5e94028fec1ef0"
+  },
+  "real_live_junit": {
+    "path": "reports/m1e03-live-final.xml",
+    "sha256": "336c262cf2a8eb277cc8ff4810d69b9e7dd522e99795744a004217cc99c5279e",
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "cases": "two MIPS-family parametrized common lifecycle tests plus original AArch64 success/negative and cleanup-error regression tests"
+  },
+  "portable_junit": {
+    "path": "reports/m1e03-portable-final.xml",
+    "sha256": "b15e67b44a08da0b75394fff6dfeb08c31cd10d5dcc21e4da0cfe919b62496a1",
+    "passed": 353,
+    "failed": 0,
+    "skipped_opt_in": 61
+  },
+  "target_observations": {
+    "generic-mips": {
+      "path": "reports/m1e03-generic-mips-observations.json",
+      "sha256": "993bf1bc42a416c9fb9b6ca6f53c22e6e67fd8efd028041cb65ca66064a20be8",
+      "target": "mips-3.4",
+      "oci_digest": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7"
+    },
+    "generic-mipsel": {
+      "path": "reports/m1e03-generic-mipsel-observations.json",
+      "sha256": "92c256a4f373550c4ebe5fc8bbd5bc2b36e4f1ba0d686a131bea37bec22bd344",
+      "target": "mipsel-3.4",
+      "oci_digest": "sha256:44f1e4382b1546f454ed6602212effff860c5aaadcf03d513ceae506ce6abe74"
+    }
+  },
+  "per_target_cases": {
+    "success": "PASS, target opkg install/remove, command checks, package inventory, residual metadata and owned cleanup PASS",
+    "postinst-fail": "FAIL at install, cleanup PASS",
+    "collision": "BLOCKED at create, pre-existing exact owned ID retained until test-owned teardown",
+    "input-changed": "BLOCKED at validate before allocation, cleanup PASS; runtime target remains unknown because validation stopped before base selection",
+    "wrong-architecture": "FAIL at static inspect, cleanup PASS",
+    "cleanup-error": "ERROR overall, original install FAIL retained, cleanup ERROR recorded separately, foreign container unchanged"
+  },
+  "postflight": "all KEEMU owner-labeled Docker containers and networks absent; real tests compare full foreign Docker ID sets before/after",
+  "limits": [
+    "Docker filesystem residual comparison is metadata-only; no byte-identical residual or socket census claim",
+    "No persistent IPK lifecycle/recovery or standalone MIPS script lifecycle claim in E04",
+    "MVP 1D D02/D07 and prior release blockers remain unchanged"
+  ]
+}
