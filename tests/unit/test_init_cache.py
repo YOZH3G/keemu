@@ -16,6 +16,7 @@ from keemu.cli import cli
 from keemu.init_cache import (
     BINFORMAT_OBSERVER_IMAGE,
     InitError,
+    _audit_rootfs,
     _canonical_mips_archive,
     _inputs,
     _inventory,
@@ -134,12 +135,14 @@ def test_init_rejects_unsupported_profile_and_requires_locked_flag() -> None:
     assert result.exit_code == 0
     assert json.loads(result.output) == {"cache_state": "verified"}
     assert init.call_args.kwargs == {"offline": True, "target": "mips-3.4"}
-    assert (
-        runner.invoke(
-            cli, ["init", "--profile", "generic-mipsel", "--locked"]
-        ).exit_code
-        == 2
-    )
+    with patch(
+        "keemu.cli.init_locked", return_value={"cache_state": "verified"}
+    ) as init:
+        result = runner.invoke(
+            cli, ["init", "--profile", "generic-mipsel", "--locked", "--offline"]
+        )
+    assert result.exit_code == 0
+    assert init.call_args.kwargs == {"offline": True, "target": "mipsel-3.4"}
 
 
 def test_mips_inputs_bind_target_closure() -> None:
@@ -148,6 +151,49 @@ def test_mips_inputs_bind_target_closure() -> None:
     assert native["binary_sha256"]
     assert digest
     assert len(lock["packages"]) == 20
+
+
+def test_mipsel_inputs_bind_independent_target_closure() -> None:
+    lock, native, digest = _inputs(ROOT, target="mipsel-3.4")
+    assert lock["target"] == "mipsel-3.4"
+    assert native["binary_sha256"]
+    assert digest
+    assert len(lock["packages"]) == 20
+    assert digest != _inputs(ROOT, target="mips-3.4")[2]
+
+
+def test_mipsel_binfmt_requires_its_own_exact_handler(tmp_path: Path) -> None:
+    pin = json.loads((ROOT / "locks/m1e-init-mipsel.json").read_text())
+    handler = pin["binfmt"]
+    root = tmp_path / "binfmt_misc"
+    root.mkdir()
+    (root / "status").write_text("enabled\n")
+    entry = root / "qemu-mipsel"
+    entry.write_text(
+        "enabled\n"
+        f"interpreter {handler['interpreter']}\n"
+        f"flags: {handler['flags']}\n"
+        "offset 0\n"
+        f"magic {handler['magic']}\n"
+        f"mask {handler['mask']}\n"
+    )
+    _preflight_mips_binfmt(ROOT, target="mipsel-3.4", proc=root)
+    entry.write_text(entry.read_text().replace("flags: POF", "flags: P"))
+    with pytest.raises(InitError, match="binfmt"):
+        _preflight_mips_binfmt(ROOT, target="mipsel-3.4", proc=root)
+
+
+def test_mipsel_elf_endian_is_checked_not_bypassed(tmp_path: Path) -> None:
+    root = tmp_path / "root"
+    elf = root / "opt/bin/opkg"
+    elf.parent.mkdir(parents=True)
+    data = bytearray(40)
+    data[:6] = b"\x7fELF\x01\x02"
+    data[18:20] = (8).to_bytes(2, "big")
+    data[36:40] = (0x70001005).to_bytes(4, "big")
+    elf.write_bytes(data)
+    with pytest.raises(InitError, match="endian"):
+        _audit_rootfs(root, "mipsel-3.4")
 
 
 def test_mips_binfmt_requires_exact_current_handler(tmp_path: Path) -> None:
@@ -178,13 +224,16 @@ def test_mips_binfmt_requires_exact_current_handler(tmp_path: Path) -> None:
     ("owner", "create_error"),
     [("keemu", False), ("foreign", False), ("keemu", True)],
 )
+@pytest.mark.parametrize("target", ["mips-3.4", "mipsel-3.4"])
 def test_mips_observer_is_owner_checked_and_cleans_anonymous_volume(
     owner: str,
     create_error: bool,
+    target: str,
 ) -> None:
     cid = "a" * 64
     volume = "b" * 64
-    handler = json.loads((ROOT / "locks/m1e-init-mips.json").read_text())["binfmt"]
+    suffix = "mips" if target == "mips-3.4" else "mipsel"
+    handler = json.loads((ROOT / f"locks/m1e-init-{suffix}.json").read_text())["binfmt"]
     output = (
         "enabled\nenabled\n"
         f"interpreter {handler['interpreter']}\n"
@@ -219,6 +268,7 @@ def test_mips_observer_is_owner_checked_and_cleans_anonymous_volume(
                     "/proc/sys/fs/binfmt_misc" in arg and "readonly" in arg
                     for arg in argv
                 )
+                assert argv[-1] == f"/__keemu_binfmt/qemu-{suffix}"
                 if create_error:
                     raise InitError("create failed after allocation")
                 return cid
@@ -287,12 +337,14 @@ def test_mips_observer_is_owner_checked_and_cleans_anonymous_volume(
     ):
         if owner == "foreign":
             with pytest.raises(InitError, match="ownership mismatch"):
-                _observe_host_mips_binfmt(name="keemu-binfmt-test")
+                _observe_host_mips_binfmt(target=target, name="keemu-binfmt-test")
         elif create_error:
             with pytest.raises(InitError, match="create failed after allocation"):
-                _observe_host_mips_binfmt(name="keemu-binfmt-test")
+                _observe_host_mips_binfmt(target=target, name="keemu-binfmt-test")
         else:
-            status, entry = _observe_host_mips_binfmt(name="keemu-binfmt-test")
+            status, entry = _observe_host_mips_binfmt(
+                target=target, name="keemu-binfmt-test"
+            )
     if owner == "foreign":
         assert not any(c[1] in ("start", "rm") for c in calls)
         return
@@ -440,3 +492,37 @@ def test_mips_committed_metadata_refuses_divergent_image() -> None:
                 pin["input_lock_sha256"],
                 ROOT,
             )
+
+
+def test_mipsel_committed_metadata_rejects_cross_target_and_tampering() -> None:
+    pin = json.loads((ROOT / "locks/m1e-init-mipsel.json").read_text())
+    lock = json.loads((ROOT / pin["input_lock"]).read_text())
+    native = json.loads((ROOT / pin["native_lock"]).read_text())
+    fields = {
+        "schema_version": "cache_schema_version",
+        "target": "target",
+        "lock_sha256": "input_lock_sha256",
+        "native_image_id": "native_image_id",
+        "tree_sha256": "rootfs_tree_sha256",
+        "image_tree_sha256": "image_tree_sha256",
+        "oci_digest": "oci_digest",
+        "saved_archive_sha256": "saved_archive_sha256",
+        "saved_config_sha256": "saved_config_sha256",
+        "saved_layer_sha256": "saved_layer_sha256",
+        "inventory_sha256": "installed_inventory_sha256",
+        "feed_config_sha256": "feed_config_sha256",
+        "feed_index_sha256": "feed_index_sha256",
+        "package_count": "package_count",
+        "labels": "labels",
+        "smoke": "smoke",
+    }
+    metadata = {key: pin[value] for key, value in fields.items()}
+    args = (Path(pin["cache_key"]), lock, native, pin["input_lock_sha256"], ROOT)
+    _verify_frozen_metadata(metadata, *args)
+    for field in ("target", "oci_digest", "tree_sha256", "labels", "smoke"):
+        altered = copy.deepcopy(metadata)
+        altered[field] = "mips-3.4" if field == "target" else None
+        with pytest.raises(InitError):
+            _verify_frozen_metadata(altered, *args)
+    with pytest.raises(InitError, match="committed image lock"):
+        _verify_frozen_metadata(metadata, Path("foreign"), *args[1:])

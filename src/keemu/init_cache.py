@@ -30,6 +30,7 @@ SCHEMA_VERSION = 4
 MIPS_SCHEMA_VERSION = 5
 TARGET = "aarch64-3.10"
 MIPS = "mips-3.4"
+MIPSEL = "mipsel-3.4"
 HEX = re.compile(r"[0-9a-f]{64}\Z")
 BINFORMAT_OBSERVER_IMAGE = (
     "sha256:7956ad1f365ad2ce4454673cb3f3ab31798703b2a3ea1d1329c509250f974bee"
@@ -39,7 +40,7 @@ BINFORMAT_DESTINATION = "/__keemu_binfmt"
 
 
 def _cache_schema(target: str) -> int:
-    return MIPS_SCHEMA_VERSION if target == MIPS else SCHEMA_VERSION
+    return MIPS_SCHEMA_VERSION if target in (MIPS, MIPSEL) else SCHEMA_VERSION
 
 
 class InitError(ValueError):
@@ -70,6 +71,8 @@ def _image_lock_path(repo: Path, target: str) -> Path:
         return repo / "locks/m1a-init-aarch64.json"
     if target == MIPS:
         return repo / "locks/m1e-init-mips.json"
+    if target == MIPSEL:
+        return repo / "locks/m1e-init-mipsel.json"
     raise InitError("unsupported locked init target")
 
 
@@ -88,11 +91,23 @@ def _paths(repo: Path, target: str) -> tuple[Path, Path, Path, Path]:
             repo / ".runtime/p0/qemu-user-root/usr/bin/qemu-mips",
             repo / "profiles/generic/generic-mips.yaml",
         )
+    if target == MIPSEL:
+        return (
+            repo / "locks/m1b18-mipsel-3.4.json",
+            repo / ".runtime/m1b18/mipsel-3.4",
+            repo / ".runtime/p0/qemu-user-root/usr/bin/qemu-mipsel",
+            repo / "profiles/generic/generic-mipsel.yaml",
+        )
     raise InitError("unsupported locked init target")
 
 
-def _observe_host_mips_binfmt(*, name: str | None = None) -> tuple[str, str]:
+def _observe_host_mips_binfmt(
+    *, target: str = MIPS, name: str | None = None
+) -> tuple[str, str]:
     """Read only daemon-host binfmt via an exact owned, disposable Docker helper."""
+    if target not in (MIPS, MIPSEL):
+        raise InitError("unsupported locked init target")
+    handler = "qemu-mips" if target == MIPS else "qemu-mipsel"
     run_id = uuid.uuid4().hex
     name = name or f"keemu-binfmt-{run_id[:12]}"
     if not re.fullmatch(r"keemu-binfmt-[a-z0-9-]+", name):
@@ -150,7 +165,7 @@ def _observe_host_mips_binfmt(*, name: str | None = None) -> tuple[str, str]:
             "/bin/cat",
             BINFORMAT_OBSERVER_IMAGE,
             f"{BINFORMAT_DESTINATION}/status",
-            f"{BINFORMAT_DESTINATION}/qemu-mips",
+            f"{BINFORMAT_DESTINATION}/{handler}",
         ]
 
         def recover_issued_id() -> None:
@@ -247,18 +262,24 @@ def _observe_host_mips_binfmt(*, name: str | None = None) -> tuple[str, str]:
                     raise InitError("binfmt observer volume persists after cleanup")
 
 
-def _preflight_mips_binfmt(repo: Path, *, proc: Path | None = None) -> None:
+def _preflight_mips_binfmt(
+    repo: Path, *, target: str = MIPS, proc: Path | None = None
+) -> None:
     """Require current exact readback, not historical registration evidence."""
-    expected = json.loads(_image_lock_path(repo, MIPS).read_text())["binfmt"]
+    expected = json.loads(_image_lock_path(repo, target).read_text())["binfmt"]
+    handler = "qemu-mips" if target == MIPS else "qemu-mipsel"
     if proc is None:
-        status, entry = _observe_host_mips_binfmt()
+        if target == MIPS:
+            status, entry = _observe_host_mips_binfmt()
+        else:
+            status, entry = _observe_host_mips_binfmt(target=target)
     else:
         try:
             status = (proc / "status").read_text(encoding="ascii")
-            entry = (proc / "qemu-mips").read_text(encoding="ascii")
+            entry = (proc / handler).read_text(encoding="ascii")
         except (OSError, UnicodeError) as error:
             raise InitError(
-                "current host qemu-mips binfmt readback unavailable"
+                f"current host {handler} binfmt readback unavailable"
             ) from error
     lines = entry.splitlines()
     actual = {
@@ -278,7 +299,7 @@ def _preflight_mips_binfmt(repo: Path, *, proc: Path | None = None) -> None:
         or len(lines) != 6
         or len(actual) != 5
     ):
-        raise InitError("current host qemu-mips binfmt differs from locked handler")
+        raise InitError(f"current host {handler} binfmt differs from locked handler")
 
 
 def _inputs(repo: Path, *, target: str = TARGET) -> tuple[dict, dict, str]:
@@ -324,10 +345,10 @@ def _inputs(repo: Path, *, target: str = TARGET) -> tuple[dict, dict, str]:
             raise InitError("locked QEMU package missing")
         _regular_hash(repo / ".runtime/p0" / qemu_deb["filename"], qemu_deb["sha256"])
     else:
-        fixtures_path = repo / "locks/m1b18-fixtures-mips-3.4.json"
+        fixtures_path = repo / f"locks/m1b18-fixtures-{target}.json"
         fixtures = json.loads(fixtures_path.read_text(encoding="utf-8"))
         prior = json.loads(
-            (repo / "locks/m1b18-image-mips-3.4.json").read_text(encoding="utf-8")
+            (repo / f"locks/m1b18-image-{target}.json").read_text(encoding="utf-8")
         )
         if (
             fixtures.get("target") != target
@@ -339,7 +360,7 @@ def _inputs(repo: Path, *, target: str = TARGET) -> tuple[dict, dict, str]:
             or fixtures.get("qemu_sha256") != image_lock.get("qemu_binary_sha256")
         ):
             raise InitError("MIPS prerequisite lock binding mismatch")
-        sdk = repo / "locks/m1b18-sdk-mips-3.4.json"
+        sdk = repo / f"locks/m1b18-sdk-{target}.json"
         _regular_hash(sdk, fixtures["sdk_lock_sha256"])
         for artifact in lock["bootstrap_artifacts"]:
             _regular_hash(base / artifact["filename"], artifact["sha256"])
@@ -390,7 +411,7 @@ def _inventory(text: str, lock: dict) -> list[dict[str, str]]:
 def _audit_rootfs(root: Path, target: str) -> dict:
     if target == TARGET:
         return audit_tree(root)
-    if target != MIPS:
+    if target not in (MIPS, MIPSEL):
         raise InitError("unsupported locked init target")
     digest = hashlib.sha256()
     target_elfs = 0
@@ -418,10 +439,11 @@ def _audit_rootfs(root: Path, target: str) -> dict:
                         raise InitError("native init ELF mismatch")
                     native_elfs += 1
                 else:
-                    flags = int.from_bytes(header[36:40], "big")
+                    endian = "big" if target == MIPS else "little"
+                    flags = int.from_bytes(header[36:40], endian)
                     if (
-                        header[4:6] != b"\x01\x02"
-                        or int.from_bytes(header[18:20], "big") != 8
+                        header[4:6] != (b"\x01\x02" if target == MIPS else b"\x01\x01")
+                        or int.from_bytes(header[18:20], endian) != 8
                         or flags & 0x0000F000 != 0x1000
                         or flags & 0xF0000000 != 0x70000000
                     ):
@@ -502,11 +524,11 @@ def _image_archive(archive: Path, expected_labels: dict) -> dict:
 
 
 def _canonical_mips_archive(source: Path, destination: Path) -> str:
-    """Freeze legacy Docker's COPY mtimes and config history before loading.
+    """Freeze MIPS/MIPSEL legacy Docker COPY mtimes and history before loading.
 
-    Only the MIPS v5 archive uses this serializer; existing AArch64 v4 bytes
-    and its Docker build path remain untouched. OCI digests are recomputed from
-    the normalized uncompressed layer, compressed layer, config and manifest.
+    Only MIPS-family v5 archives use this serializer; existing AArch64 v4
+    bytes and build path remain untouched. OCI digests are recomputed from the
+    normalized uncompressed layer, compressed layer, config and manifest.
     """
     if source == destination or source.is_symlink() or not source.is_file():
         raise InitError("invalid MIPS image archive source")
@@ -800,8 +822,10 @@ def _verify_cache(
 
 
 def _smoke(image_id: str, lock: dict, *, repo: Path | None = None) -> dict[str, str]:
-    if lock["target"] == MIPS:
-        _preflight_mips_binfmt(repo or Path(__file__).resolve().parents[2])
+    if lock["target"] in (MIPS, MIPSEL):
+        _preflight_mips_binfmt(
+            repo or Path(__file__).resolve().parents[2], target=lock["target"]
+        )
     name = "keemu-init-" + uuid.uuid4().hex[:12]
     run_id = uuid.uuid4().hex
     labels = [
@@ -846,7 +870,11 @@ def _smoke(image_id: str, lock: dict, *, repo: Path | None = None) -> dict[str, 
                 "/opt/bin/busybox uname -m; /opt/bin/busybox true; echo nested-ok",
             ]
         )
-        architecture = "aarch64" if lock["target"] == TARGET else "mips"
+        architecture = {
+            TARGET: "aarch64",
+            MIPS: "mips",
+            MIPSEL: "mips",
+        }[lock["target"]]
         if "nested-ok" not in target or architecture not in target:
             raise InitError("target shell/opkg/nested smoke mismatch")
         installed = _run(
@@ -933,7 +961,7 @@ def init_locked(
         if target == TARGET:
             verify_native_image(repo)
         else:
-            _preflight_mips_binfmt(repo)
+            _preflight_mips_binfmt(repo, target=target)
         lock_path, base, qemu, _ = _paths(repo, target)
         temporary = Path(tempfile.mkdtemp(prefix=f".{key}.", dir=cache_root))
         try:
@@ -944,7 +972,7 @@ def init_locked(
                 destination=root,
                 qemu=qemu,
                 bootstrap_opkg=base / "opkg",
-                timeout=600 if target == MIPS else 300,
+                timeout=600 if target in (MIPS, MIPSEL) else 300,
             )
             inventory = _inventory(result.installed_packages, lock)
             # opkg writes wall-clock Installed-Time on each run. Freeze only
@@ -998,7 +1026,11 @@ def init_locked(
             audit = _audit_rootfs(root, target)
             labels = {
                 "org.keemu.owner": "keemu",
-                "org.keemu.phase": "m1a-11" if target == TARGET else "m1e-01",
+                "org.keemu.phase": {
+                    TARGET: "m1a-11",
+                    MIPS: "m1e-01",
+                    MIPSEL: "m1e-02",
+                }[target],
                 "org.keemu.target": target,
                 "org.keemu.native": "linux/amd64",
                 "org.keemu.rootfs-sha256": audit["tree_sha256"],
@@ -1043,7 +1075,7 @@ def init_locked(
             ):
                 raise InitError("built image does not match audited rootfs")
             archive = temporary / "image.tar"
-            if target == MIPS:
+            if target in (MIPS, MIPSEL):
                 raw_archive = temporary / "built.tar"
                 _run(
                     ["docker", "save", "-o", str(raw_archive), image_id],

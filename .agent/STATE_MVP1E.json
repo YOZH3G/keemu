@@ -15,7 +15,7 @@
   },
   "routing": {
     "mode": "shadow",
-    "last_evaluated_at": "2026-09-29T11:51:59+00:00",
+    "last_evaluated_at": "2026-09-29T12:28:13+00:00",
     "recommended": {
       "tier": "C5",
       "model": "gpt-6-sol",
@@ -29,14 +29,14 @@
     "signals": {
       "score": 11,
       "signal_source": "active_subtask",
-      "active_subtask_id": "m1e-01",
-      "task_chars": 179,
+      "active_subtask_id": "m1e-02",
+      "task_chars": 181,
       "changed_files": 0,
-      "planned_change_count": 7,
+      "planned_change_count": 6,
       "component_count": 4,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 2421804,
+      "graphify_bytes": 2443694,
       "previous_failures": 0,
       "same_error_count": 0,
       "production_risk": true,
@@ -56,6 +56,7 @@
       "safety_context": [
         "credentials",
         "kernel",
+        "privilege",
         "production"
       ],
       "reasons": [
@@ -78,7 +79,7 @@
     "subtask_plan": {
       "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
       "plan_digest": "c5f8029160882b3cd1addf1c1034a7f467380e7ba1fadc290eeba5f921a388b2",
-      "active_index": 2,
+      "active_index": 3,
       "items": [
         {
           "id": "m1e-00",
@@ -148,8 +149,15 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "4522388c988af77240821910ee2b71f24e8efd8d3bb1a69cb45cd1dd73071947"
+          "status": "complete",
+          "digest": "4522388c988af77240821910ee2b71f24e8efd8d3bb1a69cb45cd1dd73071947",
+          "outcome": {
+            "event_id": "evt_b08d8749f9f88cac8a356273",
+            "route_event_id": "evt_e1d415fc7f4d7a33bac64367",
+            "completed_at": "2026-09-29T12:40:21+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1e-03",
@@ -166,7 +174,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "1e02a3582f9fa24dd6c24b4f1a02550c9696a24e81d8d093a4a23ba0c581d344"
         },
         {
@@ -296,7 +304,7 @@
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_02f5a89317251695ef8c499f",
+      "last_event_id": "evt_b08d8749f9f88cac8a356273",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -311,23 +319,23 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-29T11:51:59+00:00",
-    "last_run_finished_at": "2026-09-29T12:28:03+00:00",
-    "last_log": ".agent/runs/20260929T115159Z.log",
-    "last_checkpoint_at": "2026-09-29T12:28:05+00:00"
+    "last_run_started_at": "2026-09-29T12:28:13+00:00",
+    "last_run_finished_at": "2026-09-29T12:40:19+00:00",
+    "last_log": ".agent/runs/20260929T122813Z.log",
+    "last_checkpoint_at": "2026-09-29T12:40:21+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-29T11:51:14+00:00",
+    "checked_at": "2026-09-29T12:28:09+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1e-01:a2b1557aef9759f0893cf75cf16925086e3d45f50b3c2386cfc0c26bf98315a6",
+    "admission_key": "subtask:m1e-02:4522388c988af77240821910ee2b71f24e8efd8d3bb1a69cb45cd1dd73071947",
     "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
-    "task_intent": "Implement a deterministic atomically published offline-verifiable locked init cache for generic-mips by extending the verified common cache pattern and preserving AArch64 behavior",
-    "subtask_id": "m1e-01",
-    "subtask_digest": "a2b1557aef9759f0893cf75cf16925086e3d45f50b3c2386cfc0c26bf98315a6",
+    "task_intent": "Implement the same deterministic atomically published offline-verifiable locked init cache contract for generic-mipsel with independent target evidence and no target-specific bypass",
+    "subtask_id": "m1e-02",
+    "subtask_digest": "4522388c988af77240821910ee2b71f24e8efd8d3bb1a69cb45cd1dd73071947",
     "action": "admit",
-    "remaining_percent": 83.0,
-    "reset_at": "2026-09-29T15:55:00+00:00",
+    "remaining_percent": 40.0,
+    "reset_at": "2026-09-29T15:55:27+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "Fresh manual same-subtask OAuth observation admits resume; 83% primary-window quota remains"
+    "message": "5-hour OAuth quota admits new task"
   }
 }

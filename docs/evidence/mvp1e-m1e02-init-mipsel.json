@@ -1,0 +1,49 @@
+{
+  "subtask": "m1e-02",
+  "acceptance": "E03",
+  "status": "PASS",
+  "scope": "generic-mipsel deterministic locked init cache only; E04 and later subtasks not started. No host binfmt handler was installed, modified or replaced.",
+  "target": "mipsel-3.4",
+  "cache_schema_version": 5,
+  "cache_key": "8761fcaa023141c0e99863ec6eed5a1edb96a5811420a1562ca2b0b43eec1151",
+  "lock_path": "locks/m1e-init-mipsel.json",
+  "lock_sha256": "22502ba3675da8c96de67b89f35ef6a50e350d73e8b32aac8a5e94028fec1ef0",
+  "input_lock_sha256": "aad4b3b1638bcb197aa860ec2e6fbd2f2443309da22d8e56c7a723fe962a1888",
+  "profile_sha256": "6b80d1ee6ec39ffb0d99c1031d5d144383097db1b03a8c89bb5be5cefecf3e3b",
+  "fixture_lock_sha256": "84485a7581a47887624146609db997eaf7895a89e8206dfdc3d1b73f82c0073f",
+  "qemu_binary_sha256": "40be2a933d47494134ddc8947ce09c41af6ea29056a4e552da8e8cd8375f2229",
+  "image_id": "sha256:44f1e4382b1546f454ed6602212effff860c5aaadcf03d513ceae506ce6abe74",
+  "rootfs_tree_sha256": "d7ad0458d91ba314d3e6a0d570bbc620963390f0cc5b35d9bf1a21f06f3e5157",
+  "image_tree_sha256": "d984b62813bf283d9b92aceb33afcc1cdfc4762eebebaf1dd4d02e1c37cb6d02",
+  "archive_sha256": "62070d954d9730e85da917db451a788e2464a36251255d6803b227d18f46d21c",
+  "config_sha256": "e59cd91acbe38c734be444ead0748f9432b183d82ad868e977560108a913464e",
+  "layer_sha256": "e1dd47de0b73da449b5a3e1f27b895d57c5f54c42886ed84673487d60c9f5531",
+  "cache_manifest_sha256": "74a3521ddf75b071912f20e3d44ce32f823461cc8aca2dface8b90972ca43133",
+  "inventory": "exact locked 20 packages and versions from real target opkg",
+  "native_init": "exact pinned static amd64 init, checked in rootfs and image",
+  "binfmt_preflight": "Fresh daemon-host qemu-mipsel status/enabled/interpreter=/usr/bin/qemu-mipsel/POF/offset=0/magic/mask matched this lock before every new build and target smoke. Pinned owner-labeled read-only bind observer used no network, capabilities, privilege, writable root or host namespace; exact container and anonymous volume cleanup/absence verified. No handler mutation.",
+  "target_smoke": "Real Docker/binfmt target shell, opkg, nested BusyBox, exact inventory and Docker-bridge DNS passed; HTTPS only from Hermes process vantage, not target.",
+  "determinism": "Guarded candidate and independently timestamped guarded production build both produced the identical canonical OCI image ID and archive SHA-256; independent third guarded build in the opt-in integration test matched again. MIPS-family schema-5 canonicalization normalizes COPY-layer timestamps/ownership, gzip header and config/history created fields; AArch64 schema-4 path is unchanged.",
+  "publication": "A new cache key was atomically no-replace published only after target smoke and full frozen lock verification; existing cache/foreign marker is never overwritten. Offline repeat rehashed inputs, rootfs, native init, inventory, feed, archive and Docker-local image without fetch or build. Corrupt copied rootfs/archive/inventory/feed and divergent metadata were refused.",
+  "tests": {
+    "live": {"path": "reports/m1e02-live-final.xml", "sha256": "f92d626000ea21f2696d088981a5512c62c0f40ae8fcc9336771020c140731fc", "passed": 22, "failed": 0, "errors": 0, "skipped": 0},
+    "portable": {"path": "reports/m1e02-portable-final.xml", "sha256": "ac9b0fc46a423d9862eb5a3dbe509b3619ef176460628385d16659d7af168a32", "passed": 353, "failed": 0, "errors": 0, "skipped": 59},
+    "ruff_lint_and_touched_format": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "regression": {
+    "aarch64_image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+    "mips_image_id": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+    "aarch64_and_mips_offline": "PASS",
+    "prior_mips_lock_sha256": "5f8a19011a30032502a9f54a6c6354d1ec985b3b6372a1a0a420c4c297284b29",
+    "prior_mips_evidence_sha256": "a5004cafab8748e484a084d472578379bbf3c912a2b332098e40187570c5e6c9"
+  },
+  "source_sha256": {
+    "src/keemu/init_cache.py": "b7e5caaa3b4f131d4a3a0ecbe6672d19a9856c45dc0680241fcc7c88793dcaaf",
+    "src/keemu/cli.py": "f8a14e37d857d5cf2cbfedd8132a8f375859494fe0d627e7e232d867a67741d8",
+    "tests/unit/test_init_cache.py": "70298ab3c7d14fbfe885236bd141effeba0702e7fd11cca6453db993b7cee00f",
+    "tests/integration/test_init_cache.py": "e6efd1cc4e51c612cea55cc94e263e110b1126b45de84860db63eac9f7e760b2"
+  },
+  "ownership_postflight": {"owner_containers": 0, "observer_containers": 0, "owner_networks": 0, "docker_volume_count": 52},
+  "limitations": "Offline verification requires the locked Docker-local image or an explicit network-free load of the pinned archive. Target BusyBox wget lacks TLS; HTTPS smoke is Hermes-process-vantage only. No one-shot, persistent or script lifecycle for MIPSEL is claimed in E03."
+}

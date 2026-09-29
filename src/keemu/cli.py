@@ -450,11 +450,13 @@ def exec_environment(
 )
 def init(profile_id: str, repo: Path, locked: bool, offline: bool) -> None:
     """Prepare a locked generic base cache from pinned package bytes."""
-    targets = {"generic-aarch64": "aarch64-3.10", "generic-mips": "mips-3.4"}
+    targets = {
+        "generic-aarch64": "aarch64-3.10",
+        "generic-mips": "mips-3.4",
+        "generic-mipsel": "mipsel-3.4",
+    }
     if profile_id not in targets:
-        raise InputError(
-            "only verified generic-aarch64/generic-mips bases are available"
-        )
+        raise InputError("only verified generic bases are available")
     try:
         profile = load_profile(repo / "profiles/generic" / f"{profile_id}.yaml")
         if profile.id != profile_id or profile.entware_target != targets[profile_id]:

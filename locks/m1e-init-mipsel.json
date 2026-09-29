@@ -1,0 +1,45 @@
+{
+  "kind": "mvp1e-locked-base-image",
+  "target": "mipsel-3.4",
+  "cache_schema_version": 5,
+  "cache_key": "8761fcaa023141c0e99863ec6eed5a1edb96a5811420a1562ca2b0b43eec1151",
+  "input_lock": "locks/m1b18-mipsel-3.4.json",
+  "input_lock_sha256": "aad4b3b1638bcb197aa860ec2e6fbd2f2443309da22d8e56c7a723fe962a1888",
+  "native_lock": "locks/p0-mixed-image-aarch64-p005.json",
+  "native_image_id": "sha256:66efaedcbd42ac56db30122762ebf73bcfb41a17dd6404bf22f7af067047b6f6",
+  "profile_sha256": "6b80d1ee6ec39ffb0d99c1031d5d144383097db1b03a8c89bb5be5cefecf3e3b",
+  "fixture_lock_sha256": "84485a7581a47887624146609db997eaf7895a89e8206dfdc3d1b73f82c0073f",
+  "qemu_binary_sha256": "40be2a933d47494134ddc8947ce09c41af6ea29056a4e552da8e8cd8375f2229",
+  "binfmt": {
+    "interpreter": "/usr/bin/qemu-mipsel",
+    "flags": "POF",
+    "magic": "7f454c46010101000000000000000000020008000100000000000000000000000000000000000000",
+    "mask": "ffffffffffffff0000fffffffffffffffeffffffffffffff00000000000000000000000020000000"
+  },
+  "platform": "linux/amd64",
+  "oci_digest": "sha256:44f1e4382b1546f454ed6602212effff860c5aaadcf03d513ceae506ce6abe74",
+  "rootfs_tree_sha256": "d7ad0458d91ba314d3e6a0d570bbc620963390f0cc5b35d9bf1a21f06f3e5157",
+  "image_tree_sha256": "d984b62813bf283d9b92aceb33afcc1cdfc4762eebebaf1dd4d02e1c37cb6d02",
+  "installed_inventory_sha256": "333fc833c226bb1cf5fc9aea1de996987be545d43883ea5c41fe5920b4e55828",
+  "feed_config_sha256": "16e8be2686c68a59db6fff919b049fe648daeca7316e5e62f6bad1a657ac402e",
+  "feed_index_sha256": "22cc370f8a81b3b6906e5e66d296375376d8d98aea247140edd497c170c6e445",
+  "package_count": 20,
+  "saved_archive_sha256": "62070d954d9730e85da917db451a788e2464a36251255d6803b227d18f46d21c",
+  "saved_config_sha256": "e59cd91acbe38c734be444ead0748f9432b183d82ad868e977560108a913464e",
+  "saved_layer_sha256": "e1dd47de0b73da449b5a3e1f27b895d57c5f54c42886ed84673487d60c9f5531",
+  "labels": {
+    "org.keemu.owner": "keemu",
+    "org.keemu.phase": "m1e-02",
+    "org.keemu.target": "mipsel-3.4",
+    "org.keemu.native": "linux/amd64",
+    "org.keemu.rootfs-sha256": "d7ad0458d91ba314d3e6a0d570bbc620963390f0cc5b35d9bf1a21f06f3e5157",
+    "org.keemu.package-lock-sha256": "aad4b3b1638bcb197aa860ec2e6fbd2f2443309da22d8e56c7a723fe962a1888",
+    "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a"
+  },
+  "smoke": {
+    "target": "PASS",
+    "dns": "PASS (target Docker bridge)",
+    "https": "PASS (Hermes host namespace, default CA/hostname verification)",
+    "limitation": "HTTPS was not executed in target namespace: locked BusyBox wget lacks TLS"
+  }
+}
