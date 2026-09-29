@@ -1,0 +1,66 @@
+{
+  "subtask": "m1e-04",
+  "gate": "E05",
+  "status": "PASS",
+  "scope": "registry-backed persistent IPK lifecycle and explicit recovery for generic-mips and generic-mipsel, preserving generic-aarch64; E06-E08 and MVP 1D D02/D07 are separate",
+  "verified_at_utc": "2026-09-29T18:24:26Z",
+  "implementation": {
+    "src/keemu/persistent.py": "72e9e8470ef69c37d1ac724a54f52e223c8c24ee916ab1f651c20ff592466568",
+    "tests/integration/test_lifecycle.py": "f832167eb3f82fc5d022d062bb25e1126cb58a3fe1b8d7fd7ba3a4ddc2222cf4",
+    "tests/integration/test_m1e04_persistent.py": "51c4b4dfbf5d6a4ce64b1484d95c5cd74cb72d54a250ea1ad97ff059f28d62cd",
+    "tests/unit/test_recovery.py": "8c70342e3dd70813bfec23994b218c3edd5faf2fca47905e653f78784ca316a5"
+  },
+  "base_locks": {
+    "locks/m1a-init-aarch64.json": "1d8acdfb3bb17383f8a4c2dcb28bf71d472e003bcbd841e5e48f48e75ac1089e",
+    "locks/m1e-init-mips.json": "5f8a19011a30032502a9f54a6c6354d1ec985b3b6372a1a0a420c4c297284b29",
+    "locks/m1e-init-mipsel.json": "22502ba3675da8c96de67b89f35ef6a50e350d73e8b32aac8a5e94028fec1ef0"
+  },
+  "real_live_junit": {
+    "path": "reports/m1e04-live-final.xml",
+    "sha256": "76082fa8064d2e0708c46187cb8d89485c6c0d954adaff7f948f5b70329bc6ad",
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "cases": [
+      "test_persistent_mips_lifecycle_and_recovery[generic-mips-mips-3.4]",
+      "test_persistent_mips_lifecycle_and_recovery[generic-mipsel-mipsel-3.4]"
+    ]
+  },
+  "aarch64_regression_junit": {
+    "path": "reports/m1e04-aarch64-regression.xml",
+    "sha256": "9f22e117db14222b81a5e36601c77eba2f0883d93bd01aef160ed697672a2deb",
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0
+  },
+  "aarch64_recovery_junit": {
+    "path": "reports/m1e04-aarch64-recovery.xml",
+    "sha256": "58d5e1ba7a9ee2dff3698a091ef36922b0dfdde849dccdcd9694eb36582986b6",
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "portable_junit": {
+    "path": "reports/m1e04-portable-final.xml",
+    "sha256": "fcd341714c32d2a27f1cebe452def337f6e2c2a3e664ba1900ac2fb9db594323",
+    "passed": 354,
+    "failed": 0,
+    "skipped_opt_in": 63
+  },
+  "per_target_observations": {
+    "successful_lifecycle": "real target opkg installs a locked native-architecture IPK, runs postinst once, executes hello, and retains its full-ID container across restart and down/up; status, ports, logs, exec, destroy and permanent tombstone checked",
+    "service": "SHA-256-pinned target-native web-demo installed as IPK; target-loopback HTTP readiness passed after create, same-ID restart, and down/up while postinst count stayed one",
+    "negative_input": "wrong-architecture static inspection and changed locked source refused before registry/Docker allocation",
+    "negative_install": "failed postinst leaves failed registry state and owner-verified absent container, explicit recovery tombstones",
+    "interruption": "real creator SIGKILL after Docker create before ID publication and after ID publication/start; registry remains creating/installing, no automatic replay, explicit CLI recovery removes sole exact-name/full-ID resource and idempotent retry returns tombstone",
+    "foreign_resource": "stale registry pointing to a different run full ID refused; extra same-run container and different-target/image same-run container refused without removing the original; injected remove failure retains transitional state and succeeds on exact retry",
+    "concurrency": "existing cross-process per-name flock and atomic transition/replacement tests passed; live creator lock held at both interruption barriers",
+    "postflight": "both live target cases independently compared full Docker container and network ID sets before/after; final owner-label container/network queries empty"
+  },
+  "limitations": [
+    "Recovery is explicit only and discards uncertain state; it does not replay postinst or infer an interrupted PASS/report",
+    "No E06 standalone or persistent script integration, E07 three-target adversarial acceptance, or E08 final audit is claimed",
+    "MVP 1D D02/D07 same-UID target cleanup race and interrupted script-artifact/report blockers remain unchanged",
+    "No host binfmt, module, firewall or foreign resource mutation"
+  ]
+}

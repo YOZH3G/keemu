@@ -447,8 +447,10 @@ def create(
                 # orphan qualifies. Never sweep a labelled run or a network.
                 observed = runtime.reconcile()
                 owned = observed["container_owned"]
-                if observed["network_owned"] or len(owned) > 1 or (
-                    identifier is not None and owned and owned != [identifier]
+                if (
+                    observed["network_owned"]
+                    or len(owned) > 1
+                    or (identifier is not None and owned and owned != [identifier])
                 ):
                     raise RegistryError("ambiguous resources after failed create")
                 if owned:
@@ -569,11 +571,17 @@ def operate(root: Path, name: str, action: str, *, argv: tuple[str, ...] = ()) -
         )
         if action == "status" and record.state == "destroyed":
             owned = runtime.reconcile()
+            recorded_still_exists = (
+                record.resource is not None
+                and record.resource.container_id
+                in DockerRuntime.listed_ids("container")
+            )
             return {
                 "environment": record.model_dump(mode="json"),
                 "docker_running": None,
                 "consistent": not owned["container_owned"]
-                and not owned["network_owned"],
+                and not owned["network_owned"]
+                and not recorded_still_exists,
                 "reconciliation": owned,
             }
         if action == "status" and record.state == "failed":

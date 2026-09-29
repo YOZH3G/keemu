@@ -36,6 +36,7 @@ def package(
     architecture: str = "aarch64-3.10",
     hello: bytes = b"#!/bin/sh\necho KEEMU-HELLO\n",
     web_demo: bool = False,
+    web_binary: bytes | None = None,
 ) -> bytes:
     script = (
         b"#!/bin/sh\nexit 13\n"
@@ -60,12 +61,15 @@ def package(
         (control_dir / "postinst").chmod(0o755)
         (data_dir / "opt/bin/keemu-hello").write_bytes(hello)
         (data_dir / "opt/bin/keemu-hello").chmod(0o755)
-        if web_demo:
+        if web_demo or web_binary is not None:
             locked = json.loads(
                 (ROOT / "locks/p0-web-demo-aarch64-p006.json").read_text()
             )
-            binary = (ROOT / ".runtime/p0/fixtures/aarch64/web-demo-p006").read_bytes()
-            assert digest(binary) == locked["binary_sha256"]
+            if web_binary is None:
+                binary = (ROOT / ".runtime/p0/fixtures/aarch64/web-demo-p006").read_bytes()
+                assert digest(binary) == locked["binary_sha256"]
+            else:
+                binary = web_binary
             (data_dir / "opt/bin/web-demo").write_bytes(binary)
             (data_dir / "opt/bin/web-demo").chmod(0o755)
         for source, name in (

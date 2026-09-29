@@ -162,3 +162,14 @@ def test_healthy_environment_never_recovered(tmp_path, fake):
     with pytest.raises(RegistryError, match="healthy"):
         persistent.recover(tmp_path, "fixture")
     assert fake.removed == []
+
+
+def test_tombstone_status_refuses_relabelled_recorded_id(tmp_path, fake):
+    seed(tmp_path, "failed")
+    fake.owned = []
+    fake.all_ids = {FOREIGN}
+    assert persistent.recover(tmp_path, "fixture")["state"] == "destroyed"
+    fake.all_ids.add(CID)
+    assert persistent.operate(tmp_path, "fixture", "status")["consistent"] is False
+    with pytest.raises(RegistryError, match="without matching ownership"):
+        persistent.recover(tmp_path, "fixture")
