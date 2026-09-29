@@ -27,9 +27,19 @@ from keemu.p0_runtime_image import verify as verify_native_image
 from keemu.reports import _publish_directory_noreplace
 
 SCHEMA_VERSION = 4
+MIPS_SCHEMA_VERSION = 5
 TARGET = "aarch64-3.10"
 MIPS = "mips-3.4"
 HEX = re.compile(r"[0-9a-f]{64}\Z")
+BINFORMAT_OBSERVER_IMAGE = (
+    "sha256:7956ad1f365ad2ce4454673cb3f3ab31798703b2a3ea1d1329c509250f974bee"
+)
+BINFORMAT_SOURCE = "/proc/sys/fs/binfmt_misc"
+BINFORMAT_DESTINATION = "/__keemu_binfmt"
+
+
+def _cache_schema(target: str) -> int:
+    return MIPS_SCHEMA_VERSION if target == MIPS else SCHEMA_VERSION
 
 
 class InitError(ValueError):
@@ -81,16 +91,175 @@ def _paths(repo: Path, target: str) -> tuple[Path, Path, Path, Path]:
     raise InitError("unsupported locked init target")
 
 
-def _preflight_mips_binfmt(
-    repo: Path, *, proc: Path = Path("/proc/sys/fs/binfmt_misc")
-) -> None:
+def _observe_host_mips_binfmt(*, name: str | None = None) -> tuple[str, str]:
+    """Read only daemon-host binfmt via an exact owned, disposable Docker helper."""
+    run_id = uuid.uuid4().hex
+    name = name or f"keemu-binfmt-{run_id[:12]}"
+    if not re.fullmatch(r"keemu-binfmt-[a-z0-9-]+", name):
+        raise InitError("invalid binfmt observer name")
+    image = json.loads(_run(["docker", "image", "inspect", BINFORMAT_OBSERVER_IMAGE]))
+    if (
+        len(image) != 1
+        or image[0].get("Id") != BINFORMAT_OBSERVER_IMAGE
+        or image[0].get("Architecture") != "amd64"
+        or image[0].get("Config", {}).get("Volumes") != {"/opt/data": {}}
+    ):
+        raise InitError("unverified binfmt observer image")
+    cid: str | None = None
+    volume: str | None = None
+
+    def inspected() -> dict:
+        if cid is None:
+            raise InitError("binfmt observer has no issued container ID")
+        result = json.loads(_run(["docker", "inspect", cid]))
+        if len(result) != 1:
+            raise InitError("ambiguous binfmt observer inspect")
+        item = result[0]
+        labels = item.get("Config", {}).get("Labels") or {}
+        if (
+            item.get("Id") != cid
+            or item.get("Name") != "/" + name
+            or item.get("Image") != BINFORMAT_OBSERVER_IMAGE
+            or labels.get("org.keemu.owner") != "keemu"
+            or labels.get("org.keemu.run-id") != run_id
+        ):
+            raise InitError("binfmt observer ownership mismatch; refused cleanup")
+        return item
+
+    try:
+        create_argv = [
+            "docker",
+            "create",
+            "--name",
+            name,
+            "--network=none",
+            "--memory=128m",
+            "--memory-swap=128m",
+            "--cpus=0.5",
+            "--pids-limit=32",
+            "--cap-drop=ALL",
+            "--security-opt=no-new-privileges",
+            "--read-only",
+            "--mount",
+            (f"type=bind,src={BINFORMAT_SOURCE},dst={BINFORMAT_DESTINATION},readonly"),
+            "--label",
+            "org.keemu.owner=keemu",
+            "--label",
+            f"org.keemu.run-id={run_id}",
+            "--entrypoint",
+            "/bin/cat",
+            BINFORMAT_OBSERVER_IMAGE,
+            f"{BINFORMAT_DESTINATION}/status",
+            f"{BINFORMAT_DESTINATION}/qemu-mips",
+        ]
+
+        def recover_issued_id() -> None:
+            nonlocal cid
+            matches = _run(
+                ["docker", "ps", "-aq", "--no-trunc", "--filter", f"name=^/{name}$"]
+            ).splitlines()
+            if len(matches) == 1 and re.fullmatch(r"[0-9a-f]{64}", matches[0]):
+                cid = matches[0]
+
+        try:
+            cid = _run(create_argv)
+        except InitError:
+            # A lost Docker CLI response can follow a successful allocation.
+            # The full-ID/image/label check in inspected() gates cleanup.
+            recover_issued_id()
+            raise
+        if not re.fullmatch(r"[0-9a-f]{64}", cid):
+            recover_issued_id()
+        if not re.fullmatch(r"[0-9a-f]{64}", cid):
+            raise InitError("invalid binfmt observer container ID")
+        item = inspected()
+        host = item.get("HostConfig", {})
+        if (
+            host.get("NetworkMode") != "none"
+            or host.get("Privileged") is not False
+            or host.get("ReadonlyRootfs") is not True
+            or host.get("CapDrop") != ["ALL"]
+            or "no-new-privileges" not in (host.get("SecurityOpt") or [])
+        ):
+            raise InitError("binfmt observer isolation mismatch")
+        mounts = item.get("Mounts", [])
+        bind = [m for m in mounts if m.get("Type") == "bind"]
+        volumes = [m for m in mounts if m.get("Type") == "volume"]
+        if len(volumes) == 1 and volumes[0].get("Destination") == "/opt/data":
+            volume = volumes[0].get("Name")
+        if (
+            len(mounts) != 2
+            or len(bind) != 1
+            or bind[0].get("Source") != BINFORMAT_SOURCE
+            or bind[0].get("Destination") != BINFORMAT_DESTINATION
+            or bind[0].get("RW") is not False
+            or len(volumes) != 1
+            or volumes[0].get("Destination") != "/opt/data"
+        ):
+            raise InitError("binfmt observer mount mismatch")
+        volume = volumes[0].get("Name")
+        if not isinstance(volume, str) or not re.fullmatch(r"[0-9a-f]{64}", volume):
+            raise InitError("ambiguous binfmt observer anonymous volume")
+        volume_info = json.loads(_run(["docker", "volume", "inspect", volume]))
+        if len(volume_info) != 1 or volume_info[0].get("Name") != volume:
+            raise InitError("binfmt observer volume identity mismatch")
+        if _run(
+            ["docker", "ps", "-aq", "--no-trunc", "--filter", f"volume={volume}"]
+        ).splitlines() != [cid]:
+            raise InitError("binfmt observer volume has ambiguous attachments")
+        output = _run(["docker", "start", "-a", cid], timeout=40)
+        if inspected().get("State", {}).get("ExitCode") != 0:
+            raise InitError("binfmt observer exited unsuccessfully")
+        status, separator, entry = output.partition("\n")
+        if not separator or not entry:
+            raise InitError("incomplete host binfmt readback")
+        return status + "\n", entry + "\n"
+    finally:
+        if cid and re.fullmatch(r"[0-9a-f]{64}", cid):
+            item = inspected()
+            if volume is None:
+                candidates = [
+                    m.get("Name")
+                    for m in item.get("Mounts", [])
+                    if m.get("Type") == "volume" and m.get("Destination") == "/opt/data"
+                ]
+                if len(candidates) == 1:
+                    volume = candidates[0]
+            if not isinstance(volume, str) or not re.fullmatch(r"[0-9a-f]{64}", volume):
+                raise InitError("binfmt observer volume ambiguous; refused cleanup")
+            _run(["docker", "rm", "-f", cid], timeout=40)
+            if _run(["docker", "ps", "-aq", "--no-trunc", "--filter", f"id={cid}"]):
+                raise InitError("binfmt observer container persists after cleanup")
+            if volume:
+                if _run(
+                    [
+                        "docker",
+                        "ps",
+                        "-aq",
+                        "--no-trunc",
+                        "--filter",
+                        f"volume={volume}",
+                    ]
+                ):
+                    raise InitError("binfmt observer volume still attached")
+                _run(["docker", "volume", "rm", volume], timeout=40)
+                if volume in _run(["docker", "volume", "ls", "-q"]).splitlines():
+                    raise InitError("binfmt observer volume persists after cleanup")
+
+
+def _preflight_mips_binfmt(repo: Path, *, proc: Path | None = None) -> None:
     """Require current exact readback, not historical registration evidence."""
     expected = json.loads(_image_lock_path(repo, MIPS).read_text())["binfmt"]
-    try:
-        status = (proc / "status").read_text(encoding="ascii")
-        entry = (proc / "qemu-mips").read_text(encoding="ascii")
-    except (OSError, UnicodeError) as error:
-        raise InitError("current host qemu-mips binfmt readback unavailable") from error
+    if proc is None:
+        status, entry = _observe_host_mips_binfmt()
+    else:
+        try:
+            status = (proc / "status").read_text(encoding="ascii")
+            entry = (proc / "qemu-mips").read_text(encoding="ascii")
+        except (OSError, UnicodeError) as error:
+            raise InitError(
+                "current host qemu-mips binfmt readback unavailable"
+            ) from error
     lines = entry.splitlines()
     actual = {
         line.split(" ", 1)[0]: line.split(" ", 1)[1]
@@ -332,6 +501,145 @@ def _image_archive(archive: Path, expected_labels: dict) -> dict:
     }
 
 
+def _canonical_mips_archive(source: Path, destination: Path) -> str:
+    """Freeze legacy Docker's COPY mtimes and config history before loading.
+
+    Only the MIPS v5 archive uses this serializer; existing AArch64 v4 bytes
+    and its Docker build path remain untouched. OCI digests are recomputed from
+    the normalized uncompressed layer, compressed layer, config and manifest.
+    """
+    if source == destination or source.is_symlink() or not source.is_file():
+        raise InitError("invalid MIPS image archive source")
+
+    def encoded(value: object) -> bytes:
+        return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+
+    def digest(value: bytes) -> str:
+        return hashlib.sha256(value).hexdigest()
+
+    with tarfile.open(source) as archive:
+
+        def member_bytes(name: str) -> bytes:
+            stream = archive.extractfile(name)
+            if stream is None:
+                raise InitError(f"missing MIPS image archive member: {name}")
+            return stream.read()
+
+        entries = json.loads(member_bytes("manifest.json"))
+        index = json.loads(member_bytes("index.json"))
+        if (
+            len(entries) != 1
+            or len(entries[0].get("Layers", [])) != 1
+            or entries[0].get("RepoTags") not in (None, [])
+            or len(index.get("manifests", [])) != 1
+            or json.loads(member_bytes("oci-layout")) != {"imageLayoutVersion": "1.0.0"}
+        ):
+            raise InitError("unexpected MIPS OCI image archive layout")
+        entry = entries[0]
+        config_path, layer_path = entry["Config"], entry["Layers"][0]
+        descriptor = index["manifests"][0]
+        manifest_path = "blobs/sha256/" + descriptor["digest"].removeprefix("sha256:")
+        manifest_bytes = member_bytes(manifest_path)
+        manifest = json.loads(manifest_bytes)
+        config_bytes = member_bytes(config_path)
+        layer_bytes = member_bytes(layer_path)
+        if (
+            descriptor["digest"] != "sha256:" + digest(manifest_bytes)
+            or descriptor["size"] != len(manifest_bytes)
+            or manifest["schemaVersion"] != 2
+            or len(manifest["layers"]) != 1
+            or manifest["config"]["digest"] != "sha256:" + digest(config_bytes)
+            or manifest["config"]["size"] != len(config_bytes)
+            or manifest["layers"][0]["digest"] != "sha256:" + digest(layer_bytes)
+            or manifest["layers"][0]["size"] != len(layer_bytes)
+            or config_path != "blobs/sha256/" + digest(config_bytes)
+            or layer_path != "blobs/sha256/" + digest(layer_bytes)
+        ):
+            raise InitError("MIPS OCI image archive digest mismatch")
+        config = json.loads(config_bytes)
+        if (
+            config.get("os") != "linux"
+            or config.get("architecture") != "amd64"
+            or config.get("config", {}).get("Entrypoint") != ["/__keemu/init"]
+            or config.get("rootfs", {}).get("type") != "layers"
+            or config["rootfs"]["diff_ids"]
+            != ["sha256:" + digest(gzip.decompress(layer_bytes))]
+            or not config.get("history")
+        ):
+            raise InitError("MIPS OCI image config mismatch")
+
+        raw = io.BytesIO()
+        with (
+            tarfile.open(fileobj=io.BytesIO(layer_bytes), mode="r:gz") as old,
+            tarfile.open(fileobj=raw, mode="w", format=tarfile.PAX_FORMAT) as new,
+        ):
+            members = old.getmembers()
+            names = [member.name for member in members]
+            if len(set(names)) != len(names):
+                raise InitError("duplicate MIPS OCI layer path")
+            for member in sorted(members, key=lambda item: item.name):
+                if (
+                    member.name.startswith("/")
+                    or ".." in Path(member.name).parts
+                    or not (member.isfile() or member.isdir() or member.issym())
+                    or member.pax_headers
+                ):
+                    raise InitError("unsafe MIPS OCI layer member")
+                member.mtime = 0
+                member.uid = member.gid = 0
+                member.uname = member.gname = ""
+                new.addfile(
+                    member, old.extractfile(member) if member.isfile() else None
+                )
+        uncompressed = raw.getvalue()
+        compressed = io.BytesIO()
+        with gzip.GzipFile(
+            fileobj=compressed, mode="wb", filename="", mtime=0
+        ) as zipfile:
+            zipfile.write(uncompressed)
+        canonical_layer = compressed.getvalue()
+        config["created"] = "1970-01-01T00:00:00Z"
+        for history in config["history"]:
+            history["created"] = config["created"]
+        config["rootfs"]["diff_ids"] = ["sha256:" + digest(uncompressed)]
+        canonical_config = encoded(config)
+        manifest["config"]["digest"] = "sha256:" + digest(canonical_config)
+        manifest["config"]["size"] = len(canonical_config)
+        manifest["layers"][0]["digest"] = "sha256:" + digest(canonical_layer)
+        manifest["layers"][0]["size"] = len(canonical_layer)
+        canonical_manifest = encoded(manifest)
+        descriptor["digest"] = "sha256:" + digest(canonical_manifest)
+        descriptor["size"] = len(canonical_manifest)
+        contents = {
+            "oci-layout": encoded({"imageLayoutVersion": "1.0.0"}),
+            "index.json": encoded(index),
+            "manifest.json": encoded(
+                [
+                    {
+                        "Config": "blobs/sha256/" + digest(canonical_config),
+                        "RepoTags": None,
+                        "Layers": ["blobs/sha256/" + digest(canonical_layer)],
+                    }
+                ]
+            ),
+            "blobs/sha256/" + digest(canonical_manifest): canonical_manifest,
+            "blobs/sha256/" + digest(canonical_config): canonical_config,
+            "blobs/sha256/" + digest(canonical_layer): canonical_layer,
+        }
+    with tarfile.open(destination, mode="w", format=tarfile.PAX_FORMAT) as result:
+        for directory in ("blobs", "blobs/sha256"):
+            header = tarfile.TarInfo(directory)
+            header.type = tarfile.DIRTYPE
+            header.mode = 0o755
+            result.addfile(header)
+        for name, data in sorted(contents.items()):
+            header = tarfile.TarInfo(name)
+            header.mode = 0o644
+            header.size = len(data)
+            result.addfile(header, io.BytesIO(data))
+    return "sha256:" + digest(canonical_manifest)
+
+
 def _verify_image_files(root: Path, saved: dict) -> None:
     """Docker clears setuid on COPY; no other mode or byte change is accepted."""
     records = dict(saved["image_records"])
@@ -367,7 +675,7 @@ def _verify_frozen_metadata(
 ) -> None:
     target = lock["target"]
     if (
-        metadata.get("schema_version") != SCHEMA_VERSION
+        metadata.get("schema_version") != _cache_schema(target)
         or metadata.get("target") != target
         or metadata.get("lock_sha256") != lock_sha
         or metadata.get("native_image_id") != native["image_id"]
@@ -375,7 +683,10 @@ def _verify_frozen_metadata(
         raise InitError("cache identity mismatch")
     image_lock = json.loads(_image_lock_path(repo, target).read_text(encoding="utf-8"))
     bindings = {
-        "schema_version": (image_lock.get("cache_schema_version"), SCHEMA_VERSION),
+        "schema_version": (
+            image_lock.get("cache_schema_version"),
+            _cache_schema(target),
+        ),
         "cache_key": (image_lock.get("cache_key"), cache.name),
         "input_lock_sha256": (image_lock.get("input_lock_sha256"), lock_sha),
         "native_image_id": (image_lock.get("native_image_id"), native["image_id"]),
@@ -605,8 +916,9 @@ def init_locked(
     """Prepare once; offline repeat validates inputs and cache without network."""
     repo = repo.resolve()
     lock, native, lock_sha = _inputs(repo, target=target)
+    schema = _cache_schema(target)
     key = hashlib.sha256(
-        f"{SCHEMA_VERSION}:{target}:{lock_sha}:{native['image_id']}".encode()
+        f"{schema}:{target}:{lock_sha}:{native['image_id']}".encode()
     ).hexdigest()
     cache_root = cache_root or repo / ".runtime/init-cache"
     cache_root.mkdir(parents=True, exist_ok=True)
@@ -730,13 +1042,34 @@ def init_locked(
                 or inspected["Config"]["Entrypoint"] != ["/__keemu/init"]
             ):
                 raise InitError("built image does not match audited rootfs")
-            smoke = _smoke(image_id, lock, repo=repo)
             archive = temporary / "image.tar"
-            _run(["docker", "save", "-o", str(archive), image_id], timeout=300)
+            if target == MIPS:
+                raw_archive = temporary / "built.tar"
+                _run(
+                    ["docker", "save", "-o", str(raw_archive), image_id],
+                    timeout=300,
+                )
+                image_id = _canonical_mips_archive(raw_archive, archive)
+                raw_archive.unlink()
+                _run(["docker", "load", "-i", str(archive)], timeout=300)
+                inspected = json.loads(_run(["docker", "image", "inspect", image_id]))[
+                    0
+                ]
+                if (
+                    inspected["Id"] != image_id
+                    or inspected["Config"]["Labels"] != labels
+                    or inspected["Architecture"] != "amd64"
+                    or inspected["Os"] != "linux"
+                    or inspected["Config"]["Entrypoint"] != ["/__keemu/init"]
+                ):
+                    raise InitError("canonical MIPS image differs from audited rootfs")
+            smoke = _smoke(image_id, lock, repo=repo)
+            if target == TARGET:
+                _run(["docker", "save", "-o", str(archive), image_id], timeout=300)
             saved = _image_archive(archive, labels)
             _verify_image_files(root, saved)
             metadata = {
-                "schema_version": SCHEMA_VERSION,
+                "schema_version": schema,
                 "target": target,
                 "lock_sha256": lock_sha,
                 "native_image_id": native["image_id"],

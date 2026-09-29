@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import copy
+import gzip
+import hashlib
+import io
 import json
+import tarfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -10,9 +14,12 @@ from click.testing import CliRunner
 
 from keemu.cli import cli
 from keemu.init_cache import (
+    BINFORMAT_OBSERVER_IMAGE,
     InitError,
+    _canonical_mips_archive,
     _inputs,
     _inventory,
+    _observe_host_mips_binfmt,
     _preflight_mips_binfmt,
     _verify_frozen_metadata,
     _verify_image_files,
@@ -165,6 +172,235 @@ def test_mips_binfmt_requires_exact_current_handler(tmp_path: Path) -> None:
     entry.unlink()
     with pytest.raises(InitError, match="binfmt"):
         _preflight_mips_binfmt(ROOT, proc=root)
+
+
+@pytest.mark.parametrize(
+    ("owner", "create_error"),
+    [("keemu", False), ("foreign", False), ("keemu", True)],
+)
+def test_mips_observer_is_owner_checked_and_cleans_anonymous_volume(
+    owner: str,
+    create_error: bool,
+) -> None:
+    cid = "a" * 64
+    volume = "b" * 64
+    handler = json.loads((ROOT / "locks/m1e-init-mips.json").read_text())["binfmt"]
+    output = (
+        "enabled\nenabled\n"
+        f"interpreter {handler['interpreter']}\n"
+        f"flags: {handler['flags']}\n"
+        "offset 0\n"
+        f"magic {handler['magic']}\n"
+        f"mask {handler['mask']}\n"
+    )
+    calls: list[list[str]] = []
+    attached = True
+    status = entry = ""
+
+    def fake_run(argv: list[str], *, timeout: int = 300) -> str:
+        nonlocal attached
+        calls.append(argv)
+        match argv[1:3]:
+            case ["image", "inspect"]:
+                return json.dumps(
+                    [
+                        {
+                            "Id": BINFORMAT_OBSERVER_IMAGE,
+                            "Architecture": "amd64",
+                            "Config": {"Volumes": {"/opt/data": {}}},
+                        }
+                    ]
+                )
+            case ["create", *_]:
+                assert "--network=none" in argv
+                assert "--cap-drop=ALL" in argv
+                assert "--read-only" in argv
+                assert any(
+                    "/proc/sys/fs/binfmt_misc" in arg and "readonly" in arg
+                    for arg in argv
+                )
+                if create_error:
+                    raise InitError("create failed after allocation")
+                return cid
+            case ["inspect", _]:
+                return json.dumps(
+                    [
+                        {
+                            "Id": cid,
+                            "Name": "/keemu-binfmt-test",
+                            "Image": BINFORMAT_OBSERVER_IMAGE,
+                            "Config": {
+                                "Labels": {
+                                    "org.keemu.owner": owner,
+                                    "org.keemu.run-id": "c" * 32,
+                                }
+                            },
+                            "HostConfig": {
+                                "NetworkMode": "none",
+                                "Privileged": False,
+                                "ReadonlyRootfs": True,
+                                "CapDrop": ["ALL"],
+                                "SecurityOpt": ["no-new-privileges"],
+                            },
+                            "Mounts": [
+                                {
+                                    "Type": "bind",
+                                    "Source": "/proc/sys/fs/binfmt_misc",
+                                    "Destination": "/__keemu_binfmt",
+                                    "RW": False,
+                                },
+                                {
+                                    "Type": "volume",
+                                    "Name": volume,
+                                    "Destination": "/opt/data",
+                                    "RW": True,
+                                },
+                            ],
+                            "State": {"ExitCode": 0},
+                        }
+                    ]
+                )
+            case ["start", _]:
+                return output.strip()
+            case ["ps", *_]:
+                assert "--no-trunc" in argv
+                if argv[-1] == "name=^/keemu-binfmt-test$":
+                    return cid
+                return cid if attached and argv[-1] == f"volume={volume}" else ""
+            case ["volume", "ls"]:
+                return ""
+            case ["volume", "inspect"]:
+                return json.dumps([{"Name": volume}])
+            case ["rm", *_]:
+                attached = False
+                return cid
+            case ["volume", "rm"]:
+                return volume
+        raise AssertionError(argv)
+
+    with (
+        patch("keemu.init_cache._run", side_effect=fake_run),
+        patch(
+            "keemu.init_cache.uuid.uuid4",
+            return_value=type("U", (), {"hex": "c" * 32})(),
+        ),
+    ):
+        if owner == "foreign":
+            with pytest.raises(InitError, match="ownership mismatch"):
+                _observe_host_mips_binfmt(name="keemu-binfmt-test")
+        elif create_error:
+            with pytest.raises(InitError, match="create failed after allocation"):
+                _observe_host_mips_binfmt(name="keemu-binfmt-test")
+        else:
+            status, entry = _observe_host_mips_binfmt(name="keemu-binfmt-test")
+    if owner == "foreign":
+        assert not any(c[1] in ("start", "rm") for c in calls)
+        return
+    if create_error:
+        assert not any(c[1] == "start" for c in calls)
+        assert [c[1:3] for c in calls].count(["volume", "rm"]) == 1
+        return
+    assert status == "enabled\n"
+    assert entry.startswith("enabled\ninterpreter")
+    assert [c[1:3] for c in calls].count(["volume", "rm"]) == 1
+    assert [c[1] for c in calls].index("rm") < [c[1:3] for c in calls].index(
+        ["volume", "rm"]
+    )
+
+
+def test_mips_archive_canonicalization_freezes_config_and_layer(tmp_path: Path) -> None:
+    def timestamped_source(path: Path, timestamp: int) -> None:
+        def encoded(value: object) -> bytes:
+            return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+
+        def digest(value: bytes) -> str:
+            return hashlib.sha256(value).hexdigest()
+
+        raw = io.BytesIO()
+        with tarfile.open(fileobj=raw, mode="w") as layer:
+            header = tarfile.TarInfo("fixture")
+            header.size = 3
+            header.mtime = timestamp
+            layer.addfile(header, io.BytesIO(b"abc"))
+        layer_bytes = gzip.compress(raw.getvalue(), mtime=timestamp)
+        config_bytes = encoded(
+            {
+                "os": "linux",
+                "architecture": "amd64",
+                "config": {"Entrypoint": ["/__keemu/init"]},
+                "rootfs": {
+                    "type": "layers",
+                    "diff_ids": ["sha256:" + digest(raw.getvalue())],
+                },
+                "created": f"2026-01-01T00:00:{timestamp:02}Z",
+                "history": [{"created": f"2026-01-01T00:00:{timestamp:02}Z"}],
+            }
+        )
+        manifest_bytes = encoded(
+            {
+                "schemaVersion": 2,
+                "config": {
+                    "digest": "sha256:" + digest(config_bytes),
+                    "size": len(config_bytes),
+                },
+                "layers": [
+                    {
+                        "digest": "sha256:" + digest(layer_bytes),
+                        "size": len(layer_bytes),
+                    }
+                ],
+            }
+        )
+        members = {
+            "oci-layout": encoded({"imageLayoutVersion": "1.0.0"}),
+            "index.json": encoded(
+                {
+                    "manifests": [
+                        {
+                            "digest": "sha256:" + digest(manifest_bytes),
+                            "size": len(manifest_bytes),
+                        }
+                    ]
+                }
+            ),
+            "manifest.json": encoded(
+                [
+                    {
+                        "Config": "blobs/sha256/" + digest(config_bytes),
+                        "RepoTags": None,
+                        "Layers": ["blobs/sha256/" + digest(layer_bytes)],
+                    }
+                ]
+            ),
+            "blobs/sha256/" + digest(manifest_bytes): manifest_bytes,
+            "blobs/sha256/" + digest(config_bytes): config_bytes,
+            "blobs/sha256/" + digest(layer_bytes): layer_bytes,
+        }
+        with tarfile.open(path, mode="w") as archive:
+            for name, content in members.items():
+                header = tarfile.TarInfo(name)
+                header.size = len(content)
+                archive.addfile(header, io.BytesIO(content))
+
+    sources = [tmp_path / "source-one.tar", tmp_path / "source-two.tar"]
+    for timestamp, source in enumerate(sources, start=1):
+        timestamped_source(source, timestamp)
+    first, second = tmp_path / "one.tar", tmp_path / "two.tar"
+    ids = [
+        _canonical_mips_archive(source, dest)
+        for source, dest in zip(sources, (first, second), strict=True)
+    ]
+    assert ids[0] == ids[1]
+    assert first.read_bytes() == second.read_bytes()
+    with tarfile.open(first) as archive:
+        manifest = json.load(archive.extractfile("manifest.json"))[0]
+        config = json.load(archive.extractfile(manifest["Config"]))
+        assert config["created"] == "1970-01-01T00:00:00Z"
+        assert all(
+            entry["created"] == "1970-01-01T00:00:00Z" for entry in config["history"]
+        )
+        with tarfile.open(fileobj=archive.extractfile(manifest["Layers"][0])) as layer:
+            assert all(member.mtime == 0 for member in layer)
 
 
 def test_mips_committed_metadata_refuses_divergent_image() -> None:

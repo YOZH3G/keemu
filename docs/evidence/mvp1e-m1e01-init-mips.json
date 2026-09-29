@@ -1,19 +1,23 @@
 {
   "subtask": "m1e-01",
   "acceptance": "E02",
-  "status": "BLOCKED",
-  "reason": "Exact host qemu-mips binfmt handler readback is unavailable in this worker's proc namespace and in an unprivileged, project-owned Docker container. The target smoke succeeded, but it does not prove the handler's exact interpreter, magic, mask and flags required by the frozen preflight boundary. No host handler was installed or modified.",
+  "status": "PASS",
+  "scope": "E02 generic-mips locked init cache only; E03 and later subtasks not started. No host binfmt handler was installed or modified.",
   "implemented_slice": {
     "target": "mips-3.4",
-    "cache_key": "3dd73aa1f4efae6c11979c3671371bd09b81b60c9dfbd2a2500def38584e7cd3",
-    "image_id": "sha256:0038b69ba431ebd5019b0d9ca32669bacba24f14a06c4aeabeb2e60d3b1279d4",
+    "cache_schema_version": 5,
+    "cache_key": "f4299708816a36e4e3a28fe2ed762fe657a00751db45f8198deabaa7b4981fbd",
+    "image_id": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
     "rootfs_tree_sha256": "4c06687da6f756ada50b4bc870928dd0127952923aa4ebd137f9c67c4a93d82d",
-    "archive_sha256": "70a98fa919e2467dba8395903b0147fc3aeebe851e717b69ba341447c802241e",
+    "archive_sha256": "f9a767ee3c3365d7fba5a9ad560557a2fc96176dadd882bed941babfa0d24e96",
+    "config_sha256": "4156c5d84f67c6326f37a3d2e88f8813afbf776edccd8a78184fdebfbbcf8b95",
+    "layer_sha256": "3b25505b1396a1f260a98d0f73ffd725b662affbbcbc8fba1e87b564af86d09e",
     "lock_path": "locks/m1e-init-mips.json",
-    "lock_sha256": "30daf2fc920ca9fd9c240d07ef431ea54dcbde28ee06673cff4cc222b55eb214",
+    "lock_sha256": "5f8a19011a30032502a9f54a6c6354d1ec985b3b6372a1a0a420c4c297284b29",
     "real_target_smoke": "PASS: target shell, opkg, nested BusyBox, exact 20-package inventory and Docker-bridge DNS; HTTPS only from Hermes process vantage",
-    "candidate_build": "Matched subsequently atomically published build on rootfs, image and saved archive hashes; candidate was not published",
-    "second_independent_build": "PASS: same pinned rootfs, Docker image ID and saved archive SHA-256; no replacement of existing cache",
+    "deterministic_oci": "PASS: two independent legacy Docker archives with distinct wall-clock config/history/COPY mtimes canonicalize to byte-identical v5 OCI image ID and archive. Fixed UTC epoch, normalized layer member metadata, recomputed diff/config/layer/manifest digests; Docker load and inspect confirm the canonical ID.",
+    "atomic_publication": "PASS: a new v5 key was published with the existing no-replace directory primitive only after target smoke and full lock verification; previous v4 cache remains intact.",
+    "second_independent_build": "PASS: guarded real temporary-root rebuild matched published v5 rootfs, OCI image ID and saved archive SHA-256; no replacement of existing cache",
     "offline_repeat": "PASS: rehashed rootfs, native init, package inventory, feed config, archive members/modes and live Docker-local image without network fetch or rebuild",
     "foreign_or_corrupt_cache": "PASS: existing foreign marker left intact; copied rootfs/archive/inventory/feed corruptions refused"
   },
@@ -23,17 +27,42 @@
     "offline_repeat": "PASS"
   },
   "tests": {
-    "prior_live_target_smoke_junit": "reports/m1e01-init-live.xml",
-    "prior_live_target_smoke_sha256": "8ade4b9e02f4d67d13fc30e1163f564817e17399a746f156470e8b9f26fc7f52",
-    "prior_live": {"passed": 13, "failed": 0, "errors": 0, "skipped": 0},
-    "live_junit": "reports/m1e01-init-live-final.xml",
-    "live_junit_sha256": "f8b7091be2e5a46f99a66222b2452efdaa9926ad323564fa63ab3ce562c032c9",
-    "live": {"passed": 14, "failed": 0, "errors": 0, "skipped": 1},
-    "portable_junit": "reports/m1e01-portable-final.xml",
-    "portable_junit_sha256": "59c2c700837fd3f139e0f1860fc1a7eaa1dee09d5654288ac12373a434811c07",
-    "portable": {"passed": 342, "failed": 0, "errors": 0, "skipped": 52}
+    "guarded_rebuild_junit": "reports/m1e01-guarded-build-v5.xml",
+    "guarded_rebuild_sha256": "73c1ffc3acf9b6ca48891f901213d55b4ac5374a1dea9c23f2d13da95da92e35",
+    "guarded_rebuild": {"passed": 1, "failed": 0, "errors": 0, "skipped": 0},
+    "live_junit": "reports/m1e01-init-live-verified.xml",
+    "live_junit_sha256": "3e21fa7966c6ac1dcf3f72bceb0390779492ceec771fca81bed12ad5b7560296",
+    "live": {"passed": 15, "failed": 0, "errors": 0, "skipped": 0},
+    "portable_junit": "reports/m1e01-portable-verified.xml",
+    "portable_junit_sha256": "ab25179e485018d0b4f4cc0c126bfa7989a6eeda1f946e3f51de45852d882c7d",
+    "portable": {"passed": 346, "failed": 0, "errors": 0, "skipped": 52},
+    "ruff_lint_and_touched_format": "PASS",
+    "git_diff_check": "PASS"
   },
-  "ownership_postflight": "No org.keemu.owner=keemu Docker containers or networks",
-  "handler_preflight": "BLOCKED: /proc/sys/fs/binfmt_misc/qemu-mips and status absent in worker and constrained Docker proc mounts; no privileged bind or host namespace attempted. A current exact-handler readback is now mandatory before a new build or target smoke; offline validation of the existing cache remains possible. The guarded build/smoke case is intentionally skipped in the final live JUnit.",
-  "next": "Obtain authorized read-only host binfmt readback (enabled, exact interpreter, magic/mask and flags), compare against locked qemu-mips, then rerun the exact target smoke and independent offline check before terminal E02 attestation."
+  "source_sha256": {
+    "src/keemu/init_cache.py": "61006ff8ba00b806347711b20796aca9c248b81e947323bf41ad7631ce2fa06e",
+    "src/keemu/cli.py": "cb4310379785d6ed4ea77dccae910cac459a31f5973dd274a807f7ef41f748b6",
+    "tests/unit/test_init_cache.py": "fcb2bfa387223e556b7be91a2b27d7a94b92c5219c50ddff3f44fa3b6686af7e",
+    "tests/integration/test_init_cache.py": "3d60f08dc71af3174ef7292da316f274e478b4031747c29c3748f78780c8e0e6"
+  },
+  "handler_preflight": {
+    "status": "PASS",
+    "current_host_status": "enabled",
+    "current_handler_enabled": true,
+    "exact_lock_match": true,
+    "interpreter": "/usr/bin/qemu-mips",
+    "flags": "POF",
+    "offset": 0,
+    "magic": "7f454c46010201000000000000000000000200080000000100000000000000000000000000000000",
+    "mask": "ffffffffffffff0000fffffffffffffffffeffffffffffff00000000000000000000000000000020",
+    "method": "Fresh daemon-host read-only /proc/sys/fs/binfmt_misc bind through a pinned, owner-labeled disposable Docker helper; exact owner, ID, image, no-network, no-privilege, read-only root and mounts checked. Helper and image-declared anonymous volume removed by exact ID and independently read back absent before return. The same preflight runs before new MIPS build and target smoke. No host handler mutation."
+  },
+  "ownership_postflight": {
+    "owner_containers": 0,
+    "observer_containers": 0,
+    "owner_networks": 0,
+    "docker_volume_count_before_and_after_helpers": 52
+  },
+  "limitations": "The offline verifier requires its Docker-local locked image; the archived image may be explicitly loaded from the pinned cache without network when the daemon image store is empty. HTTPS smoke runs from the Hermes host namespace because locked target BusyBox wget lacks TLS, not from the target namespace.",
+  "next": "m1e-02 (E03) remains a separate frozen supervisor subtask; no work begun here."
 }

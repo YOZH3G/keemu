@@ -104,13 +104,13 @@ def test_mips_locked_build_repeat_and_target_smoke(tmp_path: Path) -> None:
 
 
 def test_mips_unreadable_handler_refuses_build_before_docker(tmp_path: Path) -> None:
-    try:
-        _preflight_mips_binfmt(REPO)
-    except InitError:
-        pass
-    else:
-        pytest.skip("exact host qemu-mips binfmt readback is available")
-    with patch("keemu.init_cache._run", side_effect=AssertionError("Docker called")):
+    with (
+        patch(
+            "keemu.init_cache._observe_host_mips_binfmt",
+            side_effect=InitError("current host qemu-mips binfmt readback unavailable"),
+        ),
+        patch("keemu.init_cache._run", side_effect=AssertionError("Docker called")),
+    ):
         with pytest.raises(InitError, match="binfmt readback unavailable"):
             init_locked(REPO, target="mips-3.4", cache_root=tmp_path)
     assert not (tmp_path / MIPS_PIN["cache_key"]).exists()
