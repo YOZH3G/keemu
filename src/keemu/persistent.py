@@ -1,4 +1,4 @@
-"""Bounded persistent AArch64 lifecycle; registry is not Docker authority."""
+"""Bounded persistent generic lifecycle; registry is not Docker authority."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from keemu.docker_runtime import DockerRuntime, Output
-from keemu.init_cache import init_locked
+from keemu.init_cache import _image_lock_path, _paths, init_locked
 from keemu.input_locks import (
     PersistentEnvironment,
     ResourceIdentity,
@@ -21,7 +21,7 @@ from keemu.input_locks import (
 )
 from keemu.input_paths import resolve_input_path, safe_name
 from keemu.ipk_inspect import IPKError, inspect_ipk
-from keemu.lifecycle import BASE_LOCK, StageFailure, _probe, _retry_probe, _secure_bytes
+from keemu.lifecycle import StageFailure, _probe, _retry_probe, _secure_bytes
 from keemu.profiles import load_profile_bytes
 from keemu.registry import Entry, Registry, RegistryError
 from keemu.scenarios import IPKInstall, Scenario, load_scenario_bytes
@@ -32,6 +32,19 @@ class PersistentError(RuntimeError):
 
 
 CACHE_KEY = re.compile(r"[0-9a-f]{64}\Z")
+TARGETS = {
+    "generic-aarch64": "aarch64-3.10",
+    "generic-mips": "mips-3.4",
+    "generic-mipsel": "mipsel-3.4",
+}
+BASE_LOCK = "locks/m1a-init-aarch64.json"  # Legacy AArch64 fixture reference.
+
+
+def _target(profile_id: str) -> str:
+    try:
+        return TARGETS[profile_id]
+    except KeyError as exc:
+        raise RegistryError("unsupported persistent profile") from exc
 
 
 def _hash(data: bytes) -> str:
@@ -60,6 +73,7 @@ class Prepared:
     package_hash: str
     package_version: str
     image_id: str
+    target: str
 
 
 def _prepare(root: Path, scenario_path: Path, lock_path: Path) -> Prepared:
@@ -87,7 +101,8 @@ def _prepare(root: Path, scenario_path: Path, lock_path: Path) -> Prepared:
     ):
         raise PersistentError("scenario/profile/lock changed or disagrees")
     if (
-        profile.entware_target != "aarch64-3.10"
+        profile.id not in TARGETS
+        or profile.entware_target != _target(profile.id)
         or scenario.requirements.capabilities
         or scenario.requirements.ndm_fixtures
         or scenario.runtime.env
@@ -100,12 +115,17 @@ def _prepare(root: Path, scenario_path: Path, lock_path: Path) -> Prepared:
         or scenario.service.readiness.kind != "http"
     ):
         raise PersistentError("service readiness vantage unsupported")
-    base = json.loads(_secure_bytes(root / BASE_LOCK, root, 2 * 1024 * 1024))
+    base = json.loads(
+        _secure_bytes(
+            _image_lock_path(root, profile.entware_target), root, 2 * 1024 * 1024
+        )
+    )
+    feed_path, _, _, _ = _paths(root, profile.entware_target)
     if (
         base.get("oci_digest") != lock.oci_digest
         or base.get("input_lock_sha256") != lock.feed_lock_sha256
         or base.get("target") != lock.entware_target
-        or _hash(_secure_bytes(root / "locks/p0-aarch64.json", root, 2 * 1024 * 1024))
+        or _hash(_secure_bytes(feed_path, root, 2 * 1024 * 1024))
         != lock.feed_lock_sha256
     ):
         raise PersistentError("base/feed lock mismatch")
@@ -151,9 +171,16 @@ def _prepare(root: Path, scenario_path: Path, lock_path: Path) -> Prepared:
         raise PersistentError(
             "IPK static inspection failed or package identity mismatch"
         )
-    if init_locked(root, offline=True).get("oci_digest") != lock.oci_digest:
+    if (
+        init_locked(root, offline=True, target=profile.entware_target).get("oci_digest")
+        != lock.oci_digest
+    ):
         raise PersistentError("prepared image mismatch")
-    DockerRuntime("preflight-" + uuid4().hex, lock.oci_digest).image()
+    DockerRuntime(
+        "preflight-" + uuid4().hex,
+        lock.oci_digest,
+        target=profile.entware_target,
+    ).image()
     return Prepared(
         scenario,
         scenario_blob,
@@ -163,15 +190,20 @@ def _prepare(root: Path, scenario_path: Path, lock_path: Path) -> Prepared:
         package_hash,
         inspection.metadata["Version"],
         lock.oci_digest,
+        profile.entware_target,
     )
 
 
 def _runtime(record: PersistentEnvironment) -> tuple[DockerRuntime, str]:
-    runtime = DockerRuntime(record.run_id, record.oci_digest)
+    runtime = DockerRuntime(
+        record.run_id, record.oci_digest, target=_target(record.profile_id)
+    )
     if record.resource is None:
         raise RegistryError("environment has no recorded container identity")
     identifier = record.resource.container_id
-    runtime.inspect("container", identifier)
+    observed = runtime.inspect("container", identifier)
+    if observed.get("Name") != "/keemu-" + record.run_id:
+        raise RegistryError("recorded container name mismatch")
     state = runtime.reconcile({identifier})
     if (
         state["container_missing"]
@@ -203,7 +235,10 @@ def _transition(
 
 def _scenario(entry: Entry, record: PersistentEnvironment) -> Scenario:
     data = entry.scenario(record.scenario_sha256)
-    return Scenario.model_validate(load_yaml_unique_text(data))
+    scenario = Scenario.model_validate(load_yaml_unique_text(data))
+    if scenario.id != record.scenario_id or scenario.profile != record.profile_id:
+        raise RegistryError("saved scenario identity mismatch")
+    return scenario
 
 
 def load_yaml_unique_text(data: bytes) -> object:
@@ -278,7 +313,7 @@ def _install(
         staged.chmod(0o644)
         target = (
             f"/opt/tmp/{scenario.install.package_name}_"
-            f"{prepared.package_version}_aarch64-3.10.ipk"
+            f"{prepared.package_version}_{prepared.target}.ipk"
         )
         if (
             _hash(_secure_bytes(staged, root, 64 * 1024 * 1024))
@@ -377,7 +412,9 @@ def create(
             oci_digest=prepared.image_id,
             resource=None,
         )
-        runtime = DockerRuntime(record.run_id, record.oci_digest)
+        runtime = DockerRuntime(
+            record.run_id, record.oci_digest, target=prepared.target
+        )
         initial = runtime.reconcile()
         if initial["container_owned"] or initial["network_owned"]:
             raise RegistryError("run ID already owns Docker resources")
@@ -406,14 +443,26 @@ def create(
         except Exception as exc:
             cleanup_error = None
             try:
-                # Only IDs from this run, and only after an empty initial reconcile.
-                for owned in runtime.reconcile()["container_owned"]:
-                    runtime.remove_container(owned)
-                for owned in runtime.reconcile()["network_owned"]:
-                    runtime.remove_network(owned)
+                # Only the issued ID or one exact-name create-before-return
+                # orphan qualifies. Never sweep a labelled run or a network.
+                observed = runtime.reconcile()
+                owned = observed["container_owned"]
+                if observed["network_owned"] or len(owned) > 1 or (
+                    identifier is not None and owned and owned != [identifier]
+                ):
+                    raise RegistryError("ambiguous resources after failed create")
+                if owned:
+                    item = runtime.inspect("container", owned[0])
+                    if item.get("Name") != "/keemu-" + record.run_id:
+                        raise RegistryError("failed create container name mismatch")
+                    runtime.remove_container(owned[0])
                 state = runtime.reconcile()
                 if state["container_owned"] or state["network_owned"]:
                     raise RegistryError("owned resources remain after failed create")
+                if identifier is not None and identifier in DockerRuntime.listed_ids(
+                    "container"
+                ):
+                    raise RegistryError("issued container remains after failed create")
             except Exception as cleanup_exc:
                 cleanup_error = cleanup_exc
             try:
@@ -438,7 +487,9 @@ def recover(root: Path, name: str) -> dict:
     safe_name(name)
     with Registry(root.resolve() / ".runtime/registry").locked(name) as entry:
         record = entry.read()
-        runtime = DockerRuntime(record.run_id, record.oci_digest)
+        runtime = DockerRuntime(
+            record.run_id, record.oci_digest, target=_target(record.profile_id)
+        )
         observed = runtime.reconcile()
         owned = observed["container_owned"]
         if observed["network_owned"]:
@@ -469,6 +520,10 @@ def recover(root: Path, name: str) -> dict:
                 raise RegistryError(
                     "unexpected extra owned container; recovery refused"
                 )
+            if owned and runtime.inspect("container", expected).get("Name") != (
+                "/keemu-" + record.run_id
+            ):
+                raise RegistryError("recorded container name mismatch")
         else:
             if record.state not in {"creating", "failed"} or len(owned) > 1:
                 raise RegistryError("ambiguous unrecorded container; recovery refused")
@@ -479,6 +534,7 @@ def recover(root: Path, name: str) -> dict:
                 ):
                     raise RegistryError("unrecorded container name mismatch")
         removed = []
+        entry.verify_unchanged(record)
         for identifier in owned:
             runtime.remove_container(identifier)
             removed.append(identifier)
@@ -508,8 +564,10 @@ def operate(root: Path, name: str, action: str, *, argv: tuple[str, ...] = ()) -
         raise PersistentError("unsupported lifecycle action")
     with Registry(root.resolve() / ".runtime/registry").locked(name) as entry:
         record = entry.read()
+        runtime = DockerRuntime(
+            record.run_id, record.oci_digest, target=_target(record.profile_id)
+        )
         if action == "status" and record.state == "destroyed":
-            runtime = DockerRuntime(record.run_id, record.oci_digest)
             owned = runtime.reconcile()
             return {
                 "environment": record.model_dump(mode="json"),
@@ -519,7 +577,6 @@ def operate(root: Path, name: str, action: str, *, argv: tuple[str, ...] = ()) -
                 "reconciliation": owned,
             }
         if action == "status" and record.state == "failed":
-            runtime = DockerRuntime(record.run_id, record.oci_digest)
             owned = runtime.reconcile()
             return {
                 "environment": record.model_dump(mode="json"),
@@ -528,7 +585,6 @@ def operate(root: Path, name: str, action: str, *, argv: tuple[str, ...] = ()) -
                 "reconciliation": owned,
             }
         if action == "status" and record.state == "creating":
-            runtime = DockerRuntime(record.run_id, record.oci_digest)
             owned = runtime.reconcile()
             return {
                 "environment": record.model_dump(mode="json"),
@@ -537,6 +593,7 @@ def operate(root: Path, name: str, action: str, *, argv: tuple[str, ...] = ()) -
                 "reconciliation": owned,
             }
         runtime, identifier = _runtime(record)
+        entry.verify_unchanged(record)
         observed = runtime.inspect("container", identifier)
         running = bool(observed.get("State", {}).get("Running"))
         if action == "status":

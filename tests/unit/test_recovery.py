@@ -64,8 +64,9 @@ class FakeDocker:
     extra_networks: list[str] = []
     name = "/keemu-env-test-recovery"
 
-    def __init__(self, run_id, image_id):
+    def __init__(self, run_id, image_id, *, target="aarch64-3.10"):
         assert run_id == "env-test-recovery" and image_id == IMAGE
+        assert target == "aarch64-3.10"
 
     def reconcile(self):
         return {
