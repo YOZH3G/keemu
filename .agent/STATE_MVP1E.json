@@ -15,55 +15,57 @@
   },
   "routing": {
     "mode": "shadow",
-    "last_evaluated_at": "2026-09-29T18:08:40+00:00",
+    "last_evaluated_at": "2026-09-29T18:27:04+00:00",
     "recommended": {
-      "tier": "C5",
+      "tier": "C4",
       "model": "gpt-6-sol",
-      "reasoning": "xhigh"
+      "reasoning": "high"
     },
     "applied": {
-      "tier": "C5",
-      "model": "gpt-6-sol",
-      "reasoning": "xhigh"
+      "tier": "C3",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high"
     },
     "signals": {
-      "score": 5,
+      "score": 10,
       "signal_source": "active_subtask",
-      "active_subtask_id": "m1e-04",
-      "task_chars": 0,
+      "active_subtask_id": "m1e-05",
+      "task_chars": 231,
       "changed_files": 0,
-      "planned_change_count": 9,
-      "component_count": 6,
+      "planned_change_count": 5,
+      "component_count": 3,
       "repo_files_sampled": 2000,
       "graphify_present": true,
-      "graphify_bytes": 2492559,
+      "graphify_bytes": 2499033,
       "previous_failures": 0,
       "same_error_count": 0,
-      "production_risk": false,
-      "security_risk": false,
+      "production_risk": true,
+      "security_risk": true,
       "destructive_risk": false,
       "architecture_scope": false,
       "debugging_scope": false,
       "cross_component_scope": false,
       "read_only_scope": false,
       "c5_justified": true,
-      "c5_explicit": true,
+      "c5_explicit": false,
       "c5_factors": [
-        "crash_recovery",
-        "foreign_resource_preservation"
+        "kernel_network_namespace"
       ],
       "gate_closure_probability": "high",
-      "diagnostic_risk": "high",
-      "safety_context": [],
+      "diagnostic_risk": "unknown",
+      "safety_context": [
+        "kernel",
+        "production"
+      ],
       "reasons": [
         "multiple planned changes",
         "large planned change set",
         "multi-component implementation",
-        "broad component span",
-        "explicit bounded C5 factor"
+        "production/remote-system risk",
+        "security/auth/network privilege risk"
       ]
     },
-    "reason": "multiple planned changes; large planned change set; multi-component implementation; broad component span; explicit bounded C5 factor",
+    "reason": "multiple planned changes; large planned change set; multi-component implementation; production/remote-system risk; security/auth/network privilege risk",
     "force_min_tier": null,
     "capabilities": {
       "gpt-6-astra": null
@@ -74,7 +76,7 @@
     "subtask_plan": {
       "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
       "plan_digest": "c5f8029160882b3cd1addf1c1034a7f467380e7ba1fadc290eeba5f921a388b2",
-      "active_index": 5,
+      "active_index": 6,
       "items": [
         {
           "id": "m1e-00",
@@ -224,8 +226,15 @@
             "model": "gpt-5.6-terra",
             "reasoning": "high"
           },
-          "status": "active",
-          "digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8"
+          "status": "complete",
+          "digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+          "outcome": {
+            "event_id": "evt_91ada37246efe4ed54927b7d",
+            "route_event_id": "evt_fc7a7d81697a257594c4a05c",
+            "completed_at": "2026-09-29T18:36:36+00:00",
+            "attestation_status": "ATTESTED",
+            "session_deleted": true
+          }
         },
         {
           "id": "m1e-05r",
@@ -243,7 +252,7 @@
             "model": "gpt-6-sol",
             "reasoning": "high"
           },
-          "status": "pending",
+          "status": "active",
           "digest": "13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f"
         },
         {
@@ -313,7 +322,7 @@
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_2a4664dfcac0ecb401b1399c",
+      "last_event_id": "evt_91ada37246efe4ed54927b7d",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -328,23 +337,23 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 0,
-    "last_run_started_at": "2026-09-29T18:08:40+00:00",
-    "last_run_finished_at": "2026-09-29T18:26:54+00:00",
-    "last_log": ".agent/runs/20260929T180840Z.log",
-    "last_checkpoint_at": "2026-09-29T18:26:56+00:00"
+    "last_run_started_at": "2026-09-29T18:27:04+00:00",
+    "last_run_finished_at": "2026-09-29T18:36:34+00:00",
+    "last_log": ".agent/runs/20260929T182704Z.log",
+    "last_checkpoint_at": "2026-09-29T18:36:36+00:00"
   },
   "quota_admission": {
-    "checked_at": "2026-09-29T12:55:39+00:00",
+    "checked_at": "2026-09-29T18:27:01+00:00",
     "scope": "subtask",
-    "admission_key": "subtask:m1e-04:0254172b495111b2533d27af3d8ad902b2c5330607d37feef0362fa3a2edf715",
+    "admission_key": "subtask:m1e-05:8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
     "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
-    "task_intent": "Generalize registry-backed persistent lifecycle and explicit interruption recovery to generic-mips and generic-mipsel with per-name locking, atomic transitions, full identity checks, tombstones and foreign-resource refusal",
-    "subtask_id": "m1e-04",
-    "subtask_digest": "0254172b495111b2533d27af3d8ad902b2c5330607d37feef0362fa3a2edf715",
-    "action": "warn",
-    "remaining_percent": 9.0,
-    "reset_at": "2026-09-29T15:55:27+00:00",
+    "task_intent": "Integrate generic-mips and generic-mipsel one-shot and persistent script paths through the existing common script primitives, changing at most five source or test files and stopping if any primitive or boundary redesign is required",
+    "subtask_id": "m1e-05",
+    "subtask_digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+    "action": "admit",
+    "remaining_percent": 76.0,
+    "reset_at": "2026-09-29T23:09:01+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota has 9.0% remaining; task admitted with warning"
+    "message": "5-hour OAuth quota admits new task"
   }
 }

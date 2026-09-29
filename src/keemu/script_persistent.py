@@ -16,7 +16,7 @@ from uuid import uuid4
 
 from keemu import __version__
 from keemu.docker_runtime import DockerBoundaryError
-from keemu.init_cache import init_locked
+from keemu.init_cache import _image_lock_path, init_locked
 from keemu.input_paths import safe_name
 from keemu.lifecycle import _secure_bytes
 from keemu.models import (
@@ -33,7 +33,7 @@ from keemu.registry import Registry, RegistryError
 from keemu.reports import ReportPaths, build_report, write_report_bundle
 from keemu.script_assertions import ScriptExpectations, check_script_assertions
 from keemu.script_input import ScriptInput, ScriptInputChanged
-from keemu.script_lifecycle import BASE_LOCK, _empty, _now
+from keemu.script_lifecycle import _empty, _now
 from keemu.script_process import ScriptProcessRunner
 from keemu.script_results import (
     ScriptCleanupResult,
@@ -94,8 +94,6 @@ def run_persistent_script(
         record = entry.read()
         if record.state != "running" or record.resource is None:
             raise RegistryError("script exec requires a running environment")
-        if record.profile_id != "generic-aarch64":
-            raise RegistryError("persistent script lifecycle unavailable for target")
         runtime, container = _runtime(record)
         observed = runtime.inspect("container", container)
         if (
@@ -179,12 +177,18 @@ def run_persistent_script(
         try:
 
             def capability() -> None:
-                base = _secure_bytes(root / BASE_LOCK, root, 2 * 1024 * 1024)
+                base = _secure_bytes(
+                    _image_lock_path(root, profile.entware_target),
+                    root,
+                    2 * 1024 * 1024,
+                )
                 locked = json.loads(base)
                 if (
                     locked.get("oci_digest") != record.oci_digest
                     or locked.get("target") != profile.entware_target
-                    or init_locked(root, offline=True).get("oci_digest")
+                    or init_locked(
+                        root, offline=True, target=profile.entware_target
+                    ).get("oci_digest")
                     != record.oci_digest
                 ):
                     raise DockerBoundaryError("locked persistent image changed")

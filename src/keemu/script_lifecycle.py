@@ -45,8 +45,8 @@ from keemu.script_stage import ScriptStager, StagedScript
 BASE_LOCK = "locks/m1a-init-aarch64.json"
 SCRIPT_IMAGE_LOCKS = {
     "generic-aarch64": BASE_LOCK,
-    "generic-mips": "locks/m1b18-image-mips-3.4.json",
-    "generic-mipsel": "locks/m1b18-image-mipsel-3.4.json",
+    "generic-mips": "locks/m1e-init-mips.json",
+    "generic-mipsel": "locks/m1e-init-mipsel.json",
 }
 
 
@@ -130,19 +130,14 @@ def run_one_shot_script(
     base = json.loads(
         _secure_bytes(root / SCRIPT_IMAGE_LOCKS[profile_id], root, 2 * 1024 * 1024)
     )
-    image_id = (
-        base["oci_digest"] if profile_id == "generic-aarch64" else base["image_id"]
-    )
+    image_id = base["oci_digest"]
     profile_path = root / "profiles/generic" / f"{profile_id}.yaml"
     profile_bytes = _secure_bytes(profile_path, root, 1024 * 1024)
     profile = load_profile_bytes(profile_bytes)
     if profile.id != profile_id or profile.entware_target != base["target"]:
         raise ValueError("profile and locked target disagree")
-    if profile_id != "generic-aarch64" and (
-        base.get("kind") != "m1b18-locked-target-image"
-        or base.get("schema_version") != 1
-    ):
-        raise ValueError("unsupported target image lock")
+    if base.get("target") != profile.entware_target:
+        raise ValueError("profile and locked base disagree")
     profile_hash = hashlib.sha256(profile_bytes).hexdigest()
     runtime = DockerRuntime(run_id, image_id, target=profile.entware_target)
     ScriptExecutionSpec(
@@ -208,13 +203,9 @@ def run_one_shot_script(
     try:
 
         def capability() -> None:
-            if profile_id != "generic-aarch64":
-                # The m1b18 image is target-exec evidence, not a general
-                # offline-verified init/test base. Do not allocate or run it.
-                raise ScriptCapabilityUnavailable("general lifecycle unavailable")
-            cache = init_locked(root, offline=True)
+            cache = init_locked(root, offline=True, target=profile.entware_target)
             if cache.get("oci_digest") != image_id:
-                raise DockerBoundaryError("locked AArch64 image mismatch")
+                raise DockerBoundaryError("locked script image mismatch")
             if (
                 hashlib.sha256(
                     _secure_bytes(profile_path, root, 1024 * 1024)
@@ -450,14 +441,6 @@ def run_one_shot_script(
         partial_failure=partial,
         limitations=(
             "Userspace execution does not establish physical Keenetic compatibility",
-            *(
-                (
-                    "General MIPS script lifecycle unavailable; "
-                    "target-exec image is not an init/test base",
-                )
-                if profile_id != "generic-aarch64"
-                else ()
-            ),
         ),
     )
     paths = write_report_bundle(report, reports / run_id)
