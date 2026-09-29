@@ -6,16 +6,16 @@
   "pause_reason": "openai_usage_limit",
   "quota": {
     "kind": "unknown",
-    "detected_at": "2026-09-29T18:37:54+00:00",
+    "detected_at": "2026-09-29T23:43:17+00:00",
     "resets_at": null,
     "resets_in_seconds": null,
-    "wake_at": "2026-09-29T23:42:54+00:00",
+    "wake_at": "2026-09-30T04:48:17+00:00",
     "plan_type": null,
-    "raw_excerpt": "ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~95h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260929_183645_04dd93 Provider said: HTTP 429: The usage limit has been reached Limit resets at 17:33 (in 94h 56m)."
+    "raw_excerpt": "↻ Resumed session 20260929_183645_04dd93 \"Review m1e-05 C3 engineering result\" (1 user message, 40 total messages) ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~90h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260929_183645_04dd93 Provider said: HTTP 429: The usage limit has been reached Limit resets at 17:33 (in 89h 51m)."
   },
   "routing": {
     "mode": "shadow",
-    "last_evaluated_at": "2026-09-29T18:36:42+00:00",
+    "last_evaluated_at": "2026-09-29T23:42:58+00:00",
     "recommended": {
       "tier": "C1",
       "model": "gpt-6-luna",
@@ -330,7 +330,7 @@
     "learning": {
       "active_policy_version": "v1",
       "candidate_policy_version": null,
-      "last_event_id": "evt_5b482f9033e2f27f1f50b1fc",
+      "last_event_id": "evt_4023bb3b3eca7a152d1e45fe",
       "last_evaluated_at": null,
       "canary": {
         "enabled": false,
@@ -345,10 +345,10 @@
     "same_error_count": 0,
     "last_error_fingerprint": null,
     "last_exit_code": 1,
-    "last_run_started_at": "2026-09-29T18:36:42+00:00",
-    "last_run_finished_at": "2026-09-29T18:37:54+00:00",
-    "last_log": ".agent/runs/20260929T183642Z.log",
-    "last_checkpoint_at": "2026-09-29T18:37:54+00:00"
+    "last_run_started_at": "2026-09-29T23:42:58+00:00",
+    "last_run_finished_at": "2026-09-29T23:43:17+00:00",
+    "last_log": ".agent/runs/20260929T234258Z.log",
+    "last_checkpoint_at": "2026-09-29T23:43:17+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-29T18:36:39+00:00",
