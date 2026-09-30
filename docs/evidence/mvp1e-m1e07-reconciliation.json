@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "subtask": "m1e-07",
+  "subtask_digest": "004bcbb4e25dc16465e96d14f8ebf408a211ff1e9adce8c238739f2e19dfd5ba",
+  "acceptance_refs": ["E08", "documentation", "c3-telemetry"],
+  "scope": "Read-only reconciliation and documentation only. No product, runtime, Docker, host, binfmt, firewall, module, credential, routing-policy, or predecessor-history mutation.",
+  "reconciliation_status": "PASS",
+  "milestone_status": "PENDING_INDEPENDENT_FINAL_AUDIT",
+  "E08": "RECONCILIATION_PASS_FINAL_AUDIT_PENDING",
+  "acceptance_matrix": {
+    "E01": {"status": "PASS", "scope": "m1e-00 review", "evidence": "docs/evidence/mvp1e-m1e00-acceptance.json"},
+    "E02": {"status": "PASS", "scope": "generic-mips locked init cache", "evidence": "docs/evidence/mvp1e-m1e01-init-mips.json"},
+    "E03": {"status": "PASS", "scope": "generic-mipsel locked init cache", "evidence": "docs/evidence/mvp1e-m1e02-init-mipsel.json"},
+    "E04": {"status": "PASS", "scope": "common three-target one-shot IPK lifecycle", "evidence": "docs/evidence/mvp1e-m1e03-one-shot.json"},
+    "E05": {"status": "PASS", "scope": "common persistent IPK lifecycle and explicit recovery", "evidence": "docs/evidence/mvp1e-m1e04-persistent.json"},
+    "E06": {"status": "BLOCKED", "scope": "MIPS/MIPSEL script integration acceptance", "evidence": "docs/evidence/mvp1e-m1e05r-independent-review.json", "blockers": ["R1", "R2", "R3"]},
+    "E07": {"status": "SCOPED_PASS", "scope": "bounded real three-target adversarial matrix", "evidence": "docs/evidence/mvp1e-m1e06-adversarial.json"},
+    "E08": {"status": "RECONCILIATION_PASS_FINAL_AUDIT_PENDING", "scope": "this m1e-07 reconciliation; m1e-08 alone owns the independent final audit", "evidence": "docs/evidence/mvp1e-m1e07-reconciliation.json"}
+  },
+  "architecture_matrix": {
+    "generic-aarch64": {
+      "target": "aarch64-3.10",
+      "init": "PASS (retained MVP 1A base; E07 current offline regression PASS)",
+      "one_shot": "PASS (E04)",
+      "persistent": "PASS (E05 AArch64 regression)",
+      "script": "Common path exercised in E07; E06 acceptance remains BLOCKED globally",
+      "adversarial": "SCOPED_PASS (E07)"
+    },
+    "generic-mips": {
+      "target": "mips-3.4",
+      "init": "PASS (E02)",
+      "one_shot": "PASS (E04)",
+      "persistent": "PASS (E05)",
+      "script": "Common path exercised in E07; E06 acceptance remains BLOCKED globally",
+      "adversarial": "SCOPED_PASS (E07)"
+    },
+    "generic-mipsel": {
+      "target": "mipsel-3.4",
+      "init": "PASS (E03)",
+      "one_shot": "PASS (E04)",
+      "persistent": "PASS (E05)",
+      "script": "Common path exercised in E07; E06 acceptance remains BLOCKED globally",
+      "adversarial": "SCOPED_PASS (E07)"
+    }
+  },
+  "evidence_sha256": {
+    "docs/evidence/mvp1e-m1e00-acceptance.json": "0c93b04608821d3484016c973574acf8daaa4c7e2a3a4d6e2dcbf14a050e3c8c",
+    "docs/evidence/mvp1e-m1e00-scope-review.md": "5e980b4ec23b3e8aa147623b566b760dcc35d96675c3fee524da2e540d666194",
+    "docs/evidence/mvp1e-m1e01-init-mips.json": "a5004cafab8748e484a084d472578379bbf3c912a2b332098e40187570c5e6c9",
+    "docs/evidence/mvp1e-m1e02-init-mipsel.json": "4f7c0673ead31b38d592f1b409436080543c1e6555aaac65f6257a33ef62c14e",
+    "docs/evidence/mvp1e-m1e03-one-shot.json": "26a0b5fc41c64ebfcd86a27ed2b4bfbf670cc7f662cb5cd3ff9069e8f3bc6f76",
+    "docs/evidence/mvp1e-m1e04-persistent.json": "6eafb1e3eed9a9ba34da699485aea7bf0abf4a700487bbf6e31142cccc10dfda",
+    "docs/evidence/mvp1e-m1e05r-independent-review.json": "850490cc5a27dfc751d6997827621a58435c717bb3da029ac1df4444365b4515",
+    "docs/evidence/mvp1e-m1e05r-independent-review.md": "e8d5c2063cdb007f3d2bdcff07b0efdf13dfbf77862e4550c57cfcf20d1a43c3",
+    "docs/evidence/mvp1e-m1e06-adversarial.json": "8ec2a6dce775eddefe5d7b498adbe07d6cb17efc7b0c02116d401108bf974a00",
+    "docs/evidence/mvp1e-m1e06-adversarial.md": "bc7ce39d7f02794f6967de1cb0a3d28938a6c24bb9e703daae24b75d5d033ba3",
+    "docs/evidence/mvp1e-m1e06-verification.json": "1a4f18c1a29f1f1eb457699a09a8dc7d9371fadfaf4c70873010d3f5a251b449",
+    "docs/evidence/mvp1e-m1e06-publication.json": "a75a01e85062b0f48c45f7295de29160068e28443b84930d8bed6ed76354c7d9",
+    "docs/specifications/KEEMU_MVP1E_mips_lifecycle.md": "ad98a71bd328884c9c0b8c6e3d0a7f53ae492ebff9a6c1c1df58e8888e537831",
+    "docs/model-routing-plan-mvp1e.md": "5ebda1079245c837b91398c3042b06009726ce247c71ab80510ed4ab9e50343d"
+  },
+  "predecessor_sha256": {
+    "docs/milestones/KEEMU_MVP1D_TASK_FROZEN.md": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
+    ".agent/STATE_MVP1D.json": "20f8867c8e96327b5e1f10dc4db31da6d22367c3e894238a46d5796eec67976d",
+    "docs/evidence/mvp1d-m1d13-final-audit.json": "feff7fc5e6233313cd93c205adfbf5d497d3ef669da811da056ab28d773a4793",
+    "docs/evidence/final28-acceptance.json": "7d3c0b10dc0c0436b18d4a028bb4e27b80d113fc734adac009784f13dfd74c4c",
+    "docs/evidence/final29-release.json": "a53b0bd54b94b0d7b2e54cc241d361228b2b8ed2fb8e4fd8bcd2a4c5f0b86fba",
+    "docs/evidence/final31-independent-audit.md": "764e2927b239359aa3b223b2c4e89184590fc51a395e5ae9bb50e6b9207a2ba9"
+  },
+  "e07_validation": {
+    "validator": "uv run python -m scripts.validate_m1e06",
+    "result": "PASS",
+    "manifest": "8ec2a6dce775eddefe5d7b498adbe07d6cb17efc7b0c02116d401108bf974a00",
+    "retained_artifacts": 142,
+    "typed_reports": 47,
+    "unique_adversarial_pass": 19,
+    "final_portable": {"PASS": 353, "FAIL": 0, "ERROR": 0, "SKIP": 84},
+    "preserved_blockers": {"E06": "BLOCKED", "D02": "BLOCKED", "D07": "BLOCKED"}
+  },
+  "c3_telemetry": {
+    "mode": "shadow",
+    "automatic_promotion": false,
+    "samples": {
+      "m1e-00": {
+        "route": "openai-codex/gpt-5.6-terra/high",
+        "first_pass_verification": "13 relevant tests PASS, 2 intentional SKIP; offline lock/rootfs/fixture/saved-image boundary PASS",
+        "continuations": 0,
+        "scope_violations": 0,
+        "blocking_findings": ["exact live MIPS/MIPSEL images absent at review", "worker binfmt visibility unavailable at review"],
+        "corrective_product_diff": [],
+        "runtime_attestation": "ATTESTED in the completed state outcome; session deleted",
+        "quota_observation": "32% at 2026-09-27T19:24:37+00:00"
+      },
+      "m1e-05": {
+        "route": "openai-codex/gpt-5.6-terra/high",
+        "first_pass_verification": "NOT_INDEPENDENTLY_VERIFIABLE; historical RED/GREEN artifacts were not retained",
+        "continuations": 0,
+        "scope_violations": 0,
+        "blocking_findings": ["R1", "R2", "R3"],
+        "corrective_product_diff": [],
+        "runtime_attestation": "ATTESTED in supervisor outcome; session deleted; not acceptance evidence",
+        "quota_observation": "76% at 2026-09-29T18:27:01+00:00",
+        "learning_accepted": false
+      },
+      "m1e-07": {
+        "route": "openai-codex/gpt-5.6-terra/high",
+        "first_pass_verification": "read-only reconciliation validator and retained E07 validator required before completion",
+        "continuations": 0,
+        "scope_violations": 0,
+        "blocking_findings": ["E06 remains BLOCKED", "m1e-08 independent final audit remains pending"],
+        "corrective_product_diff": [],
+        "runtime_attestation": "PENDING_SUPERVISOR_BOUNDARY; this record does not substitute a planned lock for an attestation",
+        "quota_observation": "5% warning at 2026-09-30T08:32:12+00:00"
+      }
+    }
+  },
+  "documentation": [
+    "README.md",
+    "README_RU.md",
+    "docs/architecture.md",
+    "docs/limitations.md",
+    "docs/progress.md",
+    "docs/traceability.md",
+    "docs/decisions/0020-mvp1e-reconciliation-boundary.md"
+  ],
+  "deferred": [
+    "m1e-08 independently audits the reconciled E01-E08 matrix and alone publishes the final MVP 1E verdict.",
+    "No status in this record promotes E06, MVP 1D D02/D07, or predecessor MVP/release evidence."
+  ]
+}
