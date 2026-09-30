@@ -1,0 +1,520 @@
+{
+  "schema_version": 1,
+  "subtask_id": "m1e-05r",
+  "subtask_digest": "a8596920b23a1c7cd311b032cc8e03dd40db289c10d9a840bd135cfae498f283",
+  "acceptance_refs": [
+    "E06",
+    "c3-independent-review"
+  ],
+  "observed_at": "2026-09-30T06:47:59.016462+00:00",
+  "review_completion": "PASS",
+  "engineering_acceptance": "BLOCKED",
+  "E06": "BLOCKED",
+  "scope_compliance": "PASS",
+  "common_path_source_parity": "PASS",
+  "corrective_product_diff": [],
+  "review_mode": "read-only source/runtime inspection, portable tests and host-only mocked probes; evidence/durable publication only",
+  "runtime_attestation": {
+    "engineering": "Supervisor-recorded ATTESTED openai-codex/gpt-5.6-terra/high; historical session deleted; direct historical metadata no longer available",
+    "review_worker": {
+      "session_id": "20260930_063504_dd91c7",
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "provider": "openai-codex"
+    },
+    "review_terminal_attestation": "Supervisor-owned and pending exact review completion boundary"
+  },
+  "c3_telemetry": {
+    "source_test_files": 4,
+    "source_test_limit": 5,
+    "scope_violations_found": 0,
+    "continuations": 0,
+    "quota_pause": false,
+    "first_pass_live_verification": "NOT_INDEPENDENTLY_VERIFIABLE",
+    "historical_worker_claims": {
+      "RED": {
+        "passed": 0,
+        "failed": 2
+      },
+      "focused_live_GREEN": {
+        "passed": 2
+      },
+      "full_with_M1E05_only": {
+        "passed": 355,
+        "skipped": 63
+      }
+    },
+    "blocking_findings": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "learning_accepted": false,
+    "policy_promotion": false
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "P1",
+      "acceptance_blocking": true,
+      "title": "Persistent test teardown masks a deterministic registry failure",
+      "source": [
+        "tests/integration/test_m1e05_scripts.py:93-99",
+        "src/keemu/persistent.py:681-685"
+      ],
+      "finding": "The new test calls destroy while its environment is still running. The common contract requires down first. Its broad except hides RegistryError and directly removes reconciled containers, leaving all six retained m1e05 records running while their Docker containers are absent. The Docker-only postflight does not verify registry cleanup.",
+      "verification": "Six exact environment records rehashed; all running. Host-only mocked common operate() reproduction returns RegistryError: destroy needs stopped environment; use down first. No target execution, Docker mutation or registry write.",
+      "required_resolution": "A separately approved worker must use down then destroy, make unexpected teardown errors visible, verify destroyed/consistent tombstones and handle exact existing stale records through the approved recovery contract. No cleanup or implementation here."
+    },
+    {
+      "id": "R2",
+      "severity": "P1",
+      "acceptance_blocking": true,
+      "title": "Historical m1e-05 live execution and TDD evidence cannot be independently reverified",
+      "source": [
+        "tests/integration/test_m1e05_scripts.py:35-45",
+        "tests/integration/test_m1e05_scripts.py:69-75",
+        ".agent/JOURNAL.md:506",
+        ".agent/runs/20260929T182704Z.log:1-4",
+        ".agent/router-events.jsonl:733"
+      ],
+      "finding": "One-shot and persistent RunReport bundles are written inside TemporaryDirectory and deleted at teardown. No m1e05 JUnit/raw report evidence survives under reports or .runtime; only registry artifacts survive. The supervisor log contains the completion marker, not RED/GREEN output, and the deleted engineering session has no retained transcript found. The outcome explicitly has verification_evidence=[], completed_verified=false and learning_accepted=false. The claimed RED 0/2, live GREEN 2 and full 355/63 remain historical worker claims, not independently hash-verified live results.",
+      "verification": "Filesystem inventory, engineering run log, state-at-boundary quota and two linked route/outcome events inspected. Historical session absence checked using read-only SQLite. Current portable 353/65 and script units 117 independently passed; neither substitutes for live MIPS/MIPSEL or live AArch64 regression.",
+      "required_resolution": "Recover original raw records if they exist, or capture new real common-path runs in an authorized worker with immutable redacted reports, exact JUnit, hashes and owned-resource/registry readback. Do not relabel new execution as historical RED/GREEN."
+    },
+    {
+      "id": "R3",
+      "severity": "P2",
+      "acceptance_blocking": true,
+      "title": "Current opt-in architecture regression still expects the removed gate",
+      "source": [
+        "tests/integration/test_script_lifecycle.py:391-437",
+        "src/keemu/script_lifecycle.py:205-221"
+      ],
+      "finding": "KEEMU_TEST_SCRIPT_ARCHITECTURES still requires both MIPS targets to report BLOCKED with ScriptCapabilityUnavailable and no allocation. The removed gate is no longer raised by the reviewed path; a healthy verified cache now executes the common lifecycle. The 355/63 sweep enabled only KEEMU_TEST_M1E05, leaving both obsolete opt-in cases skipped.",
+      "verification": "Exact current test assertions and removed capability-gate source inspected. No live regression rerun or actual runtime FAIL claimed.",
+      "required_resolution": "Under a new approved corrective boundary, replace current-tree obsolete assumptions with enabled-path coverage and an explicitly unavailable-cache no-allocation case. Preserve frozen MVP 1D ledgers and historical verdicts."
+    }
+  ],
+  "verification": {
+    "observed_at": "2026-09-30T06:43:04.259953+00:00",
+    "reviewed_commit": "3978cc001aec7d871ce0ba8d80bb38fae6b462ae",
+    "head": "f9c299d9bc4daf361a01de0b6a5235397b057a9f",
+    "docker_before": {
+      "containers": [
+        "0318fe186f68f053b60bc63d158bbbce896fd8cd3540091ead11641a6eed7a65",
+        "a362dc49f04375b24edfa1ed5e9b81c2f6db48d73d75d40c0161c67c265fa2a9"
+      ],
+      "owned_containers": [],
+      "networks": [
+        "291d3a49ec422e3a4850fa55cba1cfdddbb3d2f1f9f77fc6ec784520e7d6e642",
+        "90e918c82521de48547fc47262e7a02c4f79f89a84012ce4b358c539699f898d",
+        "91ae9c89ea9961437bc1e563aeed5f77a190cb47d78446e9760dadfad72d755a",
+        "ce3ba0521b37ce75da69eb7230473e3fd333e574c47ddfc533acb9feefb4c839"
+      ],
+      "owned_networks": []
+    },
+    "source_test_files": [
+      "src/keemu/script_lifecycle.py",
+      "src/keemu/script_persistent.py",
+      "tests/integration/test_m1e05_scripts.py",
+      "tests/unit/test_script_architectures.py"
+    ],
+    "source_test_file_limit": 5,
+    "changed_files": [
+      ".agent/CHECKPOINT.md",
+      ".agent/JOURNAL.md",
+      ".agent/STATE_MVP1E.json",
+      ".agent/router-events.jsonl",
+      "src/keemu/script_lifecycle.py",
+      "src/keemu/script_persistent.py",
+      "tests/integration/test_m1e05_scripts.py",
+      "tests/unit/test_script_architectures.py"
+    ],
+    "source_test_hashes": {
+      "src/keemu/script_lifecycle.py": "5bf608d1e053e37ae85f6e09feabad97013cade936bfbc2c39ee578f2c791843",
+      "src/keemu/script_persistent.py": "f7414fb99d5e6eb0912a0a230f0b7caaf1072120d5ed59a38d345f394ea039f8",
+      "tests/integration/test_m1e05_scripts.py": "f8a3709ab5026aca83f1b935a28b8521b328e020c67c32601c138a6370ea05c8",
+      "tests/unit/test_script_architectures.py": "14d3031f048a78c86e5757db8e70bcad8ea940371497c8a3c3d8f7979c0fe013"
+    },
+    "protected_hashes": {
+      "src/keemu/script_input.py": "5cac2b3725519e911e99522da6b8c9c659d75cd5a3728907be935433f7f5e180",
+      "src/keemu/script_stage.py": "50ec785632d45f2ee1a0f5d75e8109241f793e342a805ee4332b543db162d8e1",
+      "src/keemu/script_process.py": "d697f774a6c3433207aacee39bce2c2b51a48f297c8f418d90dacefbd26afa30",
+      "src/keemu/script_assertions.py": "8aa97114c39f8f4f8c7050f1adb249d2aed5f7f7ea321378bee4880688a58c23",
+      "src/keemu/script_results.py": "8498b18374e734a77ad930c176e20ae3feb17edac451e1f9fc59a1f10784e69c",
+      "src/keemu/docker_runtime.py": "2427b7d56063d7783dbad84991caf71b3f67792446bcb7f536f49c8eb807ece0",
+      "src/keemu/registry.py": "31cfae0c8ea161edaa1afe312a6cb169c79b0302fc3f71861fe71fa59ce60602",
+      "src/keemu/persistent.py": "72e9e8470ef69c37d1ac724a54f52e223c8c24ee916ab1f651c20ff592466568",
+      "src/keemu/reports.py": "ac6a3a5f3742406c6c5be9dec5710ceaa2f72aa8f4b49c3c98154df210b1884e",
+      "src/keemu/models.py": "2dbdcff4b30afd58f6039e2a8d7106b31d9740bba56e24341a69579634f20e05",
+      "src/keemu/script_scenario.py": "ed45075d4d557e77089b10eeb2bff751301704c66ad6dd0506dc0989b9ecbd48",
+      "fixtures/sources/script-runner/runner.c": "60f3a70cb94477ec113b31315de6a0dd2b06f60934ca8121f597b96612b96cab",
+      "src/keemu/cli.py": "f8a14e37d857d5cf2cbfedd8132a8f375859494fe0d627e7e232d867a67741d8"
+    },
+    "post_engineering_product_drift": false,
+    "execution_assertion_exception_cleanup_ast_parity": true,
+    "targets": [
+      {
+        "profile": "generic-aarch64",
+        "target": "aarch64-3.10",
+        "cache_key": "0e700e5fbd961a51efaa76141dd58be4f57405e63ac9381c1c8c5ee2bec57641",
+        "oci_digest": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+        "base_lock": "locks/m1a-init-aarch64.json",
+        "base_lock_sha256": "1d8acdfb3bb17383f8a4c2dcb28bf71d472e003bcbd841e5e48f48e75ac1089e",
+        "offline_cache_verification": "PASS",
+        "runtime_execution": "NOT_RUN"
+      },
+      {
+        "profile": "generic-mips",
+        "target": "mips-3.4",
+        "cache_key": "f4299708816a36e4e3a28fe2ed762fe657a00751db45f8198deabaa7b4981fbd",
+        "oci_digest": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+        "base_lock": "locks/m1e-init-mips.json",
+        "base_lock_sha256": "5f8a19011a30032502a9f54a6c6354d1ec985b3b6372a1a0a420c4c297284b29",
+        "offline_cache_verification": "PASS",
+        "runtime_execution": "NOT_RUN"
+      },
+      {
+        "profile": "generic-mipsel",
+        "target": "mipsel-3.4",
+        "cache_key": "8761fcaa023141c0e99863ec6eed5a1edb96a5811420a1562ca2b0b43eec1151",
+        "oci_digest": "sha256:44f1e4382b1546f454ed6602212effff860c5aaadcf03d513ceae506ce6abe74",
+        "base_lock": "locks/m1e-init-mipsel.json",
+        "base_lock_sha256": "22502ba3675da8c96de67b89f35ef6a50e350d73e8b32aac8a5e94028fec1ef0",
+        "offline_cache_verification": "PASS",
+        "runtime_execution": "NOT_RUN"
+      }
+    ],
+    "mocked_unavailable_cache_checks": [
+      {
+        "profile": "generic-aarch64",
+        "status": "PASS",
+        "real_target_execution": false
+      },
+      {
+        "profile": "generic-mips",
+        "status": "PASS",
+        "real_target_execution": false
+      },
+      {
+        "profile": "generic-mipsel",
+        "status": "PASS",
+        "real_target_execution": false
+      }
+    ],
+    "fresh_junit": [
+      {
+        "path": "reports/m1e05r-portable.xml",
+        "sha256": "a3411d557215cf51b4d85b38fccd72575c6d27bf747e63c7240969ef375683f7",
+        "total": 418,
+        "failure": 0,
+        "error": 0,
+        "skipped": 65,
+        "passed": 353
+      },
+      {
+        "path": "reports/m1e05r-script-unit.xml",
+        "sha256": "040799b8c7a466aaa807f707de1f3d0371245bb6fd4e2b8076c6e1e70a8fe4a4",
+        "total": 117,
+        "failure": 0,
+        "error": 0,
+        "skipped": 0,
+        "passed": 117
+      }
+    ],
+    "engineering_quota_admission": {
+      "checked_at": "2026-09-29T18:27:01+00:00",
+      "scope": "subtask",
+      "admission_key": "subtask:m1e-05:8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+      "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "task_intent": "Integrate generic-mips and generic-mipsel one-shot and persistent script paths through the existing common script primitives, changing at most five source or test files and stopping if any primitive or boundary redesign is required",
+      "subtask_id": "m1e-05",
+      "subtask_digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+      "action": "admit",
+      "remaining_percent": 76.0,
+      "reset_at": "2026-09-29T23:09:01+00:00",
+      "source": "hermes_oauth_usage_api",
+      "message": "5-hour OAuth quota admits new task"
+    },
+    "engineering_events": [
+      {
+        "created_at": "2026-09-29T18:27:04+00:00",
+        "event_id": "evt_fc7a7d81697a257594c4a05c",
+        "policy_version": "v1",
+        "route": {
+          "model": "gpt-5.6-terra",
+          "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+          "policy_version": "v1",
+          "provider": "openai-codex",
+          "reasoning": "high",
+          "route_event_id": "evt_fc7a7d81697a257594c4a05c",
+          "session_id": null,
+          "subtask_digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+          "subtask_id": "m1e-05",
+          "tier": "C3"
+        },
+        "schema_version": 1,
+        "signals": {
+          "active_subtask_id": "m1e-05",
+          "architecture_scope": false,
+          "c5_explicit": false,
+          "c5_factors": [
+            "kernel_network_namespace"
+          ],
+          "c5_justified": true,
+          "changed_files": 0,
+          "component_count": 3,
+          "cross_component_scope": false,
+          "debugging_scope": false,
+          "destructive_risk": false,
+          "diagnostic_risk": "unknown",
+          "gate_closure_probability": "high",
+          "graphify_bytes": 2499033,
+          "graphify_present": true,
+          "planned_change_count": 5,
+          "previous_failures": 0,
+          "production_risk": true,
+          "read_only_scope": false,
+          "reasons": [
+            "multiple planned changes",
+            "large planned change set",
+            "multi-component implementation",
+            "production/remote-system risk",
+            "security/auth/network privilege risk"
+          ],
+          "repo_files_sampled": 2000,
+          "safety_context": [
+            "kernel",
+            "production"
+          ],
+          "same_error_count": 0,
+          "score": 10,
+          "security_risk": true,
+          "signal_source": "active_subtask",
+          "task_chars": 231
+        },
+        "source": "supervisor",
+        "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6"
+      },
+      {
+        "created_at": "2026-09-29T18:36:36+00:00",
+        "event_id": "evt_91ada37246efe4ed54927b7d",
+        "outcome": {
+          "completed_marker": true,
+          "completed_verified": false,
+          "continuations": 0,
+          "duration_seconds": null,
+          "exit_code": 0,
+          "expected_model": "gpt-5.6-terra",
+          "expected_reasoning": "high",
+          "learning_accepted": false,
+          "model_attestation_status": "ATTESTED",
+          "model_attested": true,
+          "needed_human": false,
+          "quota_pause": false,
+          "session_deleted": true,
+          "timed_out": false,
+          "verification_evidence": []
+        },
+        "parent_event_id": "evt_fc7a7d81697a257594c4a05c",
+        "policy_version": "v1",
+        "route": {
+          "model": "gpt-5.6-terra",
+          "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+          "policy_version": "v1",
+          "provider": "openai-codex",
+          "reasoning": "high",
+          "route_event_id": "evt_fc7a7d81697a257594c4a05c",
+          "session_id": null,
+          "subtask_digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+          "subtask_id": "m1e-05",
+          "tier": "C3"
+        },
+        "schema_version": 1,
+        "signals": {
+          "active_subtask_id": "m1e-05",
+          "architecture_scope": false,
+          "c5_explicit": false,
+          "c5_factors": [
+            "kernel_network_namespace"
+          ],
+          "c5_justified": true,
+          "changed_files": 0,
+          "component_count": 3,
+          "cross_component_scope": false,
+          "debugging_scope": false,
+          "destructive_risk": false,
+          "diagnostic_risk": "unknown",
+          "gate_closure_probability": "high",
+          "graphify_bytes": 2499033,
+          "graphify_present": true,
+          "planned_change_count": 5,
+          "previous_failures": 0,
+          "production_risk": true,
+          "read_only_scope": false,
+          "reasons": [
+            "multiple planned changes",
+            "large planned change set",
+            "multi-component implementation",
+            "production/remote-system risk",
+            "security/auth/network privilege risk"
+          ],
+          "repo_files_sampled": 2000,
+          "safety_context": [
+            "kernel",
+            "production"
+          ],
+          "same_error_count": 0,
+          "score": 10,
+          "security_risk": true,
+          "signal_source": "active_subtask",
+          "task_chars": 231
+        },
+        "source": "supervisor_outcome",
+        "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6"
+      }
+    ],
+    "historical_live_artifacts": [
+      ".runtime/registry/locks/m1e05-persist-15c2c25b6b384db4.lock",
+      ".runtime/registry/locks/m1e05-persist-1a6c1f162bb14996.lock",
+      ".runtime/registry/locks/m1e05-persist-27e923c97a6e4a5c.lock",
+      ".runtime/registry/locks/m1e05-persist-68c07b12ca1b4321.lock",
+      ".runtime/registry/locks/m1e05-persist-9b68e54280d24825.lock",
+      ".runtime/registry/locks/m1e05-persist-a42583608e8e47e0.lock",
+      ".runtime/registry/m1e05-persist-15c2c25b6b384db4/environment.json",
+      ".runtime/registry/m1e05-persist-15c2c25b6b384db4/scenario.yaml",
+      ".runtime/registry/m1e05-persist-1a6c1f162bb14996/environment.json",
+      ".runtime/registry/m1e05-persist-1a6c1f162bb14996/scenario.yaml",
+      ".runtime/registry/m1e05-persist-27e923c97a6e4a5c/environment.json",
+      ".runtime/registry/m1e05-persist-27e923c97a6e4a5c/scenario.yaml",
+      ".runtime/registry/m1e05-persist-68c07b12ca1b4321/environment.json",
+      ".runtime/registry/m1e05-persist-68c07b12ca1b4321/scenario.yaml",
+      ".runtime/registry/m1e05-persist-9b68e54280d24825/environment.json",
+      ".runtime/registry/m1e05-persist-9b68e54280d24825/scenario.yaml",
+      ".runtime/registry/m1e05-persist-a42583608e8e47e0/environment.json",
+      ".runtime/registry/m1e05-persist-a42583608e8e47e0/scenario.yaml"
+    ],
+    "historical_session_absent": true,
+    "recent_sol61_metadata": [
+      {
+        "session_id": "20260930_063504_dd91c7",
+        "model": "gpt-6.1-sol",
+        "reasoning": "high",
+        "provider": "openai-codex"
+      },
+      {
+        "session_id": "20260930_060537_2ae702",
+        "model": "gpt-6.1-sol",
+        "reasoning": "low",
+        "provider": "openai-codex"
+      }
+    ],
+    "docker_after": {
+      "containers": [
+        "0318fe186f68f053b60bc63d158bbbce896fd8cd3540091ead11641a6eed7a65",
+        "a362dc49f04375b24edfa1ed5e9b81c2f6db48d73d75d40c0161c67c265fa2a9"
+      ],
+      "owned_containers": [],
+      "networks": [
+        "291d3a49ec422e3a4850fa55cba1cfdddbb3d2f1f9f77fc6ec784520e7d6e642",
+        "90e918c82521de48547fc47262e7a02c4f79f89a84012ce4b358c539699f898d",
+        "91ae9c89ea9961437bc1e563aeed5f77a190cb47d78446e9760dadfad72d755a",
+        "ce3ba0521b37ce75da69eb7230473e3fd333e574c47ddfc533acb9feefb4c839"
+      ],
+      "owned_networks": []
+    },
+    "product_worktree_diff": [],
+    "result": "PASS_READ_ONLY_VERIFICATION",
+    "m1e05_environment_records": [
+      {
+        "path": ".runtime/registry/m1e05-persist-15c2c25b6b384db4/environment.json",
+        "sha256": "caac9b46f83908e5e139a1c014441ac28d49a904b659361c80ad429a267479ad",
+        "profile_id": "generic-mips",
+        "state": "running",
+        "run_id": "env-2eb749729a3744dd8ee17bc17b78d5dc",
+        "container_id": "aecc3329cc453ad308949c78ab683ab9347527a6f972fa131cc7cf0a03dcec11"
+      },
+      {
+        "path": ".runtime/registry/m1e05-persist-1a6c1f162bb14996/environment.json",
+        "sha256": "e03a6600a8cbc5b8f910d7e2c70cfc561fa34ef31950f6e7d5f7a924c0d7395b",
+        "profile_id": "generic-mipsel",
+        "state": "running",
+        "run_id": "env-39be452f05484f2c950c669554b3bf4f",
+        "container_id": "4734cda964f678b202347ac62c7d97c9ceb1d92280124ef8afcff734de1afde3"
+      },
+      {
+        "path": ".runtime/registry/m1e05-persist-27e923c97a6e4a5c/environment.json",
+        "sha256": "42a00abdc61c4364ca04c70b86bdf22429a1e73aa4d59cbf9c217ca881e598b6",
+        "profile_id": "generic-mips",
+        "state": "running",
+        "run_id": "env-b9e2436503104fd1b3d07331c028f73f",
+        "container_id": "cdc0f1df2315bcb5fd37935768c10f720f880cdd02c6e76fe4f3944f7127ce50"
+      },
+      {
+        "path": ".runtime/registry/m1e05-persist-68c07b12ca1b4321/environment.json",
+        "sha256": "d52ede54f44058cbcb26ab721f04c90f2114cbcbfebee8e4c891550ecdadcd95",
+        "profile_id": "generic-mips",
+        "state": "running",
+        "run_id": "env-4cc06ccca56448c0a35eba99b52d1853",
+        "container_id": "d3ddfdd87391ea70d525aa8ce053c37a76c0170a5aa281607090e8d63b26ca53"
+      },
+      {
+        "path": ".runtime/registry/m1e05-persist-9b68e54280d24825/environment.json",
+        "sha256": "0b650afbde917b4cbccd7a07e65e6e6298405e4495ba6ef7dd61cec6de984cc8",
+        "profile_id": "generic-mipsel",
+        "state": "running",
+        "run_id": "env-d14344d901a3447c90a7885039b864c8",
+        "container_id": "9486e86ade07b5bdfd0f1d9990d8bf0b1a3278d370862ab675059771798257bc"
+      },
+      {
+        "path": ".runtime/registry/m1e05-persist-a42583608e8e47e0/environment.json",
+        "sha256": "6dd41e77de47d70c2c00c5a1b230e72f025b6c324222cf3c49d676efcb1863f7",
+        "profile_id": "generic-mipsel",
+        "state": "running",
+        "run_id": "env-e6e7d959173c4016b9272160e09b2320",
+        "container_id": "2b3c132ed57b08e55fcbb8075b60b5cbe8669ffd708135742a108e7784196705"
+      }
+    ],
+    "host_only_teardown_probe": {
+      "result": "PASS_HOST_ONLY_REPRODUCTION",
+      "action": "destroy",
+      "record_state": "running",
+      "docker_running": true,
+      "exception": "RegistryError",
+      "message": "destroy needs stopped environment; use down first",
+      "docker_access": false,
+      "registry_write": false
+    }
+  },
+  "frozen_predecessor_hashes": {
+    "docs/milestones/KEEMU_MVP1D_TASK_FROZEN.md": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
+    ".agent/STATE_MVP1D.json": "20f8867c8e96327b5e1f10dc4db31da6d22367c3e894238a46d5796eec67976d",
+    "docs/evidence/mvp1d-m1d13-final-audit.json": "feff7fc5e6233313cd93c205adfbf5d497d3ef669da811da056ab28d773a4793",
+    "docs/evidence/final28-acceptance.json": "7d3c0b10dc0c0436b18d4a028bb4e27b80d113fc734adac009784f13dfd74c4c",
+    "docs/evidence/final29-release.json": "a53b0bd54b94b0d7b2e54cc241d361228b2b8ed2fb8e4fd8bcd2a4c5f0b86fba",
+    "docs/evidence/final31-independent-audit.md": "764e2927b239359aa3b223b2c4e89184590fc51a395e5ae9bb50e6b9207a2ba9"
+  },
+  "limitations": [
+    "No live target script run, image load/build, binfmt observation helper, Docker resource mutation or stale-registry cleanup in this review.",
+    "AArch64 source/default/base parity and portable regression verified; new live AArch64 regression not executed.",
+    "MIPS/MIPSEL timeout, interruption, collision, filesystem assertion and service/isolation matrix remain later frozen verification, not claimed here.",
+    "MVP 1D D02/D07 remain BLOCKED and are not changed or closed by E06.",
+    "Review completion records findings; it is not E06 acceptance or milestone completion."
+  ],
+  "next_boundary": "Supervisor alone owns terminal attestation, coherent staging checkpoint/push, session deletion and any approved corrective routing. No successor executed.",
+  "review_quota_admission": {
+    "checked_at": "2026-09-30T06:34:57+00:00",
+    "scope": "subtask",
+    "admission_key": "subtask:m1e-05r:a8596920b23a1c7cd311b032cc8e03dd40db289c10d9a840bd135cfae498f283",
+    "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+    "task_intent": "Independently review the m1e-05 C3 engineering result without product mutation; verify frozen file limits, common-path parity, tests, runtime evidence, scope compliance and any blocking finding",
+    "subtask_id": "m1e-05r",
+    "subtask_digest": "a8596920b23a1c7cd311b032cc8e03dd40db289c10d9a840bd135cfae498f283",
+    "action": "admit",
+    "remaining_percent": 75.0,
+    "reset_at": "2026-09-30T11:02:13+00:00",
+    "source": "hermes_oauth_usage_api",
+    "message": "5-hour OAuth quota admits new task"
+  }
+}
