@@ -1,0 +1,15 @@
+COMMAND: uv run --frozen python -m scripts.validate_m1e07
+EXIT_CODE: 0
+{"E06": "BLOCKED", "E07": "SCOPED_PASS", "E08": "RECONCILIATION_PASS_FINAL_AUDIT_PENDING", "evidence_hashes": 14, "milestone": "PENDING_INDEPENDENT_FINAL_AUDIT", "predecessor_hashes": 6, "reconciliation": "PASS", "subtask": "m1e-07"}
+
+COMMAND: uv run --frozen python -m scripts.validate_m1e06
+EXIT_CODE: 0
+{"D02_D07": "BLOCKED", "E06": "BLOCKED", "E07": "SCOPED_PASS", "E08": "NOT_EVALUATED", "adversarial_unique_PASS": 19, "junit": {"reports/m1e06/adversarial-boundaries.xml": {"ERROR": 0, "FAIL": 0, "PASS": 12, "SKIP": 0}, "reports/m1e06/adversarial-final.xml": {"ERROR": 0, "FAIL": 1, "PASS": 12, "SKIP": 0}, "reports/m1e06/adversarial-initial.xml": {"ERROR": 0, "FAIL": 1, "PASS": 0, "SKIP": 0}, "reports/m1e06/adversarial-remainder.xml": {"ERROR": 0, "FAIL": 0, "PASS": 4, "SKIP": 0}, "reports/m1e06/init-regression.xml": {"ERROR": 0, "FAIL": 0, "PASS": 22, "SKIP": 0}, "reports/m1e06/lifecycle-regression.xml": {"ERROR": 0, "FAIL": 0, "PASS": 17, "SKIP": 1}, "reports/m1e06/one-shot-outcomes.xml": {"ERROR": 0, "FAIL": 0, "PASS": 3, "SKIP": 0}, "reports/m1e06/portable.xml": {"ERROR": 0, "FAIL": 0, "PASS": 353, "SKIP": 84}, "reports/m1e06/script-regression.xml": {"ERROR": 0, "FAIL": 0, "PASS": 8, "SKIP": 0}, "reports/m1e06/stale-architecture-regression.xml": {"ERROR": 0, "FAIL": 2, "PASS": 0, "SKIP": 0}}, "retained_artifacts": 142, "subtask": "m1e-06", "typed_reports": 47}
+
+COMMAND: uv run --frozen python -m scripts.validate_final28
+EXIT_CODE: 0
+validated 21 IDs, 15 hash-bound sources; release BLOCKED
+
+COMMAND: uv run --frozen python -m scripts.validate_final29
+EXIT_CODE: 0
+{"cases": {"FAIL": 2, "PASS": 233, "SKIP": 3}, "release_gate": "BLOCKED", "socket_probes": 3, "subtask": "final-29", "target_probes": 2}

@@ -28,7 +28,29 @@ No D gate changes frozen original MVP 1 A01–A21/final-28/final-29/final-31
 evidence or release result. See ADR-0019 and `docs/limitations.md` for
 failure/recovery scope.
 
-## MVP 1E E01–E08 reconciliation
+## MVP 1E m1e-08 independent final verdict
+
+`docs/evidence/mvp1e-m1e08-final-audit.json` and `.md` are the independent
+final audit; `uv run python -m scripts.validate_m1e08` replays its retained
+hash/count/status checks without runtime mutation.
+
+| Gate | Final status | Named scope / remaining boundary |
+|---|---|---|
+| E01 | PASS | Scope, lock, capability and route review |
+| E02 | PASS | Deterministic offline-verifiable locked MIPS init |
+| E03 | PASS | Same common cache contract, independent MIPSEL evidence |
+| E04 | PASS | Common three-target one-shot IPK success/negative/cleanup |
+| E05 | PASS | Common persistent IPK lifecycle and explicit recovery |
+| E06 | BLOCKED | R1 stale teardown, R2 missing historical TDD evidence, R3 actual obsolete-regression FAILs |
+| E07 | PASS | Bounded verification-observation matrix; retained ledger stays SCOPED_PASS, known FAILs are not suppressed |
+| E08 | PASS | Completed evidence/docs reconciliation and independent final audit, not product completion |
+
+MVP 1E milestone/release: BLOCKED. Release checks: FAIL (retained R3,
+current lint/format); fresh portable: 353 PASS/84 SKIP. MVP 1D D02/D07 and
+all predecessor release verdicts remain BLOCKED and byte-preserved. Only the
+external supervisor owns terminal attestation, commit/push and session deletion.
+
+## MVP 1E E01–E08 reconciliation (historical m1e-07)
 
 `docs/evidence/mvp1e-m1e07-reconciliation.json` hash-binds E01–E07 evidence,
 the MVP 1E specification/route plan, and frozen MVP 1D/original-MVP

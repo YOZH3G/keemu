@@ -1,0 +1,52 @@
+sssssssssssssssssssssssss....sss..sssssssss.ss.s.sssssssssssssssssssssss [ 16%]
+sssssssssssssssssss..................................................... [ 32%]
+........................................................................ [ 49%]
+....................ss.................................................. [ 65%]
+........................................................................ [ 82%]
+........................................................................ [ 98%]
+.....                                                                    [100%]
+----- generated xml file: /opt/data/cache/scratch/m1e08-audit/portable.xml -----
+=========================== short test summary info ============================
+SKIPPED [1] tests/integration/test_docker_runtime.py:18: opt in to live Docker runtime test
+SKIPPED [1] tests/integration/test_init_cache.py:35: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:44: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [5] tests/integration/test_init_cache.py:52: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:78: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:86: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:107: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:120: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [4] tests/integration/test_init_cache.py:130: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:148: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:166: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_init_cache.py:181: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [4] tests/integration/test_init_cache.py:191: set KEEMU_RUN_INIT_CACHE=1 with pinned cache and Docker/binfmt
+SKIPPED [1] tests/integration/test_lifecycle.py:182: opt in to owned Docker script scenario
+SKIPPED [1] tests/integration/test_lifecycle.py:268: opt in to disposable Docker lifecycle test
+SKIPPED [1] tests/integration/test_lifecycle.py:495: opt in to disposable Docker lifecycle test
+... (16 lines omitted)
+SKIPPED [2] tests/integration/test_m1e03_lifecycle.py:52: opt in to locked MIPS/MIPSEL Docker lifecycle
+SKIPPED [2] tests/integration/test_m1e04_persistent.py:64: opt in to MIPS/MIPSEL persistent lifecycle
+SKIPPED [2] tests/integration/test_m1e05_scripts.py:27: opt in to MIPS/MIPSEL common script lifecycle
+SKIPPED [3] tests/integration/test_m1e06_adversarial.py:69: opt in to frozen real E07
+SKIPPED [3] tests/integration/test_m1e06_adversarial.py:180: opt in to frozen real E07
+SKIPPED [3] tests/integration/test_m1e06_adversarial.py:239: opt in to frozen real E07
+SKIPPED [3] tests/integration/test_m1e06_adversarial.py:345: opt in to frozen real E07
+SKIPPED [3] tests/integration/test_m1e06_adversarial.py:421: opt in to frozen real E07
+SKIPPED [3] tests/integration/test_m1e06_adversarial.py:574: opt in to frozen real E07
+SKIPPED [1] tests/integration/test_m1e06_adversarial.py:633: opt in to frozen real E07
+SKIPPED [1] tests/integration/test_matrix.py:23: opt in to locked AArch64 Docker/binfmt matrix run
+SKIPPED [1] tests/integration/test_p0_diagnostic.py:19: set KEEMU_RUN_P0_DIAGNOSTIC=1 after fetching locked P0 artifacts
+SKIPPED [1] tests/integration/test_p0_image.py:17: set KEEMU_RUN_P0_IMAGE_AUDIT=1 after building and saving the locked image
+SKIPPED [1] tests/integration/test_p0_web_demo.py:17: set KEEMU_RUN_P0_WEB_DEMO_PROBE=1 after building p0-06 web and observer locks
+SKIPPED [2] tests/integration/test_script_adversarial.py:33: opt in to owned AArch64 script adversarial Docker/binfmt probe
+SKIPPED [1] tests/integration/test_script_lifecycle.py:27: opt in to locked AArch64 script one-shot Docker/binfmt probe
+SKIPPED [1] tests/integration/test_script_lifecycle.py:192: opt in to locked AArch64 script cleanup probe
+SKIPPED [1] tests/integration/test_script_lifecycle.py:242: opt in to locked AArch64 script one-shot Docker/binfmt probe
+SKIPPED [1] tests/integration/test_script_lifecycle.py:299: opt in to locked AArch64 script assertion Docker/binfmt probe
+SKIPPED [2] tests/integration/test_script_lifecycle.py:395: opt in to MIPS/MIPSEL script capability and Docker isolation readback
+SKIPPED [1] tests/integration/test_script_process.py:20: opt in to owned AArch64 Docker/binfmt script process probe
+SKIPPED [1] tests/integration/test_script_process.py:84: opt in to owned AArch64 Docker/binfmt script process probe
+SKIPPED [1] tests/integration/test_script_stage.py:19: opt in to owned AArch64 Docker/binfmt script staging
+SKIPPED [2] tests/unit/test_m1b18_targets.py:59: set KEEMU_RUN_M1B18=1 with pinned artifacts and Docker image IDs
+353 passed, 84 skipped in 36.20s
+[+41 hidden: rtk recall 5003d7d21d22]

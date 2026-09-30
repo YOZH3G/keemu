@@ -19,8 +19,12 @@ three-target lifecycle evidence without publishing a final release verdict.
 the common one-shot IPK lifecycle, and the common registry-backed persistent
 lifecycle with explicit recovery. E01–E05 are PASS at their named scopes; E07
 is SCOPED_PASS for its retained adversarial matrix. E06 script-integration
-acceptance is BLOCKED by independent findings R1/R2/R3, and `m1e-08` alone
-owns the final audit. MVP 1D D02/D07 remain BLOCKED.
+acceptance is BLOCKED by independent findings R1/R2/R3. The separate final
+`docs/evidence/mvp1e-m1e08-final-audit.json` publishes E01–E05/E07/E08 PASS
+only at their named bounded gates and E06/milestone/release BLOCKED. E07's
+source SCOPED_PASS and two real obsolete-regression FAILs remain unchanged.
+MVP 1D D02/D07 remain BLOCKED; no product or predecessor-history correction
+was performed by the audit.
 
 ## Implemented components
 

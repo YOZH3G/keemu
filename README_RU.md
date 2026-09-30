@@ -39,18 +39,18 @@ KEEMU запускает зафиксированные целевые окру�
 | **MIPSEL** | Ограниченные lifecycle-доказательства MVP 1E | ✅ locked `init`, one-shot и persistent IPK paths | ✅ QEMU/binfmt подтверждены |
 | **MIPS** | Ограниченные lifecycle-доказательства MVP 1E | ✅ locked `init`, one-shot и persistent IPK paths | ✅ QEMU/binfmt подтверждены |
 
-Для MIPSEL/MIPS теперь есть generic-профили, детерминированные locked init caches, общие one-shot и persistent IPK paths, проверки ELF32 и подтверждённое target execution. `docs/evidence/mvp1e-m1e07-reconciliation.json` фиксирует E01–E05 как `PASS`, E07 как `SCOPED_PASS`. Приёмка script integration E06 остаётся `BLOCKED` по независимым findings R1/R2/R3; финальный аудит MVP 1E ещё не выполнен.
+Для MIPSEL/MIPS теперь есть generic-профили, детерминированные locked init caches, общие one-shot и persistent IPK paths, проверки ELF32 и подтверждённое target execution. Независимый `docs/evidence/mvp1e-m1e08-final-audit.json` фиксирует E01–E05, E07 и E08 как `PASS` в их ограниченных gates; E06 и milestone/release MVP 1E остаются `BLOCKED`. Исторический ledger E07 сохраняет `SCOPED_PASS`: два реальных architecture-regression `FAIL` не скрыты, script integration не принята.
 
 ### MVP 1E: сверка MIPS/MIPSEL lifecycle
 
-Текущая сверка MVP 1E относится только к evidence/documentation и не является release verdict:
+Сохранённая сверка m1e-07 относится только к evidence/documentation. Отдельный финальный аудит m1e-08 теперь публикует milestone verdict:
 
 - E01 scope/lock review, E02 MIPS init, E03 MIPSEL init, E04 one-shot lifecycle и E05 persistent/recovery имеют `PASS` в своих ограниченных scope;
 - E06 имеет `BLOCKED` из-за сохранённых findings независимого review, включая отсутствие независимо проверяемых исторических C3 execution evidence;
-- E07 имеет `SCOPED_PASS` для 19 уникальных ограниченных реальных adversarial cases на трёх target;
-- сверка E08 завершена, а `m1e-08` остаётся границей независимого финального аудита.
+- финальный verification-observation gate E07 имеет `PASS` для 19 уникальных ограниченных реальных adversarial cases на трёх target; исторический ledger сохраняет `SCOPED_PASS`;
+- независимый evidence audit E08 имеет `PASS`, но milestone/release MVP 1E остаётся `BLOCKED`. Свежие portable tests: 353 `PASS`/84 opt-in `SKIP`; repository lint и format checks имеют `FAIL` на неизменённых файлах.
 
-См. `docs/evidence/mvp1e-m1e07-reconciliation.md` и `docs/limitations.md`.
+См. `docs/evidence/mvp1e-m1e08-final-audit.md`, сохранённый `docs/evidence/mvp1e-m1e07-reconciliation.md` и `docs/limitations.md`. Terminal attestation, commit/push и удаление сессии остаются отдельной границей supervisor; product completion не заявляется.
 
 ---
 

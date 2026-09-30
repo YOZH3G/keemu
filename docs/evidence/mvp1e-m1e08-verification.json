@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "subtask": "m1e-08",
+  "core_manifest_sha256": "872c2a280e84dd05961ab65b49f1dbd7f4009019fcb7c5a6f60cbef09daa00be",
+  "core_manifest": "docs/evidence/mvp1e-m1e08-final-audit.json",
+  "audit_markdown_sha256": "364865cdfe7b3e976ab9b2987099e2565a80fafc2c7ac5a41edab406cc9f08fc",
+  "validator_sha256": "ba04c75e4c2b31c68508157f023f559b5d799c8d0ce0bf4b951f05cfb405d37b",
+  "positive_validator": "PASS",
+  "negative_probe_count": 8,
+  "negative_probe_artifact": {
+    "path": "docs/evidence/raw/mvp1e-m1e08/validator-probes.json",
+    "sha256": "85de126b8b6cbf6fc5f420914f1d682b95856b690872269a1c2a18e8fe1004ea"
+  },
+  "fresh_portable": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 353,
+    "SKIP": 84
+  },
+  "milestone": "BLOCKED",
+  "release": "BLOCKED",
+  "release_checks": "FAIL",
+  "supervisor_boundary": "PENDING; supervisor-owned"
+}

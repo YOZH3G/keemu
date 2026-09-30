@@ -1,0 +1,64 @@
+{
+  "negative_probes": {
+    "C3_policy_promotion": {
+      "error": "C3 promotion",
+      "result": "REJECTED"
+    },
+    "E06_promotion": {
+      "error": "gate verdict changed",
+      "result": "REJECTED"
+    },
+    "R3_failure_hidden": {
+      "error": "R3 FAIL hidden",
+      "result": "REJECTED"
+    },
+    "milestone_promotion": {
+      "error": "blocked milestone or release promoted",
+      "result": "REJECTED"
+    },
+    "wrong_E04_report_status": {
+      "error": "E04 report status changed",
+      "result": "REJECTED"
+    },
+    "wrong_JUnit_count": {
+      "error": "JUnit count: reports/m1e01-guarded-build-v5.xml",
+      "result": "REJECTED"
+    },
+    "wrong_artifact_count": {
+      "error": "artifact count mismatch",
+      "result": "REJECTED"
+    },
+    "wrong_raw_hash": {
+      "error": "evidence hash mismatch: docs/evidence/raw/mvp1e-m1e08/runtime.json",
+      "result": "REJECTED"
+    }
+  },
+  "positive": {
+    "adversarial_unique_PASS": 19,
+    "audit": "PASS",
+    "audit_artifacts": 38,
+    "fresh_portable": {
+      "ERROR": 0,
+      "FAIL": 0,
+      "PASS": 353,
+      "SKIP": 84
+    },
+    "gates": {
+      "E01": "PASS",
+      "E02": "PASS",
+      "E03": "PASS",
+      "E04": "PASS",
+      "E05": "PASS",
+      "E06": "BLOCKED",
+      "E07": "PASS",
+      "E08": "PASS"
+    },
+    "milestone": "BLOCKED",
+    "release": "BLOCKED",
+    "release_checks": "FAIL",
+    "retained_E07_artifacts": 142,
+    "stale_registry_records": 6,
+    "subtask": "m1e-08",
+    "typed_E07_reports": 47
+  }
+}

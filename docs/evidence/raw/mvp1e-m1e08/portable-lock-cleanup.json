@@ -1,0 +1,33 @@
+{
+  "observed_at": "2026-09-30T11:56:13.692099+00:00",
+  "origin": "portable test_persistent_static_defect_refused_before_registry_and_docker, tests/integration/test_lifecycle.py:648-672; Registry.locked creates per-name file before static validation",
+  "prior_registry_files": 1035,
+  "prior_files_unchanged": true,
+  "new_files": [
+    {
+      "path": ".runtime/registry/locks/persist-defect-137b9271bee6.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "device": 2049,
+      "inode": 1110973,
+      "uid": 10000,
+      "mode": "0o600",
+      "exclusive_nonblocking_flock": "PASS",
+      "no_environment_record": true,
+      "removed_and_absent": true
+    },
+    {
+      "path": ".runtime/registry/locks/persist-defect-718f610e80c2.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "device": 2049,
+      "inode": 1110972,
+      "uid": 10000,
+      "mode": "0o600",
+      "exclusive_nonblocking_flock": "PASS",
+      "no_environment_record": true,
+      "removed_and_absent": true
+    }
+  ],
+  "final_registry_exact_baseline": true
+}

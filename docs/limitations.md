@@ -67,9 +67,18 @@ retroactively erase those blockers.
 
 MVP 1D D02/D07 remain BLOCKED: hostile same-UID target stat-to-unlink safety
 is not atomically proved, and persistent script artifacts after SIGKILL have no
-automatic production recovery or interrupted report. The MVP 1E final audit is
-frozen `m1e-08` work; no milestone PASS/FAIL/BLOCKED/ERROR verdict is claimed
-by reconciliation.
+automatic production recovery or interrupted report. The separate final audit
+`docs/evidence/mvp1e-m1e08-final-audit.json` publishes E01–E05/E07/E08 PASS
+at bounded gate scope, E06 BLOCKED, and MVP 1E milestone/release BLOCKED.
+This does not modify reconciliation or any predecessor verdict. Six old
+M1E05 running registry records still have absent containers; Docker-only 0/0
+cleanup is not registry consistency. E07 retains two actual obsolete-test
+FAILs. Fresh portable 353 PASS/84 SKIP does not replace live or historical
+TDD evidence. Current lint FAIL has three E501 errors in the unchanged
+`scripts/validate_m1e07.py`; format FAIL lists eight untouched files. No
+corrective implementation, stale-state repair or privileged rerun is authorized
+by this audit. Earlier sections retain predecessor scope/timestamp, not a
+current assertion that MIPS general lifecycle remains unavailable.
 
 ## Known limitations
 

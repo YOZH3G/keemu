@@ -1,0 +1,34 @@
+E501 Line too long (89 > 88)
+  --> scripts/validate_m1e07.py:48:89
+   |
+46 |         "E08": "RECONCILIATION_PASS_FINAL_AUDIT_PENDING",
+47 |     }
+48 |     actual = {key: value["status"] for key, value in record["acceptance_matrix"].items()}
+   |                                                                                         ^
+49 |     if actual != expected:
+50 |         raise ValueError("acceptance matrix changed")
+   |
+
+E501 Line too long (99 > 88)
+  --> scripts/validate_m1e07.py:71:89
+   |
+69 |     if set(samples) != {"m1e-00", "m1e-05", "m1e-07"}:
+70 |         raise ValueError("incomplete C3 telemetry")
+71 |     if record["c3_telemetry"]["mode"] != "shadow" or record["c3_telemetry"]["automatic_promotion"]:
+   |                                                                                         ^^^^^^^^^^^
+72 |         raise ValueError("C3 telemetry promoted policy")
+73 |     if samples["m1e-05"]["learning_accepted"]:
+   |
+
+E501 Line too long (114 > 88)
+  --> scripts/validate_m1e07.py:86:89
+   |
+84 |         "docs/progress.md": "MVP 1E m1e-07 reconciliation",
+85 |         "docs/traceability.md": "MVP 1E E01–E08 reconciliation",
+86 |         "docs/decisions/0020-mvp1e-reconciliation-boundary.md": "MVP 1E reconciliation preserves scoped evidence",
+   |                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+87 |     }.items():
+88 |         require_text(path, marker)
+   |
+
+Found 3 errors.

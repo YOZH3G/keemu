@@ -1,0 +1,697 @@
+{
+  "schema_version": 1,
+  "milestone": "KEEMU MVP 1E",
+  "subtask": "m1e-08",
+  "subtask_digest": "29349c92ec0deee393e5c03aa48f863e4e0ab02e5fcc47267a07cc8d6ffbc97e",
+  "acceptance_refs": [
+    "E08",
+    "release"
+  ],
+  "observed_at_utc": "2026-09-30T12:02:53.726794+00:00",
+  "reviewed_head": "51f0b411a200fc94c84dce10fced833fd57807b1",
+  "audit_status": "PASS",
+  "milestone_status": "BLOCKED",
+  "release_status": "BLOCKED",
+  "release_checks_status": "FAIL",
+  "release_reason": "E06 remains acceptance-blocked by R1/R2/R3. The real stale-architecture regression and current lint/format checks FAIL. Separate predecessor D02/D07 blockers remain unchanged. Evidence closure cannot accept product or complete the supervisor publication boundary.",
+  "scope": "Independent audit, read-only current/offline Docker inspection, portable tests, additive evidence/docs/durable publication; no product/predecessor/config or Docker/host mutation. Two incidental portable-test empty lock files were exactly owner/inode/flock-checked removed; all prior registry files and final inventory preserved.",
+  "status_semantics": {
+    "PASS": "Verified named bounded gate, not product/release readiness.",
+    "FAIL": "Executed check contradicts its expected result.",
+    "BLOCKED": "Required acceptance proof or approved resolution absent.",
+    "ERROR": "Harness or required cleanup contract failed; no new unhandled audit ERROR."
+  },
+  "gates": [
+    {
+      "id": "E01",
+      "status": "PASS",
+      "scope": "Scope/lock/capability/route review before implementation",
+      "evidence": "docs/evidence/mvp1e-m1e00-acceptance.json",
+      "tests_or_checks": [
+        "docs/evidence/mvp1e-m1e00-scope-review.md"
+      ]
+    },
+    {
+      "id": "E02",
+      "status": "PASS",
+      "scope": "Deterministic locked MIPS schema-5 init with real smoke and offline/no-replace proof",
+      "evidence": "docs/evidence/mvp1e-m1e01-init-mips.json",
+      "tests_or_checks": [
+        "tests/integration/test_init_cache.py"
+      ]
+    },
+    {
+      "id": "E03",
+      "status": "PASS",
+      "scope": "Same common cache contract, independent MIPSEL lock/endian/smoke evidence",
+      "evidence": "docs/evidence/mvp1e-m1e02-init-mipsel.json",
+      "tests_or_checks": [
+        "tests/integration/test_init_cache.py"
+      ]
+    },
+    {
+      "id": "E04",
+      "status": "PASS",
+      "scope": "Common three-target one-shot IPK success/negative/owned-cleanup lifecycle",
+      "evidence": "docs/evidence/mvp1e-m1e03-one-shot.json",
+      "tests_or_checks": [
+        "tests/integration/test_m1e03_lifecycle.py",
+        "tests/integration/test_lifecycle.py"
+      ]
+    },
+    {
+      "id": "E05",
+      "status": "PASS",
+      "scope": "Common persistent IPK service/state/lifecycle and explicit interruption recovery",
+      "evidence": "docs/evidence/mvp1e-m1e04-persistent.json",
+      "tests_or_checks": [
+        "tests/integration/test_m1e04_persistent.py",
+        "tests/unit/test_recovery.py"
+      ]
+    },
+    {
+      "id": "E06",
+      "status": "BLOCKED",
+      "scope": "MIPS/MIPSEL script integration acceptance",
+      "evidence": "docs/evidence/mvp1e-m1e05r-independent-review.json",
+      "tests_or_checks": [
+        "tests/integration/test_m1e05_scripts.py",
+        "tests/integration/test_script_lifecycle.py"
+      ],
+      "blockers": [
+        "R1",
+        "R2",
+        "R3"
+      ]
+    },
+    {
+      "id": "E07",
+      "status": "PASS",
+      "scope": "Bounded real three-target verification-observation matrix; not all-regressions-green or product hardening",
+      "evidence": "docs/evidence/mvp1e-m1e06-adversarial.json",
+      "tests_or_checks": [
+        "tests/integration/test_m1e06_adversarial.py",
+        "scripts/validate_m1e06.py"
+      ],
+      "historical_status": "SCOPED_PASS",
+      "limit": "Retains two actual obsolete-regression FAILs; does not accept E06 or close D02/D07."
+    },
+    {
+      "id": "E08",
+      "status": "PASS",
+      "scope": "Evidence/docs reconciliation and separate independent final audit with exact blocked milestone truth",
+      "evidence": "docs/evidence/mvp1e-m1e08-final-audit.md",
+      "tests_or_checks": [
+        "docs/evidence/mvp1e-m1e07-reconciliation.json",
+        "scripts/validate_m1e08.py"
+      ]
+    }
+  ],
+  "architecture_matrix": {
+    "generic-aarch64": {
+      "target": "aarch64-3.10",
+      "init": "PASS",
+      "one_shot_ipk": "PASS",
+      "persistent_ipk_and_explicit_recovery": "PASS",
+      "script_observation": "Common path executed in retained E07; E06 acceptance BLOCKED globally",
+      "bounded_adversarial_gate": "PASS",
+      "historical_adversarial_status": "SCOPED_PASS"
+    },
+    "generic-mips": {
+      "target": "mips-3.4",
+      "init": "PASS",
+      "one_shot_ipk": "PASS",
+      "persistent_ipk_and_explicit_recovery": "PASS",
+      "script_observation": "Common path executed in retained E07; E06 acceptance BLOCKED globally",
+      "bounded_adversarial_gate": "PASS",
+      "historical_adversarial_status": "SCOPED_PASS"
+    },
+    "generic-mipsel": {
+      "target": "mipsel-3.4",
+      "init": "PASS",
+      "one_shot_ipk": "PASS",
+      "persistent_ipk_and_explicit_recovery": "PASS",
+      "script_observation": "Common path executed in retained E07; E06 acceptance BLOCKED globally",
+      "bounded_adversarial_gate": "PASS",
+      "historical_adversarial_status": "SCOPED_PASS"
+    }
+  },
+  "bound_sources": {
+    "docs/evidence/mvp1e-m1e00-acceptance.json": "0c93b04608821d3484016c973574acf8daaa4c7e2a3a4d6e2dcbf14a050e3c8c",
+    "docs/evidence/mvp1e-m1e00-scope-review.md": "5e980b4ec23b3e8aa147623b566b760dcc35d96675c3fee524da2e540d666194",
+    "docs/evidence/mvp1e-m1e01-init-mips.json": "a5004cafab8748e484a084d472578379bbf3c912a2b332098e40187570c5e6c9",
+    "docs/evidence/mvp1e-m1e02-init-mipsel.json": "4f7c0673ead31b38d592f1b409436080543c1e6555aaac65f6257a33ef62c14e",
+    "docs/evidence/mvp1e-m1e03-one-shot.json": "26a0b5fc41c64ebfcd86a27ed2b4bfbf670cc7f662cb5cd3ff9069e8f3bc6f76",
+    "docs/evidence/mvp1e-m1e04-persistent.json": "6eafb1e3eed9a9ba34da699485aea7bf0abf4a700487bbf6e31142cccc10dfda",
+    "docs/evidence/mvp1e-m1e05r-independent-review.json": "850490cc5a27dfc751d6997827621a58435c717bb3da029ac1df4444365b4515",
+    "docs/evidence/mvp1e-m1e05r-independent-review.md": "e8d5c2063cdb007f3d2bdcff07b0efdf13dfbf77862e4550c57cfcf20d1a43c3",
+    "docs/evidence/mvp1e-m1e06-adversarial.json": "8ec2a6dce775eddefe5d7b498adbe07d6cb17efc7b0c02116d401108bf974a00",
+    "docs/evidence/mvp1e-m1e06-adversarial.md": "bc7ce39d7f02794f6967de1cb0a3d28938a6c24bb9e703daae24b75d5d033ba3",
+    "docs/evidence/mvp1e-m1e06-verification.json": "1a4f18c1a29f1f1eb457699a09a8dc7d9371fadfaf4c70873010d3f5a251b449",
+    "docs/evidence/mvp1e-m1e06-publication.json": "a75a01e85062b0f48c45f7295de29160068e28443b84930d8bed6ed76354c7d9",
+    "docs/specifications/KEEMU_MVP1E_mips_lifecycle.md": "ad98a71bd328884c9c0b8c6e3d0a7f53ae492ebff9a6c1c1df58e8888e537831",
+    "docs/model-routing-plan-mvp1e.md": "5ebda1079245c837b91398c3042b06009726ce247c71ab80510ed4ab9e50343d",
+    "docs/evidence/mvp1e-m1e07-reconciliation.json": "2b2d15c358e62cf5a932b1cac563622cf2a1ddb9e2ee7be12c84d77aad2376a6",
+    "docs/evidence/mvp1e-m1e07-reconciliation.md": "6bd43f64f35b5b23b272c9565d04dc95fdeb6fe511a0cf3a6d85bd6578d65f14",
+    "scripts/validate_m1e08.py": "ba04c75e4c2b31c68508157f023f559b5d799c8d0ce0bf4b951f05cfb405d37b"
+  },
+  "predecessor_sha256": {
+    "docs/milestones/KEEMU_MVP1D_TASK_FROZEN.md": "b575dfc64172b6b5d5f066485324e4f3023b5c143b83d742915c3026dde370cc",
+    ".agent/STATE_MVP1D.json": "20f8867c8e96327b5e1f10dc4db31da6d22367c3e894238a46d5796eec67976d",
+    "docs/evidence/mvp1d-m1d13-final-audit.json": "feff7fc5e6233313cd93c205adfbf5d497d3ef669da811da056ab28d773a4793",
+    "docs/evidence/final28-acceptance.json": "7d3c0b10dc0c0436b18d4a028bb4e27b80d113fc734adac009784f13dfd74c4c",
+    "docs/evidence/final29-release.json": "a53b0bd54b94b0d7b2e54cc241d361228b2b8ed2fb8e4fd8bcd2a4c5f0b86fba",
+    "docs/evidence/final31-independent-audit.md": "764e2927b239359aa3b223b2c4e89184590fc51a395e5ae9bb50e6b9207a2ba9"
+  },
+  "predecessor_status": {
+    "D02": "BLOCKED",
+    "D07": "BLOCKED",
+    "MVP1D_release": "BLOCKED",
+    "MVP1_release": "BLOCKED"
+  },
+  "documentation_sha256": {
+    "README.md": "7c8503163bc7950ee8b49ae71a0f0f6c5df47344b32580ba5b80d8dec4676bb0",
+    "README_RU.md": "b359eb09d0f581d5a3d7f30cc2d5568300d8d4f0a76bffc3510bd4fad8b7a3d9",
+    "docs/architecture.md": "8edfc0c38b66f98eedaf161a43d3f06b90401403f9a522d0ba573f94ee448a18",
+    "docs/limitations.md": "6e072f44010403e9af70d04f9c0d45770a4181a2dfaa8079de41e91b001aa7b7",
+    "docs/progress.md": "d6967e8fb7466ad283b0e4f750f288554331e35b3e9df550241c345a8c03c9ab",
+    "docs/traceability.md": "4d8201e7d165229159ebf043c4587dd209a7c93974f6ae076ea54dc1af2cd301",
+    "docs/evidence/mvp1e-m1e08-final-audit.md": "364865cdfe7b3e976ab9b2987099e2565a80fafc2c7ac5a41edab406cc9f08fc"
+  },
+  "artifacts": {
+    "docs/evidence/raw/mvp1e-m1e08/runtime.json": "af7ca4e9f16c9900f1b93f170a28d369eaf2978c231aa37bcd9bd931ef1c89cd",
+    "docs/evidence/raw/mvp1e-m1e08/portable.xml": "cb9ea77436884719afd92964ae89ad8b372e21d77b55d164aa69e709517bc922",
+    "docs/evidence/raw/mvp1e-m1e08/portable.log": "2392bf7881aeee9499b39f5b88ec93b3e151b952a46f612bb3048470ed22d354",
+    "docs/evidence/raw/mvp1e-m1e08/validators-full.log": "703e8db122869958edab970e7b92cf92edd90ccb09db4deeeb379354ed86f58c",
+    "docs/evidence/raw/mvp1e-m1e08/independent-checks.json": "e2db51b922ce1a599c0f5ccbf649e203ee82fc510252c15dac797d3d89b52593",
+    "docs/evidence/raw/mvp1e-m1e08/history-baseline.json": "caf79cfc87e6af36ae2c41c467ebecae5822d9f88f1cb7d9e84365d256301a39",
+    "docs/evidence/raw/mvp1e-m1e08/retained-validators.log": "b9fd3d0ba72bb6018b7b866519266cbcd683088b9cb95fd36febb3c5d161f8f8",
+    "docs/evidence/raw/mvp1e-m1e08/prior-boundaries.json": "43baf081c0f7c3e006a5d8bceb7e5b0c017707e0feeef8f28c7ad344442931b4",
+    "docs/evidence/raw/mvp1e-m1e08/format.log": "4d6af9adb9946b1da142f7f92733bd2b0da1491ad14095e33f30f908a74bbfba",
+    "docs/evidence/raw/mvp1e-m1e08/baseline.json": "d9346ad089db18a7d88219365f2c01260f2a60242f56e819adad950ae735aa0d",
+    "docs/evidence/raw/mvp1e-m1e08/postflight.json": "f6ec62193b308f787aa93df48abfdc2ee592d0a00116a379ac97d789dd5479cb",
+    "docs/evidence/raw/mvp1e-m1e08/lint-full.log": "5d179931b2b1e69a9b97b23d98d64c0d68bd01739bce7d4f310d9e92f8ae6d30",
+    "docs/evidence/raw/mvp1e-m1e08/portable-lock-cleanup.json": "9772684dd81f8bd0f23dd486f0b73be8d32581f877366db439ed60d91bd2e85f",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e05r-portable.xml": "a3411d557215cf51b4d85b38fccd72575c6d27bf747e63c7240969ef375683f7",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-portable-final.xml": "b15e67b44a08da0b75394fff6dfeb08c31cd10d5dcc21e4da0cfe919b62496a1",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-live-final.xml": "336c262cf2a8eb277cc8ff4810d69b9e7dd522e99795744a004217cc99c5279e",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-live-final.xml": "76082fa8064d2e0708c46187cb8d89485c6c0d954adaff7f948f5b70329bc6ad",
+    "docs/evidence/raw/mvp1e-m1e08/historical/test-ca98ab6c9baa40ffb1258ca1cbb4049c-report.json": "f100b3dc31d7d96a35510f0db56c60c2dea4471236160187c9d2cc69bfa95e19",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-86da65db0cc540deae01-report.json": "8ffb7a98a1e2a3a72f0fb917005cbf9df4df073008206c0ba424313b1e5a36e6",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-944348e50fb44941a147-report.json": "40e7637992b9307e6c5c10a4f1b2425f3a365d0a96086b7f073751e06920eb7a",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e01-init-live-verified.xml": "3e21fa7966c6ac1dcf3f72bceb0390779492ceec771fca81bed12ad5b7560296",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e02-live-final.xml": "f92d626000ea21f2696d088981a5512c62c0f40ae8fcc9336771020c140731fc",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-aarch64-regression.xml": "9f22e117db14222b81a5e36601c77eba2f0883d93bd01aef160ed697672a2deb",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e02-portable-final.xml": "ac9b0fc46a423d9862eb5a3dbe509b3619ef176460628385d16659d7af168a32",
+    "docs/evidence/raw/mvp1e-m1e08/historical/test-d078f1bd159b41059b9dcf622629a8fd-report.json": "3973e9800754c6d2e45cac61ed163d8f2679112944334f8a3b7b6663d10e555a",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-collision-e0a7075b4ec3-report.json": "79333b2f145344cb23f551734f662e89f840fb3b5b111d7b26127044ef56f838",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-aarch64-recovery.xml": "58d5e1ba7a9ee2dff3698a091ef36922b0dfdde849dccdcd9694eb36582986b6",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e01-portable-verified.xml": "ab25179e485018d0b4f4cc0c126bfa7989a6eeda1f946e3f51de45852d882c7d",
+    "docs/evidence/raw/mvp1e-m1e08/historical/test-eae3d520d23043e3a27c0ba344cf1316-report.json": "6ad37f64fb161c433c0f919030119c8414795b0293997de905dcaa5f680cbcc2",
+    "docs/evidence/raw/mvp1e-m1e08/historical/test-62ab1042d56c43949792639a5b5a8a27-report.json": "982895cc05383ee205ff7a6cb4f15a4907a5074fd8ffc8160a9a6b03e33cfcd8",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-portable-final.xml": "fcd341714c32d2a27f1cebe452def337f6e2c2a3e664ba1900ac2fb9db594323",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-471075f8531f4e7dbc4e-report.json": "83e92c8c284999871b9ca5cd69cd65ba1d011e2295b2f89cb670023789948e3d",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-collision-58443588a832-report.json": "5caa5864b1ee3b2dfb2da3e2dfa7a6da129bfc05f8c6e30f4307df8b608de846",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-8f517bae31014afa92f8-report.json": "1644d6918e70833ba5a92c15596022c8bd91ff3b7b25a17a234eae9a591afc91",
+    "docs/evidence/raw/mvp1e-m1e08/historical/test-a6e0b5e63ed44db7999958c939c4ba18-report.json": "75d1bb72c7c4505acf85885e45caec976c8ba076e6cc733fb44f6cf69b9abdb9",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e01-guarded-build-v5.xml": "73c1ffc3acf9b6ca48891f901213d55b4ac5374a1dea9c23f2d13da95da92e35",
+    "docs/evidence/raw/mvp1e-m1e08/historical/test-c0a5d2530035477a8abebef6b124006c-report.json": "2b974f9201beea102670ee350482f233e2aabe24403ce3c8833b461fb3c8592a",
+    "docs/evidence/raw/mvp1e-m1e08/historical/m1e05r-script-unit.xml": "040799b8c7a466aaa807f707de1f3d0371245bb6fd4e2b8076c6e1e70a8fe4a4"
+  },
+  "artifact_count": 38,
+  "historical_junit": [
+    {
+      "original": "reports/m1e01-guarded-build-v5.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e01-guarded-build-v5.xml",
+      "sha256": "73c1ffc3acf9b6ca48891f901213d55b4ac5374a1dea9c23f2d13da95da92e35",
+      "counts": {
+        "PASS": 1,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    },
+    {
+      "original": "reports/m1e01-init-live-verified.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e01-init-live-verified.xml",
+      "sha256": "3e21fa7966c6ac1dcf3f72bceb0390779492ceec771fca81bed12ad5b7560296",
+      "counts": {
+        "PASS": 15,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    },
+    {
+      "original": "reports/m1e01-portable-verified.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e01-portable-verified.xml",
+      "sha256": "ab25179e485018d0b4f4cc0c126bfa7989a6eeda1f946e3f51de45852d882c7d",
+      "counts": {
+        "PASS": 346,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 52
+      }
+    },
+    {
+      "original": "reports/m1e02-live-final.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e02-live-final.xml",
+      "sha256": "f92d626000ea21f2696d088981a5512c62c0f40ae8fcc9336771020c140731fc",
+      "counts": {
+        "PASS": 22,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    },
+    {
+      "original": "reports/m1e02-portable-final.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e02-portable-final.xml",
+      "sha256": "ac9b0fc46a423d9862eb5a3dbe509b3619ef176460628385d16659d7af168a32",
+      "counts": {
+        "PASS": 353,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 59
+      }
+    },
+    {
+      "original": "reports/m1e03-live-final.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-live-final.xml",
+      "sha256": "336c262cf2a8eb277cc8ff4810d69b9e7dd522e99795744a004217cc99c5279e",
+      "counts": {
+        "PASS": 4,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    },
+    {
+      "original": "reports/m1e03-portable-final.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-portable-final.xml",
+      "sha256": "b15e67b44a08da0b75394fff6dfeb08c31cd10d5dcc21e4da0cfe919b62496a1",
+      "counts": {
+        "PASS": 353,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 61
+      }
+    },
+    {
+      "original": "reports/m1e04-live-final.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-live-final.xml",
+      "sha256": "76082fa8064d2e0708c46187cb8d89485c6c0d954adaff7f948f5b70329bc6ad",
+      "counts": {
+        "PASS": 2,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    },
+    {
+      "original": "reports/m1e04-aarch64-regression.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-aarch64-regression.xml",
+      "sha256": "9f22e117db14222b81a5e36601c77eba2f0883d93bd01aef160ed697672a2deb",
+      "counts": {
+        "PASS": 3,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    },
+    {
+      "original": "reports/m1e04-aarch64-recovery.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-aarch64-recovery.xml",
+      "sha256": "58d5e1ba7a9ee2dff3698a091ef36922b0dfdde849dccdcd9694eb36582986b6",
+      "counts": {
+        "PASS": 1,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    },
+    {
+      "original": "reports/m1e04-portable-final.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e04-portable-final.xml",
+      "sha256": "fcd341714c32d2a27f1cebe452def337f6e2c2a3e664ba1900ac2fb9db594323",
+      "counts": {
+        "PASS": 354,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 63
+      }
+    },
+    {
+      "original": "reports/m1e05r-portable.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e05r-portable.xml",
+      "sha256": "a3411d557215cf51b4d85b38fccd72575c6d27bf747e63c7240969ef375683f7",
+      "counts": {
+        "PASS": 353,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 65
+      }
+    },
+    {
+      "original": "reports/m1e05r-script-unit.xml",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e05r-script-unit.xml",
+      "sha256": "040799b8c7a466aaa807f707de1f3d0371245bb6fd4e2b8076c6e1e70a8fe4a4",
+      "counts": {
+        "PASS": 117,
+        "FAIL": 0,
+        "ERROR": 0,
+        "SKIP": 0
+      }
+    }
+  ],
+  "e04_typed_reports": [
+    {
+      "original": "reports/m1e03-8f517bae31014afa92f8/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-8f517bae31014afa92f8-report.json",
+      "sha256": "1644d6918e70833ba5a92c15596022c8bd91ff3b7b25a17a234eae9a591afc91",
+      "overall": "PASS",
+      "cleanup": "PASS",
+      "failure_operation": null
+    },
+    {
+      "original": "reports/m1e03-944348e50fb44941a147/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-944348e50fb44941a147-report.json",
+      "sha256": "40e7637992b9307e6c5c10a4f1b2425f3a365d0a96086b7f073751e06920eb7a",
+      "overall": "FAIL",
+      "cleanup": "PASS",
+      "failure_operation": "install"
+    },
+    {
+      "original": "reports/m1e03-collision-e0a7075b4ec3/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-collision-e0a7075b4ec3-report.json",
+      "sha256": "79333b2f145344cb23f551734f662e89f840fb3b5b111d7b26127044ef56f838",
+      "overall": "BLOCKED",
+      "cleanup": "PASS",
+      "failure_operation": "create"
+    },
+    {
+      "original": "reports/test-c0a5d2530035477a8abebef6b124006c/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/test-c0a5d2530035477a8abebef6b124006c-report.json",
+      "sha256": "2b974f9201beea102670ee350482f233e2aabe24403ce3c8833b461fb3c8592a",
+      "overall": "BLOCKED",
+      "cleanup": "PASS",
+      "failure_operation": "validate"
+    },
+    {
+      "original": "reports/test-eae3d520d23043e3a27c0ba344cf1316/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/test-eae3d520d23043e3a27c0ba344cf1316-report.json",
+      "sha256": "6ad37f64fb161c433c0f919030119c8414795b0293997de905dcaa5f680cbcc2",
+      "overall": "FAIL",
+      "cleanup": "PASS",
+      "failure_operation": "inspect"
+    },
+    {
+      "original": "reports/test-62ab1042d56c43949792639a5b5a8a27/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/test-62ab1042d56c43949792639a5b5a8a27-report.json",
+      "sha256": "982895cc05383ee205ff7a6cb4f15a4907a5074fd8ffc8160a9a6b03e33cfcd8",
+      "overall": "ERROR",
+      "cleanup": "ERROR",
+      "failure_operation": "install"
+    },
+    {
+      "original": "reports/m1e03-86da65db0cc540deae01/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-86da65db0cc540deae01-report.json",
+      "sha256": "8ffb7a98a1e2a3a72f0fb917005cbf9df4df073008206c0ba424313b1e5a36e6",
+      "overall": "PASS",
+      "cleanup": "PASS",
+      "failure_operation": null
+    },
+    {
+      "original": "reports/m1e03-471075f8531f4e7dbc4e/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-471075f8531f4e7dbc4e-report.json",
+      "sha256": "83e92c8c284999871b9ca5cd69cd65ba1d011e2295b2f89cb670023789948e3d",
+      "overall": "FAIL",
+      "cleanup": "PASS",
+      "failure_operation": "install"
+    },
+    {
+      "original": "reports/m1e03-collision-58443588a832/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/m1e03-collision-58443588a832-report.json",
+      "sha256": "5caa5864b1ee3b2dfb2da3e2dfa7a6da129bfc05f8c6e30f4307df8b608de846",
+      "overall": "BLOCKED",
+      "cleanup": "PASS",
+      "failure_operation": "create"
+    },
+    {
+      "original": "reports/test-ca98ab6c9baa40ffb1258ca1cbb4049c/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/test-ca98ab6c9baa40ffb1258ca1cbb4049c-report.json",
+      "sha256": "f100b3dc31d7d96a35510f0db56c60c2dea4471236160187c9d2cc69bfa95e19",
+      "overall": "BLOCKED",
+      "cleanup": "PASS",
+      "failure_operation": "validate"
+    },
+    {
+      "original": "reports/test-a6e0b5e63ed44db7999958c939c4ba18/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/test-a6e0b5e63ed44db7999958c939c4ba18-report.json",
+      "sha256": "75d1bb72c7c4505acf85885e45caec976c8ba076e6cc733fb44f6cf69b9abdb9",
+      "overall": "FAIL",
+      "cleanup": "PASS",
+      "failure_operation": "inspect"
+    },
+    {
+      "original": "reports/test-d078f1bd159b41059b9dcf622629a8fd/report.json",
+      "retained": "docs/evidence/raw/mvp1e-m1e08/historical/test-d078f1bd159b41059b9dcf622629a8fd-report.json",
+      "sha256": "3973e9800754c6d2e45cac61ed163d8f2679112944334f8a3b7b6663d10e555a",
+      "overall": "ERROR",
+      "cleanup": "ERROR",
+      "failure_operation": "install"
+    }
+  ],
+  "verification": {
+    "fresh_portable": {
+      "PASS": 353,
+      "FAIL": 0,
+      "ERROR": 0,
+      "SKIP": 84
+    },
+    "fresh_live_target_execution": "NOT_RUN: frozen audit, no Docker allocation/build/load/exec",
+    "current_three_target_offline_cache": "PASS: direct _inputs + _verify_cache, not lock-file-writing init_locked",
+    "retained_unique_adversarial_PASS": 19,
+    "retained_E07_typed_reports": 47,
+    "retained_E07_typed_statuses": {
+      "PASS": 19,
+      "FAIL": 13,
+      "BLOCKED": 13,
+      "ERROR": 2
+    },
+    "retained_E07_core_artifacts": 142,
+    "retained_E07_supplement_artifacts": 3,
+    "retained_init_regression": {
+      "PASS": 22,
+      "FAIL": 0,
+      "ERROR": 0,
+      "SKIP": 0
+    },
+    "retained_lifecycle_regression": {
+      "PASS": 17,
+      "FAIL": 0,
+      "ERROR": 0,
+      "SKIP": 1
+    },
+    "retained_script_regression": {
+      "PASS": 8,
+      "FAIL": 0,
+      "ERROR": 0,
+      "SKIP": 0
+    },
+    "stale_architecture_regression": {
+      "PASS": 0,
+      "FAIL": 2,
+      "ERROR": 0,
+      "SKIP": 0
+    },
+    "prior_validators": "PASS: m1e06, m1e07, final28, final29; historical statuses not overwritten",
+    "repository_lint": {
+      "status": "FAIL",
+      "errors": 3,
+      "rule": "E501",
+      "file": "scripts/validate_m1e07.py",
+      "lines": [
+        48,
+        71,
+        86
+      ],
+      "remediation": "NOT_AUTHORIZED; unchanged file"
+    },
+    "repository_format": {
+      "status": "FAIL",
+      "files": [
+        "scripts/validate_m1e07.py",
+        "src/keemu/doctor.py",
+        "src/keemu/entware.py",
+        "src/keemu/models.py",
+        "src/keemu/p0_web_demo.py",
+        "tests/integration/p0_web_demo_probe.py",
+        "tests/integration/test_lifecycle.py",
+        "tests/integration/test_m1a16_recovery.py"
+      ],
+      "remediation": "NOT_AUTHORIZED; unchanged files"
+    },
+    "new_validator_lint": "PASS",
+    "new_validator_format": "PASS",
+    "protected_product_files": 168,
+    "protected_preexisting_history_files": 229,
+    "prior_registry_files": 1035,
+    "prior_stale_M1E05_records": 6,
+    "owner_containers": 0,
+    "owner_networks": 0,
+    "docker_baseline_parity": "PASS: same two unrelated containers, four networks, 52 volumes",
+    "original_final29_counts": {
+      "PASS": 233,
+      "FAIL": 2,
+      "SKIP": 3
+    },
+    "publication": "WORKTREE_ONLY; supervisor owns final commit/push/readback/session deletion"
+  },
+  "audit_findings": [
+    {
+      "id": "F1",
+      "status": "FAIL",
+      "scope": "three existing E501 lint errors in predecessor m1e07 validator",
+      "product_correction": false
+    },
+    {
+      "id": "F2",
+      "status": "FAIL",
+      "scope": "eight unchanged repository files fail format check",
+      "product_correction": false
+    },
+    {
+      "id": "F3",
+      "status": "PASS",
+      "scope": "portable suite creates two new empty project registry lock files; exact owner/inode/flock-checked cleanup and final baseline parity independently verified",
+      "production_recovery_claim": false
+    }
+  ],
+  "c3_telemetry": {
+    "mode": "shadow",
+    "automatic_promotion": false,
+    "samples": {
+      "m1e-00": {
+        "actual_route": {
+          "model": "gpt-5.6-terra",
+          "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+          "policy_version": "v1",
+          "provider": "openai-codex",
+          "reasoning": "high",
+          "route_event_id": "evt_9a4719c18ac1b919673596ed",
+          "session_id": null,
+          "subtask_digest": "21a2965fac518ce0efadb46e0569c88ed9a7aa8035e8862cafba926eca01ac8b",
+          "subtask_id": "m1e-00",
+          "tier": "C3"
+        },
+        "supervisor_outcome": {
+          "event_id": "evt_866be0a0bd8704f80b85bf30",
+          "route_event_id": "evt_9a4719c18ac1b919673596ed",
+          "completed_at": "2026-09-27T19:30:48+00:00",
+          "attestation_status": "ATTESTED",
+          "session_deleted": true
+        },
+        "learning": {
+          "completed_verified": false,
+          "learning_accepted": false,
+          "verification_evidence": [],
+          "quota_pause": false,
+          "continuations": 0
+        },
+        "independent_audit_note": "Historical hash-bound scope evidence rechecked"
+      },
+      "m1e-05": {
+        "actual_route": {
+          "model": "gpt-5.6-terra",
+          "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+          "policy_version": "v1",
+          "provider": "openai-codex",
+          "reasoning": "high",
+          "route_event_id": "evt_fc7a7d81697a257594c4a05c",
+          "session_id": null,
+          "subtask_digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+          "subtask_id": "m1e-05",
+          "tier": "C3"
+        },
+        "supervisor_outcome": {
+          "event_id": "evt_91ada37246efe4ed54927b7d",
+          "route_event_id": "evt_fc7a7d81697a257594c4a05c",
+          "completed_at": "2026-09-29T18:36:36+00:00",
+          "attestation_status": "ATTESTED",
+          "session_deleted": true
+        },
+        "learning": {
+          "completed_verified": false,
+          "learning_accepted": false,
+          "verification_evidence": [],
+          "quota_pause": false,
+          "continuations": 0
+        },
+        "independent_audit_note": "Historical RED/GREEN remains unverified; R1/R2/R3 unresolved"
+      },
+      "m1e-07": {
+        "actual_route": {
+          "model": "gpt-5.6-terra",
+          "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+          "policy_version": "v1",
+          "provider": "openai-codex",
+          "reasoning": "high",
+          "route_event_id": "evt_c0c294591315dee7820f0574",
+          "session_id": null,
+          "subtask_digest": "004bcbb4e25dc16465e96d14f8ebf408a211ff1e9adce8c238739f2e19dfd5ba",
+          "subtask_id": "m1e-07",
+          "tier": "C3"
+        },
+        "supervisor_outcome": {
+          "event_id": "evt_33216d0c7834c3ccb8b13e2e",
+          "route_event_id": "evt_c0c294591315dee7820f0574",
+          "completed_at": "2026-09-30T11:37:19+00:00",
+          "attestation_status": "ATTESTED",
+          "session_deleted": true
+        },
+        "learning": {
+          "completed_verified": false,
+          "learning_accepted": false,
+          "verification_evidence": [],
+          "quota_pause": false,
+          "continuations": 0
+        },
+        "independent_audit_note": "Reconciliation reverified; unchanged validator now has F1/F2 lint/format observations"
+      }
+    },
+    "all_prior_outcomes": "Nine linked prior outcomes ATTESTED/session_deleted=true; all have completed_verified=false, verification_evidence=[], learning_accepted=false. Evidence validation is independent of scorer learning."
+  },
+  "current_worker_runtime": {
+    "session_id": "20260930_113730_31360a",
+    "model": "gpt-6.1-sol",
+    "reasoning_config": {
+      "enabled": true,
+      "effort": "high"
+    },
+    "provider": "openai-codex",
+    "cwd": "/opt/data/workspace/keemu"
+  },
+  "quota_admission": {
+    "checked_at": "2026-09-30T11:37:23+00:00",
+    "scope": "subtask",
+    "admission_key": "subtask:m1e-08:29349c92ec0deee393e5c03aa48f863e4e0ab02e5fcc47267a07cc8d6ffbc97e",
+    "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+    "task_intent": "Perform an independent final MVP 1E audit and publish exact E01-E08 and milestone PASS FAIL BLOCKED ERROR status without product mutation or predecessor-history changes",
+    "subtask_id": "m1e-08",
+    "subtask_digest": "29349c92ec0deee393e5c03aa48f863e4e0ab02e5fcc47267a07cc8d6ffbc97e",
+    "action": "admit",
+    "remaining_percent": 85.0,
+    "reset_at": "2026-09-30T16:12:53+00:00",
+    "source": "hermes_oauth_usage_api",
+    "message": "5-hour OAuth quota admits new task"
+  },
+  "supervisor_boundary": "PENDING; supervisor-owned",
+  "limitations": [
+    "E06 R1/R2/R3 not remediated; historical C3 TDD never backfilled.",
+    "E07 final PASS is bounded outcome verification; historical SCOPED_PASS, failures and NOT_EVALUATED E08 remain frozen.",
+    "No atomic hostile same-UID cleanup, automatic persistent script-artifact recovery, interrupted report, fresh Ubuntu, target HTTPS, hard disk quota or whole socket/firewall census claim.",
+    "Two zero-byte new portable-test locks were cleaned; no prior registry state was changed.",
+    "No full TASK completion, terminal worker attestation, commit/push, session deletion or future corrective worker is claimed."
+  ]
+}

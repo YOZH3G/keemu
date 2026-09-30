@@ -1,0 +1,272 @@
+[
+  {
+    "id": "m1e-00",
+    "digest": "21a2965fac518ce0efadb46e0569c88ed9a7aa8035e8862cafba926eca01ac8b",
+    "outcome": {
+      "event_id": "evt_866be0a0bd8704f80b85bf30",
+      "route_event_id": "evt_9a4719c18ac1b919673596ed",
+      "completed_at": "2026-09-27T19:30:48+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-5.6-terra",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "high",
+      "route_event_id": "evt_9a4719c18ac1b919673596ed",
+      "session_id": null,
+      "subtask_digest": "21a2965fac518ce0efadb46e0569c88ed9a7aa8035e8862cafba926eca01ac8b",
+      "subtask_id": "m1e-00",
+      "tier": "C3"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-01",
+    "digest": "a2b1557aef9759f0893cf75cf16925086e3d45f50b3c2386cfc0c26bf98315a6",
+    "outcome": {
+      "event_id": "evt_02f5a89317251695ef8c499f",
+      "route_event_id": "evt_14225955224123bed0188e6d",
+      "completed_at": "2026-09-29T12:28:05+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-6-sol",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "high",
+      "route_event_id": "evt_14225955224123bed0188e6d",
+      "session_id": null,
+      "subtask_digest": "a2b1557aef9759f0893cf75cf16925086e3d45f50b3c2386cfc0c26bf98315a6",
+      "subtask_id": "m1e-01",
+      "tier": "C4"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-02",
+    "digest": "4522388c988af77240821910ee2b71f24e8efd8d3bb1a69cb45cd1dd73071947",
+    "outcome": {
+      "event_id": "evt_b08d8749f9f88cac8a356273",
+      "route_event_id": "evt_e1d415fc7f4d7a33bac64367",
+      "completed_at": "2026-09-29T12:40:21+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-6-sol",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "high",
+      "route_event_id": "evt_e1d415fc7f4d7a33bac64367",
+      "session_id": null,
+      "subtask_digest": "4522388c988af77240821910ee2b71f24e8efd8d3bb1a69cb45cd1dd73071947",
+      "subtask_id": "m1e-02",
+      "tier": "C4"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-03",
+    "digest": "1e02a3582f9fa24dd6c24b4f1a02550c9696a24e81d8d093a4a23ba0c581d344",
+    "outcome": {
+      "event_id": "evt_cc2edbda997a027b7a44f726",
+      "route_event_id": "evt_e4451148428d7ee89ffa87c3",
+      "completed_at": "2026-09-29T12:55:36+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-6-sol",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "high",
+      "route_event_id": "evt_e4451148428d7ee89ffa87c3",
+      "session_id": null,
+      "subtask_digest": "1e02a3582f9fa24dd6c24b4f1a02550c9696a24e81d8d093a4a23ba0c581d344",
+      "subtask_id": "m1e-03",
+      "tier": "C4"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-04",
+    "digest": "0254172b495111b2533d27af3d8ad902b2c5330607d37feef0362fa3a2edf715",
+    "outcome": {
+      "event_id": "evt_2a4664dfcac0ecb401b1399c",
+      "route_event_id": "evt_fdd534a17a82168d5b24769e",
+      "completed_at": "2026-09-29T18:26:56+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-6-sol",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "xhigh",
+      "route_event_id": "evt_fdd534a17a82168d5b24769e",
+      "session_id": null,
+      "subtask_digest": "0254172b495111b2533d27af3d8ad902b2c5330607d37feef0362fa3a2edf715",
+      "subtask_id": "m1e-04",
+      "tier": "C5"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-05",
+    "digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+    "outcome": {
+      "event_id": "evt_91ada37246efe4ed54927b7d",
+      "route_event_id": "evt_fc7a7d81697a257594c4a05c",
+      "completed_at": "2026-09-29T18:36:36+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-5.6-terra",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "high",
+      "route_event_id": "evt_fc7a7d81697a257594c4a05c",
+      "session_id": null,
+      "subtask_digest": "8d502ff582b092e0e16c0cdf4125a4639078db6e1f6f344421f0ff889d23aac8",
+      "subtask_id": "m1e-05",
+      "tier": "C3"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-05r",
+    "digest": "a8596920b23a1c7cd311b032cc8e03dd40db289c10d9a840bd135cfae498f283",
+    "outcome": {
+      "event_id": "evt_64cd1ac6e365cbf8658292b3",
+      "route_event_id": "evt_07383cb6b5eda7701215e8bd",
+      "completed_at": "2026-09-30T06:53:52+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-6.1-sol",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "high",
+      "route_event_id": "evt_07383cb6b5eda7701215e8bd",
+      "session_id": null,
+      "subtask_digest": "a8596920b23a1c7cd311b032cc8e03dd40db289c10d9a840bd135cfae498f283",
+      "subtask_id": "m1e-05r",
+      "tier": "C4"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-06",
+    "digest": "1bd33eb6b7da79a9a2848c43efc11290dcd8548870be20cddd43c6ed9f317eff",
+    "outcome": {
+      "event_id": "evt_e79c2d8c2d22ce0a507f0b98",
+      "route_event_id": "evt_01eccf24690c2cc7139ec666",
+      "completed_at": "2026-09-30T08:32:09+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-6.1-sol",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "xhigh",
+      "route_event_id": "evt_01eccf24690c2cc7139ec666",
+      "session_id": null,
+      "subtask_digest": "1bd33eb6b7da79a9a2848c43efc11290dcd8548870be20cddd43c6ed9f317eff",
+      "subtask_id": "m1e-06",
+      "tier": "C5"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  },
+  {
+    "id": "m1e-07",
+    "digest": "004bcbb4e25dc16465e96d14f8ebf408a211ff1e9adce8c238739f2e19dfd5ba",
+    "outcome": {
+      "event_id": "evt_33216d0c7834c3ccb8b13e2e",
+      "route_event_id": "evt_c0c294591315dee7820f0574",
+      "completed_at": "2026-09-30T11:37:19+00:00",
+      "attestation_status": "ATTESTED",
+      "session_deleted": true
+    },
+    "route": {
+      "model": "gpt-5.6-terra",
+      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+      "policy_version": "v1",
+      "provider": "openai-codex",
+      "reasoning": "high",
+      "route_event_id": "evt_c0c294591315dee7820f0574",
+      "session_id": null,
+      "subtask_digest": "004bcbb4e25dc16465e96d14f8ebf408a211ff1e9adce8c238739f2e19dfd5ba",
+      "subtask_id": "m1e-07",
+      "tier": "C3"
+    },
+    "learning": {
+      "completed_verified": false,
+      "learning_accepted": false,
+      "verification_evidence": [],
+      "quota_pause": false,
+      "continuations": 0
+    }
+  }
+]

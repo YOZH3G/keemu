@@ -39,18 +39,18 @@ It is designed around five principles:
 | **MIPSEL** | MVP 1E bounded lifecycle evidence | ✅ locked `init`, one-shot and persistent IPK paths | ✅ QEMU/binfmt verified |
 | **MIPS** | MVP 1E bounded lifecycle evidence | ✅ locked `init`, one-shot and persistent IPK paths | ✅ QEMU/binfmt verified |
 
-MIPSEL/MIPS now have generic profiles, deterministic locked init caches, common one-shot and persistent IPK paths, ELF32 audits, and verified target execution. `docs/evidence/mvp1e-m1e07-reconciliation.json` records E01–E05 `PASS` and E07 `SCOPED_PASS`. E06 script-integration acceptance remains `BLOCKED` by independent findings R1/R2/R3; the final MVP 1E audit is pending.
+MIPSEL/MIPS now have generic profiles, deterministic locked init caches, common one-shot and persistent IPK paths, ELF32 audits, and verified target execution. The independent `docs/evidence/mvp1e-m1e08-final-audit.json` records E01–E05, E07 and E08 `PASS` at their named bounded gates; E06 and the MVP 1E milestone/release remain `BLOCKED`. The earlier E07 ledger retains `SCOPED_PASS`; this does not hide its two actual architecture-regression `FAIL` results or accept script integration.
 
 ### MVP 1E MIPS/MIPSEL lifecycle reconciliation
 
-The current MVP 1E reconciliation is documentation/evidence-only, not a release verdict:
+The retained m1e-07 reconciliation is documentation/evidence-only. The separate m1e-08 final audit now publishes the milestone verdict:
 
 - E01 scope/lock review, E02 MIPS init, E03 MIPSEL init, E04 one-shot lifecycle, and E05 persistent/recovery are `PASS` at their named scopes;
 - E06 is `BLOCKED` by retained independent-review findings, including missing independently verifiable historical C3 execution evidence;
-- E07 is `SCOPED_PASS` for 19 unique bounded real adversarial cases across all three targets;
-- E08 reconciliation is complete, while `m1e-08` remains the independent final-audit boundary.
+- E07 final verification-observation gate is `PASS` for 19 unique bounded real adversarial cases across all three targets; its historical ledger remains `SCOPED_PASS`;
+- E08 independent evidence audit is `PASS`, but MVP 1E milestone/release is `BLOCKED`. Fresh portable tests are 353 `PASS`/84 opt-in `SKIP`; repository lint and format checks `FAIL` on untouched files.
 
-See `docs/evidence/mvp1e-m1e07-reconciliation.md` and `docs/limitations.md`.
+See `docs/evidence/mvp1e-m1e08-final-audit.md`, the retained `docs/evidence/mvp1e-m1e07-reconciliation.md`, and `docs/limitations.md`. Supervisor terminal attestation, commit/push and session deletion remain a separate boundary; no product completion is claimed.
 
 ---
 

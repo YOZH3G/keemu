@@ -1,0 +1,10 @@
+{
+  "session_id": "20260930_113730_31360a",
+  "model": "gpt-6.1-sol",
+  "reasoning_config": {
+    "enabled": true,
+    "effort": "high"
+  },
+  "provider": "openai-codex",
+  "cwd": "/opt/data/workspace/keemu"
+}

@@ -1,0 +1,9 @@
+Would reformat: scripts/validate_m1e07.py
+Would reformat: src/keemu/doctor.py
+Would reformat: src/keemu/entware.py
+Would reformat: src/keemu/models.py
+Would reformat: src/keemu/p0_web_demo.py
+Would reformat: tests/integration/p0_web_demo_probe.py
+Would reformat: tests/integration/test_lifecycle.py
+Would reformat: tests/integration/test_m1a16_recovery.py
+8 files would be reformatted, 107 files already formatted

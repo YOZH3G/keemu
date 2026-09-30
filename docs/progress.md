@@ -11,7 +11,21 @@ is also BLOCKED. The final-31 independent audit records the exact outstanding
 requirements in `docs/evidence/final31-independent-audit.md`; no MVP or release
 completion is claimed.
 
-## MVP 1E m1e-07 reconciliation
+## MVP 1E m1e-08 independent final audit
+
+`docs/evidence/mvp1e-m1e08-final-audit.json` and `.md` publish all eight
+final gate statuses: E01–E05/E07/E08 PASS at their named bounded gates;
+E06 and milestone/release BLOCKED. E08 PASS is completed evidence audit,
+not completed product acceptance. The earlier E07 SCOPED_PASS is retained,
+including 19 unique adversarial PASS, 47 typed reports, 142 core artifacts
+and two actual stale-architecture-regression FAILs. Fresh portable tests:
+353 PASS/84 opt-in SKIP. Repository lint FAIL: three existing E501 errors;
+format FAIL: eight untouched files. Six prior M1E05 stale running records
+remain unchanged; Docker owner containers/networks are 0/0. C3 remains
+shadow-only. Supervisor owns terminal attestation, commit/push and session
+deletion after the exact m1e-08 marker; no full-task completion is claimed.
+
+## MVP 1E m1e-07 reconciliation (historical)
 
 `docs/evidence/mvp1e-m1e07-reconciliation.json` and `.md` reconcile the
 MIPS/MIPSEL lifecycle milestone without product or runtime mutation. E01 scope
