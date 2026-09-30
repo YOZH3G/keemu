@@ -11,6 +11,17 @@ MVP 1D is separate on `staging`. Its independent final D01–D08 verdict is in
 PASS at bounded scope; D02/D07 and MVP 1D release BLOCKED. No original MVP 1
 release result changes.
 
+## MVP 1E MIPS/MIPSEL lifecycle
+
+`docs/evidence/mvp1e-m1e07-reconciliation.json` reconciles the bounded
+three-target lifecycle evidence without publishing a final release verdict.
+`generic-mips` and `generic-mipsel` now use deterministic locked init caches,
+the common one-shot IPK lifecycle, and the common registry-backed persistent
+lifecycle with explicit recovery. E01–E05 are PASS at their named scopes; E07
+is SCOPED_PASS for its retained adversarial matrix. E06 script-integration
+acceptance is BLOCKED by independent findings R1/R2/R3, and `m1e-08` alone
+owns the final audit. MVP 1D D02/D07 remain BLOCKED.
+
 ## Implemented components
 
 - `src/keemu/scenarios.py`, `src/keemu/input_locks.py`, and `src/keemu/input_paths.py` define strict, frozen schema-version-1 input models for scenarios, production source locks, persistent-environment entries, explicit TCP/UDP publication, vantage-aware checks, persistence, cleanup and bounded safe paths. The committed JSON schemas are generated from these models and parity-tested. Duplicate YAML/JSON keys, unknown fields and unsupported versions fail closed. The loaders confine scenario-relative inputs to the project, reject symlink components, and compare source/scenario SHA-256 values against production lock metadata; runtime profile/image/ownership proof and mutation remain later tasks. Historical P0 locks are unchanged.
@@ -58,9 +69,9 @@ use constant target shell code with a separate validated `/opt` path argument.
 environment before/after `keemu exec NAME --script`, removing no container or
 service. `script_scenario.py` dispatches version-1 SHA-256-locked `kind: script`
 checks via the same stager/runner/assertions inside the one-shot IPK scenario;
-schemas retain parity. MIPS/MIPSEL enter the same host input/typed report path
-but stop at a truthful capability BLOCKED before allocation, not a separate
-target-probe executor. Host-worker SIGKILL is distinct from target timeout:
+schemas retain parity. MVP 1E routes MIPS/MIPSEL through the same common path
+and E07 retains bounded observations, but E06 acceptance remains BLOCKED by
+R1/R2/R3; no separate target-probe executor is used. Host-worker SIGKILL is distinct from target timeout:
 one-shot recovery was explicit in tests, while persistent SIGKILL retains an
 artifact with no automatic recovery or interrupted report. Target shell
 stat-to-unlink cannot atomically exclude a hostile concurrent same-UID swap.

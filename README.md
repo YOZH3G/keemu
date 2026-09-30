@@ -36,10 +36,21 @@ It is designed around five principles:
 | Target | Current status | General `init` / single `test` | Target execution |
 | --- | --- | --- | --- |
 | **AArch64** | Supported MVP path | ✅ Yes | ✅ QEMU/binfmt verified |
-| **MIPSEL** | Partial | ⛔ `BLOCKED` in general lifecycle | ✅ bounded QEMU/PRoot and Docker/binfmt probes |
-| **MIPS** | Partial | ⛔ `BLOCKED` in general lifecycle | ✅ bounded QEMU/PRoot and Docker/binfmt probes |
+| **MIPSEL** | MVP 1E bounded lifecycle evidence | ✅ locked `init`, one-shot and persistent IPK paths | ✅ QEMU/binfmt verified |
+| **MIPS** | MVP 1E bounded lifecycle evidence | ✅ locked `init`, one-shot and persistent IPK paths | ✅ QEMU/binfmt verified |
 
-MIPSEL/MIPS already have generic profiles, rootfs/SDK/fixture/image locks, ELF32 audits, and verified target probes. Their general `keemu init` and single-scenario `keemu test` path is not enabled yet.
+MIPSEL/MIPS now have generic profiles, deterministic locked init caches, common one-shot and persistent IPK paths, ELF32 audits, and verified target execution. `docs/evidence/mvp1e-m1e07-reconciliation.json` records E01–E05 `PASS` and E07 `SCOPED_PASS`. E06 script-integration acceptance remains `BLOCKED` by independent findings R1/R2/R3; the final MVP 1E audit is pending.
+
+### MVP 1E MIPS/MIPSEL lifecycle reconciliation
+
+The current MVP 1E reconciliation is documentation/evidence-only, not a release verdict:
+
+- E01 scope/lock review, E02 MIPS init, E03 MIPSEL init, E04 one-shot lifecycle, and E05 persistent/recovery are `PASS` at their named scopes;
+- E06 is `BLOCKED` by retained independent-review findings, including missing independently verifiable historical C3 execution evidence;
+- E07 is `SCOPED_PASS` for 19 unique bounded real adversarial cases across all three targets;
+- E08 reconciliation is complete, while `m1e-08` remains the independent final-audit boundary.
+
+See `docs/evidence/mvp1e-m1e07-reconciliation.md` and `docs/limitations.md`.
 
 ---
 
@@ -71,7 +82,7 @@ Both forms support `--timeout`, `--cwd`, `--expect-exit-code`, repeatable `--std
 
 The script path must reference a project-contained regular `.sh` file. KEEMU opens it without following symlinks, binds it to SHA-256, rechecks it before staging, and transfers only the checked bytes into a private no-clobber path below target `/opt/tmp`. Target `/bin/sh` receives literal argv and a minimal environment; script content is never passed through a host shell. Reports retain typed status, byte counts, hashes, truncation, assertions, and cleanup results without storing raw argv or output.
 
-Version-1 scenarios may also declare a SHA-256-locked `kind: script` check. AArch64 has real Docker/binfmt evidence. MIPS/MIPSEL enter the same secure input and report contract but currently return truthful `BLOCKED` before Docker allocation because their general locked lifecycle is unavailable.
+Version-1 scenarios may also declare a SHA-256-locked `kind: script` check. The MVP 1E common lifecycle now reaches all three target profiles, and E07 retained bounded script observations for all three. That does not close E06: its independent review found R1/R2/R3, so MIPS/MIPSEL script-integration acceptance remains `BLOCKED` pending a separately approved corrective boundary and final evidence.
 
 The independent MVP 1D audit records D01/D03/D04/D05/D06/D08 `PASS` at bounded scope. D02/D07 and the MVP 1D release remain `BLOCKED` by two explicit gaps: atomic cleanup safety against a hostile concurrent same-UID target process, and production recovery/reporting for persistent script artifacts left by `SIGKILL`.
 
@@ -307,6 +318,7 @@ The retained acceptance snapshot currently records:
   - 0 `FAIL`
   - 0 `SKIP`
 - MVP 1D release: `BLOCKED`, while its bounded evidence audit is complete.
+- MVP 1E: E01–E05 `PASS`, E06 `BLOCKED`, E07 `SCOPED_PASS`, E08 reconciliation complete with final audit pending.
 
 Authoritative details:
 

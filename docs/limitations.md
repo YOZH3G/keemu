@@ -54,6 +54,23 @@ intentional opt-in SKIP. These bounded slices do not turn release into PASS.
 Original MVP 1 A01–A21/final-28/final-29/final-31 ledgers and blocked release
 status are unchanged; this section does not reopen their acceptance criteria.
 
+## MVP 1E MIPS/MIPSEL lifecycle
+
+`docs/evidence/mvp1e-m1e07-reconciliation.json` records E01–E05 as PASS at
+their named scopes and E07 as SCOPED_PASS across AArch64, MIPS and MIPSEL.
+It is not an independent final audit. E06 remains BLOCKED by the retained
+`m1e-05r` findings: persistent test teardown left stale running registry
+records (R1), historical C3 live RED/GREEN evidence is not independently
+recoverable (R2), and an opt-in architecture regression retained an obsolete
+pre-enablement expectation (R3). E07 common-path script observations do not
+retroactively erase those blockers.
+
+MVP 1D D02/D07 remain BLOCKED: hostile same-UID target stat-to-unlink safety
+is not atomically proved, and persistent script artifacts after SIGKILL have no
+automatic production recovery or interrupted report. The MVP 1E final audit is
+frozen `m1e-08` work; no milestone PASS/FAIL/BLOCKED/ERROR verdict is claimed
+by reconciliation.
+
 ## Known limitations
 
 - Docker Engine 29.7.2 is reachable through a privileged host socket. The separately approved `qemu-aarch64` binfmt registration must be revalidated after reboot or runner change. No privileged target container or public port was used.

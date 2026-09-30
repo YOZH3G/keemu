@@ -28,6 +28,31 @@ No D gate changes frozen original MVP 1 A01–A21/final-28/final-29/final-31
 evidence or release result. See ADR-0019 and `docs/limitations.md` for
 failure/recovery scope.
 
+## MVP 1E E01–E08 reconciliation
+
+`docs/evidence/mvp1e-m1e07-reconciliation.json` hash-binds E01–E07 evidence,
+the MVP 1E specification/route plan, and frozen MVP 1D/original-MVP
+predecessor records. `scripts.validate_m1e07` is read-only and verifies the
+same relationship plus documentation/ADR markers.
+
+| Gate | Status | Evidence / remaining boundary |
+|---|---|---|
+| E01 | PASS | `mvp1e-m1e00-acceptance.json`: scope, locks, capability and route review |
+| E02 | PASS | `mvp1e-m1e01-init-mips.json`: deterministic locked MIPS cache |
+| E03 | PASS | `mvp1e-m1e02-init-mipsel.json`: deterministic locked MIPSEL cache |
+| E04 | PASS | `mvp1e-m1e03-one-shot.json`: common three-target one-shot IPK lifecycle |
+| E05 | PASS | `mvp1e-m1e04-persistent.json`: common persistent lifecycle and explicit recovery |
+| E06 | BLOCKED | `mvp1e-m1e05r-independent-review.json`: R1 stale teardown, R2 missing independent historical live/TDD evidence, R3 obsolete architecture regression |
+| E07 | SCOPED_PASS | `mvp1e-m1e06-adversarial.json`: 19 unique adversarial PASS, 47 typed reports, 142 raw artifacts; D02/D07 remain BLOCKED |
+| E08 | RECONCILIATION_PASS_FINAL_AUDIT_PENDING | m1e-07 evidence/docs complete; `m1e-08` alone owns independent final audit and milestone verdict |
+
+The architecture matrix is common locked init/one-shot/persistent evidence for
+`generic-aarch64`, `generic-mips`, and `generic-mipsel`; E06 is globally
+BLOCKED despite E07 bounded common-path script observations. C3 samples
+`m1e-00`, `m1e-05`, and `m1e-07` remain shadow telemetry; automatic policy
+promotion is disabled. ADR-0020 prevents evidence reconciliation from
+promoting any blocked gate or predecessor release status.
+
 ## Final release state (final-28/final-29)
 
 `docs/evidence/final28-acceptance.json` is the authoritative A01–A21 whole-ID

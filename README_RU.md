@@ -36,10 +36,21 @@ KEEMU запускает зафиксированные целевые окру�
 | Target | Текущий статус | Общие `init` / одиночный `test` | Исполнение target-кода |
 | --- | --- | --- | --- |
 | **AArch64** | Основной путь MVP | ✅ Да | ✅ QEMU/binfmt подтверждены |
-| **MIPSEL** | Частичная поддержка | ⛔ `BLOCKED` в общем lifecycle | ✅ Ограниченные QEMU/PRoot и Docker/binfmt probes |
-| **MIPS** | Частичная поддержка | ⛔ `BLOCKED` в общем lifecycle | ✅ Ограниченные QEMU/PRoot и Docker/binfmt probes |
+| **MIPSEL** | Ограниченные lifecycle-доказательства MVP 1E | ✅ locked `init`, one-shot и persistent IPK paths | ✅ QEMU/binfmt подтверждены |
+| **MIPS** | Ограниченные lifecycle-доказательства MVP 1E | ✅ locked `init`, one-shot и persistent IPK paths | ✅ QEMU/binfmt подтверждены |
 
-Для MIPSEL/MIPS уже есть generic-профили, rootfs/SDK/fixture/image locks, проверки ELF32 и подтверждённые target probes. Общий путь `keemu init` и одиночного `keemu test` для этих архитектур пока не включён.
+Для MIPSEL/MIPS теперь есть generic-профили, детерминированные locked init caches, общие one-shot и persistent IPK paths, проверки ELF32 и подтверждённое target execution. `docs/evidence/mvp1e-m1e07-reconciliation.json` фиксирует E01–E05 как `PASS`, E07 как `SCOPED_PASS`. Приёмка script integration E06 остаётся `BLOCKED` по независимым findings R1/R2/R3; финальный аудит MVP 1E ещё не выполнен.
+
+### MVP 1E: сверка MIPS/MIPSEL lifecycle
+
+Текущая сверка MVP 1E относится только к evidence/documentation и не является release verdict:
+
+- E01 scope/lock review, E02 MIPS init, E03 MIPSEL init, E04 one-shot lifecycle и E05 persistent/recovery имеют `PASS` в своих ограниченных scope;
+- E06 имеет `BLOCKED` из-за сохранённых findings независимого review, включая отсутствие независимо проверяемых исторических C3 execution evidence;
+- E07 имеет `SCOPED_PASS` для 19 уникальных ограниченных реальных adversarial cases на трёх target;
+- сверка E08 завершена, а `m1e-08` остаётся границей независимого финального аудита.
+
+См. `docs/evidence/mvp1e-m1e07-reconciliation.md` и `docs/limitations.md`.
 
 ---
 
@@ -106,7 +117,7 @@ uv run keemu exec demo \
 
 Путь должен указывать на обычный project-contained файл `.sh`. KEEMU открывает его без перехода по symlink, привязывает к SHA-256, повторно проверяет перед staging и передаёт только проверенные байты в приватный no-clobber путь под `/opt/tmp` в target. Target `/bin/sh` получает literal argv и минимальное окружение; содержимое скрипта никогда не передаётся host shell. В отчёте сохраняются типизированный статус, размеры, хеши, признаки усечения, assertions и cleanup — без raw argv и вывода.
 
-Scenario версии 1 также может содержать SHA-256-locked проверку `kind: script`. Для AArch64 есть реальные Docker/binfmt-доказательства. MIPS/MIPSEL используют тот же secure input/report contract, но сейчас честно возвращают `BLOCKED` до выделения Docker-ресурсов, поскольку общий locked lifecycle для них недоступен.
+Scenario версии 1 также может содержать SHA-256-locked проверку `kind: script`. Общий lifecycle MVP 1E теперь достигает всех трёх target profiles, а E07 сохраняет ограниченные script observations для всех трёх. Это не закрывает E06: независимый review выявил R1/R2/R3, поэтому приёмка MIPS/MIPSEL script integration остаётся `BLOCKED` до отдельно утверждённой corrective boundary и финальных evidence.
 
 Независимый аудит MVP 1D фиксирует D01/D03/D04/D05/D06/D08 как `PASS` в ограниченном подтверждённом scope. D02/D07 и release MVP 1D остаются `BLOCKED` из-за двух явных пробелов: атомарной безопасности cleanup при враждебном конкурентном same-UID процессе внутри target и production recovery/reporting для persistent script artifacts, оставшихся после `SIGKILL`.
 
@@ -299,6 +310,7 @@ ERROR → FAIL → BLOCKED → WARN → PASS
 - portable-прогон MVP 1D: 339 `PASS` и 44 намеренных opt-in `SKIP`;
 - сохранённый реальный AArch64-прогон MVP 1D: 39 `PASS`, 0 `FAIL`, 0 `SKIP`;
 - evidence-аудит MVP 1D завершён, но release остаётся `BLOCKED`.
+- MVP 1E: E01–E05 `PASS`, E06 `BLOCKED`, E07 `SCOPED_PASS`, E08 reconciliation завершена, финальный аудит ожидается.
 
 Подробности:
 

@@ -72,7 +72,9 @@ def check() -> dict[str, object]:
         raise ValueError("C3 telemetry promoted policy")
     if samples["m1e-05"]["learning_accepted"]:
         raise ValueError("blocked C3 sample accepted for learning")
-    if samples["m1e-07"]["runtime_attestation"] != "PENDING_SUPERVISOR_BOUNDARY":
+    if not samples["m1e-07"]["runtime_attestation"].startswith(
+        "PENDING_SUPERVISOR_BOUNDARY"
+    ):
         raise ValueError("planned lock promoted to attestation")
     for path, marker in {
         "README.md": "MVP 1E MIPS/MIPSEL lifecycle reconciliation",

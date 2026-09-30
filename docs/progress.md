@@ -11,6 +11,18 @@ is also BLOCKED. The final-31 independent audit records the exact outstanding
 requirements in `docs/evidence/final31-independent-audit.md`; no MVP or release
 completion is claimed.
 
+## MVP 1E m1e-07 reconciliation
+
+`docs/evidence/mvp1e-m1e07-reconciliation.json` and `.md` reconcile the
+MIPS/MIPSEL lifecycle milestone without product or runtime mutation. E01 scope
+review, E02 MIPS init, E03 MIPSEL init, E04 common one-shot and E05 common
+persistent/recovery are PASS at their named scopes. E06 is BLOCKED by retained
+independent-review findings R1/R2/R3. E07 is SCOPED_PASS: 19 unique real
+three-target adversarial PASS cases, 47 typed reports and 142 retained raw
+artifacts; its validator preserves E06 and MVP 1D D02/D07 blockers. E08
+reconciliation is complete, but `m1e-08` independently owns the final audit
+and MVP 1E verdict. C3 telemetry remains shadow-only with no policy promotion.
+
 ## MVP 1D m1d-13 independent final audit
 
 `docs/evidence/mvp1d-m1d13-final-audit.json` and its `.md` companion record
