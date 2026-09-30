@@ -1,0 +1,55 @@
+{
+  "automatic_artifact_recovery": "BLOCKED_not_implemented",
+  "container": "97d5d3410360d0e004f820e242933f161056f882b5af7b860d4451b946ecf0f1",
+  "foreign_preserved": true,
+  "healthy_recover": "refused_no_artifact_adoption",
+  "name": "m1e06-service-a9e4d062e1f6",
+  "persistent_SIGKILL": {
+    "container": "97d5d3410360d0e004f820e242933f161056f882b5af7b860d4451b946ecf0f1",
+    "path": "/opt/tmp/keemu-script-65d5b25df7afed318a7e6e45f3c44999567308d0e80199782c0e54d8ff8b09aa-d9eeac80576d7b359d56f009/script.sh"
+  },
+  "persistent_interrupted_report": "absent_no_PASS",
+  "production_down_destroy_tombstone": {
+    "kind": "persistent-environment",
+    "lock_sha256": "f072db35321efcc01110ddcce57cc8b16f02aad65a2923dccfce6e381a8cc5e9",
+    "name": "m1e06-service-a9e4d062e1f6",
+    "oci_digest": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+    "profile_id": "generic-mips",
+    "profile_sha256": "d80853a851daa5ebaa378e2481595e604cb853a74f227cccba0abbcb4c664257",
+    "resource": {
+      "container_id": "97d5d3410360d0e004f820e242933f161056f882b5af7b860d4451b946ecf0f1",
+      "owner_label": "keemu",
+      "run_id_label": "env-9793bfd60d834e3bade8994ba2746bcf"
+    },
+    "run_id": "env-9793bfd60d834e3bade8994ba2746bcf",
+    "scenario_id": "keemu-hello",
+    "scenario_sha256": "de3a20c8e90834929524a6e24b1174f95fa78589c1eb06ab594f4677c4331792",
+    "schema_version": 1,
+    "state": "destroyed"
+  },
+  "profile": "generic-mips",
+  "reports": [
+    {
+      "case": "streams.sh",
+      "exact_target_cleanup": true,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-mips-a2eb838a00bb/reports/script-exec-b5f90b740a22453b956b19539b4fc063/report.json",
+      "process_tree_clean": true,
+      "sha256": "b8267b96b6c3d30ddd1e8cc3a3021f6ba1c377d77d283e2954d59f63d938d5ee",
+      "status": "PASS"
+    },
+    {
+      "case": "timeout-process.sh",
+      "exact_target_cleanup": true,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-mips-a2eb838a00bb/reports/script-exec-17d2e78bdd12491b868cb19fb578b66d/report.json",
+      "process_tree_clean": true,
+      "sha256": "ee2ccf40ee62b95683c9033565c128394a88c1b3be711664ebf5c788d008c9ad",
+      "status": "FAIL"
+    }
+  ],
+  "same_name_concurrency": "busy",
+  "service_and_postinst_preserved": true,
+  "service_pid": "158",
+  "target": "mips-3.4",
+  "unrelated_pid": 180,
+  "worker_returncode": -9
+}

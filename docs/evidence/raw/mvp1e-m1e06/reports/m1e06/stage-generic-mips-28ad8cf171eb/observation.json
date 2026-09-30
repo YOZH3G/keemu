@@ -1,0 +1,134 @@
+{
+  "atomic_hostile_same_uid_race": "BLOCKED_not_proved",
+  "cleanup": "refused_then_exact_issued_retry_PASS",
+  "collision": "preserved_no_overwrite",
+  "container": "da71669bf178eb62b7ae70a7e4bdd4f82fa603cee2fb3b88ed6644900f8e64c1",
+  "container_teardown": {
+    "id": "da71669bf178eb62b7ae70a7e4bdd4f82fa603cee2fb3b88ed6644900f8e64c1",
+    "labels": {
+      "org.keemu.base-image": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+      "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+      "org.keemu.kind": "container",
+      "org.keemu.native": "linux/amd64",
+      "org.keemu.owner": "keemu",
+      "org.keemu.package-lock-sha256": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+      "org.keemu.phase": "m1e-01",
+      "org.keemu.rootfs-sha256": "4c06687da6f756ada50b4bc870928dd0127952923aa4ebd137f9c67c4a93d82d",
+      "org.keemu.run-id": "m1e06-stage-e394da94ae2b",
+      "org.keemu.target": "mips-3.4"
+    },
+    "name": "/keemu-m1e06-stage-e394da94ae2b",
+    "removed_and_absent": true,
+    "scope": "explicit_test_owned_not_production"
+  },
+  "foreign_preserved": true,
+  "host_config": {
+    "AutoRemove": false,
+    "Binds": null,
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceWriteIOps": [],
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "CapAdd": null,
+    "CapDrop": [
+      "ALL"
+    ],
+    "Cgroup": "",
+    "CgroupParent": "",
+    "CgroupnsMode": "private",
+    "ConsoleSize": [
+      0,
+      0
+    ],
+    "ContainerIDFile": "",
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpuShares": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "Devices": [],
+    "Dns": [],
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IOMaximumBandwidth": 0,
+    "IOMaximumIOps": 0,
+    "IpcMode": "private",
+    "Isolation": "",
+    "Links": null,
+    "LogConfig": {
+      "Config": {
+        "max-file": "1",
+        "max-size": "20m"
+      },
+      "Type": "json-file"
+    },
+    "MaskedPaths": [
+      "/proc/acpi",
+      "/proc/asound",
+      "/proc/interrupts",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/latency_stats",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/proc/timer_list",
+      "/proc/timer_stats",
+      "/sys/devices/virtual/powercap",
+      "/sys/firmware"
+    ],
+    "Memory": 1073741824,
+    "MemoryReservation": 0,
+    "MemorySwap": 1073741824,
+    "MemorySwappiness": null,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "none",
+    "OomKillDisable": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "PidsLimit": 256,
+    "PortBindings": {},
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyPaths": [
+      "/proc/bus",
+      "/proc/fs",
+      "/proc/irq",
+      "/proc/sys",
+      "/proc/sysrq-trigger"
+    ],
+    "ReadonlyRootfs": false,
+    "RestartPolicy": {
+      "MaximumRetryCount": 0,
+      "Name": "no"
+    },
+    "Runtime": "runc",
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "ShmSize": 67108864,
+    "Tmpfs": {
+      "/run": "rw,nosuid,nodev,size=4m",
+      "/tmp": "rw,nosuid,nodev,size=16m"
+    },
+    "UTSMode": "",
+    "Ulimits": [],
+    "UsernsMode": "",
+    "VolumeDriver": "",
+    "VolumesFrom": null
+  },
+  "immutable_snapshot_sha256": "9375d0fe755ac7c1d3bf7754ed91f9966eabfc3ad7ea7ab76fd951e4c73fbd9d",
+  "profile": "generic-mips",
+  "source_inode_swap": "BLOCKED",
+  "target": "mips-3.4",
+  "target_inode_replacement": "refused_foreign_bytes_preserved"
+}

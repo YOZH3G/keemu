@@ -1,0 +1,48 @@
+{
+  "phases": [
+    {
+      "ambiguous_extra": "refused_preserved",
+      "container": "ed42c59346d786b1af562c16ca65649bb822014f3ee9ac465862ef5f9b150fe3",
+      "foreign_preserved": true,
+      "idempotent": true,
+      "name": "m1e06-create-1975ced7462f",
+      "per_name_lock": "busy",
+      "phase": "creating",
+      "production_recovery": {
+        "name": "m1e06-create-1975ced7462f",
+        "removed": [
+          "ed42c59346d786b1af562c16ca65649bb822014f3ee9ac465862ef5f9b150fe3"
+        ],
+        "retry": false,
+        "state": "destroyed"
+      },
+      "removal_error": "retained_transitional_state_then_retry",
+      "run_id": "env-5e857968c3d2480f8ce141f88ca61856",
+      "tombstone_consistent": true,
+      "worker_returncode": -9
+    },
+    {
+      "ambiguous_extra": "refused_preserved",
+      "container": "66730fd0150996cb0cf8e75ad5e2e994abe02aaffbf451e6732aed892e7bac85",
+      "foreign_preserved": true,
+      "idempotent": true,
+      "name": "m1e06-create-59e0aa5e409e",
+      "per_name_lock": "busy",
+      "phase": "installing",
+      "production_recovery": {
+        "name": "m1e06-create-59e0aa5e409e",
+        "removed": [
+          "66730fd0150996cb0cf8e75ad5e2e994abe02aaffbf451e6732aed892e7bac85"
+        ],
+        "retry": false,
+        "state": "destroyed"
+      },
+      "removal_error": "retained_transitional_state_then_retry",
+      "run_id": "env-ccccde4d4ac74444882b37797ccaabee",
+      "tombstone_consistent": true,
+      "worker_returncode": -9
+    }
+  ],
+  "profile": "generic-aarch64",
+  "target": "aarch64-3.10"
+}

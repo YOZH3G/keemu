@@ -1,0 +1,228 @@
+{
+  "artifact": {
+    "architecture": "mipsel",
+    "id": "keemu-hello",
+    "kind": "ipk",
+    "sha256": "9e6a06786769e1ec02b7c25efe699d83fadf665bb080e11e1a525059a28dc9fa",
+    "source": "project-test-fixture",
+    "version": "1.0"
+  },
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "scenario, profile, IPK and base hashes matched"
+      ],
+      "id": "input-lock",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "status=PASS; findings="
+      ],
+      "id": "static-inspection",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "offline cache and Docker image verified"
+      ],
+      "id": "base-capability",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "environment",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "run ID already owns Docker resources"
+      ],
+      "id": "create",
+      "limitations": [
+        "run ID already owns Docker resources"
+      ],
+      "mode": "real",
+      "required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "no Docker resources allocated by this run"
+      ],
+      "id": "cleanup",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    }
+  ],
+  "coverage": {
+    "blocked": 1,
+    "errors": 0,
+    "failed": 0,
+    "passed": 4,
+    "required": 5,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-30T07:28:20.615604+00:00",
+  "limitations": [
+    "No persistent registry; Docker-host/client vantage, target HTTPS and UDP not implemented in this slice",
+    "Postinst is run only by opkg; independent postinst exit/count not claimed",
+    "Docker diff is metadata-only; byte-identical residuals and socket closure are not proven by it",
+    "Only opkg's exact observed scratch bookkeeping entries are exempt from residual comparison"
+  ],
+  "operation": "test",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:20.305460+00:00",
+      "cwd": null,
+      "duration_seconds": 0.007267970126122236,
+      "exit_code": null,
+      "operation": "validate",
+      "sequence": 1,
+      "started_at": "2026-09-30T07:28:20.298162+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:20.305929+00:00",
+      "cwd": null,
+      "duration_seconds": 0.00042487122118473053,
+      "exit_code": null,
+      "operation": "stage-local",
+      "sequence": 2,
+      "started_at": "2026-09-30T07:28:20.305510+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:20.306869+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0009193811565637589,
+      "exit_code": null,
+      "operation": "inspect",
+      "sequence": 3,
+      "started_at": "2026-09-30T07:28:20.305955+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:20.555948+00:00",
+      "cwd": null,
+      "duration_seconds": 0.24904721416532993,
+      "exit_code": null,
+      "operation": "capability",
+      "sequence": 4,
+      "started_at": "2026-09-30T07:28:20.306911+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:20.615301+00:00",
+      "cwd": null,
+      "duration_seconds": 0.05929095670580864,
+      "exit_code": null,
+      "operation": "create",
+      "sequence": 5,
+      "started_at": "2026-09-30T07:28:20.556023+00:00",
+      "status": "BLOCKED",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:20.615485+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup",
+      "sequence": 6,
+      "started_at": "2026-09-30T07:28:20.615479+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "BLOCKED",
+  "partial_failure": {
+    "cause_class": "environment",
+    "cleanup_attempted": true,
+    "cleanup_status": "PASS",
+    "interrupted": false,
+    "message": "run ID already owns Docker resources",
+    "operation": "create",
+    "operation_sequence": 5,
+    "preserved_artifacts": [
+      "/opt/data/workspace/keemu/reports/m1e06-collision-e34bffee0432/report.json"
+    ],
+    "status": "BLOCKED"
+  },
+  "profile": {
+    "id": "generic-mipsel",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": "6b80d1ee6ec39ffb0d99c1031d5d144383097db1b03a8c89bb5be5cefecf3e3b"
+  },
+  "run_id": "m1e06-collision-e34bffee0432",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "mipsel-3.4",
+    "feed_lock_sha256": "aad4b3b1638bcb197aa860ec2e6fbd2f2443309da22d8e56c7a723fe962a1888",
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": "sha256:44f1e4382b1546f454ed6602212effff860c5aaadcf03d513ceae506ce6abe74",
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": {
+    "id": "keemu-hello",
+    "schema_version": 1,
+    "sha256": "c4beaa393560e19e31233657466035864a201021429341812bdc844fad9e3226",
+    "source": "/opt/data/workspace/keemu/reports/m1e06/lifecycle-generic-mipsel-4dddb48b966c/ipk/scenario.yaml"
+  },
+  "schema_version": 2,
+  "script": null,
+  "substitutions": []
+}

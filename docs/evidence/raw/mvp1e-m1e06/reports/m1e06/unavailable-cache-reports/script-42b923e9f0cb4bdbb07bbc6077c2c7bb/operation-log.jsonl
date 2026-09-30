@@ -1,0 +1,1 @@
+{"argv": [], "completed_at": "2026-09-30T07:43:25.285214+00:00", "cwd": null, "duration_seconds": 9.251013398170471e-05, "exit_code": null, "operation": "capability", "sequence": 1, "started_at": "2026-09-30T07:43:25.285103+00:00", "status": "BLOCKED", "stderr_path": null, "stdout_path": null, "timed_out": false, "truncated": false}

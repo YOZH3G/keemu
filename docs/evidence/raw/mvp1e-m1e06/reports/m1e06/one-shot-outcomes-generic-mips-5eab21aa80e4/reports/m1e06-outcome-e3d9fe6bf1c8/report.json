@@ -1,0 +1,224 @@
+{
+  "artifact": null,
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "package",
+      "duration_seconds": 1.005,
+      "evidence": [
+        "target execution and owned cleanup classified; raw streams withheld"
+      ],
+      "id": "script",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "FAIL"
+    }
+  ],
+  "coverage": {
+    "blocked": 0,
+    "errors": 0,
+    "failed": 1,
+    "passed": 0,
+    "required": 1,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-30T07:39:10.571321+00:00",
+  "limitations": [
+    "Userspace execution does not establish physical Keenetic compatibility"
+  ],
+  "operation": "script",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:38:53.787080+00:00",
+      "cwd": null,
+      "duration_seconds": 0.30880953604355454,
+      "exit_code": null,
+      "operation": "capability",
+      "sequence": 1,
+      "started_at": "2026-09-30T07:38:53.478271+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:38:54.122070+00:00",
+      "cwd": null,
+      "duration_seconds": 0.33494730573147535,
+      "exit_code": null,
+      "operation": "create",
+      "sequence": 2,
+      "started_at": "2026-09-30T07:38:53.787139+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:38:57.798691+00:00",
+      "cwd": null,
+      "duration_seconds": 3.6765690040774643,
+      "exit_code": null,
+      "operation": "stage",
+      "sequence": 3,
+      "started_at": "2026-09-30T07:38:54.122135+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:39:08.295525+00:00",
+      "cwd": null,
+      "duration_seconds": 10.496789616998285,
+      "exit_code": null,
+      "operation": "execute",
+      "sequence": 4,
+      "started_at": "2026-09-30T07:38:57.798750+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:39:08.295613+00:00",
+      "cwd": null,
+      "duration_seconds": 2.3050233721733093e-05,
+      "exit_code": null,
+      "operation": "assert",
+      "sequence": 5,
+      "started_at": "2026-09-30T07:39:08.295589+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:39:10.159157+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup-target",
+      "sequence": 6,
+      "started_at": "2026-09-30T07:39:10.159140+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:39:10.571024+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup-container",
+      "sequence": 7,
+      "started_at": "2026-09-30T07:39:10.571005+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "FAIL",
+  "partial_failure": null,
+  "profile": {
+    "id": "generic-mips",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": "d80853a851daa5ebaa378e2481595e604cb853a74f227cccba0abbcb4c664257"
+  },
+  "run_id": "m1e06-outcome-e3d9fe6bf1c8",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "mips-3.4",
+    "feed_lock_sha256": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": null,
+  "schema_version": 2,
+  "script": {
+    "assertions": [
+      {
+        "expected_exit_code": 0,
+        "expected_sha256": null,
+        "id": "exit-code",
+        "kind": "exit-code",
+        "reason_code": "timed-out",
+        "status": "FAIL"
+      }
+    ],
+    "cleanup": [
+      {
+        "attempted": true,
+        "kind": "target-script",
+        "reason_code": null,
+        "verified": true
+      },
+      {
+        "attempted": true,
+        "kind": "container",
+        "reason_code": null,
+        "verified": true
+      }
+    ],
+    "execution": {
+      "architecture": "mips-3.4",
+      "argv": [],
+      "container_id": "d4aae665bdee8443ca79fc2e508750352357029ccfda0929269973232fe8ab84",
+      "cwd": "/opt",
+      "image_id": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+      "interpreter": "/bin/sh",
+      "mode": "one-shot",
+      "profile_id": "generic-mips",
+      "profile_revision": 1,
+      "sha256": "2f54b0ef32789406a6d98dedfbcbcbb96ae529d666e45552a02b5daaa00c8272",
+      "source": "fixtures/scripts/mvp1d/timeout-process.sh",
+      "target_path": "/opt/tmp/keemu-script-2f54b0ef32789406a6d98dedfbcbcbb96ae529d666e45552a02b5daaa00c8272-65025209922e85fdc4a6cc4a/script.sh",
+      "timeout_seconds": 1
+    },
+    "outcome": {
+      "duration_seconds": 1.005,
+      "exit_code": 143,
+      "process_tree_clean": true,
+      "state": "executed",
+      "stderr": {
+        "byte_count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "truncated": false
+      },
+      "stdout": {
+        "byte_count": 10,
+        "sha256": "7ba6f569b339ab0a13389b003a0f52050db25b0cc8b419e2753803a18bf8ddc2",
+        "truncated": false
+      },
+      "timed_out": true
+    },
+    "status": "FAIL"
+  },
+  "substitutions": []
+}

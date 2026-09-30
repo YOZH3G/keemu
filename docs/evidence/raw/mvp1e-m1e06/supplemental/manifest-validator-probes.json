@@ -1,0 +1,8 @@
+{
+  "actual_errors": {
+    "count": "wrong JUnit counts: reports/m1e06/adversarial-boundaries.xml",
+    "hash": "evidence hash mismatch: tests/integration/test_m1e06_adversarial.py",
+    "promotion": "predecessor blocker promoted"
+  },
+  "wrong_count_wrong_hash_blocker_promotion": "all rejected"
+}

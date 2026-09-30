@@ -1,0 +1,44 @@
+{
+  "exact_cleanup": true,
+  "foreign_preserved": true,
+  "profile": "generic-mips",
+  "reports": [
+    {
+      "case": "argv.sh",
+      "expected_exit": 0,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/one-shot-outcomes-generic-mips-5eab21aa80e4/reports/m1e06-outcome-0610638e297e/report.json",
+      "process_tree_clean": true,
+      "sha256": "1d2abb12dc46c948dc293a19f55d8f0d07c65b22ecf9509357f48c4af9e5461f",
+      "status": "PASS",
+      "target_and_container_cleanup": true
+    },
+    {
+      "case": "exit-7.sh",
+      "expected_exit": 0,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/one-shot-outcomes-generic-mips-5eab21aa80e4/reports/m1e06-outcome-dcb6a200f580/report.json",
+      "process_tree_clean": true,
+      "sha256": "39ef76b099767aa6a6ade2e0332da4dcb89d7b74cc88d694e7d862989bfb1330",
+      "status": "FAIL",
+      "target_and_container_cleanup": true
+    },
+    {
+      "case": "exit-7.sh",
+      "expected_exit": 7,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/one-shot-outcomes-generic-mips-5eab21aa80e4/reports/m1e06-outcome-0e75a97abda3/report.json",
+      "process_tree_clean": true,
+      "sha256": "91b5407dd06fb036065e01251f092569bb1bd93a3f562cfd5b929ddfe0001979",
+      "status": "PASS",
+      "target_and_container_cleanup": true
+    },
+    {
+      "case": "timeout-process.sh",
+      "expected_exit": 0,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/one-shot-outcomes-generic-mips-5eab21aa80e4/reports/m1e06-outcome-e3d9fe6bf1c8/report.json",
+      "process_tree_clean": true,
+      "sha256": "384e27270edec1966276fe11643380d63c02f77e603bdd61b40939c906fd1d21",
+      "status": "FAIL",
+      "target_and_container_cleanup": true
+    }
+  ],
+  "target": "mips-3.4"
+}

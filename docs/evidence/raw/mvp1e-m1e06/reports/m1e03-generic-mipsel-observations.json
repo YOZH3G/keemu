@@ -1,0 +1,54 @@
+{
+  "cases": [
+    {
+      "case": "success",
+      "cleanup": "PASS",
+      "failure_operation": null,
+      "overall": "PASS",
+      "report": "reports/m1e03-86da65db0cc540deae01/report.json",
+      "sha256": "8ffb7a98a1e2a3a72f0fb917005cbf9df4df073008206c0ba424313b1e5a36e6"
+    },
+    {
+      "case": "postinst-fail",
+      "cleanup": "PASS",
+      "failure_operation": "install",
+      "overall": "FAIL",
+      "report": "reports/m1e03-471075f8531f4e7dbc4e/report.json",
+      "sha256": "83e92c8c284999871b9ca5cd69cd65ba1d011e2295b2f89cb670023789948e3d"
+    },
+    {
+      "case": "collision",
+      "cleanup": "PASS",
+      "failure_operation": "create",
+      "overall": "BLOCKED",
+      "report": "reports/m1e03-collision-58443588a832/report.json",
+      "sha256": "5caa5864b1ee3b2dfb2da3e2dfa7a6da129bfc05f8c6e30f4307df8b608de846"
+    },
+    {
+      "case": "input-changed",
+      "cleanup": "PASS",
+      "failure_operation": "validate",
+      "overall": "BLOCKED",
+      "report": "reports/test-ca98ab6c9baa40ffb1258ca1cbb4049c/report.json",
+      "sha256": "f100b3dc31d7d96a35510f0db56c60c2dea4471236160187c9d2cc69bfa95e19"
+    },
+    {
+      "case": "wrong-architecture",
+      "cleanup": "PASS",
+      "failure_operation": "inspect",
+      "overall": "FAIL",
+      "report": "reports/test-a6e0b5e63ed44db7999958c939c4ba18/report.json",
+      "sha256": "75d1bb72c7c4505acf85885e45caec976c8ba076e6cc733fb44f6cf69b9abdb9"
+    },
+    {
+      "case": "cleanup-error",
+      "cleanup": "ERROR",
+      "failure_operation": "install",
+      "overall": "ERROR",
+      "report": "reports/test-d078f1bd159b41059b9dcf622629a8fd/report.json",
+      "sha256": "3973e9800754c6d2e45cac61ed163d8f2679112944334f8a3b7b6663d10e555a"
+    }
+  ],
+  "profile": "generic-mipsel",
+  "target": "mipsel-3.4"
+}

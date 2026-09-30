@@ -1,0 +1,54 @@
+{
+  "cases": [
+    {
+      "case": "success",
+      "cleanup": "PASS",
+      "failure_operation": null,
+      "overall": "PASS",
+      "report": "reports/m1e03-8f517bae31014afa92f8/report.json",
+      "sha256": "1644d6918e70833ba5a92c15596022c8bd91ff3b7b25a17a234eae9a591afc91"
+    },
+    {
+      "case": "postinst-fail",
+      "cleanup": "PASS",
+      "failure_operation": "install",
+      "overall": "FAIL",
+      "report": "reports/m1e03-944348e50fb44941a147/report.json",
+      "sha256": "40e7637992b9307e6c5c10a4f1b2425f3a365d0a96086b7f073751e06920eb7a"
+    },
+    {
+      "case": "collision",
+      "cleanup": "PASS",
+      "failure_operation": "create",
+      "overall": "BLOCKED",
+      "report": "reports/m1e03-collision-e0a7075b4ec3/report.json",
+      "sha256": "79333b2f145344cb23f551734f662e89f840fb3b5b111d7b26127044ef56f838"
+    },
+    {
+      "case": "input-changed",
+      "cleanup": "PASS",
+      "failure_operation": "validate",
+      "overall": "BLOCKED",
+      "report": "reports/test-c0a5d2530035477a8abebef6b124006c/report.json",
+      "sha256": "2b974f9201beea102670ee350482f233e2aabe24403ce3c8833b461fb3c8592a"
+    },
+    {
+      "case": "wrong-architecture",
+      "cleanup": "PASS",
+      "failure_operation": "inspect",
+      "overall": "FAIL",
+      "report": "reports/test-eae3d520d23043e3a27c0ba344cf1316/report.json",
+      "sha256": "6ad37f64fb161c433c0f919030119c8414795b0293997de905dcaa5f680cbcc2"
+    },
+    {
+      "case": "cleanup-error",
+      "cleanup": "ERROR",
+      "failure_operation": "install",
+      "overall": "ERROR",
+      "report": "reports/test-62ab1042d56c43949792639a5b5a8a27/report.json",
+      "sha256": "982895cc05383ee205ff7a6cb4f15a4907a5074fd8ffc8160a9a6b03e33cfcd8"
+    }
+  ],
+  "profile": "generic-mips",
+  "target": "mips-3.4"
+}

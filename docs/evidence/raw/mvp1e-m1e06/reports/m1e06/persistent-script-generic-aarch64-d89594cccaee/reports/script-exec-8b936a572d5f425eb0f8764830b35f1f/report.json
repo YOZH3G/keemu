@@ -1,0 +1,188 @@
+{
+  "artifact": null,
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "package",
+      "duration_seconds": 1.007,
+      "evidence": [
+        "target execution and exact cleanup classified; raw streams withheld"
+      ],
+      "id": "script",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "FAIL"
+    }
+  ],
+  "coverage": {
+    "blocked": 0,
+    "errors": 0,
+    "failed": 1,
+    "passed": 0,
+    "required": 1,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-30T07:30:52.626228+00:00",
+  "limitations": [
+    "Userspace execution does not establish physical Keenetic compatibility"
+  ],
+  "operation": "script",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:30:37.438912+00:00",
+      "cwd": null,
+      "duration_seconds": 0.3123666397295892,
+      "exit_code": null,
+      "operation": "capability",
+      "sequence": 1,
+      "started_at": "2026-09-30T07:30:37.126549+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:30:41.095634+00:00",
+      "cwd": null,
+      "duration_seconds": 3.6566689130850136,
+      "exit_code": null,
+      "operation": "stage",
+      "sequence": 2,
+      "started_at": "2026-09-30T07:30:37.438978+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:30:50.757307+00:00",
+      "cwd": null,
+      "duration_seconds": 9.66161051299423,
+      "exit_code": null,
+      "operation": "execute",
+      "sequence": 3,
+      "started_at": "2026-09-30T07:30:41.095710+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:30:50.757399+00:00",
+      "cwd": null,
+      "duration_seconds": 2.7609989047050476e-05,
+      "exit_code": null,
+      "operation": "assert",
+      "sequence": 4,
+      "started_at": "2026-09-30T07:30:50.757370+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:30:52.519672+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup-target",
+      "sequence": 5,
+      "started_at": "2026-09-30T07:30:52.519652+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "FAIL",
+  "partial_failure": null,
+  "profile": {
+    "id": "generic-aarch64",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": "31f8eb5f1957a5047b7e776925238f9419308681635e8008f40a81deda2824c5"
+  },
+  "run_id": "script-exec-8b936a572d5f425eb0f8764830b35f1f",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "aarch64-3.10",
+    "feed_lock_sha256": null,
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": null,
+  "schema_version": 2,
+  "script": {
+    "assertions": [
+      {
+        "expected_exit_code": 0,
+        "expected_sha256": null,
+        "id": "exit-code",
+        "kind": "exit-code",
+        "reason_code": "timed-out",
+        "status": "FAIL"
+      }
+    ],
+    "cleanup": [
+      {
+        "attempted": true,
+        "kind": "target-script",
+        "reason_code": null,
+        "verified": true
+      }
+    ],
+    "execution": {
+      "architecture": "aarch64-3.10",
+      "argv": [],
+      "container_id": "ddfd409c7a00b4fb2c9a3969efe6ca71ac7ffeba25a2377f0f35f27e1960fa6d",
+      "cwd": "/opt",
+      "image_id": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+      "interpreter": "/bin/sh",
+      "mode": "persistent",
+      "profile_id": "generic-aarch64",
+      "profile_revision": 1,
+      "sha256": "2f54b0ef32789406a6d98dedfbcbcbb96ae529d666e45552a02b5daaa00c8272",
+      "source": "fixtures/scripts/mvp1d/timeout-process.sh",
+      "target_path": "/opt/tmp/keemu-script-2f54b0ef32789406a6d98dedfbcbcbb96ae529d666e45552a02b5daaa00c8272-3e2aa89f8d6a720a8e38fb46/script.sh",
+      "timeout_seconds": 1
+    },
+    "outcome": {
+      "duration_seconds": 1.007,
+      "exit_code": 143,
+      "process_tree_clean": true,
+      "state": "executed",
+      "stderr": {
+        "byte_count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "truncated": false
+      },
+      "stdout": {
+        "byte_count": 10,
+        "sha256": "415945978e6ef03efc70f5588e59ec0ae212f10cf00be3c1158a15ca76b33465",
+        "truncated": false
+      },
+      "timed_out": true
+    },
+    "status": "FAIL"
+  },
+  "substitutions": []
+}

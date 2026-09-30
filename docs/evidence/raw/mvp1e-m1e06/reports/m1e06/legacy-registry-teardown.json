@@ -1,0 +1,35 @@
+{
+  "negative_postinst_recovered": {
+    "name": "persist-fail-a56c4fb29ff5",
+    "removed": [],
+    "retry": false,
+    "state": "destroyed"
+  },
+  "old_880_registry_files": "not touched",
+  "public_recover_refusal": "healthy environment; recovery refused",
+  "recovered": {
+    "name": "persist-script-224799cdba3f",
+    "removed": [],
+    "retry": false,
+    "state": "destroyed"
+  },
+  "running_record_before": {
+    "kind": "persistent-environment",
+    "lock_sha256": "a652e5ab46d317721ce4a83c2a13c992680874bb921286ad15edf85eb12af730",
+    "name": "persist-script-224799cdba3f",
+    "oci_digest": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+    "profile_id": "generic-aarch64",
+    "profile_sha256": "31f8eb5f1957a5047b7e776925238f9419308681635e8008f40a81deda2824c5",
+    "resource": {
+      "container_id": "0b985f58a1294bcf3f3568a087a95c0bddc734927a3bf136e3d7c4a62d75188c",
+      "owner_label": "keemu",
+      "run_id_label": "env-db995843cc68432ca09c4ad883ee179a"
+    },
+    "run_id": "env-db995843cc68432ca09c4ad883ee179a",
+    "scenario_id": "keemu-hello",
+    "scenario_sha256": "a033ca739b1b4ea00914764674d366e0764a7887581c60ff50999972786a16ac",
+    "schema_version": 1,
+    "state": "running"
+  },
+  "test_owner_only_repair": "exact newly issued record, per-name flock and byte/inode compare, full Docker ID absence, running-to-failed existing Registry transition; NOT production stale-running recovery"
+}

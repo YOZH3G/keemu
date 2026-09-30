@@ -1,0 +1,29 @@
+[
+  {
+    "docker_access": "none; forbidden mock not called",
+    "partial_failure": "InitError",
+    "path": "/opt/data/workspace/keemu/reports/m1e06/unavailable-cache-reports/script-42b923e9f0cb4bdbb07bbc6077c2c7bb/report.json",
+    "profile": "generic-aarch64",
+    "sha256": "92e4f057597a1ae4e9e0d16236c7b7070379a5eec45729360dd20365d41a2b6a",
+    "status": "BLOCKED",
+    "target": "aarch64-3.10"
+  },
+  {
+    "docker_access": "none; forbidden mock not called",
+    "partial_failure": "InitError",
+    "path": "/opt/data/workspace/keemu/reports/m1e06/unavailable-cache-reports/script-2c7727e785044518b186db68961e9a83/report.json",
+    "profile": "generic-mips",
+    "sha256": "29222cc83b8ff61c803427c8382fa8a94479c1019f2252b15ce83cc33d084a7a",
+    "status": "BLOCKED",
+    "target": "mips-3.4"
+  },
+  {
+    "docker_access": "none; forbidden mock not called",
+    "partial_failure": "InitError",
+    "path": "/opt/data/workspace/keemu/reports/m1e06/unavailable-cache-reports/script-bc044c89c2564d7cbbad14cbe3fa8129/report.json",
+    "profile": "generic-mipsel",
+    "sha256": "0600e5b783f354f0c1f93c8ff265da85bb6f41061b45b72b901d60eeb311b49a",
+    "status": "BLOCKED",
+    "target": "mipsel-3.4"
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "phases": [
+    {
+      "ambiguous_extra": "refused_preserved",
+      "container": "edb885862f4bc74033a499ca2f38152d4fea7eaaba672ed7a9d0e4174a4f94a1",
+      "foreign_preserved": true,
+      "idempotent": true,
+      "name": "m1e06-create-a8e5b67acaf0",
+      "per_name_lock": "busy",
+      "phase": "creating",
+      "production_recovery": {
+        "name": "m1e06-create-a8e5b67acaf0",
+        "removed": [
+          "edb885862f4bc74033a499ca2f38152d4fea7eaaba672ed7a9d0e4174a4f94a1"
+        ],
+        "retry": false,
+        "state": "destroyed"
+      },
+      "removal_error": "retained_transitional_state_then_retry",
+      "run_id": "env-bf6ddff1203b41fa9ae29a71dd1f089f",
+      "tombstone_consistent": true,
+      "worker_returncode": -9
+    },
+    {
+      "ambiguous_extra": "refused_preserved",
+      "container": "366c7085b3cb52ff8041dfab7a706af2760a17414bfbb148e72511b80d4be47f",
+      "foreign_preserved": true,
+      "idempotent": true,
+      "name": "m1e06-create-2606677f4014",
+      "per_name_lock": "busy",
+      "phase": "installing",
+      "production_recovery": {
+        "name": "m1e06-create-2606677f4014",
+        "removed": [
+          "366c7085b3cb52ff8041dfab7a706af2760a17414bfbb148e72511b80d4be47f"
+        ],
+        "retry": false,
+        "state": "destroyed"
+      },
+      "removal_error": "retained_transitional_state_then_retry",
+      "run_id": "env-5a6d0b520e5243f5a5295e94a26c4bab",
+      "tombstone_consistent": true,
+      "worker_returncode": -9
+    }
+  ],
+  "profile": "generic-mipsel",
+  "target": "mipsel-3.4"
+}

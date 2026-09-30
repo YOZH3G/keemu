@@ -1,0 +1,46 @@
+{
+  "exact_cleanup": true,
+  "foreign_preserved": true,
+  "independent_common_path_files": true,
+  "reports": [
+    {
+      "path": "/opt/data/workspace/keemu/reports/m1e06/concurrent-three-target-b2e933a38ee9/reports/m1e06-concurrent-eaf90e082e67/report.json",
+      "profile": "generic-aarch64",
+      "sha256": "d17175cc538a7a7cd59c925e8b43532f4cb01ec56ec582048461d18ac3443b16",
+      "status": "PASS",
+      "target": "aarch64-3.10"
+    },
+    {
+      "path": "/opt/data/workspace/keemu/reports/m1e06/concurrent-three-target-b2e933a38ee9/reports/m1e06-concurrent-1dab6942534a/report.json",
+      "profile": "generic-mips",
+      "sha256": "1255375599d10e81868d634143863a0f8f9f7076196e2efca21850d3e76af0f0",
+      "status": "PASS",
+      "target": "mips-3.4"
+    },
+    {
+      "path": "/opt/data/workspace/keemu/reports/m1e06/concurrent-three-target-b2e933a38ee9/reports/m1e06-concurrent-af0c522bf4c2/report.json",
+      "profile": "generic-mipsel",
+      "sha256": "287cd8ed88dcc65faaff6469ec3942f1b49872559a79ea06932472fe2559c161",
+      "status": "PASS",
+      "target": "mipsel-3.4"
+    }
+  ],
+  "simultaneous_stage_barrier": true,
+  "stages": [
+    {
+      "container": "dd7decc1e56b523014892ca0027e3a55175c1f11a5b35aecef07f2ebb1efb590",
+      "path": "/opt/tmp/keemu-script-1ad016ba66fef3d59d6df5c3c3bb6f0c9fcbcf8769244a7f6be28b679d873e35-b6b62320740c4925cd1434ea/script.sh",
+      "target": "mips-3.4"
+    },
+    {
+      "container": "52f6056eb16d6cc4d98764fa77119e3f1e53e8fa1498e07ac4aba625667be3fd",
+      "path": "/opt/tmp/keemu-script-1ad016ba66fef3d59d6df5c3c3bb6f0c9fcbcf8769244a7f6be28b679d873e35-8fcf831f281a9ff82b549547/script.sh",
+      "target": "aarch64-3.10"
+    },
+    {
+      "container": "b1333eaeea86cbbe78884cdcbd8b7667785848ced13455c671680ee355bbfb8b",
+      "path": "/opt/tmp/keemu-script-1ad016ba66fef3d59d6df5c3c3bb6f0c9fcbcf8769244a7f6be28b679d873e35-49cbad25c80c1c619f901711/script.sh",
+      "target": "mipsel-3.4"
+    }
+  ]
+}

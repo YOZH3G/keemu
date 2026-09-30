@@ -1,0 +1,3 @@
+# Only frozen, hash-bound E07 report copies belong in Git.
+# Keep live project reports/ ignored by the unchanged root policy.
+!reports/

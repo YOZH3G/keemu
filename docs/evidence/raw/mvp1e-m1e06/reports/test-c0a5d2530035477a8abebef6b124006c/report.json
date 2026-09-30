@@ -1,0 +1,120 @@
+{
+  "artifact": null,
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "environment",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "locked input changed: source hash mismatch: keemu-hello"
+      ],
+      "id": "validate",
+      "limitations": [
+        "locked input changed: source hash mismatch: keemu-hello"
+      ],
+      "mode": "real",
+      "required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "no Docker resources allocated by this run"
+      ],
+      "id": "cleanup",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    }
+  ],
+  "coverage": {
+    "blocked": 1,
+    "errors": 0,
+    "failed": 0,
+    "passed": 1,
+    "required": 2,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-29T12:49:54.365948+00:00",
+  "limitations": [
+    "No persistent registry; Docker-host/client vantage, target HTTPS and UDP not implemented in this slice",
+    "Postinst is run only by opkg; independent postinst exit/count not claimed",
+    "Docker diff is metadata-only; byte-identical residuals and socket closure are not proven by it",
+    "Only opkg's exact observed scratch bookkeeping entries are exempt from residual comparison"
+  ],
+  "operation": "test",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.365837+00:00",
+      "cwd": null,
+      "duration_seconds": 0.004075152333825827,
+      "exit_code": null,
+      "operation": "validate",
+      "sequence": 1,
+      "started_at": "2026-09-29T12:49:54.361759+00:00",
+      "status": "BLOCKED",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.365897+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup",
+      "sequence": 2,
+      "started_at": "2026-09-29T12:49:54.365895+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "BLOCKED",
+  "partial_failure": {
+    "cause_class": "environment",
+    "cleanup_attempted": true,
+    "cleanup_status": "PASS",
+    "interrupted": false,
+    "message": "locked input changed: source hash mismatch: keemu-hello",
+    "operation": "validate",
+    "operation_sequence": 1,
+    "preserved_artifacts": [
+      "/opt/data/workspace/keemu/reports/test-c0a5d2530035477a8abebef6b124006c/report.json"
+    ],
+    "status": "BLOCKED"
+  },
+  "profile": {
+    "id": "unknown",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": null
+  },
+  "run_id": "test-c0a5d2530035477a8abebef6b124006c",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "unknown",
+    "feed_lock_sha256": null,
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": null,
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": null,
+  "schema_version": 2,
+  "script": null,
+  "substitutions": []
+}

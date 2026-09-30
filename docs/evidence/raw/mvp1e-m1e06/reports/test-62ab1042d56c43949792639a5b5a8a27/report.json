@@ -1,0 +1,308 @@
+{
+  "artifact": {
+    "architecture": "mips",
+    "id": "keemu-hello",
+    "kind": "ipk",
+    "sha256": "55b3042037f9dc363a8f3e54e5d0f6624fbdd607a93a42b293eb98e9c2561058",
+    "source": "project-test-fixture",
+    "version": "1.0"
+  },
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "scenario, profile, IPK and base hashes matched"
+      ],
+      "id": "input-lock",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "status=PASS; findings="
+      ],
+      "id": "static-inspection",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "offline cache and Docker image verified"
+      ],
+      "id": "base-capability",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "owned container started; baseline Docker diff captured"
+      ],
+      "id": "fresh-environment",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "target hash matches source lock"
+      ],
+      "id": "staged-ipk",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "install: exit=255, expected=0; exit=255 stdout_sha256=ff086e96361c96a712c9a977be1a349dacbdf342c5061d771f8dff5e9ba6c45b stderr_sha256=0bf9b53e3f7fbb8cc233b2aaf19ba15ce99303a6ac9a6a726ced4114e3c89c13 stdout_bytes=65 stderr_bytes=148"
+      ],
+      "id": "install",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "cause_class": "harness",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "cleanup reconciliation unavailable: injected cleanup readback error"
+      ],
+      "id": "cleanup",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "ERROR"
+    }
+  ],
+  "coverage": {
+    "blocked": 0,
+    "errors": 1,
+    "failed": 1,
+    "passed": 5,
+    "required": 7,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-29T12:49:57.515153+00:00",
+  "limitations": [
+    "No persistent registry; Docker-host/client vantage, target HTTPS and UDP not implemented in this slice",
+    "Postinst is run only by opkg; independent postinst exit/count not claimed",
+    "Docker diff is metadata-only; byte-identical residuals and socket closure are not proven by it",
+    "Only opkg's exact observed scratch bookkeeping entries are exempt from residual comparison"
+  ],
+  "operation": "test",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.456157+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0062748440541327,
+      "exit_code": null,
+      "operation": "validate",
+      "sequence": 1,
+      "started_at": "2026-09-29T12:49:54.449904+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.456479+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0002499711699783802,
+      "exit_code": null,
+      "operation": "stage-local",
+      "sequence": 2,
+      "started_at": "2026-09-29T12:49:54.456232+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.457462+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0009705410338938236,
+      "exit_code": null,
+      "operation": "inspect",
+      "sequence": 3,
+      "started_at": "2026-09-29T12:49:54.456496+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.715010+00:00",
+      "cwd": null,
+      "duration_seconds": 0.2575195557437837,
+      "exit_code": null,
+      "operation": "capability",
+      "sequence": 4,
+      "started_at": "2026-09-29T12:49:54.457501+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:55.963997+00:00",
+      "cwd": null,
+      "duration_seconds": 1.2489278758876026,
+      "exit_code": null,
+      "operation": "create",
+      "sequence": 5,
+      "started_at": "2026-09-29T12:49:54.715085+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:56.102149+00:00",
+      "cwd": null,
+      "duration_seconds": 0.13806573813781142,
+      "exit_code": null,
+      "operation": "stage-ipk",
+      "sequence": 6,
+      "started_at": "2026-09-29T12:49:55.964098+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:56.311907+00:00",
+      "cwd": null,
+      "duration_seconds": 0.20965754427015781,
+      "exit_code": null,
+      "operation": "dependencies",
+      "sequence": 7,
+      "started_at": "2026-09-29T12:49:56.102262+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [
+        "/opt/bin/opkg",
+        "install",
+        "/opt/tmp/keemu-hello_1.0_mips-3.4.ipk"
+      ],
+      "completed_at": "2026-09-29T12:49:56.973771+00:00",
+      "cwd": null,
+      "duration_seconds": 0.6618132879957557,
+      "exit_code": 255,
+      "operation": "install",
+      "sequence": 8,
+      "started_at": "2026-09-29T12:49:56.311970+00:00",
+      "status": "FAIL",
+      "stderr_path": "stderr/008-install.bin",
+      "stdout_path": "stdout/008-install.bin",
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:57.515016+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup",
+      "sequence": 9,
+      "started_at": "2026-09-29T12:49:57.514999+00:00",
+      "status": "ERROR",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "ERROR",
+  "partial_failure": {
+    "cause_class": "package",
+    "cleanup_attempted": true,
+    "cleanup_status": "ERROR",
+    "interrupted": false,
+    "message": "install: exit=255, expected=0; exit=255 stdout_sha256=ff086e96361c96a712c9a977be1a349dacbdf342c5061d771f8dff5e9ba6c45b stderr_sha256=0bf9b53e3f7fbb8cc233b2aaf19ba15ce99303a6ac9a6a726ced4114e3c89c13 stdout_bytes=65 stderr_bytes=148",
+    "operation": "install",
+    "operation_sequence": 8,
+    "preserved_artifacts": [
+      "/opt/data/workspace/keemu/reports/test-62ab1042d56c43949792639a5b5a8a27/report.json"
+    ],
+    "status": "FAIL"
+  },
+  "profile": {
+    "id": "generic-mips",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": "d80853a851daa5ebaa378e2481595e604cb853a74f227cccba0abbcb4c664257"
+  },
+  "run_id": "test-62ab1042d56c43949792639a5b5a8a27",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "mips-3.4",
+    "feed_lock_sha256": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": {
+    "id": "keemu-hello",
+    "schema_version": 1,
+    "sha256": "3f31055e03ff646a1710bba81732c164169e8fc38ecee03a30fabcac1ea93402",
+    "source": "/opt/data/workspace/keemu/.runtime/m1e03-glugwz4n/scenario.yaml"
+  },
+  "schema_version": 2,
+  "script": null,
+  "substitutions": [
+    {
+      "evidence": [
+        "Target BusyBox gzip applet checked before linking in disposable container; no host tool substituted"
+      ],
+      "id": "opkg-gzip",
+      "reason": "target opkg invokes gzip to read local IPK archives",
+      "replaces": "missing /opt/bin/gzip command in pinned base"
+    }
+  ]
+}

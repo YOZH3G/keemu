@@ -1,0 +1,5 @@
+.................s                                                       [100%]
+- generated xml file: /opt/data/workspace/keemu/reports/m1e06/lifecycle-regression.xml -
+=========================== short test summary info ============================
+SKIPPED [1] tests/integration/test_lifecycle.py:1012: opt in to persistent SIGKILL Docker/binfmt probe
+17 passed, 1 skipped in 319.44s (0:05:19)

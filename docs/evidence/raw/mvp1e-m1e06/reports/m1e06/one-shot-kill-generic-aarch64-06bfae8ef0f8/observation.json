@@ -1,0 +1,88 @@
+{
+  "automatic_recovery": "not_implemented",
+  "phases": [
+    {
+      "container": "34affdd1767cdacf1cb6c96209e286ded57be71115ab40032e0d69bc0c0be53f",
+      "explicit_test_recovery": {
+        "id": "34affdd1767cdacf1cb6c96209e286ded57be71115ab40032e0d69bc0c0be53f",
+        "labels": {
+          "org.keemu.base-image": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+          "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+          "org.keemu.kind": "container",
+          "org.keemu.native": "linux/amd64",
+          "org.keemu.owner": "keemu",
+          "org.keemu.package-lock-sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+          "org.keemu.phase": "m1a-11",
+          "org.keemu.rootfs-sha256": "019311323a4607edcf952dbffcd6c8b96e99b12c26fde2ca463314c1083f54d0",
+          "org.keemu.run-id": "m1e06-kill-2b01c16e0089",
+          "org.keemu.target": "aarch64-3.10"
+        },
+        "name": "/keemu-m1e06-kill-2b01c16e0089",
+        "removed_and_absent": true,
+        "scope": "explicit_test_owned_not_production"
+      },
+      "foreign_preserved": true,
+      "interrupted_report": "absent_no_PASS",
+      "phase": "after-create",
+      "worker_returncode": -9
+    },
+    {
+      "container": "b22ad84910a0dad3dc57cd08c73dcdd9f75327e5f179d0c61aa0d3160436331d",
+      "explicit_test_recovery": {
+        "id": "b22ad84910a0dad3dc57cd08c73dcdd9f75327e5f179d0c61aa0d3160436331d",
+        "labels": {
+          "org.keemu.base-image": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+          "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+          "org.keemu.kind": "container",
+          "org.keemu.native": "linux/amd64",
+          "org.keemu.owner": "keemu",
+          "org.keemu.package-lock-sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+          "org.keemu.phase": "m1a-11",
+          "org.keemu.rootfs-sha256": "019311323a4607edcf952dbffcd6c8b96e99b12c26fde2ca463314c1083f54d0",
+          "org.keemu.run-id": "m1e06-kill-132b8302e907",
+          "org.keemu.target": "aarch64-3.10"
+        },
+        "name": "/keemu-m1e06-kill-132b8302e907",
+        "removed_and_absent": true,
+        "scope": "explicit_test_owned_not_production"
+      },
+      "foreign_preserved": true,
+      "interrupted_report": "absent_no_PASS",
+      "path": "/opt/tmp/keemu-script-65d5b25df7afed318a7e6e45f3c44999567308d0e80199782c0e54d8ff8b09aa-b4ce871e2c1af1ae4ad8d226/script.sh",
+      "phase": "after-stage",
+      "worker_returncode": -9
+    },
+    {
+      "container": "2a67b62af91dcef23e301f3308b45f70aa9aa4a24e1aa84b9c580a8c0834e350",
+      "descendants_absent_seconds": 2.745858850888908,
+      "explicit_test_recovery": {
+        "id": "2a67b62af91dcef23e301f3308b45f70aa9aa4a24e1aa84b9c580a8c0834e350",
+        "labels": {
+          "org.keemu.base-image": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+          "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+          "org.keemu.kind": "container",
+          "org.keemu.native": "linux/amd64",
+          "org.keemu.owner": "keemu",
+          "org.keemu.package-lock-sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+          "org.keemu.phase": "m1a-11",
+          "org.keemu.rootfs-sha256": "019311323a4607edcf952dbffcd6c8b96e99b12c26fde2ca463314c1083f54d0",
+          "org.keemu.run-id": "m1e06-kill-5d61b9657cda",
+          "org.keemu.target": "aarch64-3.10"
+        },
+        "name": "/keemu-m1e06-kill-5d61b9657cda",
+        "removed_and_absent": true,
+        "scope": "explicit_test_owned_not_production"
+      },
+      "foreign_preserved": true,
+      "interrupted_report": "absent_no_PASS",
+      "phase": "active",
+      "target_pids": [
+        448,
+        450
+      ],
+      "worker_returncode": -9
+    }
+  ],
+  "profile": "generic-aarch64",
+  "target": "aarch64-3.10"
+}

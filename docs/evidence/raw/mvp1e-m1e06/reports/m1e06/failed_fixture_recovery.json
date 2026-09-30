@@ -1,0 +1,10 @@
+{
+  "cause": "new harness omitted frozen AArch64 web fixture UDP port and state arguments; no product change",
+  "name": "m1e06-service-b568200572b0",
+  "recovered": {
+    "name": "m1e06-service-b568200572b0",
+    "removed": [],
+    "retry": false,
+    "state": "destroyed"
+  }
+}

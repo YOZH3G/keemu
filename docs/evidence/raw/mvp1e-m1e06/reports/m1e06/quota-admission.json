@@ -1,0 +1,14 @@
+{
+  "action": "admit",
+  "admission_key": "subtask:m1e-06:1bd33eb6b7da79a9a2848c43efc11290dcd8548870be20cddd43c6ed9f317eff",
+  "checked_at": "2026-09-30T06:53:55+00:00",
+  "message": "5-hour OAuth quota admits new task",
+  "remaining_percent": 58.0,
+  "reset_at": "2026-09-30T11:02:13+00:00",
+  "scope": "subtask",
+  "source": "hermes_oauth_usage_api",
+  "subtask_digest": "1bd33eb6b7da79a9a2848c43efc11290dcd8548870be20cddd43c6ed9f317eff",
+  "subtask_id": "m1e-06",
+  "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+  "task_intent": "Verify three-target interruption, timeout, collision, recovery, exact cleanup, concurrency isolation and preservation of unrelated resources with real bounded evidence"
+}

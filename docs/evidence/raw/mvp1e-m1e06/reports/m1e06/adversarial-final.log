@@ -1,0 +1,292 @@
+............F
+=================================== FAILURES ===================================
+_ test_persistent_timeout_service_and_sigkill_artifact[generic-aarch64-aarch64-3.10-m1a-init-aarch64.json] _
+
+runtime = <keemu.docker_runtime.DockerRuntime object at 0x77c38e811d00>
+identifier = '5b939d13ff24aeb90148de90d1c77e9190ce5be4551fd195fe3be3f8806c0d52'
+scenario = Scenario(schema_version=1, id='keemu-hello', profile='generic-aarch64', install=IPKInstall(kind='ipk', path='hello.ipk...ed_exit_code=0)), persistence=Persistence(paths=()), cleanup=Cleanup(allowed_residual_paths=('/opt/etc/keemu-count',)))
+
+    def _service_start(runtime: DockerRuntime, identifier: str, scenario: Scenario) -> None:
+        if scenario.service is None:
+            return
+        probe = scenario.service.readiness
+        if probe.vantage != "target_loopback" or probe.kind != "http":
+            raise PersistentError("service readiness vantage unsupported")
+        try:
+            _probe(runtime, identifier, probe)
+        except StageFailure as exc:
+            if exc.status != "FAIL" or not str(exc).startswith("HTTP connection refused:"):
+                raise PersistentError(f"service readiness failed: {exc}") from exc
+            output = runtime.exec(
+                identifier, list(scenario.service.start), allow_failure=True
+            )
+            if output.exit_code:
+                raise PersistentError(
+                    f"service start failed: exit={output.exit_code}"
+                ) from exc
+        try:
+>           _retry_probe(lambda: _probe(runtime, identifier, probe), probe.timeout_seconds)
+
+src/keemu/persistent.py:276: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/keemu/lifecycle.py:1206: in _retry_probe
+    return action()
+           ^^^^^^^^
+src/keemu/persistent.py:276: in <lambda>
+    _retry_probe(lambda: _probe(runtime, identifier, probe), probe.timeout_seconds)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = <keemu.docker_runtime.DockerRuntime object at 0x77c38e811d00>
+container = '5b939d13ff24aeb90148de90d1c77e9190ce5be4551fd195fe3be3f8806c0d52'
+probe = HTTPProbe(kind='http', vantage='target_loopback', url='http://127.0.0.1:18765/health', expected_status=(200,), body_contains='keemu-web-demo', ca_cert=None, timeout_seconds=5)
+
+    def _probe(runtime: DockerRuntime, container: str, probe) -> str:
+        if not isinstance(probe, (HTTPCheck, UDPCheck)):
+            # Service readiness is HTTPProbe, not HTTPCheck; test by kind.
+            if getattr(probe, "kind", None) not in {"http", "https", "udp"}:
+                raise StageFailure("BLOCKED", "environment", "unknown probe kind")
+        if probe.vantage != "target_loopback" or probe.kind != "http":
+            raise StageFailure(
+                "BLOCKED",
+                "environment",
+                f"{probe.kind}/{probe.vantage} requires a separate proven vantage/tool",
+            )
+        import urllib.parse
+    
+        parsed = urllib.parse.urlsplit(probe.url)
+        if parsed.hostname not in {"127.0.0.1", "localhost"}:
+            raise StageFailure(
+                "BLOCKED", "environment", "target HTTP endpoint must use loopback"
+            )
+        output = runtime.exec(
+            container,
+            ["/opt/bin/busybox", "wget", "-S", "-O", "-", probe.url],
+            timeout=min(probe.timeout_seconds, 600),
+            allow_failure=True,
+        )
+        if output.exit_code != 0:
+            stderr = output.stderr.decode("utf-8", "replace")
+            if "Connection refused" in stderr:
+>               raise StageFailure(
+                    "FAIL",
+                    "package",
+                    "HTTP connection refused: " + _output_evidence(output),
+                    output,
+                )
+E               keemu.lifecycle.StageFailure: HTTP connection refused: exit=1 stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 stderr_sha256=0312472e51e6d5ccb4f18c128a18d3a5fb49b8dea21fb458ef86c18c55226b6e stdout_bytes=0 stderr_bytes=115
+
+src/keemu/lifecycle.py:1148: StageFailure
+
+The above exception was the direct cause of the following exception:
+
+root = PosixPath('/opt/data/workspace/keemu')
+name = 'm1e06-service-b568200572b0'
+scenario_path = PosixPath('/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-aarch64-097e761417e6/inputs/scenario.yaml')
+lock_path = PosixPath('/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-aarch64-097e761417e6/inputs/scenario-lock.json')
+
+    def create(
+        root: Path, name: str, scenario_path: Path, lock_path: Path
+    ) -> PersistentEnvironment:
+        safe_name(name)
+        root = root.resolve()
+        with Registry(root / ".runtime/registry").locked(name) as entry:
+            if entry.directory.exists() or entry.directory.is_symlink():
+                raise RegistryError(f"environment already exists: {name}")
+            prepared = _prepare(root, scenario_path, lock_path)
+            scenario = prepared.scenario
+            record = PersistentEnvironment(
+                schema_version=1,
+                kind="persistent-environment",
+                name=name,
+                run_id="env-" + uuid4().hex,
+                state="creating",
+                scenario_id=scenario.id,
+                scenario_sha256=_hash(prepared.scenario_blob),
+                profile_id=scenario.profile,
+                profile_sha256=_hash(prepared.profile_blob),
+                lock_sha256=_hash(prepared.lock_blob),
+                oci_digest=prepared.image_id,
+                resource=None,
+            )
+            runtime = DockerRuntime(
+                record.run_id, record.oci_digest, target=prepared.target
+            )
+            initial = runtime.reconcile()
+            if initial["container_owned"] or initial["network_owned"]:
+                raise RegistryError("run ID already owns Docker resources")
+            entry.create(record, prepared.scenario_blob)
+            identifier = None
+            try:
+                identifier = runtime.create("keemu-" + record.run_id)
+                record = _transition(
+                    entry,
+                    record,
+                    "installing",
+                    resource=ResourceIdentity(
+                        container_id=identifier,
+                        owner_label="keemu",
+                        run_id_label=record.run_id,
+                    ),
+                )
+                runtime.start(identifier)
+                _install(runtime, identifier, prepared, root)
+                record = _transition(entry, record, "stopped")
+                # Container stays running when service/start readiness is evaluated.
+                record = _transition(entry, record, "starting")
+>               _service_start(runtime, identifier, scenario)
+
+src/keemu/persistent.py:440: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = <keemu.docker_runtime.DockerRuntime object at 0x77c38e811d00>
+identifier = '5b939d13ff24aeb90148de90d1c77e9190ce5be4551fd195fe3be3f8806c0d52'
+scenario = Scenario(schema_version=1, id='keemu-hello', profile='generic-aarch64', install=IPKInstall(kind='ipk', path='hello.ipk...ed_exit_code=0)), persistence=Persistence(paths=()), cleanup=Cleanup(allowed_residual_paths=('/opt/etc/keemu-count',)))
+
+    def _service_start(runtime: DockerRuntime, identifier: str, scenario: Scenario) -> None:
+        if scenario.service is None:
+            return
+        probe = scenario.service.readiness
+        if probe.vantage != "target_loopback" or probe.kind != "http":
+            raise PersistentError("service readiness vantage unsupported")
+        try:
+            _probe(runtime, identifier, probe)
+        except StageFailure as exc:
+            if exc.status != "FAIL" or not str(exc).startswith("HTTP connection refused:"):
+                raise PersistentError(f"service readiness failed: {exc}") from exc
+            output = runtime.exec(
+                identifier, list(scenario.service.start), allow_failure=True
+            )
+            if output.exit_code:
+                raise PersistentError(
+                    f"service start failed: exit={output.exit_code}"
+                ) from exc
+        try:
+            _retry_probe(lambda: _probe(runtime, identifier, probe), probe.timeout_seconds)
+        except StageFailure as exc:
+>           raise PersistentError(f"service readiness failed: {exc}") from exc
+E           keemu.persistent.PersistentError: service readiness failed: HTTP connection refused: exit=1 stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 stderr_sha256=0312472e51e6d5ccb4f18c128a18d3a5fb49b8dea21fb458ef86c18c55226b6e stdout_bytes=0 stderr_bytes=115
+
+src/keemu/persistent.py:278: PersistentError
+
+The above exception was the direct cause of the following exception:
+
+profile = 'generic-aarch64', target = 'aarch64-3.10'
+lock_name = 'm1a-init-aarch64.json'
+foreign = {'containers': {'0318fe186f68f053b60bc63d158bbbce896fd8cd3540091ead11641a6eed7a65': {'Id': '0318fe186f68f053b60bc63d15...7eceddcd2ea0fdd153e89fabf98b0ff4beda9b65155', '3ac5eff42b672e45031d0d14d7af80c0a9e4343fd8f9ffab3ab964a16951a29c', ...]}
+
+    @pytest.mark.parametrize(("profile", "target", "lock_name"), TARGETS)
+    def test_persistent_timeout_service_and_sigkill_artifact(
+        profile, target, lock_name, foreign
+    ):
+        directory = case_dir("persistent-script-" + profile)
+        source, lock = scenario(directory / "inputs", profile, target, service=True)
+        name = "m1e06-service-" + uuid4().hex[:12]
+>       created = create(ROOT, name, source, lock)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/integration/test_m1e06_adversarial.py:428: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/opt/data/workspace/keemu')
+name = 'm1e06-service-b568200572b0'
+scenario_path = PosixPath('/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-aarch64-097e761417e6/inputs/scenario.yaml')
+lock_path = PosixPath('/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-aarch64-097e761417e6/inputs/scenario-lock.json')
+
+    def create(
+        root: Path, name: str, scenario_path: Path, lock_path: Path
+    ) -> PersistentEnvironment:
+        safe_name(name)
+        root = root.resolve()
+        with Registry(root / ".runtime/registry").locked(name) as entry:
+            if entry.directory.exists() or entry.directory.is_symlink():
+                raise RegistryError(f"environment already exists: {name}")
+            prepared = _prepare(root, scenario_path, lock_path)
+            scenario = prepared.scenario
+            record = PersistentEnvironment(
+                schema_version=1,
+                kind="persistent-environment",
+                name=name,
+                run_id="env-" + uuid4().hex,
+                state="creating",
+                scenario_id=scenario.id,
+                scenario_sha256=_hash(prepared.scenario_blob),
+                profile_id=scenario.profile,
+                profile_sha256=_hash(prepared.profile_blob),
+                lock_sha256=_hash(prepared.lock_blob),
+                oci_digest=prepared.image_id,
+                resource=None,
+            )
+            runtime = DockerRuntime(
+                record.run_id, record.oci_digest, target=prepared.target
+            )
+            initial = runtime.reconcile()
+            if initial["container_owned"] or initial["network_owned"]:
+                raise RegistryError("run ID already owns Docker resources")
+            entry.create(record, prepared.scenario_blob)
+            identifier = None
+            try:
+                identifier = runtime.create("keemu-" + record.run_id)
+                record = _transition(
+                    entry,
+                    record,
+                    "installing",
+                    resource=ResourceIdentity(
+                        container_id=identifier,
+                        owner_label="keemu",
+                        run_id_label=record.run_id,
+                    ),
+                )
+                runtime.start(identifier)
+                _install(runtime, identifier, prepared, root)
+                record = _transition(entry, record, "stopped")
+                # Container stays running when service/start readiness is evaluated.
+                record = _transition(entry, record, "starting")
+                _service_start(runtime, identifier, scenario)
+                record = _transition(entry, record, "running")
+                return record
+            except Exception as exc:
+                cleanup_error = None
+                try:
+                    # Only the issued ID or one exact-name create-before-return
+                    # orphan qualifies. Never sweep a labelled run or a network.
+                    observed = runtime.reconcile()
+                    owned = observed["container_owned"]
+                    if (
+                        observed["network_owned"]
+                        or len(owned) > 1
+                        or (identifier is not None and owned and owned != [identifier])
+                    ):
+                        raise RegistryError("ambiguous resources after failed create")
+                    if owned:
+                        item = runtime.inspect("container", owned[0])
+                        if item.get("Name") != "/keemu-" + record.run_id:
+                            raise RegistryError("failed create container name mismatch")
+                        runtime.remove_container(owned[0])
+                    state = runtime.reconcile()
+                    if state["container_owned"] or state["network_owned"]:
+                        raise RegistryError("owned resources remain after failed create")
+                    if identifier is not None and identifier in DockerRuntime.listed_ids(
+                        "container"
+                    ):
+                        raise RegistryError("issued container remains after failed create")
+                except Exception as cleanup_exc:
+                    cleanup_error = cleanup_exc
+                try:
+                    _transition(entry, record, "failed")
+                except Exception as state_exc:
+                    raise PersistentError(
+                        f"create failed: {exc}; cleanup: {cleanup_error}; "
+                        f"registry: {state_exc}"
+                    ) from exc
+>               raise PersistentError(
+                    f"create failed: {exc}; cleanup: {cleanup_error or 'verified absent'}"
+                ) from exc
+E               keemu.persistent.PersistentError: create failed: service readiness failed: HTTP connection refused: exit=1 stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 stderr_sha256=0312472e51e6d5ccb4f18c128a18d3a5fb49b8dea21fb458ef86c18c55226b6e stdout_bytes=0 stderr_bytes=115; cleanup: verified absent
+
+src/keemu/persistent.py:477: PersistentError
+- generated xml file: /opt/data/workspace/keemu/reports/m1e06/adversarial-final.xml -
+=========================== short test summary info ============================
+FAILED tests/integration/test_m1e06_adversarial.py::test_persistent_timeout_service_and_sigkill_artifact[generic-aarch64-aarch64-3.10-m1a-init-aarch64.json]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 12 passed in 194.87s (0:03:14)

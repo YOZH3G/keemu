@@ -1,0 +1,8 @@
+{
+  "rejections": {
+    "duplicate": "duplicate JUnit case: probe.one",
+    "wrong_declared_count": "declared JUnit testcase count disagrees",
+    "wrong_failure_count": "declared JUnit status totals disagree"
+  },
+  "valid": "PASS"
+}

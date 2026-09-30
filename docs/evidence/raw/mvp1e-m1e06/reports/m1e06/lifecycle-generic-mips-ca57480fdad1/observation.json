@@ -1,0 +1,26 @@
+{
+  "exact_cleanup": true,
+  "foreign_preserved": true,
+  "profile": "generic-mips",
+  "reports": [
+    {
+      "case": "ipk-success",
+      "path": "/opt/data/workspace/keemu/reports/m1e06-ipk-1530c066123f/report.json",
+      "sha256": "1aa8ace466957235ea13146b258cef3706b766889c4ca78ac72772590e79d448",
+      "status": "PASS"
+    },
+    {
+      "case": "ipk-collision",
+      "path": "/opt/data/workspace/keemu/reports/m1e06-collision-fbf3521285bb/report.json",
+      "sha256": "056e111e1eb5fbc276dfb94cd8ce3354286bb0008d32e95adaa7f70bb7025562",
+      "status": "BLOCKED"
+    },
+    {
+      "case": "script-collision",
+      "path": "/opt/data/workspace/keemu/reports/m1e06/lifecycle-generic-mips-ca57480fdad1/script-reports/m1e06-collision-fbf3521285bb/report.json",
+      "sha256": "481cf8684b76525ff8ccce73a36c3b71ea7724f484e4c1fac6dadc61977de16e",
+      "status": "BLOCKED"
+    }
+  ],
+  "target": "mips-3.4"
+}

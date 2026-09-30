@@ -1,0 +1,15 @@
+{
+  "core_manifest": "docs/evidence/mvp1e-m1e06-adversarial.json",
+  "core_manifest_sha256": "8ec2a6dce775eddefe5d7b498adbe07d6cb17efc7b0c02116d401108bf974a00",
+  "git_retained_core_files_visible": 142,
+  "git_retained_supplement_files_visible": 3,
+  "high_confidence_secret_findings": 0,
+  "live_reports_still_ignored": true,
+  "preserved_verification_supplement_sha256": "1a4f18c1a29f1f1eb457699a09a8dc7d9371fadfaf4c70873010d3f5a251b449",
+  "publication_boundary": "supervisor stages, attests and commits after exact subtask marker",
+  "publication_ignore_rule": {
+    "path": "docs/evidence/raw/mvp1e-m1e06/.gitignore",
+    "sha256": "a7324975c6279625f46bd50bb82a99e97e7329c25150784e87fc4d4686369f24"
+  },
+  "verified_at": "2026-09-30T08:25:35.043812+00:00"
+}

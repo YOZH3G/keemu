@@ -1,0 +1,55 @@
+{
+  "automatic_artifact_recovery": "BLOCKED_not_implemented",
+  "container": "ddfd409c7a00b4fb2c9a3969efe6ca71ac7ffeba25a2377f0f35f27e1960fa6d",
+  "foreign_preserved": true,
+  "healthy_recover": "refused_no_artifact_adoption",
+  "name": "m1e06-service-5652667a83b9",
+  "persistent_SIGKILL": {
+    "container": "ddfd409c7a00b4fb2c9a3969efe6ca71ac7ffeba25a2377f0f35f27e1960fa6d",
+    "path": "/opt/tmp/keemu-script-65d5b25df7afed318a7e6e45f3c44999567308d0e80199782c0e54d8ff8b09aa-d73ad3d1e44bea6dce62c24f/script.sh"
+  },
+  "persistent_interrupted_report": "absent_no_PASS",
+  "production_down_destroy_tombstone": {
+    "kind": "persistent-environment",
+    "lock_sha256": "e28017598b6e8dda1ac65eb502b72a34bc40cde016f9f494024f2d584b39a77c",
+    "name": "m1e06-service-5652667a83b9",
+    "oci_digest": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+    "profile_id": "generic-aarch64",
+    "profile_sha256": "31f8eb5f1957a5047b7e776925238f9419308681635e8008f40a81deda2824c5",
+    "resource": {
+      "container_id": "ddfd409c7a00b4fb2c9a3969efe6ca71ac7ffeba25a2377f0f35f27e1960fa6d",
+      "owner_label": "keemu",
+      "run_id_label": "env-ca07a31ec1de49009f0ecbba96555e37"
+    },
+    "run_id": "env-ca07a31ec1de49009f0ecbba96555e37",
+    "scenario_id": "keemu-hello",
+    "scenario_sha256": "8288f26e07c72f85d6b07b4140b3c06d241746467c0737aa3c91d4c47d434f03",
+    "schema_version": 1,
+    "state": "destroyed"
+  },
+  "profile": "generic-aarch64",
+  "reports": [
+    {
+      "case": "streams.sh",
+      "exact_target_cleanup": true,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-aarch64-d89594cccaee/reports/script-exec-474a0def3845405f8620960bbdfcf712/report.json",
+      "process_tree_clean": true,
+      "sha256": "3dc0175a91103842e8ea7be1b93aabb30dd79f6adfc6ed4227a3c42cd6ea37f0",
+      "status": "PASS"
+    },
+    {
+      "case": "timeout-process.sh",
+      "exact_target_cleanup": true,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-aarch64-d89594cccaee/reports/script-exec-8b936a572d5f425eb0f8764830b35f1f/report.json",
+      "process_tree_clean": true,
+      "sha256": "f0ea5efb0854329b24070d16b0b1e569eb76dcec8528fb525bb2493f3edd1e5e",
+      "status": "FAIL"
+    }
+  ],
+  "same_name_concurrency": "busy",
+  "service_and_postinst_preserved": true,
+  "service_pid": "160",
+  "target": "aarch64-3.10",
+  "unrelated_pid": 185,
+  "worker_returncode": -9
+}

@@ -1,0 +1,26 @@
+{
+  "exact_cleanup": true,
+  "foreign_preserved": true,
+  "profile": "generic-mipsel",
+  "reports": [
+    {
+      "case": "ipk-success",
+      "path": "/opt/data/workspace/keemu/reports/m1e06-ipk-f1933bdfa54d/report.json",
+      "sha256": "bcfff2af75d132bf46263850c7ad6ed2dac4b61f81c99fb16c33424baa077373",
+      "status": "PASS"
+    },
+    {
+      "case": "ipk-collision",
+      "path": "/opt/data/workspace/keemu/reports/m1e06-collision-e34bffee0432/report.json",
+      "sha256": "20b8d9a73f1eb7828965a225f6e95a90426587093e855f11b7f9acabbdc89347",
+      "status": "BLOCKED"
+    },
+    {
+      "case": "script-collision",
+      "path": "/opt/data/workspace/keemu/reports/m1e06/lifecycle-generic-mipsel-4dddb48b966c/script-reports/m1e06-collision-e34bffee0432/report.json",
+      "sha256": "40629e0afd93babf3296ae4b6b474a52e47a1f94b1cb819499b731795accde9b",
+      "status": "BLOCKED"
+    }
+  ],
+  "target": "mipsel-3.4"
+}

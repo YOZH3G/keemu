@@ -1,0 +1,172 @@
+{
+  "artifact": {
+    "architecture": "mips",
+    "id": "keemu-hello",
+    "kind": "ipk",
+    "sha256": "9ef292b17e1825e6212d81e95b8d1cfbc1b7523cfc2d01de500c469a9dab8ed0",
+    "source": "project-test-fixture",
+    "version": "1.0"
+  },
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "scenario, profile, IPK and base hashes matched"
+      ],
+      "id": "input-lock",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "static inspection failed: architecture"
+      ],
+      "id": "inspect",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "no Docker resources allocated by this run"
+      ],
+      "id": "cleanup",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    }
+  ],
+  "coverage": {
+    "blocked": 0,
+    "errors": 0,
+    "failed": 1,
+    "passed": 2,
+    "required": 3,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-29T12:49:54.410254+00:00",
+  "limitations": [
+    "No persistent registry; Docker-host/client vantage, target HTTPS and UDP not implemented in this slice",
+    "Postinst is run only by opkg; independent postinst exit/count not claimed",
+    "Docker diff is metadata-only; byte-identical residuals and socket closure are not proven by it",
+    "Only opkg's exact observed scratch bookkeeping entries are exempt from residual comparison"
+  ],
+  "operation": "test",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.408860+00:00",
+      "cwd": null,
+      "duration_seconds": 0.006264562252908945,
+      "exit_code": null,
+      "operation": "validate",
+      "sequence": 1,
+      "started_at": "2026-09-29T12:49:54.402583+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.409146+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0002392609603703022,
+      "exit_code": null,
+      "operation": "stage-local",
+      "sequence": 2,
+      "started_at": "2026-09-29T12:49:54.408911+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.410070+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0008761407807469368,
+      "exit_code": null,
+      "operation": "inspect",
+      "sequence": 3,
+      "started_at": "2026-09-29T12:49:54.409197+00:00",
+      "status": "FAIL",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-29T12:49:54.410166+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup",
+      "sequence": 4,
+      "started_at": "2026-09-29T12:49:54.410160+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "FAIL",
+  "partial_failure": {
+    "cause_class": "package",
+    "cleanup_attempted": true,
+    "cleanup_status": "PASS",
+    "interrupted": false,
+    "message": "static inspection failed: architecture",
+    "operation": "inspect",
+    "operation_sequence": 3,
+    "preserved_artifacts": [
+      "/opt/data/workspace/keemu/reports/test-eae3d520d23043e3a27c0ba344cf1316/report.json"
+    ],
+    "status": "FAIL"
+  },
+  "profile": {
+    "id": "generic-mips",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": "d80853a851daa5ebaa378e2481595e604cb853a74f227cccba0abbcb4c664257"
+  },
+  "run_id": "test-eae3d520d23043e3a27c0ba344cf1316",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "mips-3.4",
+    "feed_lock_sha256": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": {
+    "id": "keemu-hello",
+    "schema_version": 1,
+    "sha256": "3f31055e03ff646a1710bba81732c164169e8fc38ecee03a30fabcac1ea93402",
+    "source": "/opt/data/workspace/keemu/.runtime/m1e03-glugwz4n/scenario.yaml"
+  },
+  "schema_version": 2,
+  "script": null,
+  "substitutions": []
+}

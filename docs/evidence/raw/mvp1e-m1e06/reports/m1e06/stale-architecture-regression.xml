@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="30.496" timestamp="2026-09-30T07:57:31.033914+00:00" hostname="a362dc49f043"><testcase classname="tests.integration.test_script_lifecycle" name="test_mips_script_contract_truthfully_blocked_without_docker_mutation[generic-mips-mips-3.4]" time="14.927"><failure message="AssertionError: assert 'PASS' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + PASS">tmp_path = PosixPath('/opt/data/cache/scratch/m1e06-stale-regression/test_mips_script_contract_trut0')
+profile = 'generic-mips', target = 'mips-3.4'
+
+    @pytest.mark.docker
+    @pytest.mark.parametrize(
+        ("profile", "target"),
+        (("generic-mips", "mips-3.4"), ("generic-mipsel", "mipsel-3.4")),
+    )
+    def test_mips_script_contract_truthfully_blocked_without_docker_mutation(
+        tmp_path: Path, profile: str, target: str
+    ) -&gt; None:
+        if os.getenv("KEEMU_TEST_SCRIPT_ARCHITECTURES") != "1":
+            pytest.skip(
+                "opt in to MIPS/MIPSEL script capability and Docker isolation readback"
+            )
+    
+        def snapshot(kind: str) -&gt; set[str]:
+            command = (
+                ["docker", "ps", "-aq"]
+                if kind == "container"
+                else ["docker", "network", "ls", "-q"]
+            )
+            output = subprocess.run(  # noqa: S603
+                command, capture_output=True, check=True, timeout=30
+            ).stdout
+            return set(output.decode().splitlines())
+    
+        before = (snapshot("container"), snapshot("network"))
+        run_id = "m1d10-" + uuid.uuid4().hex[:12]
+        result = run_one_shot_script(
+            "fixtures/scripts/mvp1d/success.sh",
+            project_root=ROOT,
+            profile_id=profile,
+            run_id=run_id,
+            report_root=tmp_path,
+        )
+&gt;       assert result.script.status == result.report.overall == "BLOCKED"
+E       AssertionError: assert 'PASS' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASS
+
+tests/integration/test_script_lifecycle.py:419: AssertionError</failure></testcase><testcase classname="tests.integration.test_script_lifecycle" name="test_mips_script_contract_truthfully_blocked_without_docker_mutation[generic-mipsel-mipsel-3.4]" time="15.006"><failure message="AssertionError: assert 'PASS' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + PASS">tmp_path = PosixPath('/opt/data/cache/scratch/m1e06-stale-regression/test_mips_script_contract_trut1')
+profile = 'generic-mipsel', target = 'mipsel-3.4'
+
+    @pytest.mark.docker
+    @pytest.mark.parametrize(
+        ("profile", "target"),
+        (("generic-mips", "mips-3.4"), ("generic-mipsel", "mipsel-3.4")),
+    )
+    def test_mips_script_contract_truthfully_blocked_without_docker_mutation(
+        tmp_path: Path, profile: str, target: str
+    ) -&gt; None:
+        if os.getenv("KEEMU_TEST_SCRIPT_ARCHITECTURES") != "1":
+            pytest.skip(
+                "opt in to MIPS/MIPSEL script capability and Docker isolation readback"
+            )
+    
+        def snapshot(kind: str) -&gt; set[str]:
+            command = (
+                ["docker", "ps", "-aq"]
+                if kind == "container"
+                else ["docker", "network", "ls", "-q"]
+            )
+            output = subprocess.run(  # noqa: S603
+                command, capture_output=True, check=True, timeout=30
+            ).stdout
+            return set(output.decode().splitlines())
+    
+        before = (snapshot("container"), snapshot("network"))
+        run_id = "m1d10-" + uuid.uuid4().hex[:12]
+        result = run_one_shot_script(
+            "fixtures/scripts/mvp1d/success.sh",
+            project_root=ROOT,
+            profile_id=profile,
+            run_id=run_id,
+            report_root=tmp_path,
+        )
+&gt;       assert result.script.status == result.report.overall == "BLOCKED"
+E       AssertionError: assert 'PASS' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASS
+
+tests/integration/test_script_lifecycle.py:419: AssertionError</failure></testcase></testsuite></testsuites>

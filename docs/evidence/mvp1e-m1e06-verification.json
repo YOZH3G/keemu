@@ -1,0 +1,36 @@
+{
+  "core_retained_artifacts": 142,
+  "final_portable": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 353,
+    "SKIP": 84
+  },
+  "manifest_sha256": "8ec2a6dce775eddefe5d7b498adbe07d6cb17efc7b0c02116d401108bf974a00",
+  "negative_manifest_probes": {
+    "actual_errors": {
+      "count": "wrong JUnit counts: reports/m1e06/adversarial-boundaries.xml",
+      "hash": "evidence hash mismatch: tests/integration/test_m1e06_adversarial.py",
+      "promotion": "predecessor blocker promoted"
+    },
+    "wrong_count_wrong_hash_blocker_promotion": "all rejected"
+  },
+  "read_only_validator": "PASS",
+  "subtask": "m1e-06",
+  "supplemental_artifacts": {
+    "reports/m1e06/manifest-validator-probes.json": {
+      "retained": "docs/evidence/raw/mvp1e-m1e06/supplemental/manifest-validator-probes.json",
+      "sha256": "fd099a0786771dfa5a5f118b8efffdc38486acc1b7cada2da23c1268d17876fe"
+    },
+    "reports/m1e06/portable-final.log": {
+      "retained": "docs/evidence/raw/mvp1e-m1e06/supplemental/portable-final.log",
+      "sha256": "7863e9aa5bd7f011aa38a4f4589af0452c1538a0883a246346fc165ab4e1aa54"
+    },
+    "reports/m1e06/portable-final.xml": {
+      "retained": "docs/evidence/raw/mvp1e-m1e06/supplemental/portable-final.xml",
+      "sha256": "e5f1944f647747b27bc83e13f44316cd1e48c058e64ce872825c6d6c4a0776e4"
+    }
+  },
+  "typed_reports": 47,
+  "verified_at": "2026-09-30T08:10:53.938355+00:00"
+}

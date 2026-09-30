@@ -1,0 +1,26 @@
+{
+  "exact_cleanup": true,
+  "foreign_preserved": true,
+  "profile": "generic-aarch64",
+  "reports": [
+    {
+      "case": "ipk-success",
+      "path": "/opt/data/workspace/keemu/reports/m1e06-ipk-6486a24733f0/report.json",
+      "sha256": "fc084e9d8861262eaf7a0f36bf151da69e3406bc7af57e08e8284e6af53f899d",
+      "status": "PASS"
+    },
+    {
+      "case": "ipk-collision",
+      "path": "/opt/data/workspace/keemu/reports/m1e06-collision-ea206e7698e3/report.json",
+      "sha256": "6f1ff297d999771487de8fdf2d3591adb2b238f189aeb613bd4f3d7c2f0bcf23",
+      "status": "BLOCKED"
+    },
+    {
+      "case": "script-collision",
+      "path": "/opt/data/workspace/keemu/reports/m1e06/lifecycle-generic-aarch64-76b570d55fe6/script-reports/m1e06-collision-ea206e7698e3/report.json",
+      "sha256": "2b0ba23cea3e3547171f7eb91b3aef48e5513919f6d9894c16cbcced86f64047",
+      "status": "BLOCKED"
+    }
+  ],
+  "target": "aarch64-3.10"
+}

@@ -1,0 +1,9 @@
+{
+  "billing_provider": "openai-codex",
+  "model": "gpt-6.1-sol",
+  "reasoning_config": {
+    "effort": "xhigh",
+    "enabled": true
+  },
+  "session_id": "20260930_065401_5153d2"
+}

@@ -1,0 +1,29 @@
+{
+  "reason": "terminal tool timeout at 420s; no JUnit completed; prior dots not counted as verified tests",
+  "resources": [
+    {
+      "id": "5949e01068ebba9f22c053fb00eff0aa5b8457379e2142830b2a0e4af72f574d",
+      "labels": {
+        "org.keemu.base-image": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+        "org.keemu.init-binary-sha256": "bc5b12e9c4ec40ee54ae8d868bdec844f773545eae0f31f938938da6e2ab3a8a",
+        "org.keemu.kind": "container",
+        "org.keemu.native": "linux/amd64",
+        "org.keemu.owner": "keemu",
+        "org.keemu.package-lock-sha256": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+        "org.keemu.phase": "m1e-01",
+        "org.keemu.rootfs-sha256": "4c06687da6f756ada50b4bc870928dd0127952923aa4ebd137f9c67c4a93d82d",
+        "org.keemu.run-id": "m1e06-outcome-7214d882eb7a",
+        "org.keemu.target": "mips-3.4"
+      },
+      "name": "/keemu-m1e06-outcome-7214d882eb7a",
+      "removed_and_absent": true,
+      "scope": "explicit_test_owned_not_production"
+    },
+    {
+      "container": "bd49e14e63a697dc175a07233f0b56177ac5a6a821398b0e9e86dd905e298354",
+      "network": "25433b507064aea542bf10590c019358fb28571a3dbc4a1a463884ddfbf0a8ea",
+      "removed_absent": true,
+      "run": "m1e06-foreign-fe3665de20cf"
+    }
+  ]
+}

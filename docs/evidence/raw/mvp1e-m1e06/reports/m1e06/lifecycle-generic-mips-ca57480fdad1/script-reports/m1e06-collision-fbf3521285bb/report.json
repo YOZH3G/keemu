@@ -1,0 +1,124 @@
+{
+  "artifact": null,
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "environment",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "target execution and owned cleanup classified; raw streams withheld"
+      ],
+      "id": "script",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "BLOCKED"
+    }
+  ],
+  "coverage": {
+    "blocked": 1,
+    "errors": 0,
+    "failed": 0,
+    "passed": 0,
+    "required": 1,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-30T07:28:12.662804+00:00",
+  "limitations": [
+    "Userspace execution does not establish physical Keenetic compatibility"
+  ],
+  "operation": "script",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:12.662394+00:00",
+      "cwd": null,
+      "duration_seconds": 0.3281615390442312,
+      "exit_code": null,
+      "operation": "capability",
+      "sequence": 1,
+      "started_at": "2026-09-30T07:28:12.334237+00:00",
+      "status": "BLOCKED",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "BLOCKED",
+  "partial_failure": {
+    "cause_class": "environment",
+    "cleanup_attempted": false,
+    "cleanup_status": "PASS",
+    "interrupted": false,
+    "message": "DockerBoundaryError",
+    "operation": "capability",
+    "operation_sequence": 1,
+    "preserved_artifacts": [
+      "/opt/data/workspace/keemu/reports/m1e06/lifecycle-generic-mips-ca57480fdad1/script-reports/m1e06-collision-fbf3521285bb/report.json"
+    ],
+    "status": "BLOCKED"
+  },
+  "profile": {
+    "id": "generic-mips",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": "d80853a851daa5ebaa378e2481595e604cb853a74f227cccba0abbcb4c664257"
+  },
+  "run_id": "m1e06-collision-fbf3521285bb",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "mips-3.4",
+    "feed_lock_sha256": "00fb78ea7199f2d10d0c6f31220c8ce18be3ba69df83e7c45f1c3910b76289d6",
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": null,
+  "schema_version": 2,
+  "script": {
+    "assertions": [],
+    "cleanup": [],
+    "execution": {
+      "architecture": "mips-3.4",
+      "argv": [],
+      "container_id": null,
+      "cwd": "/opt",
+      "image_id": "sha256:a3dea513c8dc6fa7dbfd7a899e976f1ef2b49dc37aa372e66b4c2416952bb8c7",
+      "interpreter": "/bin/sh",
+      "mode": "one-shot",
+      "profile_id": "generic-mips",
+      "profile_revision": 1,
+      "sha256": "65d5b25df7afed318a7e6e45f3c44999567308d0e80199782c0e54d8ff8b09aa",
+      "source": "fixtures/scripts/mvp1d/success.sh",
+      "target_path": null,
+      "timeout_seconds": 60
+    },
+    "outcome": {
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "process_tree_clean": false,
+      "state": "blocked",
+      "stderr": {
+        "byte_count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "truncated": false
+      },
+      "stdout": {
+        "byte_count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "truncated": false
+      },
+      "timed_out": false
+    },
+    "status": "BLOCKED"
+  },
+  "substitutions": []
+}

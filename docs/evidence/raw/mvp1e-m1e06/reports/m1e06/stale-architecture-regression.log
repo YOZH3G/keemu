@@ -1,0 +1,97 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_mips_script_contract_truthfully_blocked_without_docker_mutation[generic-mips-mips-3.4] _
+
+tmp_path = PosixPath('/opt/data/cache/scratch/m1e06-stale-regression/test_mips_script_contract_trut0')
+profile = 'generic-mips', target = 'mips-3.4'
+
+    @pytest.mark.docker
+    @pytest.mark.parametrize(
+        ("profile", "target"),
+        (("generic-mips", "mips-3.4"), ("generic-mipsel", "mipsel-3.4")),
+    )
+    def test_mips_script_contract_truthfully_blocked_without_docker_mutation(
+        tmp_path: Path, profile: str, target: str
+    ) -> None:
+        if os.getenv("KEEMU_TEST_SCRIPT_ARCHITECTURES") != "1":
+            pytest.skip(
+                "opt in to MIPS/MIPSEL script capability and Docker isolation readback"
+            )
+    
+        def snapshot(kind: str) -> set[str]:
+            command = (
+                ["docker", "ps", "-aq"]
+                if kind == "container"
+                else ["docker", "network", "ls", "-q"]
+            )
+            output = subprocess.run(  # noqa: S603
+                command, capture_output=True, check=True, timeout=30
+            ).stdout
+            return set(output.decode().splitlines())
+    
+        before = (snapshot("container"), snapshot("network"))
+        run_id = "m1d10-" + uuid.uuid4().hex[:12]
+        result = run_one_shot_script(
+            "fixtures/scripts/mvp1d/success.sh",
+            project_root=ROOT,
+            profile_id=profile,
+            run_id=run_id,
+            report_root=tmp_path,
+        )
+>       assert result.script.status == result.report.overall == "BLOCKED"
+E       AssertionError: assert 'PASS' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASS
+
+tests/integration/test_script_lifecycle.py:419: AssertionError
+_ test_mips_script_contract_truthfully_blocked_without_docker_mutation[generic-mipsel-mipsel-3.4] _
+
+tmp_path = PosixPath('/opt/data/cache/scratch/m1e06-stale-regression/test_mips_script_contract_trut1')
+profile = 'generic-mipsel', target = 'mipsel-3.4'
+
+    @pytest.mark.docker
+    @pytest.mark.parametrize(
+        ("profile", "target"),
+        (("generic-mips", "mips-3.4"), ("generic-mipsel", "mipsel-3.4")),
+    )
+    def test_mips_script_contract_truthfully_blocked_without_docker_mutation(
+        tmp_path: Path, profile: str, target: str
+    ) -> None:
+        if os.getenv("KEEMU_TEST_SCRIPT_ARCHITECTURES") != "1":
+            pytest.skip(
+                "opt in to MIPS/MIPSEL script capability and Docker isolation readback"
+            )
+    
+        def snapshot(kind: str) -> set[str]:
+            command = (
+                ["docker", "ps", "-aq"]
+                if kind == "container"
+                else ["docker", "network", "ls", "-q"]
+            )
+            output = subprocess.run(  # noqa: S603
+                command, capture_output=True, check=True, timeout=30
+            ).stdout
+            return set(output.decode().splitlines())
+    
+        before = (snapshot("container"), snapshot("network"))
+        run_id = "m1d10-" + uuid.uuid4().hex[:12]
+        result = run_one_shot_script(
+            "fixtures/scripts/mvp1d/success.sh",
+            project_root=ROOT,
+            profile_id=profile,
+            run_id=run_id,
+            report_root=tmp_path,
+        )
+>       assert result.script.status == result.report.overall == "BLOCKED"
+E       AssertionError: assert 'PASS' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASS
+
+tests/integration/test_script_lifecycle.py:419: AssertionError
+- generated xml file: /opt/data/workspace/keemu/reports/m1e06/stale-architecture-regression.xml -
+=========================== short test summary info ============================
+FAILED tests/integration/test_script_lifecycle.py::test_mips_script_contract_truthfully_blocked_without_docker_mutation[generic-mips-mips-3.4]
+FAILED tests/integration/test_script_lifecycle.py::test_mips_script_contract_truthfully_blocked_without_docker_mutation[generic-mipsel-mipsel-3.4]
+2 failed, 4 deselected in 30.51s

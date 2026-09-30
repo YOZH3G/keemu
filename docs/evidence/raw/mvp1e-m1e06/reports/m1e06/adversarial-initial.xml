@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="21.021" timestamp="2026-09-30T07:06:55.759056+00:00" hostname="a362dc49f043"><testcase classname="tests.integration.test_m1e06_adversarial" name="test_stage_mutation_collision_exact_retry[generic-aarch64-aarch64-3.10-m1a-init-aarch64.json]" time="20.355"><failure message="AssertionError: ('networks', '90e918c82521de48547fc47262e7a02c4f79f89a84012ce4b358c539699f898d')">profile = 'generic-aarch64', target = 'aarch64-3.10'
+lock_name = 'm1a-init-aarch64.json'
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x718f3616af00&gt;
+foreign = {'containers': {'0318fe186f68f053b60bc63d158bbbce896fd8cd3540091ead11641a6eed7a65': {'Id': '0318fe186f68f053b60bc63d15...7eceddcd2ea0fdd153e89fabf98b0ff4beda9b65155', '3ac5eff42b672e45031d0d14d7af80c0a9e4343fd8f9ffab3ab964a16951a29c', ...]}
+
+    @pytest.mark.parametrize(("profile", "target", "lock_name"), TARGETS)
+    def test_stage_mutation_collision_exact_retry(
+        profile, target, lock_name, monkeypatch, foreign
+    ):
+        directory = case_dir("stage-" + profile)
+        runtime = DockerRuntime(
+            "m1e06-stage-" + uuid4().hex[:12], pin(profile)["oci_digest"], target=target
+        )
+        identifier = runtime.create("keemu-" + runtime.run_id)
+        try:
+            runtime.start(identifier)
+            host = runtime.inspect("container", identifier)["HostConfig"]
+            assert host["NetworkMode"] == "none" and not host["Privileged"]
+            assert not host["PidMode"] and not host.get("Binds")
+            assert not host.get("Mounts") and not host.get("CapAdd")
+            assert not host.get("PortBindings") and "ALL" in host["CapDrop"]
+            source_path = directory / "source.sh"
+            original = b"#!/bin/sh\nprintf 'checked-input\\n'\n"
+            source_path.write_bytes(original)
+            source = ScriptInput.validate(source_path, project_root=ROOT)
+            replacement = directory / "replacement.sh"
+            replacement.write_bytes(original)
+            os.replace(replacement, source_path)
+            with pytest.raises(ScriptInputChanged):
+                source.recheck_for_staging()
+            source = ScriptInput.validate(source_path, project_root=ROOT)
+            stager = ScriptStager(runtime)
+            original_identity = stager._identity
+            changed = False
+    
+            def mutate_after_recheck(container, path, *, directory):
+                nonlocal changed
+                if path == "/opt/tmp" and not changed:
+                    changed = True
+                    source_path.write_bytes(b"#!/bin/sh\nexit 99\n")
+                return original_identity(container, path, directory=directory)
+    
+            with monkeypatch.context() as scoped:
+                scoped.setattr("keemu.script_stage.secrets.token_hex", lambda _: "a" * 24)
+                scoped.setattr(stager, "_identity", mutate_after_recheck)
+                staged = stager.stage(source, identifier)
+                assert changed and staged.sha256 == digest(original)
+                stager.verify(staged)
+                with pytest.raises(ScriptInputChanged):
+                    source.recheck_for_staging()
+                source_path.write_bytes(original)
+                with pytest.raises(DockerBoundaryError):
+                    stager.stage(
+                        ScriptInput.validate(source_path, project_root=ROOT), identifier
+                    )
+                stager.verify(staged)
+            original_exec = stager._exec
+    
+            def refuse(container, command, *args, **kwargs):
+                if 'rm -- "$file"' in command:
+                    raise DockerBoundaryError("injected exact target cleanup refusal")
+                return original_exec(container, command, *args, **kwargs)
+    
+            with monkeypatch.context() as scoped:
+                scoped.setattr(stager, "_exec", refuse)
+                assert not stager.cleanup(staged).success
+            stager.verify(staged)
+            assert stager.cleanup(staged).success
+            assert (
+                runtime.exec(
+                    identifier,
+                    ["/opt/bin/busybox", "test", "-e", staged.path],
+                    allow_failure=True,
+                ).exit_code
+                == 1
+            )
+            replaced = stager.stage(
+                ScriptInput.validate(source_path, project_root=ROOT), identifier
+            )
+            parent = replaced.path.rsplit("/", 1)[0]
+            runtime.exec(
+                identifier,
+                [
+                    "/bin/sh",
+                    "-c",
+                    'printf foreign &gt; "$1"; /opt/bin/busybox mv -- "$1" "$2"',
+                    "test-owned",
+                    parent + "/replacement",
+                    replaced.path,
+                ],
+            )
+            assert not stager.cleanup(replaced).success
+            assert (
+                runtime.exec(identifier, ["/opt/bin/busybox", "cat", replaced.path]).stdout
+                == b"foreign"
+            )
+&gt;           preserve(foreign)
+
+tests/integration/test_m1e06_adversarial.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+old = {'containers': {'0318fe186f68f053b60bc63d158bbbce896fd8cd3540091ead11641a6eed7a65': {'Id': '0318fe186f68f053b60bc63d15...7eceddcd2ea0fdd153e89fabf98b0ff4beda9b65155', '3ac5eff42b672e45031d0d14d7af80c0a9e4343fd8f9ffab3ab964a16951a29c', ...]}
+
+    def preserve(old: dict) -&gt; None:
+        current = snapshot()
+        for kind in ("containers", "networks"):
+            for identifier, item in old[kind].items():
+&gt;               assert current[kind][identifier] == item, (kind, identifier)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AssertionError: ('networks', '90e918c82521de48547fc47262e7a02c4f79f89a84012ce4b358c539699f898d')
+
+tests/integration/m1e06_support.py:84: AssertionError</failure></testcase></testsuite></testsuites>

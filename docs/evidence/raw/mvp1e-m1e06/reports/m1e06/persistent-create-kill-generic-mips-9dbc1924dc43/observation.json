@@ -1,0 +1,48 @@
+{
+  "phases": [
+    {
+      "ambiguous_extra": "refused_preserved",
+      "container": "beee116af99c1d5aa860c33b253704589c23aef5ea499655a931b7ec55a71f34",
+      "foreign_preserved": true,
+      "idempotent": true,
+      "name": "m1e06-create-14aa060b7757",
+      "per_name_lock": "busy",
+      "phase": "creating",
+      "production_recovery": {
+        "name": "m1e06-create-14aa060b7757",
+        "removed": [
+          "beee116af99c1d5aa860c33b253704589c23aef5ea499655a931b7ec55a71f34"
+        ],
+        "retry": false,
+        "state": "destroyed"
+      },
+      "removal_error": "retained_transitional_state_then_retry",
+      "run_id": "env-c5b8d09ce530432490e124d5e625158f",
+      "tombstone_consistent": true,
+      "worker_returncode": -9
+    },
+    {
+      "ambiguous_extra": "refused_preserved",
+      "container": "2f6f64a1ae74473c69e52edb7bfeee9b56306ccef7d7d58c0f66ea0e4b799e80",
+      "foreign_preserved": true,
+      "idempotent": true,
+      "name": "m1e06-create-f545eeecfdb7",
+      "per_name_lock": "busy",
+      "phase": "installing",
+      "production_recovery": {
+        "name": "m1e06-create-f545eeecfdb7",
+        "removed": [
+          "2f6f64a1ae74473c69e52edb7bfeee9b56306ccef7d7d58c0f66ea0e4b799e80"
+        ],
+        "retry": false,
+        "state": "destroyed"
+      },
+      "removal_error": "retained_transitional_state_then_retry",
+      "run_id": "env-bf85b2b99fb846368d6b52e39bd58a49",
+      "tombstone_consistent": true,
+      "worker_returncode": -9
+    }
+  ],
+  "profile": "generic-mips",
+  "target": "mips-3.4"
+}

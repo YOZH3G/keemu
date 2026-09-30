@@ -1,0 +1,55 @@
+{
+  "automatic_artifact_recovery": "BLOCKED_not_implemented",
+  "container": "809e662b04b95bd037b47f6cb66e355c22ad1525044d33e9e0d5bfb34be8598e",
+  "foreign_preserved": true,
+  "healthy_recover": "refused_no_artifact_adoption",
+  "name": "m1e06-service-a5ee0d75906d",
+  "persistent_SIGKILL": {
+    "container": "809e662b04b95bd037b47f6cb66e355c22ad1525044d33e9e0d5bfb34be8598e",
+    "path": "/opt/tmp/keemu-script-65d5b25df7afed318a7e6e45f3c44999567308d0e80199782c0e54d8ff8b09aa-e2ed23fb3c34498b98c69de0/script.sh"
+  },
+  "persistent_interrupted_report": "absent_no_PASS",
+  "production_down_destroy_tombstone": {
+    "kind": "persistent-environment",
+    "lock_sha256": "7de1fd84808d31531665d64aa9647ad00046423bb2b3e50e9a53bcb9b112b58d",
+    "name": "m1e06-service-a5ee0d75906d",
+    "oci_digest": "sha256:44f1e4382b1546f454ed6602212effff860c5aaadcf03d513ceae506ce6abe74",
+    "profile_id": "generic-mipsel",
+    "profile_sha256": "6b80d1ee6ec39ffb0d99c1031d5d144383097db1b03a8c89bb5be5cefecf3e3b",
+    "resource": {
+      "container_id": "809e662b04b95bd037b47f6cb66e355c22ad1525044d33e9e0d5bfb34be8598e",
+      "owner_label": "keemu",
+      "run_id_label": "env-d9a00a35854249bf87530172ad9f0edc"
+    },
+    "run_id": "env-d9a00a35854249bf87530172ad9f0edc",
+    "scenario_id": "keemu-hello",
+    "scenario_sha256": "78e2f4c26cfdcd610397bb8538097706a2a843f59e74ed672338fc0e797c87c2",
+    "schema_version": 1,
+    "state": "destroyed"
+  },
+  "profile": "generic-mipsel",
+  "reports": [
+    {
+      "case": "streams.sh",
+      "exact_target_cleanup": true,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-mipsel-95910e8b09d5/reports/script-exec-3a7a12a8829c4677b0f0213c11a88756/report.json",
+      "process_tree_clean": true,
+      "sha256": "a8d4a0adc04012421e9e8db726e568dc5c2d97d9352e46727764cc01c80897a5",
+      "status": "PASS"
+    },
+    {
+      "case": "timeout-process.sh",
+      "exact_target_cleanup": true,
+      "path": "/opt/data/workspace/keemu/reports/m1e06/persistent-script-generic-mipsel-95910e8b09d5/reports/script-exec-c1440007f2bd43a4aa8f0ebdf93a98f1/report.json",
+      "process_tree_clean": true,
+      "sha256": "770f148762ecf427c45cf48693b8ea1370b6dc8804928a85e15c707b3413fd31",
+      "status": "FAIL"
+    }
+  ],
+  "same_name_concurrency": "busy",
+  "service_and_postinst_preserved": true,
+  "service_pid": "155",
+  "target": "mipsel-3.4",
+  "unrelated_pid": 179,
+  "worker_returncode": -9
+}

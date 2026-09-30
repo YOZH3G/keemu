@@ -1,0 +1,228 @@
+{
+  "artifact": {
+    "architecture": "aarch64",
+    "id": "keemu-hello",
+    "kind": "ipk",
+    "sha256": "cc1a8e6e2994f6a182ffdc63298908672fd55de78a54321218cf646d1726a0b2",
+    "source": "project-test-fixture",
+    "version": "1.0"
+  },
+  "capabilities": [],
+  "checks": [
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "scenario, profile, IPK and base hashes matched"
+      ],
+      "id": "input-lock",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "status=PASS; findings="
+      ],
+      "id": "static-inspection",
+      "limitations": [],
+      "mode": "static",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "offline cache and Docker image verified"
+      ],
+      "id": "base-capability",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "cause_class": "environment",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "run ID already owns Docker resources"
+      ],
+      "id": "create",
+      "limitations": [
+        "run ID already owns Docker resources"
+      ],
+      "mode": "real",
+      "required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "cause_class": "package",
+      "duration_seconds": 0.0,
+      "evidence": [
+        "no Docker resources allocated by this run"
+      ],
+      "id": "cleanup",
+      "limitations": [],
+      "mode": "real",
+      "required": true,
+      "status": "PASS"
+    }
+  ],
+  "coverage": {
+    "blocked": 1,
+    "errors": 0,
+    "failed": 0,
+    "passed": 4,
+    "required": 5,
+    "skipped": 0,
+    "warned": 0
+  },
+  "created_at": "2026-09-30T07:28:03.950221+00:00",
+  "limitations": [
+    "No persistent registry; Docker-host/client vantage, target HTTPS and UDP not implemented in this slice",
+    "Postinst is run only by opkg; independent postinst exit/count not claimed",
+    "Docker diff is metadata-only; byte-identical residuals and socket closure are not proven by it",
+    "Only opkg's exact observed scratch bookkeeping entries are exempt from residual comparison"
+  ],
+  "operation": "test",
+  "operation_log": [
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:03.585645+00:00",
+      "cwd": null,
+      "duration_seconds": 0.006514760199934244,
+      "exit_code": null,
+      "operation": "validate",
+      "sequence": 1,
+      "started_at": "2026-09-30T07:28:03.579128+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:03.585947+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0002432498149573803,
+      "exit_code": null,
+      "operation": "stage-local",
+      "sequence": 2,
+      "started_at": "2026-09-30T07:28:03.585705+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:03.586810+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0008549410849809647,
+      "exit_code": null,
+      "operation": "inspect",
+      "sequence": 3,
+      "started_at": "2026-09-30T07:28:03.585962+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:03.890204+00:00",
+      "cwd": null,
+      "duration_seconds": 0.30335071217268705,
+      "exit_code": null,
+      "operation": "capability",
+      "sequence": 4,
+      "started_at": "2026-09-30T07:28:03.586866+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:03.949871+00:00",
+      "cwd": null,
+      "duration_seconds": 0.059601867105811834,
+      "exit_code": null,
+      "operation": "create",
+      "sequence": 5,
+      "started_at": "2026-09-30T07:28:03.890284+00:00",
+      "status": "BLOCKED",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    },
+    {
+      "argv": [],
+      "completed_at": "2026-09-30T07:28:03.950047+00:00",
+      "cwd": null,
+      "duration_seconds": 0.0,
+      "exit_code": null,
+      "operation": "cleanup",
+      "sequence": 6,
+      "started_at": "2026-09-30T07:28:03.950044+00:00",
+      "status": "PASS",
+      "stderr_path": null,
+      "stdout_path": null,
+      "timed_out": false,
+      "truncated": false
+    }
+  ],
+  "overall": "BLOCKED",
+  "partial_failure": {
+    "cause_class": "environment",
+    "cleanup_attempted": true,
+    "cleanup_status": "PASS",
+    "interrupted": false,
+    "message": "run ID already owns Docker resources",
+    "operation": "create",
+    "operation_sequence": 5,
+    "preserved_artifacts": [
+      "/opt/data/workspace/keemu/reports/m1e06-collision-ea206e7698e3/report.json"
+    ],
+    "status": "BLOCKED"
+  },
+  "profile": {
+    "id": "generic-aarch64",
+    "kind": "generic",
+    "revision": 1,
+    "sha256": "31f8eb5f1957a5047b7e776925238f9419308681635e8008f40a81deda2824c5"
+  },
+  "run_id": "m1e06-collision-ea206e7698e3",
+  "runtime": {
+    "binfmt_configuration": [],
+    "entware_target": "aarch64-3.10",
+    "feed_lock_sha256": "b263148234da0a1b80b4da37e3f2b836188496ea52ee63d9c8c69e751293546e",
+    "git_commit": null,
+    "git_dirty": null,
+    "host_kernel": "6.8.0-138-generic",
+    "keemu_version": "0.1.0",
+    "native_tools": [],
+    "network_fidelity": null,
+    "oci_digest": "sha256:8f91e88ba865d6eea1f37b3d592fdd8c788273c11202a9e4194ff6c5ef4e6224",
+    "qemu_version": null,
+    "versions": []
+  },
+  "scenario": {
+    "id": "keemu-hello",
+    "schema_version": 1,
+    "sha256": "aaf707d649668855612f5e4304c5fa88a67e21d33d9b810cdcfcb90f11deebac",
+    "source": "/opt/data/workspace/keemu/reports/m1e06/lifecycle-generic-aarch64-76b570d55fe6/ipk/scenario.yaml"
+  },
+  "schema_version": 2,
+  "script": null,
+  "substitutions": []
+}
