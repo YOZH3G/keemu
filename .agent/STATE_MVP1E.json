@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1e",
-  "status": "WAITING_QUOTA",
+  "status": "RESUMING",
   "session_id": "20260930_083219_2d8c7c",
-  "pause_reason": "openai_usage_limit",
+  "pause_reason": null,
   "quota": {
-    "kind": "unknown",
-    "detected_at": "2026-09-30T08:36:27+00:00",
-    "resets_at": null,
-    "resets_in_seconds": null,
-    "wake_at": "2026-09-30T13:41:27+00:00",
-    "plan_type": null,
-    "raw_excerpt": "ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~3h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260930_083219_2d8c7c Provider said: HTTP 429: The usage limit has been reached Limit resets at 11:02 (in 2h 26m)."
+    "kind": "manual_refresh",
+    "detected_at": "2026-09-30T11:23:23+00:00",
+    "resets_at": "2026-09-30T16:12:00+00:00",
+    "resets_in_seconds": 17317,
+    "wake_at": null,
+    "plan_type": "same_subtask_resume",
+    "raw_excerpt": "openai-codex usage: session 98% remaining; weekly 84% remaining"
   },
   "routing": {
     "mode": "shadow",
@@ -430,7 +430,7 @@
     "last_run_started_at": "2026-09-30T08:32:16+00:00",
     "last_run_finished_at": "2026-09-30T08:36:27+00:00",
     "last_log": ".agent/runs/20260930T083216Z.log",
-    "last_checkpoint_at": "2026-09-30T08:36:27+00:00"
+    "last_checkpoint_at": "2026-09-30T11:23:23+00:00"
   },
   "quota_admission": {
     "checked_at": "2026-09-30T08:32:12+00:00",
@@ -444,6 +444,13 @@
     "remaining_percent": 5.0,
     "reset_at": "2026-09-30T11:02:13+00:00",
     "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota has 5.0% remaining; task admitted with warning"
+    "message": "5-hour OAuth quota has 5.0% remaining; task admitted with warning",
+    "resume_checked_at": "2026-09-30T11:23:23+00:00",
+    "resume_action": "admit",
+    "resume_remaining_percent": 98.0,
+    "resume_weekly_remaining_percent": 84.0,
+    "resume_reset_at": "2026-09-30T16:12:00+00:00",
+    "resume_source": "hermes_oauth_usage_api",
+    "resume_message": "Fresh same-subtask quota check admits m1e-07 continuation"
   }
 }
