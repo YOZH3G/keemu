@@ -1,31 +1,15 @@
 {
   "schema_version": 1,
   "task_id": "keemu-mvp1e",
-  "status": "WAITING_QUOTA",
-  "session_id": "20260929_183645_04dd93",
-  "pause_reason": "openai_usage_limit",
-  "quota": {
-    "kind": "unknown",
-    "detected_at": "2026-09-30T04:48:39+00:00",
-    "resets_at": null,
-    "resets_in_seconds": null,
-    "wake_at": "2026-09-30T09:53:39+00:00",
-    "plan_type": null,
-    "raw_excerpt": "↻ Resumed session 20260929_183645_04dd93 \"Review m1e-05 C3 engineering result\" (2 user messages, 42 total messages) ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~85h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260929_183645_04dd93 Provider said: HTTP 429: The usage limit has been reached Limit resets at 17:33 (in 84h 46m)."
-  },
+  "status": "RESUMING",
+  "session_id": null,
+  "pause_reason": null,
+  "quota": {},
   "routing": {
     "mode": "shadow",
     "last_evaluated_at": "2026-09-30T04:48:21+00:00",
-    "recommended": {
-      "tier": "C1",
-      "model": "gpt-6-luna",
-      "reasoning": "medium"
-    },
-    "applied": {
-      "tier": "C4",
-      "model": "gpt-6-sol",
-      "reasoning": "high"
-    },
+    "recommended": {},
+    "applied": {},
     "signals": {
       "score": 3,
       "signal_source": "active_subtask",
@@ -64,23 +48,7 @@
     },
     "astra_disabled_reason": null,
     "last_router_error": null,
-    "worker_lock": {
-      "provider": "openai-codex",
-      "tier": "C4",
-      "model": "gpt-6-sol",
-      "reasoning": "high",
-      "expected_model": "gpt-6-sol",
-      "expected_reasoning": "high",
-      "policy_version": "v1",
-      "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
-      "subtask_id": "m1e-05r",
-      "subtask_digest": "13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f",
-      "route_event_id": "evt_47fc4e90f58b9ef1786467fa",
-      "session_id": "20260929_183645_04dd93",
-      "model_attested": null,
-      "attestation_status": "PENDING",
-      "session_deleted": null
-    },
+    "worker_lock": {},
     "subtask_plan": {
       "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
       "plan_digest": "c5f8029160882b3cd1addf1c1034a7f467380e7ba1fadc290eeba5f921a388b2",
@@ -257,11 +225,11 @@
           "diagnostic_risk": "low",
           "recommended": {
             "tier": "C4",
-            "model": "gpt-6-sol",
+            "model": "gpt-6.1-sol",
             "reasoning": "high"
           },
           "status": "active",
-          "digest": "13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f"
+          "digest": "a8596920b23a1c7cd311b032cc8e03dd40db289c10d9a840bd135cfae498f283"
         },
         {
           "id": "m1e-06",
@@ -275,7 +243,7 @@
           "diagnostic_risk": "high",
           "recommended": {
             "tier": "C5",
-            "model": "gpt-6-sol",
+            "model": "gpt-6.1-sol",
             "reasoning": "xhigh"
           },
           "c5_factors": [
@@ -284,7 +252,7 @@
             "foreign_resource_preservation"
           ],
           "status": "pending",
-          "digest": "50a98923e1bf4d597db0c2926162ba3f3a8eae4f44d80d011663b23dab24559d"
+          "digest": "1bd33eb6b7da79a9a2848c43efc11290dcd8548870be20cddd43c6ed9f317eff"
         },
         {
           "id": "m1e-07",
@@ -319,11 +287,11 @@
           "diagnostic_risk": "low",
           "recommended": {
             "tier": "C4",
-            "model": "gpt-6-sol",
+            "model": "gpt-6.1-sol",
             "reasoning": "high"
           },
           "status": "pending",
-          "digest": "514b58fd33b58ffad970ae270ece73293932ce96517eb0573bc87ca8f0d0c236"
+          "digest": "29349c92ec0deee393e5c03aa48f863e4e0ab02e5fcc47267a07cc8d6ffbc97e"
         }
       ]
     },
@@ -337,31 +305,85 @@
         "candidate_hash": null,
         "samples_used": 0
       }
-    }
+    },
+    "model_migrations": [
+      {
+        "effective_at": "2026-09-30T06:25:00+00:00",
+        "authorized_by": "user",
+        "reason": "User required all current and future Sol routes to move from gpt-6-sol to gpt-6.1-sol before continuation.",
+        "availability_probe": {
+          "provider": "openai-codex",
+          "model": "gpt-6.1-sol",
+          "reasoning": "low",
+          "result": "OK",
+          "checked_at": "2026-09-30T06:03:58+00:00"
+        },
+        "superseded_pending_lock": {
+          "provider": "openai-codex",
+          "tier": "C4",
+          "model": "gpt-6-sol",
+          "reasoning": "high",
+          "expected_model": "gpt-6-sol",
+          "expected_reasoning": "high",
+          "policy_version": "v1",
+          "parent_task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
+          "subtask_id": "m1e-05r",
+          "subtask_digest": "13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f",
+          "route_event_id": "evt_47fc4e90f58b9ef1786467fa",
+          "session_id": "20260929_183645_04dd93",
+          "model_attested": null,
+          "attestation_status": "PENDING",
+          "session_deleted": null
+        },
+        "superseded_quota": {
+          "kind": "unknown",
+          "detected_at": "2026-09-30T04:48:39+00:00",
+          "resets_at": null,
+          "resets_in_seconds": null,
+          "wake_at": "2026-09-30T09:53:39+00:00",
+          "plan_type": null,
+          "raw_excerpt": "↻ Resumed session 20260929_183645_04dd93 \"Review m1e-05 C3 engineering result\" (2 user messages, 42 total messages) ChatGPT or Codex Subscription rate-limited every one of 3 attempts — its usage limit resets in ~85h. Send /retry after that, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`. session_id: 20260929_183645_04dd93 Provider said: HTTP 429: The usage limit has been reached Limit resets at 17:33 (in 84h 46m)."
+        },
+        "amended_subtasks": [
+          {
+            "subtask_id": "m1e-05r",
+            "old_digest": "13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f",
+            "new_digest": "a8596920b23a1c7cd311b032cc8e03dd40db289c10d9a840bd135cfae498f283",
+            "old_model": "gpt-6-sol",
+            "new_model": "gpt-6.1-sol"
+          },
+          {
+            "subtask_id": "m1e-06",
+            "old_digest": "50a98923e1bf4d597db0c2926162ba3f3a8eae4f44d80d011663b23dab24559d",
+            "new_digest": "1bd33eb6b7da79a9a2848c43efc11290dcd8548870be20cddd43c6ed9f317eff",
+            "old_model": "gpt-6-sol",
+            "new_model": "gpt-6.1-sol"
+          },
+          {
+            "subtask_id": "m1e-08",
+            "old_digest": "514b58fd33b58ffad970ae270ece73293932ce96517eb0573bc87ca8f0d0c236",
+            "new_digest": "29349c92ec0deee393e5c03aa48f863e4e0ab02e5fcc47267a07cc8d6ffbc97e",
+            "old_model": "gpt-6-sol",
+            "new_model": "gpt-6.1-sol"
+          }
+        ],
+        "historical_evidence_preserved": true,
+        "superseded_session_deleted": true,
+        "superseded_session_deleted_at": "2026-09-30T06:30:27+00:00",
+        "new_session_required": true
+      }
+    ]
   },
   "runtime": {
     "continuations": 0,
     "consecutive_failures": 0,
     "same_error_count": 0,
     "last_error_fingerprint": null,
-    "last_exit_code": 1,
+    "last_exit_code": null,
     "last_run_started_at": "2026-09-30T04:48:21+00:00",
     "last_run_finished_at": "2026-09-30T04:48:39+00:00",
     "last_log": ".agent/runs/20260930T044821Z.log",
-    "last_checkpoint_at": "2026-09-30T04:48:39+00:00"
+    "last_checkpoint_at": "2026-09-30T06:25:00+00:00"
   },
-  "quota_admission": {
-    "checked_at": "2026-09-29T18:36:39+00:00",
-    "scope": "subtask",
-    "admission_key": "subtask:m1e-05r:13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f",
-    "task_digest": "44d576890a59078a2c66eb1866f81a8b9a39d20e96cd801c2f27d50ebe1d21d6",
-    "task_intent": "Independently review the m1e-05 C3 engineering result without product mutation; verify frozen file limits, common-path parity, tests, runtime evidence, scope compliance and any blocking finding",
-    "subtask_id": "m1e-05r",
-    "subtask_digest": "13fb3583cbb917621c6e421eee8e1d06a2d5fe579780ac5f3d0c65dbe41ade0f",
-    "action": "admit",
-    "remaining_percent": 64.0,
-    "reset_at": "2026-09-29T23:09:00+00:00",
-    "source": "hermes_oauth_usage_api",
-    "message": "5-hour OAuth quota admits new task"
-  }
+  "quota_admission": {}
 }

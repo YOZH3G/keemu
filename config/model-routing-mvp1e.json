@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "provider": "openai-codex",
+  "tiers": [
+    {
+      "id": "C0",
+      "rank": 0,
+      "model": "gpt-6-luna",
+      "reasoning": "low",
+      "label": "mechanical/read-only"
+    },
+    {
+      "id": "C1",
+      "rank": 1,
+      "model": "gpt-6-luna",
+      "reasoning": "medium",
+      "label": "small/simple change"
+    },
+    {
+      "id": "C2",
+      "rank": 2,
+      "model": "gpt-5.6-terra",
+      "reasoning": "medium",
+      "label": "normal engineering"
+    },
+    {
+      "id": "C3",
+      "rank": 3,
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "label": "debug/refactor/integration"
+    },
+    {
+      "id": "C4",
+      "rank": 4,
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "label": "complex/high-risk engineering"
+    },
+    {
+      "id": "C5",
+      "rank": 5,
+      "model": "gpt-6.1-sol",
+      "reasoning": "xhigh",
+      "label": "architecture/repeated failure"
+    },
+    {
+      "id": "C6",
+      "rank": 6,
+      "model": "gpt-6-astra",
+      "reasoning": "high",
+      "label": "frontier difficulty"
+    },
+    {
+      "id": "C7",
+      "rank": 7,
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "label": "last-resort frontier escalation"
+    }
+  ],
+  "score_thresholds": [
+    {
+      "max_score": 1,
+      "tier": "C0"
+    },
+    {
+      "max_score": 3,
+      "tier": "C1"
+    },
+    {
+      "max_score": 5,
+      "tier": "C2"
+    },
+    {
+      "max_score": 7,
+      "tier": "C3"
+    },
+    {
+      "max_score": 10,
+      "tier": "C4"
+    },
+    {
+      "max_score": 13,
+      "tier": "C5"
+    },
+    {
+      "max_score": 16,
+      "tier": "C6"
+    },
+    {
+      "max_score": 999,
+      "tier": "C7"
+    }
+  ],
+  "astra_fallback": {
+    "tier": "C5",
+    "model": "gpt-6.1-sol",
+    "reasoning": "xhigh"
+  }
+}

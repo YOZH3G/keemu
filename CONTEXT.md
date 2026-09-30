@@ -22,14 +22,14 @@
 - Available optimization tools: RTK 0.49.0 and Graphify 0.9.62. Caveman is installed as a global Hermes skill.
 - Supervisor runtime: `/opt/data/hermes-durable-vps-hostinger-router-v1`
 - Project supervisor config: `/opt/data/hermes-supervisor-configs/keemu.json`
-- Router policy: `/opt/data/hermes-durable-vps-hostinger-router-v1/router/models.json`
+- KEEMU-scoped router policy: `config/model-routing-mvp1e.json`. The shared policy remains unchanged because it is also used by the separate `hermes-workspace` supervisor.
 
 ## Execution policy
 
-- MVP 1E supervised work follows the user-approved frozen table in `docs/model-routing-plan-mvp1e.md`: C3=3, C4=5, C5=2, Astra=0. Router learning remains shadow-only, while `routing.apply_approved_subtask_routes=true` applies each frozen plan row as the explicit worker lock.
+- MVP 1E supervised work follows the user-approved amended table in `docs/model-routing-plan-mvp1e.md`: C3=3, C4=5, C5=2, Astra=0. Effective 2026-09-30, current/future C4 and C5 Sol locks use `gpt-6.1-sol`; historical completed attestations retain their actual model. Router learning remains shadow-only, while `routing.apply_approved_subtask_routes=true` applies each plan row as the explicit worker lock.
 - Each subtask receives an explicit disposable-worker lock for provider, model and reasoning. Switching is permitted only after an exact completion marker, runtime attestation, durable outcome, and verified session deletion.
 - Astra is disabled for MVP 1E; later use requires explicit evidenced C5 failure or a separately approved read-only shadow review.
-- Quota pauses retain the same subtask, session, provider, model and reasoning; they are not escalation signals.
+- Quota pauses normally retain the same subtask, session, provider, model and reasoning; they are not escalation signals. The user-authorized 2026-09-30 Sol 6.1 migration is an explicit exception: the unattested pending `m1e-05r` Sol 6 session was retired and continuation requires a new session and fresh lock.
 - Before launching every new frozen subtask, the supervisor must fetch live OAuth account usage and persist a subtask-bound admission record. Below 11% remaining it warns; below 5% it checkpoints and waits until the stored absolute reset-plus-margin time. Same-subtask session continuations do not repeat the preflight.
 - All ten MVP 1E subtasks `m1e-00` through `m1e-08` (including `m1e-05r`) are authorized in frozen order, subject to fresh per-subtask quota admission and runtime attestation. C3 scope expansion fails closed to a new C4 session at a verified boundary.
 - Policy learning remains observational (`shadow`); canary promotion is disabled.
