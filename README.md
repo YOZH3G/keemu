@@ -5,7 +5,7 @@
 ![AArch64](https://img.shields.io/badge/AArch64-supported-success)
 ![MIPSEL](https://img.shields.io/badge/MIPSEL-partial-yellow)
 ![MIPS](https://img.shields.io/badge/MIPS-partial-yellow)
-![Status](https://img.shields.io/badge/status-MVP%20in%20progress-orange)
+![Status](https://img.shields.io/badge/status-audited%20%2F%20release%20blocked-orange)
 
 **Reproducible verification harness for Entware applications — without requiring a physical Keenetic router.**
 
@@ -43,14 +43,28 @@ MIPSEL/MIPS now have generic profiles, deterministic locked init caches, common 
 
 ### MVP 1E MIPS/MIPSEL lifecycle reconciliation
 
-The retained m1e-07 reconciliation is documentation/evidence-only. The separate m1e-08 final audit now publishes the milestone verdict:
+**Final status:** all frozen execution and audit subtasks are complete; release remains blocked.
+
+All 10 frozen MVP 1E subtasks are complete, runtime-attested, published, and have no retained worker session. The retained m1e-07 reconciliation is documentation/evidence-only. The separate m1e-08 final audit publishes the milestone verdict:
 
 - E01 scope/lock review, E02 MIPS init, E03 MIPSEL init, E04 one-shot lifecycle, and E05 persistent/recovery are `PASS` at their named scopes;
-- E06 is `BLOCKED` by retained independent-review findings, including missing independently verifiable historical C3 execution evidence;
+- E06 is `BLOCKED` by R1 defective persistent-test teardown, R2 missing independently verifiable historical C3 RED/GREEN evidence, and R3 an obsolete opt-in architecture regression;
 - E07 final verification-observation gate is `PASS` for 19 unique bounded real adversarial cases across all three targets; its historical ledger remains `SCOPED_PASS`;
 - E08 independent evidence audit is `PASS`, but MVP 1E milestone/release is `BLOCKED`. Fresh portable tests are 353 `PASS`/84 opt-in `SKIP`; repository lint and format checks `FAIL` on untouched files.
 
-See `docs/evidence/mvp1e-m1e08-final-audit.md`, the retained `docs/evidence/mvp1e-m1e07-reconciliation.md`, and `docs/limitations.md`. Supervisor terminal attestation, commit/push and session deletion remain a separate boundary; no product completion is claimed.
+See `docs/evidence/mvp1e-m1e08-final-audit.md`, the retained `docs/evidence/mvp1e-m1e07-reconciliation.md`, and `docs/limitations.md`. Orchestration is complete; product and release acceptance remain blocked by the gates above.
+
+### Planned blocker closure
+
+The next hardening boundary must preserve the completed MVP 1D/1E evidence rather than rewrite it:
+
+1. fix persistent test teardown to perform `down` then `destroy`, reject hidden cleanup errors, and verify a consistent destroyed registry tombstone;
+2. replace the obsolete MIPS/MIPSEL `BLOCKED` regression with healthy-cache execution and unavailable-cache/no-allocation cases;
+3. capture a new immutable live evidence bundle with JUnit, typed reports, source/lock hashes, Docker and registry snapshots, while leaving the historical C3 sample excluded from accepted learning;
+4. replace pathname-based temporary script/helper staging with a pinned runner and descriptor-backed sealed script input, removing the hostile same-UID `stat`/`rm` race rather than adding another pathname check;
+5. add a crash-safe operation journal and automatic interrupted-report recovery so persistent `SIGKILL` leaves neither a target artifact nor an unreported operation.
+
+Only a new three-target adversarial run and independent audit may promote E06 and the superseding D02/D07 hardening gates to `PASS`.
 
 ---
 
@@ -318,7 +332,7 @@ The retained acceptance snapshot currently records:
   - 0 `FAIL`
   - 0 `SKIP`
 - MVP 1D release: `BLOCKED`, while its bounded evidence audit is complete.
-- MVP 1E: E01–E05 `PASS`, E06 `BLOCKED`, E07 `SCOPED_PASS`, E08 reconciliation complete with final audit pending.
+- MVP 1E execution: 10/10 frozen subtasks complete and runtime-attested; final gates E01–E05 `PASS`, E06 `BLOCKED`, E07 `PASS` at its named bounded verification-observation scope, and E08 `PASS`; milestone/release remains `BLOCKED`.
 
 Authoritative details:
 
@@ -466,13 +480,13 @@ The following are still incomplete or intentionally out of scope for the current
 
 - full Keenetic firmware emulation;
 - proof of compatibility with every physical Keenetic model;
-- generic MIPS/MIPSEL `init` and single-scenario `test`;
+- E06 script-integration acceptance despite bounded common-path execution on AArch64/MIPS/MIPSEL;
 - complete scenario-driven localhost publication;
 - complete isolation guarantees;
 - automatic one-shot interruption recovery;
 - atomic script-artifact cleanup against a hostile concurrent same-UID target process;
 - automatic recovery and interrupted reporting for persistent script artifacts after `SIGKILL`;
-- general MIPS/MIPSEL script execution beyond truthful pre-allocation `BLOCKED`;
+- correction and immutable rerun evidence for E06 findings R1/R2/R3;
 - generic target NFQUEUE;
 - complete A10 matrix acceptance;
 - strict final NDM/event contracts;
@@ -503,6 +517,8 @@ The authoritative MVP scope and acceptance criteria are defined in:
 ```text
 KEEMU_MVP1_updated.md
 docs/specifications/KEEMU_MVP1D_script_execution.md
+docs/specifications/KEEMU_MVP1E_mips_lifecycle.md
+docs/evidence/mvp1e-m1e08-final-audit.md
 ```
 
-`KEEMU_MVP1_updated.md` governs the original MVP 1 acceptance history. The MVP 1D specification governs bounded script execution. If this README disagrees with the applicable specification, the specification takes precedence.
+`KEEMU_MVP1_updated.md` governs the original MVP 1 acceptance history. The MVP 1D and MVP 1E specifications govern their bounded milestones; the independent final audits record their verified verdicts. If this README disagrees with the applicable specification or audit, that source takes precedence.

@@ -5,7 +5,7 @@
 ![AArch64](https://img.shields.io/badge/AArch64-supported-success)
 ![MIPSEL](https://img.shields.io/badge/MIPSEL-partial-yellow)
 ![MIPS](https://img.shields.io/badge/MIPS-partial-yellow)
-![Status](https://img.shields.io/badge/status-MVP%20in%20progress-orange)
+![Status](https://img.shields.io/badge/status-audited%20%2F%20release%20blocked-orange)
 
 **Воспроизводимый стенд для проверки Entware-приложений без обязательного доступа к физическому роутеру Keenetic.**
 
@@ -43,14 +43,28 @@ KEEMU запускает зафиксированные целевые окру�
 
 ### MVP 1E: сверка MIPS/MIPSEL lifecycle
 
-Сохранённая сверка m1e-07 относится только к evidence/documentation. Отдельный финальный аудит m1e-08 теперь публикует milestone verdict:
+**Финальный статус:** все замороженные задачи исполнения и аудита завершены; release остаётся заблокирован.
+
+Все 10 замороженных задач MVP 1E завершены, runtime-attested, опубликованы и не имеют сохранённых worker-сессий. Сверка m1e-07 относится только к evidence/documentation. Отдельный финальный аудит m1e-08 публикует milestone verdict:
 
 - E01 scope/lock review, E02 MIPS init, E03 MIPSEL init, E04 one-shot lifecycle и E05 persistent/recovery имеют `PASS` в своих ограниченных scope;
-- E06 имеет `BLOCKED` из-за сохранённых findings независимого review, включая отсутствие независимо проверяемых исторических C3 execution evidence;
+- E06 имеет `BLOCKED` из-за R1 с ошибочным teardown persistent-теста, R2 с отсутствующими независимо проверяемыми историческими C3 RED/GREEN evidence и R3 с устаревшим opt-in architecture regression;
 - финальный verification-observation gate E07 имеет `PASS` для 19 уникальных ограниченных реальных adversarial cases на трёх target; исторический ledger сохраняет `SCOPED_PASS`;
 - независимый evidence audit E08 имеет `PASS`, но milestone/release MVP 1E остаётся `BLOCKED`. Свежие portable tests: 353 `PASS`/84 opt-in `SKIP`; repository lint и format checks имеют `FAIL` на неизменённых файлах.
 
-См. `docs/evidence/mvp1e-m1e08-final-audit.md`, сохранённый `docs/evidence/mvp1e-m1e07-reconciliation.md` и `docs/limitations.md`. Terminal attestation, commit/push и удаление сессии остаются отдельной границей supervisor; product completion не заявляется.
+См. `docs/evidence/mvp1e-m1e08-final-audit.md`, сохранённый `docs/evidence/mvp1e-m1e07-reconciliation.md` и `docs/limitations.md`. Оркестрация завершена; product и release acceptance остаются заблокированы указанными gates.
+
+### План закрытия блокеров
+
+Следующий hardening milestone должен сохранять завершённые evidence MVP 1D/1E, а не переписывать их:
+
+1. исправить teardown persistent-теста: выполнять `down`, затем `destroy`, не скрывать cleanup errors и проверять согласованный registry tombstone в состоянии `destroyed`;
+2. заменить устаревший MIPS/MIPSEL `BLOCKED` regression на случаи healthy-cache execution и unavailable-cache без Docker allocation;
+3. сохранить новый immutable live evidence bundle с JUnit, typed reports, source/lock hashes, Docker и registry snapshots, оставив исторический C3 sample исключённым из accepted learning;
+4. заменить временный pathname staging скрипта и helper на pinned runner и descriptor-backed sealed script input, архитектурно устранив hostile same-UID race между `stat` и `rm`;
+5. добавить crash-safe operation journal и автоматический interrupted-report recovery, чтобы persistent `SIGKILL` не оставлял target artifact и операцию без отчёта.
+
+Перевести E06 и superseding hardening gates D02/D07 в `PASS` могут только новый adversarial-прогон на трёх target и независимый аудит.
 
 ---
 
@@ -310,7 +324,7 @@ ERROR → FAIL → BLOCKED → WARN → PASS
 - portable-прогон MVP 1D: 339 `PASS` и 44 намеренных opt-in `SKIP`;
 - сохранённый реальный AArch64-прогон MVP 1D: 39 `PASS`, 0 `FAIL`, 0 `SKIP`;
 - evidence-аудит MVP 1D завершён, но release остаётся `BLOCKED`.
-- MVP 1E: E01–E05 `PASS`, E06 `BLOCKED`, E07 `SCOPED_PASS`, E08 reconciliation завершена, финальный аудит ожидается.
+- выполнение MVP 1E: 10/10 замороженных задач завершены и runtime-attested; финальные gates E01–E05 `PASS`, E06 `BLOCKED`, E07 `PASS` в своём ограниченном verification-observation scope и E08 `PASS`; milestone/release остаётся `BLOCKED`.
 
 Подробности:
 
@@ -431,13 +445,13 @@ Host networking разрешён только ограниченным evidence 
 
 - полная эмуляция прошивки Keenetic;
 - доказательство совместимости со всеми физическими моделями Keenetic;
-- общий MIPS/MIPSEL `init` и одиночный `test`;
+- приёмка E06 script integration, несмотря на ограниченное common-path execution на AArch64/MIPS/MIPSEL;
 - универсальная scenario-driven публикация localhost;
 - полные гарантии изоляции;
 - автоматическое восстановление одноразового запуска после прерывания;
 - атомарный cleanup script artifacts при враждебном конкурентном same-UID процессе внутри target;
 - автоматический recovery и interrupted report для persistent script artifacts после `SIGKILL`;
-- общий запуск скриптов на MIPS/MIPSEL помимо честного pre-allocation `BLOCKED`;
+- исправление и immutable rerun evidence для findings E06 R1/R2/R3;
 - generic target NFQUEUE;
 - полная приёмка A10 matrix;
 - финальные строгие NDM/event contracts;
@@ -468,6 +482,8 @@ reports/                 Сгенерированные write-once reports, не
 ```text
 KEEMU_MVP1_updated.md
 docs/specifications/KEEMU_MVP1D_script_execution.md
+docs/specifications/KEEMU_MVP1E_mips_lifecycle.md
+docs/evidence/mvp1e-m1e08-final-audit.md
 ```
 
-`KEEMU_MVP1_updated.md` определяет историческую приёмку исходного MVP 1, а спецификация MVP 1D — ограниченный запуск скриптов. Если README расходится с применимой спецификацией, приоритет имеет спецификация.
+`KEEMU_MVP1_updated.md` определяет историческую приёмку исходного MVP 1. Спецификации MVP 1D и MVP 1E определяют их ограниченные milestones, а независимые финальные аудиты — проверенные verdicts. Если README расходится с применимой спецификацией или аудитом, приоритет имеет этот источник.
