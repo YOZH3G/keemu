@@ -6,7 +6,7 @@
 - Root: `/opt/data/workspace/keemu`
 - Durable compatibility path: `/opt/data/hermes-projects/keemu` (symlink to the project root)
 - Active branch: `staging`
-- Frozen pre-MVP-1D baseline: `post-mvp`. `main` contains the completed, audited MVP 1D branch state; this publication does not change its truthful `BLOCKED` release verdict.
+- Frozen pre-MVP-1D baseline: `post-mvp`. `main` and `staging` contain the completed, audited MVP 1E repository state and bilingual post-audit README update; publication does not change the truthful `BLOCKED` MVP 1D/MVP 1E release verdicts.
 - Active specification: `docs/specifications/KEEMU_MVP1E_mips_lifecycle.md`
 - Frozen predecessor task/state: `docs/milestones/KEEMU_MVP1D_TASK_FROZEN.md` and `.agent/STATE_MVP1D.json`.
 - Frozen original specification: `KEEMU_MVP1_updated.md`, revision 2.2
